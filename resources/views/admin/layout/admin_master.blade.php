@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/png" href="{{ asset('images/favicon.png') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>REAL ESTATE | CRM</title>
 
     <!-- Google Font: Source Sans Pro -->
@@ -180,14 +181,14 @@
                with font-awesome or any other icon font library -->
 
                         <li class="nav-item">
-                            <a href="{{ route('dashboard') }}"
+                            <a href="{{ route('dashboard.index') }}"
                                 class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>Dashboard</p>
                             </a>
                         </li>
-                        <li class="nav-item {{ request()->is('area') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ request()->is('area') ? 'active' : '' }}">
+                        <li class="nav-item {{ request()->is('areas') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ request()->is('areas') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-copy"></i>
                                 <p>
                                     Masters
@@ -196,14 +197,14 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('area') }}"
-                                        class="nav-link {{ request()->is('area') ? 'active' : '' }}">
+                                    <a href="{{ route('areas.index') }}"
+                                        class="nav-link {{ request()->is('areas') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Area</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="{{ route('locality.index') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Locality</p>
                                     </a>

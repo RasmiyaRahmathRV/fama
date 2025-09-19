@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ImportController;
+use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,7 +27,18 @@ Route::get('reset-password/{token}', [LoginController::class, 'resetPassword'])-
 Route::post('do-reset-password', [LoginController::class, 'doResetPassword'])->name('do.reset.password');
 
 Route::middleware('auth')->group(function () {
-    Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-    Route::get('area', [AreaController::class, 'index'])->name('area');
-    Route::post('store-area', [AreaController::class, 'store'])->name('area.store');
+    Route::resource('areas', AreaController::class);
+    Route::resource('dashboard', DashboardController::class);
+    Route::resource('locality', LocalityController::class);
+
+
+    Route::post('import-area', [AreaController::class, 'import'])->name('import.area');
+    Route::get('area-list', [AreaController::class, 'getAreas'])->name('area.list');
+    Route::get('export-areas', [AreaController::class, 'export'])->name('area.export');
+    Route::get('get-by-company/{company_id?}', [AreaController::class, 'getByCompany'])->name('area.getbycompany');
+
+
+    Route::get('export-localities', [LocalityController::class, 'export'])->name('locality.export');
+    Route::get('locality-list', [LocalityController::class, 'getLocalities'])->name('locality.list');
+    Route::post('import-locality', [LocalityController::class, 'import'])->name('import.locality');
 });

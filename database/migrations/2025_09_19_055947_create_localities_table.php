@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('areas', function (Blueprint $table) {
+        Schema::create('localities', function (Blueprint $table) {
             $table->id();
             $table->Unsignedinteger('company_id');
-            $table->string('area_code');
-            $table->string('area_name');
+            $table->Unsignedinteger('area_id');
+            $table->string('locality_code');
+            $table->string('locality_name');
             $table->integer('added_by');
             $table->integer('updated_by')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
 
-            $table->unique(['company_id', 'area_name']);
+            $table->unique(['company_id', 'area_id', 'locality_name']);
 
             $table->softDeletes();
         });
@@ -32,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('areas');
+        Schema::dropIfExists('localities');
     }
 };

@@ -3,8 +3,12 @@
 namespace App\Services;
 
 use App\Repositories\AreaRepository;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\Facades\DataTables;
 
 class AreaService
 {
@@ -25,17 +29,23 @@ class AreaService
         return $this->areaRepository->find($id);
     }
 
-    public function create(array $data)
+    public function getByName($name)
+    {
+        return $this->areaRepository->getByName($name);
+    }
+
+    public function create(array $data, $user_id = null)
     {
         $this->validate($data);
-        $data['added_by'] = auth()->user()->id;
-        $data['added_date'] = date('d-m-y H:i:s');
+        $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
+        $data['area_code'] = $this->setAreaCode();
         return $this->areaRepository->create($data);
     }
 
     public function update($id, array $data)
     {
         $this->validate($data);
+        $data['updated_by'] = auth()->user()->id;
         return $this->areaRepository->update($id, $data);
     }
 
@@ -44,10 +54,27 @@ class AreaService
         return $this->areaRepository->delete($id);
     }
 
+    public function setAreaCode()
+    {
+        $codeService = new \App\Services\CodeGeneratorService();
+        return $codeService->generateNextCode('areas', 'area_code', 'ARE', 5);
+    }
+
+    public function getByCompany($company)
+    {
+        return $this->areaRepository->getByCompany($company);
+    }
+
     private function validate(array $data)
     {
         $validator = Validator::make($data, [
-            'area_name' => 'required|unique:areas,area_name',
+            'company_id' => 'required|exists:companies,id',
+            'area_name' => [
+                'required',
+                'string',
+                Rule::unique('areas')
+                    ->where(fn($query) => $query->where('company_id', $data['company_id'] ?? null)),
+            ],
         ], [
             'area_name.unique' => 'This area name already exists. Please choose another.',
         ]);
@@ -56,4 +83,42 @@ class AreaService
             throw new ValidationException($validator);
         }
     }
+
+    public function getDataTable(array $filters = [])
+    {
+        $query = $this->areaRepository->getQuery($filters);
+
+        $columns = [
+            ['data' => 'DT_RowIndex', 'name' => 'id'],
+            ['data' => 'area_name', 'name' => 'area_name'],
+            ['data' => 'company_name', 'name' => 'company_name'],
+            ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
+        ];
+
+        return datatables()
+            ->of($query)
+            ->addIndexColumn()
+            ->addColumn('area_name', fn($row) => $row->area_name ?? '-')
+            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            ->addColumn('action', fn($row) => '<button class="btn btn-info" data-toggle="modal"
+                                                        data-target="#modal-area" data-id="' . $row->id . '"
+                                                        data-name="' . $row->area_name . '"
+                                                        data-company="' . $row->company_id . '">Edit</button>
+                                                        <button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>')
+            ->rawColumns(['action'])
+            // ->order(function ($query) {
+            //     $query->orderBy('id', 'desc'); // default DB column for ordering
+            // })
+            ->with(['columns' => $columns]) // send columns too
+            ->toJson();
+    }
+
+    public function checkIfExist($data)
+    {
+        return $this->areaRepository->checkIfExist($data);
+    }
+    // public function exportExcel(array $filters = [])
+    // {
+    //     return Excel::download(new AreaExport($filters), 'areas.xlsx');
+    // }
 }

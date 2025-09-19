@@ -18,12 +18,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Area</h1>
+                        <h1>Locality</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}">Home</a></li>
-                            <li class="breadcrumb-item active">Area</li>
+                            <li class="breadcrumb-item"><a href="../dashboard.php">Home</a></li>
+                            <li class="breadcrumb-item active">Locality</li>
                         </ol>
                     </div>
                 </div>
@@ -37,40 +37,28 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                {{-- <h3 class="card-title">Area Details</h3> --}}
+                                <!-- <h3 class="card-title">Locality Details</h3> -->
                                 <span class="float-right">
                                     <button class="btn btn-info float-right m-1" data-toggle="modal"
-                                        data-target="#modal-area">Add Area</button>
+                                        data-target="#modal-locality">Add Locality</button>
                                     <button class="btn btn-secondary float-right m-1" data-toggle="modal"
                                         data-target="#modal-import">Import</button>
                                 </span>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="areasTable" class="table table-bordered table-hover">
+                                <table id="localityTable" class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Area Name</th>
                                             <th>Company Name</th>
+                                            <th>Area Name</th>
+                                            <th>Locality Name</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{-- @foreach ($areas as $area)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $area->area_name }}</td>
-                                                <td>{{ $area->company->company_name }}</td>
-                                                <td>
-                                                    <button class="btn btn-info" data-toggle="modal"
-                                                        data-target="#modal-area" data-id="{{ $area->id }}"
-                                                        data-name="{{ $area->area_name }}"
-                                                        data-company="{{ $area->company_id }}">Edit</button>
-                                                    <button class="btn btn-danger">Delete</button>
-                                                </td>
-                                            </tr>
-                                        @endforeach --}}
+
                                     </tbody>
                                 </table>
                             </div>
@@ -85,18 +73,18 @@
             <!-- /.container-fluid -->
 
 
-            <div class="modal fade" id="modal-area">
+            <div class="modal fade" id="modal-locality">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">Area</h4>
+                            <h4 class="modal-title">Locality</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form action="" id="areaForm">
+                        <form action="" id="localityForm">
                             @csrf
-                            <input type="hidden" name="id" id="area_id">
+                            <input type="hidden" name="id" id="locality_id" value="0">
                             <div class="modal-body">
                                 <div class="card-body">
                                     @if (auth()->user()->company_id)
@@ -104,8 +92,8 @@
                                             value="{{ auth()->user()->company_id }}">
                                     @else
                                         <div class="form-group row">
-                                            <label for="inputEmail3" class="col-sm-3 col-form-label">Company</label>
-                                            <select class="form-control select2 col-sm-9" name="company_id" id="company_id">
+                                            <label for="inputEmail3" class="col-sm-4 col-form-label">Company</label>
+                                            <select class="form-control select2 col-sm-8" name="company_id" id="company_id">
                                                 <option value="">Select Company</option>
                                                 @foreach ($companies as $company)
                                                     <option value="{{ $company->id }}">{{ $company->company_name }}
@@ -114,11 +102,17 @@
                                             </select>
                                         </div>
                                     @endif
+                                    <div class="form-group row">
+                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Area</label>
+                                        <select class="form-control select2 col-sm-8" name="area_id" id="area_select">
+                                            <option value="">Select Area</option>
+                                        </select>
+                                    </div>
 
                                     <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Area Name</label>
-                                        <input type="text" name="area_name" id="area_name" class="col-sm-9 form-control"
-                                            id="inputEmail3" placeholder="Area Name">
+                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Locality Name</label>
+                                        <input type="text" name="locality_name" id="locality_name"
+                                            class="col-sm-8 form-control" id="inputEmail3" placeholder="Locality Name">
                                     </div>
                                 </div>
                                 <!-- /.card-body -->
@@ -144,7 +138,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form action="" id="areaImportForm" method="POST" enctype="multipart/form-data">
+                        <form action="" id="LocalityImportForm" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="modal-body">
                                 <div class="card-body">
@@ -187,18 +181,35 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.5/dist/sweetalert2.all.min.js"></script>
+
 
     <script>
-        $('#areaForm').submit(function(e) {
+        $('#company_id').change(function(e) {
             e.preventDefault();
 
-            var form = document.getElementById('areaForm');
+            let url = '{{ route('area.getbycompany', ':id') }}';
+            url = url.replace(':id', $(this).val());
+
+            $.get(url, function(data) {
+                let options = '<option value="">Select Area</option>';
+                data.forEach(a => {
+                    options += `<option value="${a.id}">${a.area_name}</option>`;
+                });
+                $('#area_select').html(options);
+            });
+        });
+    </script>
+
+    <script>
+        $('#localityForm').submit(function(e) {
+            e.preventDefault();
+
+            var form = document.getElementById('localityForm');
             var fdata = new FormData(form);
 
             $.ajax({
                 type: "POST",
-                url: "{{ route('areas.store') }}",
+                url: "{{ route('locality.store') }}",
                 data: fdata,
                 dataType: "json",
                 processData: false,
@@ -214,46 +225,13 @@
         });
 
 
-        $("#modal-area").on('shown.bs.modal', function(e) {
-            var id = $(e.relatedTarget).data('id');
-            var name = $(e.relatedTarget).data('name');
-
-            if (!id) {
-                $('#areaForm').trigger("reset");
-            } else {
-                $('#company_id').val($(e.relatedTarget).data('company'));
-                $('#company_id').prop('disabled', true);
-                $('#area_id').val(id);
-                $('#area_name').val(name);
-            }
-        });
-
-
-        $('#importBtn').on('click', function() {
-            let formData = new FormData($('#areaImportForm')[0]);
-            $.ajax({
-                url: "{{ route('import.area') }}",
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    toastr.success(response.message);
-                    window.location.reload();
-                },
-                error: function(err) {
-                    toastr.error(err.responseJSON.message);
-                }
-            });
-        });
-
         $(function() {
-            let table = $('#areasTable').DataTable({
+            let table = $('#localityTable').DataTable({
                 processing: true,
                 serverSide: true,
 
                 ajax: {
-                    url: "{{ route('area.list') }}",
+                    url: "{{ route('locality.list') }}",
                     data: function(d) {
                         // d.company_id = $('#companyFilter').val();
                     },
@@ -261,20 +239,20 @@
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'id',
-                        orderable: false,
-                        searchable: false
+                        orderable: true,
+                        searchable: true
+                    },
+                    {
+                        data: 'company_name',
+                        name: 'company_name',
                     },
                     {
                         data: 'area_name',
-                        name: 'areas.area_name'
+                        name: 'area_name'
                     },
-                    // {
-                    //     data: 'area_code',
-                    //     name: 'area_code'
-                    // },
                     {
-                        data: 'company_name',
-                        name: 'companies.company_name',
+                        data: 'locality_name',
+                        name: 'locality_name'
                     },
                     {
                         data: 'action',
@@ -283,9 +261,6 @@
                         searchable: false
                     },
                 ],
-                order: [
-                    [0, 'asc']
-                ],
                 dom: 'Bfrtip', // This is important for buttons
                 buttons: [{
                     extend: 'excelHtml5',
@@ -293,46 +268,29 @@
                     title: 'Area Data',
                     action: function(e, dt, node, config) {
                         // redirect to your Laravel export route
-                        window.location.href = "{{ route('area.export') }}";
+                        window.location.href = "{{ route('locality.export') }}";
                     }
                 }]
             });
 
-            // $('#companyFilter').change(function() {
-            //     table.ajax.reload();
-            // });
-
-
         });
 
-        function deleteConf(id) {
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        type: "DELETE",
-                        url: '/areas/' + id,
-                        data: {
-                            _token: $('meta[name="csrf-token"]').attr('content')
-                        },
-                        dataType: "json",
-                        success: function(response) {
-                            toastr.success(response.message);
-                            $('#areasTable').DataTable().ajax.reload();
-                        }
-                    });
-
-                } else {
-                    toastr.error(errors.responseJSON.message);
+        $('#importBtn').on('click', function() {
+            let formData = new FormData($('#LocalityImportForm')[0]);
+            $.ajax({
+                url: "{{ route('import.locality') }}",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    toastr.success(response.message);
+                    // window.location.reload();
+                },
+                error: function(err) {
+                    toastr.error(err.responseJSON.message);
                 }
             });
-        }
+        });
     </script>
 @endsection

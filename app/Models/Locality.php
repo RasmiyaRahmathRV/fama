@@ -7,23 +7,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Area extends Model
+class Locality extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = [
-        'company_id',
-        'area_code',
-        'area_name',
-        'added_by',
-        'updated_by',
-        'status'
-    ];
+    protected $fillable = ['company_id', 'area_id', 'locality_code', 'locality_name', 'added_by', 'updated_by', 'status'];
 
     public function user()
     {
         return $this->belongsTo([User::class, 'added_by', 'id'], [User::class, 'updated_by', 'id']);
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
     }
 
     public function company()
@@ -34,17 +32,5 @@ class Area extends Model
     public function setAddedDateAttribute($value)
     {
         $this->attributes['added_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
-    }
-
-    public static function existsForCompany($area_name, $company_id)
-    {
-        return self::where('area_name', $area_name)
-            ->where('company_id', $company_id)
-            ->exists();
-    }
-
-    public function localities()
-    {
-        return $this->hasMany(Locality::class);
     }
 }

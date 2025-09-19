@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Area;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class AreaRepository
 {
@@ -14,6 +15,11 @@ class AreaRepository
     public function find($id)
     {
         return Area::findOrFail($id);
+    }
+
+    public function getByName($name)
+    {
+        return Area::whereAreaName($name)->first();
     }
 
     public function create(array $data)
@@ -32,5 +38,52 @@ class AreaRepository
     {
         $area = $this->find($id);
         return $area->delete();
+    }
+
+    public function uniqAreaName($area_name, $company_id)
+    {
+        return Area::where('area_name', $area_name)
+            ->where('company_id', $company_id)
+            ->first();
+    }
+
+    public function getByCompany($company_id)
+    {
+        return Area::where('company_id', $company_id)->get();
+    }
+
+    public function getQuery(array $filters = []): Builder
+    {
+        $query = Area::query()
+            ->select('areas.*', 'companies.company_name')
+            ->join('companies', 'companies.id', '=', 'areas.company_id'); // eager load company
+
+        if (!empty($filters['search'])) {
+            $query->orwhere('area_name', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('area_code', 'like', '%' . $filters['search'] . '%')
+                ->orWhereHas('company', function ($q) use ($filters) {
+                    $q->where('company_name', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereRaw("CAST(areas.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
+        }
+
+        if (!empty($filters['company_id'])) {
+            $query->Where('company_id', $filters['company_id']);
+        }
+
+        return $query;
+    }
+
+    public function checkIfExist($data)
+    {
+        $existing = Area::withTrashed()
+            ->where('company_id', $data['company_id'])
+            ->where('area_name', $data['area_name'])
+            ->first();
+
+        if ($existing && $existing->trashed()) {
+            // $existing->restore();
+            return $existing;
+        }
     }
 }
