@@ -25,7 +25,7 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($request->only('username', 'password'))) {
-            return redirect()->route('dashboard');
+            return redirect()->route('dashboard.index');
         } else {
             return redirect()->route('login')->with('message', 'The provided credentials do not match our records.')->with('status', 'error');
         }

@@ -56,7 +56,7 @@ class AreaRepository
     {
         $query = Area::query()
             ->select('areas.*', 'companies.company_name')
-            ->join('companies', 'companies.id', '=', 'areas.company_id'); // eager load company
+            ->join('companies', 'companies.id', '=', 'areas.company_id');
 
         if (!empty($filters['search'])) {
             $query->orwhere('area_name', 'like', '%' . $filters['search'] . '%')

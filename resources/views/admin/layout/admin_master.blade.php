@@ -187,8 +187,14 @@
                                 <p>Dashboard</p>
                             </a>
                         </li>
-                        <li class="nav-item {{ request()->is('areas') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ request()->is('areas') ? 'active' : '' }}">
+                        @php
+                            $master = 0;
+                            if (request()->is(['areas', 'locality'])) {
+                                $master = 1;
+                            }
+                        @endphp
+                        <li class="nav-item {{ $master ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $master ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-copy"></i>
                                 <p>
                                     Masters
@@ -204,7 +210,8 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('locality.index') }}" class="nav-link">
+                                    <a href="{{ route('locality.index') }}"
+                                        class="nav-link {{ request()->is('locality') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Locality</p>
                                     </a>

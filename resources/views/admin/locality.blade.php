@@ -22,7 +22,7 @@
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="../dashboard.php">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}">Home</a></li>
                             <li class="breadcrumb-item active">Locality</li>
                         </ol>
                     </div>
@@ -181,28 +181,35 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.5/dist/sweetalert2.all.min.js"></script>
 
     <script>
-        $('#company_id').change(function(e) {
-            e.preventDefault();
+        // Preload all areas into JS
+        let allAreas = @json($areas);
+    </script>
 
-            let url = '{{ route('area.getbycompany', ':id') }}';
-            url = url.replace(':id', $(this).val());
-
-            $.get(url, function(data) {
-                let options = '<option value="">Select Area</option>';
-                data.forEach(a => {
-                    options += `<option value="${a.id}">${a.area_name}</option>`;
-                });
-                $('#area_select').html(options);
-            });
+    <script>
+        $('#company_id').on('change', function() {
+            let companyId = $(this).val();
+            companyChange(companyId, null); // reset areaVal when adding
         });
+
+        function companyChange(companyId, areaVal) {
+            let options = '<option value="">Select Area</option>';
+
+            allAreas
+                .filter(a => a.company_id == companyId)
+                .forEach(a => {
+                    options += `<option value="${a.id}" ${(a.id == areaVal) ? 'selected' : ''}>${a.area_name}</option>`;
+                });
+            $('#area_select').html(options).trigger('change');
+        }
     </script>
 
     <script>
         $('#localityForm').submit(function(e) {
             e.preventDefault();
+            $('#company_id').prop('disabled', false);
 
             var form = document.getElementById('localityForm');
             var fdata = new FormData(form);
@@ -238,21 +245,21 @@
                 },
                 columns: [{
                         data: 'DT_RowIndex',
-                        name: 'id',
+                        name: 'localities.id',
                         orderable: true,
-                        searchable: true
+                        searchable: false
                     },
                     {
                         data: 'company_name',
-                        name: 'company_name',
+                        name: 'companies.company_name',
                     },
                     {
                         data: 'area_name',
-                        name: 'area_name'
+                        name: 'areas.area_name'
                     },
                     {
                         data: 'locality_name',
-                        name: 'locality_name'
+                        name: 'localities.locality_name'
                     },
                     {
                         data: 'action',
@@ -260,6 +267,9 @@
                         orderable: false,
                         searchable: false
                     },
+                ],
+                order: [
+                    [0, 'desc']
                 ],
                 dom: 'Bfrtip', // This is important for buttons
                 buttons: [{
@@ -291,6 +301,58 @@
                     toastr.error(err.responseJSON.message);
                 }
             });
+        });
+
+        function deleteConf(id) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: '/locality/' + id,
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            toastr.success(response.message);
+                            $('#localityTable').DataTable().ajax.reload();
+                        }
+                    });
+
+                } else {
+                    toastr.error(errors.responseJSON.message);
+                }
+            });
+        }
+
+
+        $("#modal-locality").on('shown.bs.modal', function(e) {
+            var id = $(e.relatedTarget).data('id');
+            var name = $(e.relatedTarget).data('name');
+            var company_id = $(e.relatedTarget).data('company');
+
+            if (!id) {
+                $('#localityForm').trigger("reset");
+                $('#company_id').prop('disabled', false);
+
+                companyChange(null, null);
+            } else {
+                $('#company_id').val(company_id);
+                companyChange(company_id, $(e.relatedTarget).data('area'));
+
+                $('#company_id').prop('disabled', true);
+                $('#locality_id').val(id);
+                $('#locality_name').val(name);
+
+            }
         });
     </script>
 @endsection

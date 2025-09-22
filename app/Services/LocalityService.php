@@ -104,14 +104,11 @@ class LocalityService
             ->addColumn('area_name', fn($row) => $row->area->area_name ?? '-')
             ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('action', fn($row) => '<button class="btn btn-info" data-toggle="modal"
-                                                        data-target="#modal-area" data-id="' . $row->id . '"
+                                                        data-target="#modal-locality" data-id="' . $row->id . '"
                                                         data-name="' . $row->locality_name . '"
                                                         data-company="' . $row->company_id . '" data-area="' . $row->area_id . '">Edit</button>
                                                         <button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>')
             ->rawColumns(['action'])
-            ->order(function ($query) {
-                $query->orderBy('id', 'desc'); // default DB column for ordering
-            })
             ->with(['columns' => $columns]) // send columns too
             ->toJson();
     }

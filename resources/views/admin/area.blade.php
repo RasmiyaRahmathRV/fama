@@ -260,18 +260,19 @@
                 },
                 columns: [{
                         data: 'DT_RowIndex',
-                        name: 'id',
-                        orderable: false,
+                        name: 'areas.id',
+                        orderable: true,
                         searchable: false
                     },
+                    // {
+                    //     data: 'id',
+                    //     name: 'areas.id',
+                    //     visible: false
+                    // },
                     {
                         data: 'area_name',
                         name: 'areas.area_name'
                     },
-                    // {
-                    //     data: 'area_code',
-                    //     name: 'area_code'
-                    // },
                     {
                         data: 'company_name',
                         name: 'companies.company_name',
@@ -284,7 +285,7 @@
                     },
                 ],
                 order: [
-                    [0, 'asc']
+                    [0, 'desc']
                 ],
                 dom: 'Bfrtip', // This is important for buttons
                 buttons: [{

@@ -106,9 +106,6 @@ class AreaService
                                                         data-company="' . $row->company_id . '">Edit</button>
                                                         <button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>')
             ->rawColumns(['action'])
-            // ->order(function ($query) {
-            //     $query->orderBy('id', 'desc'); // default DB column for ordering
-            // })
             ->with(['columns' => $columns]) // send columns too
             ->toJson();
     }

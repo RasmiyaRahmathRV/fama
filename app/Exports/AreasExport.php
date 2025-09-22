@@ -41,14 +41,15 @@ class AreasExport implements FromCollection, WithHeadings
                 return [
                     'ID' => $area->id,
                     'Area Code' => $area->area_code,
-                    'Area Name' => $area->area_name,
                     'Company' => $area->company->company_name ?? '',
+                    'Area Name' => $area->area_name,
+
                 ];
             });
     }
 
     public function headings(): array
     {
-        return ['ID', 'Area Code', 'Area Name', 'Company'];
+        return ['ID', 'Area Code', 'Company', 'Area Name'];
     }
 }

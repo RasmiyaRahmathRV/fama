@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LocalityExport;
 use App\Models\Area;
 use App\Models\Locality;
 use App\Services\CompanyService;
 use App\Services\LocalityService;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 
 class LocalityController extends Controller
@@ -87,14 +89,15 @@ class LocalityController extends Controller
      */
     public function destroy(Locality $locality)
     {
-        //
+        $this->localityService->delete($locality->id);
+        return response()->json(['success' => true, 'message' => 'Locality soft deleted']);
     }
 
     public function export()
     {
-        // $search = request('search');
+        $search = request('search');
 
-        // return Excel::download(new LocalityExport($search), 'areas.xlsx');
+        return Excel::download(new LocalityExport($search), 'localities.xlsx');
     }
 
     public function getLocalities(Request $request)
