@@ -6,12 +6,14 @@ use App\Services\CodeGeneratorService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Company extends Model
 {
     protected $table = 'companies';
 
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'company_code',
@@ -44,11 +46,5 @@ class Company extends Model
     public function setUpdatedDateAttribute($value)
     {
         $this->attributes['updated_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
-    }
-
-    public function setCompanyCode()
-    {
-        $codeService = new \App\Services\CodeGeneratorService();
-        $this->attributes['company_code'] = $codeService->generateNextCode('companies', 'company_code', 'CMP', 5);
     }
 }

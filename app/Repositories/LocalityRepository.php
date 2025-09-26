@@ -17,15 +17,37 @@ class LocalityRepository
         return Locality::findOrFail($id);
     }
 
-    public function create(array $data)
+    public function createOrRestore($data)
     {
-        return Locality::create($data);
+        // Check existing including soft deleted
+        $locality = Locality::withTrashed()
+            ->where('company_id', $data['company_id'])
+            ->where('area_id', $data['area_id'])
+            ->where('locality_name', $data['locality_name'])
+            ->first();
+
+        if ($locality) {
+            if ($locality->trashed()) {
+                $locality->restore();
+                $locality->update($data); // restore + update values
+            }
+        } else {
+            $locality = Locality::create($data);
+        }
+
+        return $locality;
     }
 
-    public function update($id, array $data)
+    public function updateOrRestore(int $id, array $data)
     {
-        $locality = $this->find($id);
+        $locality = Locality::withTrashed()->findOrFail($id);
+
+        if ($locality->trashed()) {
+            $locality->restore();
+        }
+
         $locality->update($data);
+
         return $locality;
     }
 
@@ -68,5 +90,24 @@ class LocalityRepository
     public function insertBulk(array $rows)
     {
         return Locality::insert($rows); // bulk insert
+    }
+
+    public function getByData($name)
+    {
+        return Locality::where($name)->first();
+    }
+
+    public function checkIfExist($data)
+    {
+        $existing = Locality::withTrashed()
+            ->where('company_id', $data['company_id'])
+            ->where('area_id', $data['area_id'])
+            ->where('locality_name', $data['locality_name'])
+            ->first();
+
+        if ($existing && $existing->trashed()) {
+            // $existing->restore();
+            return $existing;
+        }
     }
 }

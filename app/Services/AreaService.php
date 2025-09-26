@@ -39,14 +39,14 @@ class AreaService
         $this->validate($data);
         $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['area_code'] = $this->setAreaCode();
-        return $this->areaRepository->create($data);
+        return $this->areaRepository->createOrRestore($data);
     }
 
     public function update($id, array $data)
     {
-        $this->validate($data);
+        $this->validate($data, $id);
         $data['updated_by'] = auth()->user()->id;
-        return $this->areaRepository->update($id, $data);
+        return $this->areaRepository->updateOrRestore($id, $data);
     }
 
     public function delete($id)
@@ -54,10 +54,10 @@ class AreaService
         return $this->areaRepository->delete($id);
     }
 
-    public function setAreaCode()
+    public function setAreaCode($addval = 1)
     {
         $codeService = new \App\Services\CodeGeneratorService();
-        return $codeService->generateNextCode('areas', 'area_code', 'ARE', 5);
+        return $codeService->generateNextCode('areas', 'area_code', 'ARE', 5, $addval);
     }
 
     public function getByCompany($company)
@@ -65,15 +65,16 @@ class AreaService
         return $this->areaRepository->getByCompany($company);
     }
 
-    private function validate(array $data)
+    private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
             'company_id' => 'required|exists:companies,id',
             'area_name' => [
                 'required',
                 'string',
-                Rule::unique('areas')
-                    ->where(fn($query) => $query->where('company_id', $data['company_id'] ?? null)),
+                Rule::unique('areas')->ignore($id)
+                    ->where(fn($query) => $query->where('company_id', $data['company_id']))
+                    ->whereNull('deleted_at'),
             ],
         ], [
             'area_name.unique' => 'This area name already exists. Please choose another.',
@@ -114,6 +115,7 @@ class AreaService
     {
         return $this->areaRepository->checkIfExist($data);
     }
+
     // public function exportExcel(array $filters = [])
     // {
     //     return Excel::download(new AreaExport($filters), 'areas.xlsx');

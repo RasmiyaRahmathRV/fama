@@ -1,9 +1,6 @@
 @extends('admin.layout.admin_master')
 
 @section('custom_css')
-    <!-- Select2 -->
-    <link rel="stylesheet" href="{{ asset('assets/select2/css/select2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     <!-- DataTables -->
     <link rel="stylesheet" href="{{ asset('assets/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
@@ -57,20 +54,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{-- @foreach ($areas as $area)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $area->area_name }}</td>
-                                                <td>{{ $area->company->company_name }}</td>
-                                                <td>
-                                                    <button class="btn btn-info" data-toggle="modal"
-                                                        data-target="#modal-area" data-id="{{ $area->id }}"
-                                                        data-name="{{ $area->area_name }}"
-                                                        data-company="{{ $area->company_id }}">Edit</button>
-                                                    <button class="btn btn-danger">Delete</button>
-                                                </td>
-                                            </tr>
-                                        @endforeach --}}
+
                                     </tbody>
                                 </table>
                             </div>
@@ -104,8 +88,8 @@
                                             value="{{ auth()->user()->company_id }}">
                                     @else
                                         <div class="form-group row">
-                                            <label for="inputEmail3" class="col-sm-3 col-form-label">Company</label>
-                                            <select class="form-control select2 col-sm-9" name="company_id" id="company_id">
+                                            <label for="inputEmail3" class="col-sm-4 col-form-label">Company</label>
+                                            <select class="form-control select2 col-sm-8" name="company_id" id="company_id">
                                                 <option value="">Select Company</option>
                                                 @foreach ($companies as $company)
                                                     <option value="{{ $company->id }}">{{ $company->company_name }}
@@ -116,8 +100,8 @@
                                     @endif
 
                                     <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Area Name</label>
-                                        <input type="text" name="area_name" id="area_name" class="col-sm-9 form-control"
+                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Area Name</label>
+                                        <input type="text" name="area_name" id="area_name" class="col-sm-8 form-control"
                                             id="inputEmail3" placeholder="Area Name">
                                     </div>
                                 </div>
@@ -172,8 +156,6 @@
     <!-- /.content-wrapper -->
 @endsection
 @section('custom_js')
-    <!-- Select2 -->
-    <script src="{{ asset('assets/select2/js/select2.full.min.js') }}"></script>
     <!-- DataTables  & Plugins -->
     <script src="{{ asset('assets/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
@@ -192,6 +174,7 @@
     <script>
         $('#areaForm').submit(function(e) {
             e.preventDefault();
+            $('#company_id').prop('disabled', false);
 
             var form = document.getElementById('areaForm');
             var fdata = new FormData(form);
@@ -209,6 +192,7 @@
                 },
                 error: function(errors) {
                     toastr.error(errors.responseJSON.message);
+                    $('#company_id').prop('disabled', true);
                 }
             });
         });
@@ -221,7 +205,7 @@
             if (!id) {
                 $('#areaForm').trigger("reset");
             } else {
-                $('#company_id').val($(e.relatedTarget).data('company'));
+                $('#company_id').val($(e.relatedTarget).data('company')).trigger('change');
                 $('#company_id').prop('disabled', true);
                 $('#area_id').val(id);
                 $('#area_name').val(name);

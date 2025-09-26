@@ -26,7 +26,6 @@ namespace App\Models{
  * @property-read \App\Models\Company|null $company
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Locality> $localities
  * @property-read int|null $localities_count
- * @property-write mixed $added_date
  * @method static \Illuminate\Database\Eloquent\Builder|Area newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Area newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Area onlyTrashed()
@@ -62,18 +61,21 @@ namespace App\Models{
  * @property int $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Area> $areas
  * @property-read int|null $areas_count
  * @property-write mixed $added_date
  * @property-write mixed $updated_date
  * @method static \Illuminate\Database\Eloquent\Builder|Company newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Company newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Company onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Company query()
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereAddedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereCompanyCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereCompanyName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereIndustry($value)
@@ -82,6 +84,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereWebsite($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Company withoutTrashed()
  */
 	class Company extends \Eloquent {}
 }
@@ -113,6 +117,17 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property int $company_id
+ * @property int $area_id
+ * @property string $locality_code
+ * @property string $locality_name
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Area|null $area
  * @property-read \App\Models\Company|null $company
  * @property-write mixed $added_date
@@ -120,10 +135,120 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Locality newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Locality onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Locality query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Locality whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Locality whereAreaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Locality whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Locality whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Locality whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Locality whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Locality whereLocalityCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Locality whereLocalityName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Locality whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Locality whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Locality whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Locality withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Locality withoutTrashed()
  */
 	class Locality extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $company_id
+ * @property int $area_id
+ * @property int $locality_id
+ * @property int $property_type_id
+ * @property string $property_code
+ * @property string $property_name
+ * @property string|null $property_size
+ * @property string|null $property_size_unit
+ * @property string $plot_no
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Area|null $area
+ * @property-read \App\Models\Company|null $company
+ * @property-read \App\Models\Locality|null $locality
+ * @property-read \App\Models\PropertySizeUnit|null $propertySizeUnit
+ * @property-read \App\Models\PropertyType|null $propertyType
+ * @method static \Illuminate\Database\Eloquent\Builder|Property newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Property newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Property onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Property query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Property whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property whereAreaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property whereLocalityId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property wherePlotNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property wherePropertyCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property wherePropertyName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property wherePropertySize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property wherePropertySizeUnit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property wherePropertyTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Property withoutTrashed()
+ */
+	class Property extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit whereUpdatedAt($value)
+ */
+	class PropertySizeUnit extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $company_id
+ * @property string $property_type_code
+ * @property string $property_type
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Company|null $company
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType wherePropertyType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType wherePropertyTypeCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType withoutTrashed()
+ */
+	class PropertyType extends \Eloquent {}
 }
 
 namespace App\Models{

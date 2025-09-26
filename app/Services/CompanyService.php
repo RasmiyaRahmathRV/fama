@@ -31,6 +31,11 @@ class CompanyService
         return $this->companyRepository->findId(['company_name' => $companyName])?->id;
     }
 
+    public function getByData($companyName)
+    {
+        return $this->companyRepository->getByData($companyName);
+    }
+
     public function create(array $data, $user_id = null)
     {
         $this->validate($data);
@@ -51,10 +56,10 @@ class CompanyService
         return $this->companyRepository->delete($id);
     }
 
-    public function setCompanyCode()
+    public function setCompanyCode($addval = 1)
     {
         $codeService = new \App\Services\CodeGeneratorService();
-        return $codeService->generateNextCode('companies', 'company_code', 'CMP', 5);
+        return $codeService->generateNextCode('companies', 'company_code', 'CMP', 5, $addval);
     }
 
     private function validate(array $data)
@@ -68,5 +73,10 @@ class CompanyService
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
+    }
+
+    public function checkIfExist($data)
+    {
+        return $this->companyRepository->checkIfExist($data);
     }
 }

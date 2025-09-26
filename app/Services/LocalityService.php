@@ -38,19 +38,24 @@ class LocalityService
         $this->validate($data);
         $data['added_by'] = auth()->user()->id;
         $data['locality_code'] = $this->setLocalityCode();
-        return $this->localityRepository->create($data);
+        return $this->localityRepository->createOrRestore($data);
     }
 
     public function update($id, array $data)
     {
-        $this->validate($data);
+        $this->validate($data, $id);
         $data['updated_by'] = auth()->user()->id;
-        return $this->localityRepository->update($id, $data);
+        return $this->localityRepository->updateOrRestore($id, $data);
     }
 
     public function delete($id)
     {
         return $this->localityRepository->delete($id);
+    }
+
+    public function getByData($name)
+    {
+        return $this->localityRepository->getByData($name);
     }
 
     public function setLocalityCode($addval = 1)
@@ -59,7 +64,7 @@ class LocalityService
         return $codeService->generateNextCode('localities', 'locality_code', 'LOC', 5, $addval);
     }
 
-    private function validate(array $data)
+    private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
             'company_id' => 'required|exists:companies,id',
@@ -68,10 +73,12 @@ class LocalityService
                 'required',
                 'string',
                 Rule::unique('localities')
+                    ->ignore($id)
                     ->where(
                         fn($query) =>
                         $query->where('area_id', $request->area_id ?? null)
                             ->where('company_id', $request->company_id ?? null)
+                            ->whereNull('deleted_at'),
                     )
             ],
         ], [
@@ -128,7 +135,6 @@ class LocalityService
             if (empty($area)) {
                 $existing = $this->areaService->checkIfExist(array('company_id' => $company_id, 'area_name' => $row['area']));
 
-
                 if (!empty($existing)) {
                     // echo "exist";
                     $existing->restore();
@@ -156,5 +162,10 @@ class LocalityService
         $this->localityRepository->insertBulk($insertData);
 
         return count($insertData);
+    }
+
+    public function checkIfExist($data)
+    {
+        return $this->localityRepository->checkIfExist($data);
     }
 }

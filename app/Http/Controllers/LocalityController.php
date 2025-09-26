@@ -9,17 +9,15 @@ use App\Services\CompanyService;
 use App\Services\LocalityService;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class LocalityController extends Controller
 {
-    protected $localityService;
-    protected $companyService;
 
-    public function __construct(LocalityService $localityService, CompanyService $companyService)
-    {
-        $this->localityService = $localityService;
-        $this->companyService = $companyService;
-    }
+    public function __construct(
+        protected CompanyService $companyService,
+        protected LocalityService $localityService,
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -56,7 +54,13 @@ class LocalityController extends Controller
                 return response()->json(['success' => true, 'data' => $locality, 'message' => 'Locality created successfully'], 201);
             }
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
+            if ($e->getCode() == 23000) { // integrity constraint violation
+                throw ValidationException::withMessages([
+                    'property_type' => 'This locality already exists for this company and area.',
+                ]);
+            } else {
+                return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
+            }
         }
     }
 

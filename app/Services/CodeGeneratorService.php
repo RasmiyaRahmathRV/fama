@@ -22,7 +22,7 @@ class CodeGeneratorService
         if ($lastCode && str_starts_with($lastCode, $prefix)) {
             $number = intval(substr($lastCode, strlen($prefix))) + $addval;
         } else {
-            $number = 1;
+            $number = ($addval > 1) ? $addval : 1;
         }
 
         return $prefix . str_pad($number, $padLength, '0', STR_PAD_LEFT);

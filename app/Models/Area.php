@@ -31,9 +31,9 @@ class Area extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function setAddedDateAttribute($value)
+    public function getCreatedAtAttribute($value)
     {
-        $this->attributes['added_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+        $this->attributes['created_at'] = Carbon::parse($value)->format('d-m-Y');
     }
 
     public static function existsForCompany($area_name, $company_id)

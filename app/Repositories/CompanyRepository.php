@@ -39,4 +39,21 @@ class CompanyRepository
         $company = $this->find($id);
         return $company->delete();
     }
+
+    public function checkIfExist($data)
+    {
+        $existing = Company::withTrashed()
+            ->where('company_name', $data['company_name'])
+            ->first();
+
+        if ($existing && $existing->trashed()) {
+            // $existing->restore();
+            return $existing;
+        }
+    }
+
+    public function getByData($companyData)
+    {
+        return Company::where($companyData)->first();
+    }
 }

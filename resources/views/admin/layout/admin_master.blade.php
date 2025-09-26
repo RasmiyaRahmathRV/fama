@@ -17,6 +17,9 @@
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Toastr -->
     <link rel="stylesheet" href="{{ asset('assets/toastr/toastr.min.css') }}">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{{ asset('assets/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     @yield('custom_css')
 
     <!-- Theme style -->
@@ -189,7 +192,7 @@
                         </li>
                         @php
                             $master = 0;
-                            if (request()->is(['areas', 'locality'])) {
+                            if (request()->is(['areas', 'locality', 'property_type', 'property'])) {
                                 $master = 1;
                             }
                         @endphp
@@ -217,15 +220,17 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="{{ route('property_type.index') }}"
+                                        class="nav-link {{ request()->is('property_type') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Property</p>
+                                        <p>Property Type</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="{{ route('property.index') }}"
+                                        class="nav-link {{ request()->is('property') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Property Type</p>
+                                        <p>Property</p>
                                     </a>
                                 </li>
                             </ul>
@@ -287,11 +292,21 @@
     <script src="{{ asset('assets/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- Toastr -->
     <script src="{{ asset('assets/toastr/toastr.min.js') }}"></script>
+    <!-- Select2 -->
+    <script src="{{ asset('assets/select2/js/select2.full.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.5/dist/sweetalert2.all.min.js"></script>
 
     @yield('custom_js')
 
     <!-- AdminLTE -->
     <script src="{{ asset('js/adminlte.js') }}"></script>
+
+    <script>
+        $(function() {
+
+            $('.select2').select2()
+        });
+    </script>
 
 </body>
 

@@ -15,12 +15,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Locality</h1>
+                        <h1>Property Type</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}">Home</a></li>
-                            <li class="breadcrumb-item active">Locality</li>
+                            <li class="breadcrumb-item active">Property Type</li>
                         </ol>
                     </div>
                 </div>
@@ -34,23 +34,22 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <!-- <h3 class="card-title">Locality Details</h3> -->
+                                <!-- <h3 class="card-title">Property Type Details</h3> -->
                                 <span class="float-right">
                                     <button class="btn btn-info float-right m-1" data-toggle="modal"
-                                        data-target="#modal-locality">Add Locality</button>
+                                        data-target="#modal-property-type">Add Property Type</button>
                                     <button class="btn btn-secondary float-right m-1" data-toggle="modal"
                                         data-target="#modal-import">Import</button>
                                 </span>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="localityTable" class="table table-bordered table-hover">
+                                <table id="propertyTypeTable" class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Company Name</th>
-                                            <th>Area Name</th>
-                                            <th>Locality Name</th>
+                                            <th>Company</th>
+                                            <th>Property Type Name</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -70,18 +69,18 @@
             <!-- /.container-fluid -->
 
 
-            <div class="modal fade" id="modal-locality">
+            <div class="modal fade" id="modal-property-type">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">Locality</h4>
+                            <h4 class="modal-title">Property Type</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form action="" id="localityForm">
+                        <form action="" id="PropertyTypeForm">
                             @csrf
-                            <input type="hidden" name="id" id="locality_id" value="0">
+                            <input type="hidden" name="id" id="property_type_id">
                             <div class="modal-body">
                                 <div class="card-body">
                                     @if (auth()->user()->company_id)
@@ -99,17 +98,11 @@
                                             </select>
                                         </div>
                                     @endif
-                                    <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Area</label>
-                                        <select class="form-control select2 col-sm-8" name="area_id" id="area_select">
-                                            <option value="">Select Area</option>
-                                        </select>
-                                    </div>
 
                                     <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Locality Name</label>
-                                        <input type="text" name="locality_name" id="locality_name"
-                                            class="col-sm-8 form-control" id="inputEmail3" placeholder="Locality Name">
+                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Property Type</label>
+                                        <input type="text" name="property_type" id="property_type"
+                                            class="col-sm-8 form-control" id="inputEmail3" placeholder="Property Type">
                                     </div>
                                 </div>
                                 <!-- /.card-body -->
@@ -135,7 +128,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form action="" id="LocalityImportForm" method="POST" enctype="multipart/form-data">
+                        <form action="" id="PropertyTypeImportForm" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="modal-body">
                                 <div class="card-body">
@@ -176,42 +169,20 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.5/dist/sweetalert2.all.min.js"></script>
+
+
 
     <script>
-        // Preload all areas into JS
-        let allAreas = @json($areas);
-    </script>
-
-    <script>
-        $('#company_id').on('change', function() {
-            let companyId = $(this).val();
-            companyChange(companyId, null); // reset areaVal when adding
-        });
-
-        function companyChange(companyId, areaVal) {
-            let options = '<option value="">Select Area</option>';
-
-            allAreas
-                .filter(a => a.company_id == companyId)
-                .forEach(a => {
-                    options += `<option value="${a.id}" ${(a.id == areaVal) ? 'selected' : ''}>${a.area_name}</option>`;
-                });
-            $('#area_select').html(options).trigger('change');
-        }
-    </script>
-
-    <script>
-        $('#localityForm').submit(function(e) {
+        $('#PropertyTypeForm').submit(function(e) {
             e.preventDefault();
             $('#company_id').prop('disabled', false);
 
-            var form = document.getElementById('localityForm');
+            var form = document.getElementById('PropertyTypeForm');
             var fdata = new FormData(form);
 
             $.ajax({
                 type: "POST",
-                url: "{{ route('locality.store') }}",
+                url: "{{ route('property_type.store') }}",
                 data: fdata,
                 dataType: "json",
                 processData: false,
@@ -222,39 +193,41 @@
                 },
                 error: function(errors) {
                     toastr.error(errors.responseJSON.message);
+                    $('#company_id').prop('disabled', true);
                 }
             });
         });
 
-
         $(function() {
-            let table = $('#localityTable').DataTable({
+            let table = $('#propertyTypeTable').DataTable({
                 processing: true,
                 serverSide: true,
 
                 ajax: {
-                    url: "{{ route('locality.list') }}",
+                    url: "{{ route('property_type.list') }}",
                     data: function(d) {
                         // d.company_id = $('#companyFilter').val();
                     },
                 },
                 columns: [{
                         data: 'DT_RowIndex',
-                        name: 'localities.id',
+                        name: 'property_types.id',
                         orderable: true,
                         searchable: false
                     },
+                    // {
+                    //     data: 'id',
+                    //     name: 'areas.id',
+                    //     visible: false
+                    // },
+
                     {
                         data: 'company_name',
                         name: 'companies.company_name',
                     },
                     {
-                        data: 'area_name',
-                        name: 'areas.area_name'
-                    },
-                    {
-                        data: 'locality_name',
-                        name: 'localities.locality_name'
+                        data: 'property_type',
+                        name: 'property_types.property_type'
                     },
                     {
                         data: 'action',
@@ -270,27 +243,26 @@
                 buttons: [{
                     extend: 'excelHtml5',
                     text: 'Export Excel',
-                    title: 'Area Data',
+                    title: 'Property Type Data',
                     action: function(e, dt, node, config) {
                         // redirect to your Laravel export route
-                        window.location.href = "{{ route('locality.export') }}";
+                        window.location.href = "{{ route('propertyType.export') }}";
                     }
                 }]
             });
-
         });
 
         $('#importBtn').on('click', function() {
-            let formData = new FormData($('#LocalityImportForm')[0]);
+            let formData = new FormData($('#PropertyTypeImportForm')[0]);
             $.ajax({
-                url: "{{ route('import.locality') }}",
+                url: "{{ route('import.propertytype') }}",
                 type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function(response) {
                     toastr.success(response.message);
-                    // window.location.reload();
+                    window.location.reload();
                 },
                 error: function(err) {
                     toastr.error(err.responseJSON.message);
@@ -311,14 +283,14 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "DELETE",
-                        url: '/locality/' + id,
+                        url: '/property_type/' + id,
                         data: {
                             _token: $('meta[name="csrf-token"]').attr('content')
                         },
                         dataType: "json",
                         success: function(response) {
                             toastr.success(response.message);
-                            $('#localityTable').DataTable().ajax.reload();
+                            $('#propertyTypeTable').DataTable().ajax.reload();
                         }
                     });
 
@@ -328,29 +300,22 @@
             });
         }
 
-
-        $("#modal-locality").on('shown.bs.modal', function(e) {
+        $("#modal-property-type").on('shown.bs.modal', function(e) {
             var id = $(e.relatedTarget).data('id');
             var name = $(e.relatedTarget).data('name');
             var company_id = $(e.relatedTarget).data('company');
 
             if (id) {
-                //     $(this).find('form')[0].reset();
-                //     $('#company_id').prop('disabled', false);
-
-                //     companyChange(null, null);
-                // } else {
                 $('#company_id').val(company_id).trigger('change');
-                companyChange(company_id, $(e.relatedTarget).data('area'));
 
                 $('#company_id').prop('disabled', true);
-                $('#locality_id').val(id);
-                $('#locality_name').val(name);
+                $('#property_type_id').val(id);
+                $('#property_type').val(name);
 
             }
         });
 
-        $('#modal-locality').on('hidden.bs.modal', function() {
+        $('#modal-property-type').on('hidden.bs.modal', function() {
             let form = $(this).find('form');
 
             form[0].reset(); // reset normal inputs

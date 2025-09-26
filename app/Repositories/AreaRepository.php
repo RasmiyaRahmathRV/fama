@@ -17,20 +17,41 @@ class AreaRepository
         return Area::findOrFail($id);
     }
 
-    public function getByName($name)
+    public function getByName($areaData)
     {
-        return Area::whereAreaName($name)->first();
+        return Area::where($areaData)->first();
     }
 
-    public function create(array $data)
+    public function createOrRestore($data)
     {
-        return Area::create($data);
+        // Check existing including soft deleted
+        $area = Area::withTrashed()
+            ->where('company_id', $data['company_id'])
+            ->where('area_name', $data['area_name'])
+            ->first();
+
+        if ($area) {
+            if ($area->trashed()) {
+                $area->restore();
+                $area->update($data); // restore + update values
+            }
+        } else {
+            $area = Area::create($data);
+        }
+
+        return $area;
     }
 
-    public function update($id, array $data)
+    public function updateOrRestore(int $id, array $data)
     {
-        $area = $this->find($id);
+        $area = Area::withTrashed()->findOrFail($id);
+
+        if ($area->trashed()) {
+            $area->restore();
+        }
+
         $area->update($data);
+
         return $area;
     }
 
