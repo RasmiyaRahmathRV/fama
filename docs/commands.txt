@@ -1,0 +1,34 @@
+starting a module
+ - php artisan make:model Property -mcr (create model, migration, controller with resourses)
+    - make service and repository manually
+    - create web routes
+    - create view file and connect
+    - develop all the functionality
+
+
+
+unittest
+- php artisan make:test AreaServiceTest --unit
+
+whenever you add migrations, routes, or models to update documents
+- composer docs
+
+Update business logic .md files when rules change.
+
+
+
+for document createion I have run all the below commands
+
+1. Routes Documentation
+    - php artisan route:list --json > docs/routes.json
+    - php artisan route:list > docs/routes.md
+
+2. Database Schema / ERD
+    - composer require --dev beyondcode/laravel-er-diagram-generator
+    - php artisan generate:erd --file=docs/graph.png  (for this I have installed Graphviz 13.1.2)
+
+    - php artisan schema:dump --prune --path=docs/schema
+3. Model Helper Docs
+    - composer require --dev barryvdh/laravel-ide-helper
+    - php artisan ide-helper:models --write > docs/models.md
+4. 

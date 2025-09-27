@@ -7,6 +7,38 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property int $company_id
+ * @property string $area_code
+ * @property string $area_name
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Company|null $company
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Locality> $localities
+ * @property-read int|null $localities_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Area newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Area newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Area onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Area query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Area whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Area whereAreaCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Area whereAreaName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Area whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Area whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Area whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Area whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Area whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Area whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Area whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Area withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Area withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Area extends Model
 {
     use HasFactory;

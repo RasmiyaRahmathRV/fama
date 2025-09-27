@@ -85,16 +85,18 @@ class PropertyRepository
         return Property::insert($rows); // bulk insert
     }
 
-    // public function checkIfExist($data)
-    // {
-    //     $existing = Property::withTrashed()
-    //         ->where('company_id', $data['company_id'])
-    //         ->where('area_name', $data['area_name'])
-    //         ->first();
+    public function checkIfExist($data)
+    {
+        $existing = Property::withTrashed()
+            ->where('company_id', $data['company_id'])
+            ->where('area_id', $data['area_id'])
+            ->where('locality_id', $data['locality_id'])
+            ->where('property_name', $data['property_name'])
+            ->first();
 
-    //     if ($existing && $existing->trashed()) {
-    //         // $existing->restore();
-    //         return $existing;
-    //     }
-    // }
+        if ($existing && $existing->trashed()) {
+            // $existing->restore();
+            return $existing;
+        }
+    }
 }

@@ -29,12 +29,24 @@ class PropertyTypeService
         return $this->propertyTypeRepository->find($id);
     }
 
-    public function create(array $data, $user_id = null)
+    public function createOrRestore(array $data, $user_id = null)
     {
         $this->validate($data);
         $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['property_type_code'] = $this->setPropertyTypeCode();
-        return $this->propertyTypeRepository->createOrRestore($data);
+
+        $existing = $this->propertyTypeRepository->checkIfExist($data);
+
+        if ($existing) {
+            if ($existing->trashed()) {
+                $existing->restore();
+            }
+            $existing->fill($data);
+            $existing->save();
+            return $existing;
+        }
+
+        return $this->propertyTypeRepository->create($data);
     }
 
     public function update($id, array $data)
@@ -55,13 +67,14 @@ class PropertyTypeService
         return $codeService->generateNextCode('property_types', 'property_type_code', 'PTY', 5, $addval);
     }
 
-    private function validate(array $data, $id = null, $company_id = null)
+    private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
             'property_type' => [
                 'required',
                 Rule::unique('property_types', 'property_type')->ignore($id)
-                    ->where(fn($q) => $q->where('company_id', $company_id)),
+                    ->where(fn($q) => $q->where('company_id', $data['company_id'])
+                        ->whereNull('deleted_at'))
             ],
             'company_id' => 'required|exists:companies,id',
         ]);

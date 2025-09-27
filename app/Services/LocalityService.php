@@ -33,12 +33,25 @@ class LocalityService
         return $this->localityRepository->find($id);
     }
 
-    public function create(array $data)
+    public function createOrRestore(array $data, $user_id = null)
     {
         $this->validate($data);
         $data['added_by'] = auth()->user()->id;
         $data['locality_code'] = $this->setLocalityCode();
-        return $this->localityRepository->createOrRestore($data);
+
+        $existing = $this->localityRepository->checkIfExist($data);
+
+        if ($existing) {
+            if ($existing->trashed()) {
+                $existing->restore();
+            }
+            $existing->fill($data);
+            $existing->save();
+            return $existing;
+        }
+
+        // Otherwise create fresh
+        return $this->localityRepository->create($data);
     }
 
     public function update($id, array $data)
@@ -76,8 +89,8 @@ class LocalityService
                     ->ignore($id)
                     ->where(
                         fn($query) =>
-                        $query->where('area_id', $request->area_id ?? null)
-                            ->where('company_id', $request->company_id ?? null)
+                        $query->where('area_id', $data['area_id'] ?? null)
+                            ->where('company_id', $data['company_id'] ?? null)
                             ->whereNull('deleted_at'),
                     )
             ],
@@ -141,7 +154,7 @@ class LocalityService
 
                     $area = $existing;
                 } else {
-                    $area = $this->areaService->create([
+                    $area = $this->areaService->createOrRestore([
                         'company_id' => $company_id,
                         'area_name' => $row['area'],
                     ], $user_id);

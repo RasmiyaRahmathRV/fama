@@ -61,7 +61,7 @@ class PropertyController extends Controller
                     'message' => 'Property  updated successfully'
                 ], 200);
             } else {
-                $property = $this->propertyService->create($request->all());
+                $property = $this->propertyService->createOrRestore($request->all());
 
                 return response()->json([
                     'success' => true,

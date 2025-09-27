@@ -22,24 +22,9 @@ class AreaRepository
         return Area::where($areaData)->first();
     }
 
-    public function createOrRestore($data)
+    public function create($data)
     {
-        // Check existing including soft deleted
-        $area = Area::withTrashed()
-            ->where('company_id', $data['company_id'])
-            ->where('area_name', $data['area_name'])
-            ->first();
-
-        if ($area) {
-            if ($area->trashed()) {
-                $area->restore();
-                $area->update($data); // restore + update values
-            }
-        } else {
-            $area = Area::create($data);
-        }
-
-        return $area;
+        return Area::create($data);
     }
 
     public function updateOrRestore(int $id, array $data)

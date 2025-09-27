@@ -17,25 +17,10 @@ class LocalityRepository
         return Locality::findOrFail($id);
     }
 
-    public function createOrRestore($data)
+    public function create($data)
     {
-        // Check existing including soft deleted
-        $locality = Locality::withTrashed()
-            ->where('company_id', $data['company_id'])
-            ->where('area_id', $data['area_id'])
-            ->where('locality_name', $data['locality_name'])
-            ->first();
 
-        if ($locality) {
-            if ($locality->trashed()) {
-                $locality->restore();
-                $locality->update($data); // restore + update values
-            }
-        } else {
-            $locality = Locality::create($data);
-        }
-
-        return $locality;
+        return Locality::create($data);
     }
 
     public function updateOrRestore(int $id, array $data)

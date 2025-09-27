@@ -60,7 +60,7 @@ class AreaController extends Controller
                     'message' => 'Area updated successfully'
                 ], 200);
             } else {
-                $area = $this->areaService->create($request->all());
+                $area = $this->areaService->createOrRestore($request->all());
 
                 return response()->json([
                     'success' => true,

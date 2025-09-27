@@ -8,6 +8,47 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property string $company_code
+ * @property string $company_name
+ * @property string|null $industry
+ * @property string|null $address
+ * @property string|null $phone
+ * @property string|null $email
+ * @property string|null $website
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Area> $areas
+ * @property-read int|null $areas_count
+ * @property-write mixed $added_date
+ * @property-write mixed $updated_date
+ * @method static \Illuminate\Database\Eloquent\Builder|Company newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Company newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Company onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Company query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereCompanyCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereCompanyName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereIndustry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereWebsite($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Company withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Company extends Model
 {
     protected $table = 'companies';

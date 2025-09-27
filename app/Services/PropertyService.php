@@ -38,11 +38,23 @@ class PropertyService
         return $this->propertyRepository->getByName($name);
     }
 
-    public function create(array $data, $user_id = null)
+    public function createOrRestore(array $data, $user_id = null)
     {
         $this->validate($data);
         $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['property_code'] = $this->setPropertyCode();
+
+        $existing = $this->propertyRepository->checkIfExist($data);
+
+        if ($existing) {
+            if ($existing->trashed()) {
+                $existing->restore();
+            }
+            $existing->fill($data);
+            $existing->save();
+            return $existing;
+        }
+
         return $this->propertyRepository->create($data);
     }
 
@@ -76,7 +88,8 @@ class PropertyService
                 Rule::unique('properties')->ignore($id)->where(function ($query) use ($data) {
                     $query->where('area_id', $data['area_id'] ?? null)
                         ->where('company_id', $data['company_id'] ?? null)
-                        ->where('locality_id', $data['locality_id'] ?? null);
+                        ->where('locality_id', $data['locality_id'] ?? null)
+                        ->whereNull('deleted_at');
                 }),
             ],
         ], [
@@ -238,7 +251,7 @@ class PropertyService
 
                 $retId = $existing->id;
             } else {
-                $retId = $this->$service->create(
+                $retId = $this->$service->createOrRestore(
                     $createData,
                     $user_id
                 )->id;

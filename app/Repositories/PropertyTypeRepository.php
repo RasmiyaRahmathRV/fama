@@ -23,24 +23,9 @@ class PropertyTypeRepository
         return PropertyType::where($data)->first();
     }
 
-    public function createOrRestore(array $data)
+    public function create(array $data)
     {
-        // Check existing including soft deleted
-        $propertType = PropertyType::withTrashed()
-            ->where('company_id', $data['company_id'])
-            ->where('property_type', $data['property_type'])
-            ->first();
-
-        if ($propertType) {
-            if ($propertType->trashed()) {
-                $propertType->restore();
-                $propertType->update($data); // restore + update values
-            }
-        } else {
-            $propertType = PropertyType::create($data);
-        }
-
-        return $propertType;
+        return PropertyType::create($data);
     }
 
     public function updateOrRestore($id, array $data)

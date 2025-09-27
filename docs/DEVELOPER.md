@@ -1,0 +1,1 @@
+<!-- service-repository pattern, validation strategy, soft delete restore rules, etc. -->

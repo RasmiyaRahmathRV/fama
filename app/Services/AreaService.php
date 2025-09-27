@@ -34,12 +34,24 @@ class AreaService
         return $this->areaRepository->getByName($name);
     }
 
-    public function create(array $data, $user_id = null)
+    public function createOrRestore(array $data, $user_id = null)
     {
         $this->validate($data);
         $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['area_code'] = $this->setAreaCode();
-        return $this->areaRepository->createOrRestore($data);
+
+        $existing = $this->areaRepository->checkIfExist($data);
+
+        if ($existing) {
+            if ($existing->trashed()) {
+                $existing->restore();
+            }
+            $existing->fill($data);
+            $existing->save();
+            return $existing;
+        }
+
+        return $this->areaRepository->create($data);
     }
 
     public function update($id, array $data)
