@@ -49,7 +49,7 @@ class LocalityController extends Controller
 
                 return response()->json(['success' => true, 'data' => $locality, 'message' => 'Locality updated successfully'], 200);
             } else {
-                $locality = $this->localityService->create($request->all());
+                $locality = $this->localityService->createOrRestore($request->all());
 
                 return response()->json(['success' => true, 'data' => $locality, 'message' => 'Locality created successfully'], 201);
             }

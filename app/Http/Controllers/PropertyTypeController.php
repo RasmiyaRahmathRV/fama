@@ -53,7 +53,7 @@ class PropertyTypeController extends Controller
                     'message' => 'Property Type updated successfully'
                 ], 200);
             } else {
-                $property_type = $this->propertyTypeService->create($request->all());
+                $property_type = $this->propertyTypeService->createOrRestore($request->all());
 
                 return response()->json([
                     'success' => true,
