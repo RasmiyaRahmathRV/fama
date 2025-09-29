@@ -56,7 +56,7 @@ class PropertyTypeRepository
         if (!empty($filters['search'])) {
             $query->orwhere('property_type', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('property_type_code', 'like', '%' . $filters['search'] . '%')
-                ->orWhereHas('companies', function ($q) use ($filters) {
+                ->orWhereHas('company', function ($q) use ($filters) {
                     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
                 })
                 ->orWhereRaw("CAST(property_types.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);

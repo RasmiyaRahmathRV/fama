@@ -39,6 +39,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Locality whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Locality withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Locality withoutTrashed()
+ * @method static \Database\Factories\LocalityFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  */
 class Locality extends Model

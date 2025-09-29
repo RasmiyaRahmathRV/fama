@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyTypeController;
+use App\Http\Controllers\VendorController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,6 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('locality', LocalityController::class);
     Route::resource('property_type', PropertyTypeController::class);
     Route::resource('property', PropertyController::class);
+    Route::resource('vendors', VendorController::class);
+    Route::resource('bank', BankController::class);
 
 
     Route::post('import-area', [AreaController::class, 'import'])->name('import.area');
@@ -52,4 +56,8 @@ Route::middleware('auth')->group(function () {
     Route::get('property-list', [propertyController::class, 'getProperties'])->name('property.list');
     Route::get('export-property', [PropertyController::class, 'exportProperty'])->name('property.export');
     Route::post('import-property', [PropertyController::class, 'importProperty'])->name('import.property');
+
+    Route::get('vendor-list', [vendorController::class, 'getVendors'])->name('vendor.list');
+    Route::post('import-vendor', [vendorController::class, 'importVendor'])->name('import.vendor');
+    Route::get('export-vendor', [vendorController::class, 'exportVendor'])->name('vendor.export');
 });

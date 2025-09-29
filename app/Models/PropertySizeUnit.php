@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit whereUnitName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit whereUpdatedAt($value)
+ * @property string|null $deleted_at
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit whereDeletedAt($value)
  * @mixin \Eloquent
  */
 class PropertySizeUnit extends Model

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Imports\PropertyTypeImport;
 use App\Repositories\PropertyTypeRepository;
+use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -102,8 +103,7 @@ class PropertyTypeService
             ->addColumn('property_type', fn($row) => $row->property_type ?? '-')
             ->addColumn('action', fn($row) => '<button class="btn btn-info" data-toggle="modal"
                                                         data-target="#modal-property-type" data-id="' . $row->id . '"
-                                                        data-name="' . $row->property_type . '"
-                                                        data-company="' . $row->company_id . '">Edit</button>
+                                                        data-company="' . $row->company_id . '" data-row=' . json_encode($row) . '>Edit</button>
                                                         <button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>')
             ->rawColumns(['action'])
             ->with(['columns' => $columns]) // send columns too

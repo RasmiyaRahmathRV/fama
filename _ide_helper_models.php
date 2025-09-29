@@ -42,8 +42,39 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Area whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Area withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Area withoutTrashed()
+ * @method static \Database\Factories\AreaFactory factory($count = null, $state = [])
+ * @mixin \Eloquent
  */
 	class Area extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $company_id
+ * @property string $bank_code
+ * @property string $bank_name
+ * @property string $bank_short_code
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Company|null $company
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereBankCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereBankName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereBankShortCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank withoutTrashed()
+ */
+	class Bank extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -86,6 +117,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereWebsite($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Company withoutTrashed()
+ * @method static \Database\Factories\CompanyFactory factory($count = null, $state = [])
+ * @mixin \Eloquent
  */
 	class Company extends \Eloquent {}
 }
@@ -111,6 +144,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ImportBatch whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ImportBatch whereTotalRows($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ImportBatch whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 	class ImportBatch extends \Eloquent {}
 }
@@ -148,6 +182,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Locality whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Locality withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Locality withoutTrashed()
+ * @method static \Database\Factories\LocalityFactory factory($count = null, $state = [])
+ * @mixin \Eloquent
  */
 	class Locality extends \Eloquent {}
 }
@@ -162,7 +198,7 @@ namespace App\Models{
  * @property string $property_code
  * @property string $property_name
  * @property string|null $property_size
- * @property string|null $property_size_unit
+ * @property int|null $property_size_unit
  * @property string $plot_no
  * @property int $added_by
  * @property int|null $updated_by
@@ -197,6 +233,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Property whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Property withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Property withoutTrashed()
+ * @method static \Database\Factories\PropertyFactory factory($count = null, $state = [])
+ * @mixin \Eloquent
  */
 	class Property extends \Eloquent {}
 }
@@ -204,7 +242,7 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property string $name
+ * @property string $unit_name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit newModelQuery()
@@ -212,8 +250,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit query()
  * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit whereUnitName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit whereUpdatedAt($value)
+ * @property string|null $deleted_at
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertySizeUnit whereDeletedAt($value)
+ * @mixin \Eloquent
  */
 	class PropertySizeUnit extends \Eloquent {}
 }
@@ -247,6 +288,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|PropertyType whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PropertyType withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|PropertyType withoutTrashed()
+ * @method static \Database\Factories\PropertyTypeFactory factory($count = null, $state = [])
+ * @mixin \Eloquent
  */
 	class PropertyType extends \Eloquent {}
 }
@@ -289,7 +332,61 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUserType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
+ * @mixin \Eloquent
  */
 	class User extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $company_id
+ * @property string $vendor_code
+ * @property string $vendor_name
+ * @property string|null $vendor_phone
+ * @property string|null $vendor_email
+ * @property string|null $vendor_address
+ * @property string|null $accountant_name
+ * @property string|null $accountant_phone
+ * @property string|null $accountant_email
+ * @property string|null $contact_person
+ * @property string|null $contact_person_phone
+ * @property string|null $contact_person_email
+ * @property int|null $added_by
+ * @property int|null $updated_by
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Company|null $company
+ * @method static \Database\Factories\VendorFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereAccountantEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereAccountantName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereAccountantPhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereContactPerson($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereContactPersonEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereContactPersonPhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereVendorAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereVendorCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereVendorEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereVendorName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereVendorPhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor withoutTrashed()
+ * @mixin \Eloquent
+ */
+	class Vendor extends \Eloquent {}
 }
 

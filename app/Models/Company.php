@@ -47,6 +47,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereWebsite($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Company withoutTrashed()
+ * @method static \Database\Factories\CompanyFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  */
 class Company extends Model

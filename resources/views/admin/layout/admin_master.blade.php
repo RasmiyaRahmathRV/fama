@@ -192,7 +192,7 @@
                         </li>
                         @php
                             $master = 0;
-                            if (request()->is(['areas', 'locality', 'property_type', 'property'])) {
+                            if (request()->is(['areas', 'locality', 'property_type', 'property', 'vendors'])) {
                                 $master = 1;
                             }
                         @endphp
@@ -231,6 +231,13 @@
                                         class="nav-link {{ request()->is('property') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Property</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('vendors.index') }}"
+                                        class="nav-link {{ request()->is('vendors') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Vendor</p>
                                     </a>
                                 </li>
                             </ul>

@@ -50,6 +50,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Property whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Property withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Property withoutTrashed()
+ * @method static \Database\Factories\PropertyFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  */
 class Property extends Model

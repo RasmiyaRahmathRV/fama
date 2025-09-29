@@ -11,3 +11,4 @@ Written new phpDocBlock to D:\Fama\fama\app\Models\PropertySizeUnit.php
 Error resolving relation model of App\Models\PropertyType:user() : Class name must be a valid object or a string
 Written new phpDocBlock to D:\Fama\fama\app\Models\PropertyType.php
 Written new phpDocBlock to D:\Fama\fama\app\Models\User.php
+Written new phpDocBlock to D:\Fama\fama\app\Models\Vendor.php

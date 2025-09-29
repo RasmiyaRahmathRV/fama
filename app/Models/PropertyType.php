@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|PropertyType whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PropertyType withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|PropertyType withoutTrashed()
+ * @method static \Database\Factories\PropertyTypeFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  */
 class PropertyType extends Model

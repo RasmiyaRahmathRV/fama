@@ -37,6 +37,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Area whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Area withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Area withoutTrashed()
+ * @method static \Database\Factories\AreaFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  */
 class Area extends Model
