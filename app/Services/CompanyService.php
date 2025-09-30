@@ -36,11 +36,23 @@ class CompanyService
         return $this->companyRepository->getByData($companyName);
     }
 
-    public function create(array $data, $user_id = null)
+    public function createOrRestore(array $data, $user_id = null)
     {
         $this->validate($data);
         $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['company_code'] = $this->setCompanyCode();
+
+        $existing = $this->companyRepository->checkIfExist($data);
+
+        if ($existing) {
+            if ($existing->trashed()) {
+                $existing->restore();
+            }
+            $existing->fill($data);
+            $existing->save();
+            return $existing;
+        }
+
         return $this->companyRepository->create($data);
     }
 
