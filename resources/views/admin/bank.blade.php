@@ -2,12 +2,12 @@
 
 @section('custom_css')
     <!-- Select2 -->
-    <link rel="stylesheet" href="../assets/select2/css/select2.min.css">
-    <link rel="stylesheet" href="../assets/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     <!-- DataTables -->
-    <link rel="stylesheet" href="../assets/datatables-bs4/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="../assets/datatables-responsive/css/responsive.bootstrap4.min.css">
-    <link rel="stylesheet" href="../assets/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
 @endsection
 
 @section('content')
@@ -167,20 +167,20 @@
 
 @section('custom_js')
     <!-- Select2 -->
-    <script src="../assets/select2/js/select2.full.min.js"></script>
+    <script src="{{ asset('assets/select2/js/select2.full.min.js') }}"></script>
     <!-- DataTables  & Plugins -->
-    <script src="../assets/datatables/jquery.dataTables.min.js"></script>
-    <script src="../assets/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="../assets/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="../assets/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <script src="../assets/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="../assets/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="../assets/jszip/jszip.min.js"></script>
-    <script src="../assets/pdfmake/pdfmake.min.js"></script>
-    <script src="../assets/pdfmake/vfs_fonts.js"></script>
-    <script src="../assets/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="../assets/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="../assets/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <script src="{{ asset('assets/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('assets/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('assets/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('assets/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('assets/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('assets/jszip/jszip.min.js') }}"></script>
+    <script src="{{ asset('assets/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('assets/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('assets/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('assets/datatables-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
 
     <script>
