@@ -55,14 +55,19 @@ namespace App\Models{
  * @property string $bank_code
  * @property string $bank_name
  * @property string $bank_short_code
+ * @property int|null $added_by
+ * @property int|null $updated_by
+ * @property int $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Company|null $company
+ * @method static \Database\Factories\BankFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Bank newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Bank newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Bank onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Bank query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereAddedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bank whereBankCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bank whereBankName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bank whereBankShortCode($value)
@@ -70,7 +75,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Bank whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bank whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bank whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bank whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bank withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Bank withoutTrashed()
  */
@@ -147,6 +154,19 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	class ImportBatch extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property-read \App\Models\Company|null $company
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment withoutTrashed()
+ */
+	class Installment extends \Eloquent {}
 }
 
 namespace App\Models{

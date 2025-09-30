@@ -192,7 +192,17 @@
                         </li>
                         @php
                             $master = 0;
-                            if (request()->is(['areas', 'locality', 'property_type', 'property', 'vendors'])) {
+                            if (
+                                request()->is([
+                                    'areas',
+                                    'locality',
+                                    'property_type',
+                                    'property',
+                                    'vendors',
+                                    'bank',
+                                    'installment',
+                                ])
+                            ) {
                                 $master = 1;
                             }
                         @endphp
@@ -238,6 +248,20 @@
                                         class="nav-link {{ request()->is('vendors') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Vendor</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('bank.index') }}"
+                                        class="nav-link {{ request()->is('bank') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Bank</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('installment.index') }}"
+                                        class="nav-link {{ request()->is('installment') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Installment</p>
                                     </a>
                                 </li>
                             </ul>

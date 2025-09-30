@@ -4,11 +4,13 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyTypeController;
 use App\Http\Controllers\VendorController;
+use App\Models\Installment;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,6 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('property', PropertyController::class);
     Route::resource('vendors', VendorController::class);
     Route::resource('bank', BankController::class);
+    Route::resource('installment', InstallmentController::class);
 
 
     Route::post('import-area', [AreaController::class, 'import'])->name('import.area');
@@ -57,7 +60,15 @@ Route::middleware('auth')->group(function () {
     Route::get('export-property', [PropertyController::class, 'exportProperty'])->name('property.export');
     Route::post('import-property', [PropertyController::class, 'importProperty'])->name('import.property');
 
-    Route::get('vendor-list', [vendorController::class, 'getVendors'])->name('vendor.list');
-    Route::post('import-vendor', [vendorController::class, 'importVendor'])->name('import.vendor');
-    Route::get('export-vendor', [vendorController::class, 'exportVendor'])->name('vendor.export');
+    Route::get('vendor-list', [VendorController::class, 'getVendors'])->name('vendor.list');
+    Route::post('import-vendor', [VendorController::class, 'importVendor'])->name('import.vendor');
+    Route::get('export-vendor', [VendorController::class, 'exportVendor'])->name('vendor.export');
+
+    Route::get('bank-list', [BankController::class, 'getBanks'])->name('bank.list');
+    Route::get('export-bank', [BankController::class, 'exportBanks'])->name('bank.export');
+    Route::post('import-bank', [BankController::class, 'importBank'])->name('import.bank');
+
+    Route::get('installment-list', [InstallmentController::class, 'getInstallments'])->name('installment.list');
+    Route::get('export-installment', [InstallmentController::class, 'exportInstallments'])->name('installment.export');
+    Route::post('import-installment', [InstallmentController::class, 'importInstallment'])->name('import.installment');
 });
