@@ -148,7 +148,7 @@ class VendorService
                 }
             }
 
-            $vendorexist = $this->vendorRepository->checkIfExist(array('vendor_name' => $row['vendor_name']));
+            $vendorexist = $this->vendorRepository->checkIfExist(array('company_id' => $company_id, 'vendor_name' => $row['vendor_name']));
 
             if (empty($vendorexist)) {
                 $insertData[] = [
