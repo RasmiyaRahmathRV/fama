@@ -232,10 +232,46 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property-read \App\Models\Company|null $company
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality withoutTrashed()
+ */
+	class Nationality extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $company_id
+ * @property string $payment_mode_code
+ * @property string $payment_mode_name
+ * @property string $payment_mode_short_code
+ * @property int|null $added_by
+ * @property int|null $updated_by
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Company|null $company
+ * @method static \Database\Factories\PaymentModeFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode wherePaymentModeCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode wherePaymentModeName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode wherePaymentModeShortCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode withoutTrashed()
  */

@@ -7,6 +7,7 @@ use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\NationalityController;
 use App\Http\Controllers\PaymentModeController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyTypeController;
@@ -42,6 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('bank', BankController::class);
     Route::resource('installment', InstallmentController::class);
     Route::resource('payment_mode', PaymentModeController::class);
+    Route::resource('nationality', NationalityController::class);
 
 
     Route::post('import-area', [AreaController::class, 'import'])->name('import.area');
@@ -76,4 +78,8 @@ Route::middleware('auth')->group(function () {
     Route::get('payment-mode-list', [PaymentModeController::class, 'getPaymentModes'])->name('paymentMode.list');
     Route::get('export-payment-mode', [PaymentModeController::class, 'exportPaymentModes'])->name('paymentMode.export');
     Route::post('import-payment-mode', [PaymentModeController::class, 'importPaymentMode'])->name('import.paymentMode');
+
+    Route::get('nationality-list', [NationalityController::class, 'getNationalities'])->name('nationality.list');
+    Route::get('export-nationality', [NationalityController::class, 'exportNationalities'])->name('nationality.export');
+    Route::post('import-nationality', [NationalityController::class, 'importNationality'])->name('import.nationality');
 });

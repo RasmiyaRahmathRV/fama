@@ -2,34 +2,34 @@
 
 namespace App\Repositories;
 
-use App\Models\PaymentMode;
+use App\Models\Nationality;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
-class PaymentModeRepository
+class NationalityRepository
 {
     public function all()
     {
-        return PaymentMode::all();
+        return Nationality::all();
     }
 
     public function find($id)
     {
-        return PaymentMode::findOrFail($id);
+        return Nationality::findOrFail($id);
     }
 
     public function getByName($bankData)
     {
-        return PaymentMode::where($bankData)->first();
+        return Nationality::where($bankData)->first();
     }
 
     public function create($data)
     {
-        return PaymentMode::create($data);
+        return Nationality::create($data);
     }
 
     public function updateOrRestore(int $id, array $data)
     {
-        $bank = PaymentMode::withTrashed()->findOrFail($id);
+        $bank = Nationality::withTrashed()->findOrFail($id);
 
         if ($bank->trashed()) {
             $bank->restore();
@@ -48,9 +48,9 @@ class PaymentModeRepository
 
     public function checkIfExist($data)
     {
-        $existing = PaymentMode::withTrashed()
+        $existing = Nationality::withTrashed()
             ->where('company_id', $data['company_id'])
-            ->where('payment_mode_name', $data['payment_mode_name'])
+            ->where('nationality_name', $data['nationality_name'])
             ->first();
 
         if ($existing && $existing->trashed()) {
@@ -62,18 +62,18 @@ class PaymentModeRepository
     public function getQuery(array $filters = []): Builder
     {
         // print_r($filters);
-        $query = PaymentMode::query()
-            ->select('payment_modes.*', 'companies.company_name')
-            ->join('companies', 'companies.id', '=', 'payment_modes.company_id');
+        $query = Nationality::query()
+            ->select('nationalities.*', 'companies.company_name')
+            ->join('companies', 'companies.id', '=', 'nationalities.company_id');
 
         if (!empty($filters['search'])) {
-            $query->orwhere('payment_mode_name', 'like', '%' . $filters['search'] . '%')
-                ->orWhere('payment_mode_code', 'like', '%' . $filters['search'] . '%')
-                ->orWhere('payment_mode_short_code', 'like', '%' . $filters['search'] . '%')
+            $query->orwhere('nationality_name', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('nationality_code', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('nationality_short_code', 'like', '%' . $filters['search'] . '%')
                 ->orWhereHas('company', function ($q) use ($filters) {
                     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
                 })
-                ->orWhereRaw("CAST(payment_modes.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
+                ->orWhereRaw("CAST(nationalities.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
 
         if (!empty($filters['company_id'])) {
@@ -85,6 +85,6 @@ class PaymentModeRepository
 
     public function insertBulk(array $rows)
     {
-        return PaymentMode::insert($rows); // bulk insert
+        return Nationality::insert($rows); // bulk insert
     }
 }

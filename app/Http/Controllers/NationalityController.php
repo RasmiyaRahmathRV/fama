@@ -2,27 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\NationalityExport;
 use App\Exports\PaymentModeExport;
-use App\Models\PaymentMode;
+use App\Models\Nationality;
 use App\Services\CompanyService;
-use App\Services\PaymentModeService;
+use App\Services\NationalityService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 
-class PaymentModeController extends Controller
+class NationalityController extends Controller
 {
     public function __construct(
-        protected PaymentModeService $paymentModeService,
+        protected NationalityService $nationalityService,
         protected CompanyService $companyService,
     ) {}
 
     public function index()
     {
-        $title = 'Payment Modes';
+        $title = 'Nationalities';
         $companies = $this->companyService->getAll();
 
-        return view("admin.payment_mode", compact("title", "companies"));
+        return view("admin.nationality", compact("title", "companies"));
     }
 
     /**
@@ -40,18 +41,18 @@ class PaymentModeController extends Controller
     {
         try {
             if ($request->id != 0) {
-                $payment_mode = $this->paymentModeService->update($request->id, $request->all());
+                $nationality = $this->nationalityService->update($request->id, $request->all());
 
-                return response()->json(['success' => true, 'data' => $payment_mode, 'message' => 'Payment mode updated successfully'], 200);
+                return response()->json(['success' => true, 'data' => $nationality, 'message' => 'Nationality updated successfully'], 200);
             } else {
-                $payment_mode = $this->paymentModeService->createOrRestore($request->all());
+                $nationality = $this->nationalityService->createOrRestore($request->all());
 
-                return response()->json(['success' => true, 'data' => $payment_mode, 'message' => 'Payment mode created successfully'], 201);
+                return response()->json(['success' => true, 'data' => $nationality, 'message' => 'Nationality created successfully'], 201);
             }
         } catch (\Exception $e) {
             if ($e->getCode() == 23000) { // integrity constraint violation
                 throw ValidationException::withMessages([
-                    'payment_mode_name' => 'This payment mode already exists for this company.',
+                    'nationality_name' => 'This nationality already exists for this company.',
                 ]);
             } else {
                 return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
@@ -62,7 +63,7 @@ class PaymentModeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(PaymentMode $paymentMode)
+    public function show(Nationality $nationality)
     {
         //
     }
@@ -70,7 +71,7 @@ class PaymentModeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(PaymentMode $paymentMode)
+    public function edit(Nationality $nationality)
     {
         //
     }
@@ -78,7 +79,7 @@ class PaymentModeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PaymentMode $paymentMode)
+    public function update(Request $request, Nationality $nationality)
     {
         //
     }
@@ -86,31 +87,31 @@ class PaymentModeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PaymentMode $paymentMode)
+    public function destroy(Nationality $nationality)
     {
-        $this->paymentModeService->delete($paymentMode->id);
-        return response()->json(['success' => true, 'message' => 'Payment mode soft deleted']);
+        $this->nationalityService->delete($nationality->id);
+        return response()->json(['success' => true, 'message' => 'Nationality soft deleted']);
     }
 
-    public function getPaymentModes(Request $request)
+    public function getNationalities(Request $request)
     {
         if ($request->ajax()) {
             $filters = [
                 // 'company_id' => $request->company_id,
                 'search' => $request->search['value'] ?? null
             ];
-            return $this->paymentModeService->getDataTable($filters);
+            return $this->nationalityService->getDataTable($filters);
         }
     }
 
-    public function exportPaymentModes(Request $request)
+    public function exportNationalities(Request $request)
     {
         $search = request('search');
 
-        return Excel::download(new PaymentModeExport($search), 'payment_modes.xlsx');
+        return Excel::download(new NationalityExport($search), 'nationalities.xlsx');
     }
 
-    public function importPaymentMode(Request $request)
+    public function importNationality(Request $request)
     {
         $request->validate([
             'file' => 'required|file|mimes:xlsx,csv'
@@ -119,8 +120,8 @@ class PaymentModeController extends Controller
         $file = $request->file('file');
 
         // Pass a second argument as required by importExcel, e.g., the current user ID or null if not needed
-        $count = $this->paymentModeService->importExcel($file, auth()->user()->id);
+        $count = $this->nationalityService->importExcel($file, auth()->user()->id);
 
-        return redirect()->back()->with('success', "$count payment mode imported successfully.");
+        return redirect()->back()->with('success', "$count nationality imported successfully.");
     }
 }
