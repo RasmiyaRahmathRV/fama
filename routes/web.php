@@ -7,10 +7,10 @@ use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PaymentModeController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyTypeController;
 use App\Http\Controllers\VendorController;
-use App\Models\Installment;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('vendors', VendorController::class);
     Route::resource('bank', BankController::class);
     Route::resource('installment', InstallmentController::class);
+    Route::resource('payment_mode', PaymentModeController::class);
 
 
     Route::post('import-area', [AreaController::class, 'import'])->name('import.area');
@@ -71,4 +72,8 @@ Route::middleware('auth')->group(function () {
     Route::get('installment-list', [InstallmentController::class, 'getInstallments'])->name('installment.list');
     Route::get('export-installment', [InstallmentController::class, 'exportInstallments'])->name('installment.export');
     Route::post('import-installment', [InstallmentController::class, 'importInstallment'])->name('import.installment');
+
+    Route::get('payment-mode-list', [PaymentModeController::class, 'getPaymentModes'])->name('paymentMode.list');
+    Route::get('export-payment-mode', [PaymentModeController::class, 'exportPaymentModes'])->name('paymentMode.export');
+    Route::post('import-payment-mode', [PaymentModeController::class, 'importPaymentMode'])->name('import.paymentMode');
 });

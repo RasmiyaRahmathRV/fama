@@ -142,7 +142,7 @@ class VendorService
 
                     $company_id = $existing->id;
                 } else {
-                    $company_id = $this->companyService->create([
+                    $company_id = $this->companyService->createOrRestore([
                         'company_name' => $row['company'],
                     ], $user_id)->id;
                 }

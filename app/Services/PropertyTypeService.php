@@ -112,9 +112,10 @@ class PropertyTypeService
 
     public function importExcel($file, $user_id)
     {
+        var_dump('aaaaa');
         // Read Excel as collection
         $rows = Excel::toCollection(new PropertyTypeImport, $file)->first();
-
+        dd($rows);
         $insertData = [];
         foreach ($rows as $key => $row) {
             // dd($row);
@@ -130,7 +131,7 @@ class PropertyTypeService
 
                     $company_id = $existing->id;
                 } else {
-                    $company_id = $this->companyService->create([
+                    $company_id = $this->companyService->createOrRestore([
                         'company_name' => $row['company'],
                     ], $user_id)->id;
                 }

@@ -158,11 +158,32 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property int $company_id
+ * @property string $installment_code
+ * @property string $installment_name
+ * @property int|null $added_by
+ * @property int|null $updated_by
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Company|null $company
+ * @method static \Database\Factories\InstallmentFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Installment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Installment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Installment onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Installment query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment whereInstallmentCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment whereInstallmentName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Installment withoutTrashed()
  */
@@ -206,6 +227,19 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	class Locality extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property-read \App\Models\Company|null $company
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode withoutTrashed()
+ */
+	class PaymentMode extends \Eloquent {}
 }
 
 namespace App\Models{

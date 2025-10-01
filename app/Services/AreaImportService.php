@@ -57,7 +57,7 @@ class AreaImportService
                 $codeService = new \App\Services\CodeGeneratorService();
                 $company_code = $codeService->generateNextCode('companies', 'company_code', 'CMP', 5, $index + 1);
 
-                $company_id = $this->companyService->create([
+                $company_id = $this->companyService->createOrRestore([
                     'company_code' => $company_code,
                     'company_name' => $row[0],
                     'added_by' => $user_id,

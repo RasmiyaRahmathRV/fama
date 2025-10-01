@@ -201,6 +201,7 @@
                                     'vendors',
                                     'bank',
                                     'installment',
+                                    'payment_mode',
                                 ])
                             ) {
                                 $master = 1;
@@ -262,6 +263,13 @@
                                         class="nav-link {{ request()->is('installment') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Installment</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('payment_mode.index') }}"
+                                        class="nav-link {{ request()->is('payment_mode') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Payment Mode</p>
                                     </a>
                                 </li>
                             </ul>
