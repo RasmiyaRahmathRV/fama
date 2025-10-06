@@ -6,6 +6,10 @@ starting a module
     - develop all the functionality
 
 
+    -php artisan migrate:rollback
+    -php artisan migrate:refresh --seed
+
+
 
 unittest
 - php artisan make:test AreaServiceTest --unit
@@ -32,3 +36,10 @@ for document createion I have run all the below commands
     - composer require --dev barryvdh/laravel-ide-helper
     - php artisan ide-helper:models --write > docs/models.md
 4. 
+
+
+
+
+
+file upload
+-php artisan storage:link

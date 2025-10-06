@@ -11,6 +11,7 @@ use App\Http\Controllers\NationalityController;
 use App\Http\Controllers\PaymentModeController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyTypeController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,7 +34,9 @@ Route::post('do-forgotpassword', [LoginController::class, 'doForgotPassword'])->
 Route::get('reset-password/{token}', [LoginController::class, 'resetPassword'])->name('reset.password');
 Route::post('do-reset-password', [LoginController::class, 'doResetPassword'])->name('do.reset.password');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'checkManualAuth'])->group(function () {
+    Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
     Route::resource('areas', AreaController::class);
     Route::resource('dashboard', DashboardController::class);
     Route::resource('locality', LocalityController::class);
@@ -44,6 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('installment', InstallmentController::class);
     Route::resource('payment_mode', PaymentModeController::class);
     Route::resource('nationality', NationalityController::class);
+    Route::resource('user', UserController::class);
 
 
     Route::post('import-area', [AreaController::class, 'import'])->name('import.area');
@@ -82,4 +86,8 @@ Route::middleware('auth')->group(function () {
     Route::get('nationality-list', [NationalityController::class, 'getNationalities'])->name('nationality.list');
     Route::get('export-nationality', [NationalityController::class, 'exportNationalities'])->name('nationality.export');
     Route::post('import-nationality', [NationalityController::class, 'importNationality'])->name('import.nationality');
+
+    Route::get('user-list', [UserController::class, 'getUsers'])->name('user.list');
+    Route::get('user-createoredit/{id?}', [UserController::class, 'createOrEdit'])->name('user.createoredit');
+    Route::get('export-user', [UserController::class, 'exportUsers'])->name('user.export');
 });

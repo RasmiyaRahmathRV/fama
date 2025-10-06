@@ -62,3 +62,15 @@
     </div>
     <!-- /.login-box -->
 @endsection
+
+@section('custom_js')
+    <script>
+        window.history.forward();
+        window.onload = function() {
+            window.history.forward();
+        };
+        window.onpageshow = function(evt) {
+            if (evt.persisted) window.history.forward();
+        };
+    </script>
+@endsection

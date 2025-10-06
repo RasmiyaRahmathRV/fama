@@ -79,9 +79,13 @@ class LoginController extends Controller
         }
     }
 
-    // public function logout()
-    // {
-    //     auth()->guard('admin')->logout();
-    //     return redirect()->route('admin.login');
-    // }
+    public function logout(Request $request)
+    {
+        Auth::logout(); // logs out the current user using default guard
+
+        $request->session()->invalidate();   // invalidate the session
+        $request->session()->regenerateToken(); // prevent CSRF issues
+
+        return redirect()->route('login');
+    }
 }

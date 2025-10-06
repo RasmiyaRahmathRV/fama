@@ -14,6 +14,29 @@
 namespace App\Models{
 /**
  * @property int $id
+ * @property int|null $user_id
+ * @property string $module
+ * @property int|null $record_id
+ * @property string $action
+ * @property array|null $changes
+ * @property string $created_at
+ * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog whereAction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog whereChanges($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog whereModule($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog whereRecordId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog whereUserId($value)
+ */
+	class ActivityLog extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
  * @property int $company_id
  * @property string $area_code
  * @property string $area_name
@@ -231,11 +254,34 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property int $company_id
+ * @property string $nationality_code
+ * @property string $nationality_name
+ * @property string $nationality_short_code
+ * @property int|null $added_by
+ * @property int|null $updated_by
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Company|null $company
+ * @method static \Database\Factories\NationalityFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Nationality newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Nationality newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Nationality onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Nationality query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereNationalityCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereNationalityName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereNationalityShortCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Nationality withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Nationality withoutTrashed()
  */
@@ -276,6 +322,30 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode withoutTrashed()
  */
 	class PaymentMode extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $permission_name
+ * @property int|null $parent_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Permission> $children
+ * @property-read int|null $children_count
+ * @property-read Permission|null $parent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read int|null $users_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereParentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission wherePermissionName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereUpdatedAt($value)
+ */
+	class Permission extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -423,8 +493,72 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUserType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
  * @mixin \Eloquent
+ * @property string $user_code
+ * @property int $user_type_id
+ * @property string|null $profile_photo
+ * @property string|null $profile_path
+ * @property int|null $added_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Company|null $company
+ * @property-read User|null $deletedBy
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Permission> $permissions
+ * @property-read int|null $permissions_count
+ * @method static \Illuminate\Database\Eloquent\Builder|User onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereProfilePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereProfilePhoto($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUserCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUserTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|User withoutTrashed()
  */
 	class User extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int $permission_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPermission newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPermission newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPermission onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPermission query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPermission whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPermission whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPermission whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPermission wherePermissionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPermission whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPermission whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPermission withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPermission withoutTrashed()
+ */
+	class UserPermission extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $user_type
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|UserType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserType query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserType whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserType whereUserType($value)
+ */
+	class UserType extends \Eloquent {}
 }
 
 namespace App\Models{

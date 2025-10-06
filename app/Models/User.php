@@ -3,9 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Models\Traits\HasActivityLog;
+use App\Models\Traits\HasDeletedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -49,7 +54,7 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasActivityLog, HasDeletedBy;
 
     /**
      * The attributes that are mass assignable.
@@ -57,6 +62,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'user_code',
+        'company_id',
         'first_name',
         'last_name',
         'email',
@@ -64,8 +71,12 @@ class User extends Authenticatable
         'username',
         'password',
         'password_reset_token',
-        'user_type',
-        'agent_code',
+        'user_type_id',
+        'profile_photo',
+        'profile_path',
+        'added_by',
+        'updated_by',
+        'deleted_by'
     ];
 
     /**
@@ -75,7 +86,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        // 'remember_token',
+        'remember_token',
     ];
 
     /**
@@ -86,4 +97,29 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function user_type()
+    {
+        return $this->belongsTo(UserType::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo([User::class, 'added_by', 'id'], [User::class, 'updated_by', 'id'], [User::class, 'deleted_by', 'id']);
+    }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(
+            Permission::class,     // Related model
+            'user_permissions',    // Pivot table
+            'user_id',             // Foreign key on pivot table for User
+            'permission_id'        // Foreign key on pivot table for Permission
+        )->withTimestamps();
+    }
 }

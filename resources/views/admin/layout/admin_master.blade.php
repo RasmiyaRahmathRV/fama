@@ -305,6 +305,26 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="nav-item {{ request()->is('user') ? 'menu-open' : '' }}">
+                            <a href="{{ route('user.index') }}"
+                                class="nav-link {{ request()->is('user') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-user"></i>
+                                <p>
+                                    Users
+                                </p>
+                            </a>
+                        </li>
+                        {{-- onclick="signoutConf()" --}}
+                        <li class="nav-item">
+                            <a href="javascript:void(0)" onclick="signoutConf()" class="nav-link">
+                                <i class="nav-icon fas fa-solid fa-arrow-right"></i>
+                                <p>Sign out</p>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                    style="display: none;">
+                                    @csrf
+                                </form>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
@@ -343,6 +363,18 @@
     <script src="{{ asset('assets/select2/js/select2.full.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.5/dist/sweetalert2.all.min.js"></script>
 
+    <script>
+        window.addEventListener("pageshow", function(event) {
+            // If page was loaded from back/forward cache
+            if (event.persisted ||
+                (window.performance && window.performance.getEntriesByType("navigation")[0].type === "back_forward")
+            ) {
+
+                // Redirect to login
+                window.location.href = "{{ route('login') }}";
+            }
+        });
+    </script>
     @yield('custom_js')
 
     <!-- AdminLTE -->
@@ -353,6 +385,34 @@
 
             $('.select2').select2()
         });
+
+        function signoutConf() {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You want to sign out!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, sign out!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // $.ajax({
+                    //     type: "POST",
+                    //     url: '/logout',
+                    //     data: {
+                    //         _token: $('meta[name="csrf-token"]').attr('content')
+                    //     },
+                    //     dataType: "json",
+                    //     success: function(response) {
+                    //         // toastr.success(response.message);
+                    //         window.location.href = '/login';
+                    //     }
+                    // });
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        }
     </script>
 
 </body>
