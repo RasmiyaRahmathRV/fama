@@ -76,7 +76,7 @@ class InstallmentRepository
         }
 
         if (!empty($filters['company_id'])) {
-            $query->Where('company_id', $filters['company_id']);
+            $query->Where('installments.company_id', $filters['company_id']);
         }
 
         return $query;

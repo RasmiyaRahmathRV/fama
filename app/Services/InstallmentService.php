@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Imports\BankImport;
 use App\Repositories\InstallmentRepository;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -98,10 +99,19 @@ class InstallmentService
             ->addIndexColumn()
             ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('installment_name', fn($row) => $row->installment_name ?? '-')
-            ->addColumn('action', fn($row) => '<button class="btn btn-info" data-toggle="modal"
+            ->addColumn('action', function ($row) {
+                $action = '';
+                if (Gate::allows('installments.edit')) {
+                    $action .= '<button class="btn btn-info" data-toggle="modal"
                                                         data-target="#modal-installment"
-                                                        data-row=\'' .  json_encode($row)  . '\'>Edit</button>
-                                                        <button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>')
+                                                        data-row=\'' .  json_encode($row)  . '\'>Edit</button>';
+                }
+                if (Gate::allows('installments.delete')) {
+                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                }
+
+                return $action ?: '-';
+            })
             ->rawColumns(['action'])
             ->with(['columns' => $columns]) // send columns too
             ->toJson();

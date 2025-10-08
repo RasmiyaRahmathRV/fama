@@ -36,15 +36,17 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
-                                <!-- <h3 class="card-title">Payment mode Details</h3> -->
-                                <span class="float-right">
-                                    <button class="btn btn-info float-right m-1" data-toggle="modal"
-                                        data-target="#modal-payment-mode">Add Payment mode</button>
-                                    <button class="btn btn-secondary float-right m-1" data-toggle="modal"
-                                        data-target="#modal-import">Import</button>
-                                </span>
-                            </div>
+                            @can('payment_mode.add')
+                                <div class="card-header">
+                                    <!-- <h3 class="card-title">Payment mode Details</h3> -->
+                                    <span class="float-right">
+                                        <button class="btn btn-info float-right m-1" data-toggle="modal"
+                                            data-target="#modal-payment-mode">Add Payment mode</button>
+                                        <button class="btn btn-secondary float-right m-1" data-toggle="modal"
+                                            data-target="#modal-import">Import</button>
+                                    </span>
+                                </div>
+                            @endcan
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <table id="paymentModeTable" class="table table-bordered table-hover">

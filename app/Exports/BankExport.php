@@ -12,12 +12,10 @@ class BankExport implements FromCollection, WithHeadings
      * @return \Illuminate\Support\Collection
      */
 
-    protected $search;
-
-    public function __construct($search = null)
-    {
-        $this->search = $search;
-    }
+    public function __construct(
+        protected $search = null,
+        protected $filter = null,
+    ) {}
 
     public function collection()
     {
@@ -36,6 +34,9 @@ class BankExport implements FromCollection, WithHeadings
             });
         }
 
+        if ($this->filter) {
+            $query->where('company_id', $this->filter);
+        }
 
         return $query->get()
             ->map(function ($bank) {

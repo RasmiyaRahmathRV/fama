@@ -77,7 +77,7 @@ class BankRepository
         }
 
         if (!empty($filters['company_id'])) {
-            $query->Where('company_id', $filters['company_id']);
+            $query->Where('banks.company_id', $filters['company_id']);
         }
 
         return $query;

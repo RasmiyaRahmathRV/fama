@@ -91,7 +91,7 @@ class UserController extends Controller
     {
         if ($request->ajax()) {
             $filters = [
-                // 'company_id' => $request->company_id,
+                'company_id' => auth()->user()->company_id,
                 'search' => $request->search['value'] ?? null
             ];
             return $this->userService->getDataTable($filters);
@@ -101,8 +101,11 @@ class UserController extends Controller
     public function exportUsers(Request $request)
     {
         $search = request('search');
+        $filters = [
+            'company_id' => auth()->user()->company_id,
+        ];
 
-        return Excel::download(new UserExport($search), 'users.xlsx');
+        return Excel::download(new UserExport($search, $filters), 'users.xlsx');
     }
 
     public function destroy(User $user)

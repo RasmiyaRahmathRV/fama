@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Imports\PaymentModeImport;
 use App\Repositories\NationalityRepository;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -101,10 +102,19 @@ class NationalityService
             ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('nationality_name', fn($row) => $row->nationality_name ?? '-')
             ->addColumn('nationality_short_code', fn($row) => $row->nationality_short_code ?? '-')
-            ->addColumn('action', fn($row) => '<button class="btn btn-info" data-toggle="modal"
+            ->addColumn('action', function ($row) {
+                $action = '';
+                if (Gate::allows('nationality.edit')) {
+                    $action .= '<button class="btn btn-info" data-toggle="modal"
                                                         data-target="#modal-nationality"
-                                                        data-row=\'' .  json_encode($row)  . '\'>Edit</button>
-                                                        <button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>')
+                                                        data-row=\'' .  json_encode($row)  . '\'>Edit</button>';
+                }
+                if (Gate::allows('nationality.delete')) {
+                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                }
+
+                return $action ?: '-';
+            })
             ->rawColumns(['action'])
             ->with(['columns' => $columns]) // send columns too
             ->toJson();

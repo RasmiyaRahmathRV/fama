@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Imports\PropertyTypeImport;
 use App\Repositories\PropertyTypeRepository;
 use Illuminate\Database\Eloquent\Casts\Json;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -100,11 +101,20 @@ class PropertyTypeService
             ->of($query)
             ->addIndexColumn()
             ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
-            ->addColumn('property_type', fn($row) => $row->property_type ?? '-')
-            ->addColumn('action', fn($row) => '<button class="btn btn-info" data-toggle="modal"
+            ->addColumn('action', function ($row) {
+                $action = '';
+                if (Gate::allows('property_type.edit')) {
+                    $action .= '<button class="btn btn-info" data-toggle="modal"
                                                         data-target="#modal-property-type" data-id="' . $row->id . '"
-                                                        data-company="' . $row->company_id . '" data-row=' . json_encode($row) . '>Edit</button>
-                                                        <button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>')
+                                                        data-company="' . $row->company_id . '" data-row=' . json_encode($row) . '>Edit</button>';
+                }
+                if (Gate::allows('property_type.delete')) {
+                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                }
+
+                return $action ?: '-';
+            })
+            ->addColumn('property_type', fn($row) => $row->property_type ?? '-')
             ->rawColumns(['action'])
             ->with(['columns' => $columns]) // send columns too
             ->toJson();

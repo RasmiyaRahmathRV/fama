@@ -96,7 +96,7 @@ class PaymentModeController extends Controller
     {
         if ($request->ajax()) {
             $filters = [
-                // 'company_id' => $request->company_id,
+                'company_id' => auth()->user()->company_id,
                 'search' => $request->search['value'] ?? null
             ];
             return $this->paymentModeService->getDataTable($filters);
@@ -106,8 +106,11 @@ class PaymentModeController extends Controller
     public function exportPaymentModes(Request $request)
     {
         $search = request('search');
+        $filters = [
+            'company_id' => auth()->user()->company_id,
+        ];
 
-        return Excel::download(new PaymentModeExport($search), 'payment_modes.xlsx');
+        return Excel::download(new PaymentModeExport($search, $filters), 'payment_modes.xlsx');
     }
 
     public function importPaymentMode(Request $request)

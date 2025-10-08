@@ -62,7 +62,7 @@ class LocalityRepository
         }
 
         if (!empty($filters['company_id'])) {
-            $query->Where('company_id', $filters['company_id']);
+            $query->Where('localities.company_id', $filters['company_id']);
         }
 
         if (!empty($filters['area_id'])) {

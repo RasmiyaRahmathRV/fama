@@ -98,7 +98,7 @@ class VendorController extends Controller
     {
         if ($request->ajax()) {
             $filters = [
-                // 'company_id' => $request->company_id,
+                'company_id' => auth()->user()->company_id,
                 'search' => $request->search['value'] ?? null
             ];
             return $this->vendorService->getDataTable($filters);
@@ -122,7 +122,10 @@ class VendorController extends Controller
     public function exportVendor(Request $request)
     {
         $search = request('search');
+        $filters = [
+            'company_id' => auth()->user()->company_id,
+        ];
 
-        return Excel::download(new VendorExport($search), 'vendors.xlsx');
+        return Excel::download(new VendorExport($search, $filters), 'vendors.xlsx');
     }
 }

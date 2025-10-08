@@ -16,16 +16,10 @@ use Yajra\DataTables\Facades\DataTables;
 class AreaController extends Controller
 {
 
-    protected $areaService;
-    protected $companyService;
-    protected $areaImportService;
-
-    public function __construct(AreaService $areaService, CompanyService $companyService, AreaImportService $areaImportService)
-    {
-        $this->areaService = $areaService;
-        $this->companyService = $companyService;
-        $this->areaImportService = $areaImportService;
-    }
+    public function __construct(
+        protected AreaService $areaService,
+        protected CompanyService $companyService,
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -89,45 +83,23 @@ class AreaController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,csv',
+            'file' => 'required|file|mimes:xlsx,csv'
         ]);
 
-        $user_id = auth()->user()->id;
         $file = $request->file('file');
 
-        // Create batch record
-        $batch = ImportBatch::create([
-            'file_name' => $file->getClientOriginalName(),
-            'total_rows' => null, // optional: can be counted from file if needed
-            'processed_rows' => 0,
-            'status' => 'pending',
-            'added_by' => $user_id,
-        ]);
+        // Pass a second argument as required by importExcel, e.g., the current user ID or null if not needed
+        $count = $this->areaService->importExcel($file, auth()->user()->id);
 
-        Excel::queueImport(new AreasImport($this->areaImportService, $user_id, $batch->id), $file);
-
-        return response()->json([
-            'message' => 'Import started. You can track progress in import batches.',
-            'batch_id' => $batch->id
-        ]);
+        return redirect()->back()->with('success', "$count localities imported successfully.");
     }
 
-    public function batchProgress($batch_id)
-    {
-        $batch = ImportBatch::findOrFail($batch_id);
-
-        return response()->json([
-            'status' => $batch->status,
-            'processed_rows' => $batch->processed_rows,
-            'total_rows' => $batch->total_rows,
-        ]);
-    }
 
     public function getAreas(Request $request)
     {
         if ($request->ajax()) {
             $filters = [
-                // 'company_id' => $request->company_id,
+                'company_id' => auth()->user()->company_id,
                 'search' => $request->search['value'] ?? null
             ];
             return $this->areaService->getDataTable($filters);
@@ -142,7 +114,10 @@ class AreaController extends Controller
     public function export()
     {
         $search = request('search');
+        $filters = [
+            'company_id' => auth()->user()->company_id,
+        ];
 
-        return Excel::download(new AreasExport($search), 'areas.xlsx');
+        return Excel::download(new AreasExport($search, $filters), 'areas.xlsx');
     }
 }

@@ -100,15 +100,18 @@ class LocalityController extends Controller
     public function export()
     {
         $search = request('search');
+        $filters = [
+            'company_id' => auth()->user()->company_id,
+        ];
 
-        return Excel::download(new LocalityExport($search), 'localities.xlsx');
+        return Excel::download(new LocalityExport($search, $filters), 'localities.xlsx');
     }
 
     public function getLocalities(Request $request)
     {
         if ($request->ajax()) {
             $filters = [
-                // 'company_id' => $request->company_id,
+                'company_id' => auth()->user()->company_id,
                 'search' => $request->search['value'] ?? null
             ];
             return $this->localityService->getDataTable($filters);

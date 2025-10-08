@@ -96,7 +96,7 @@ class BankController extends Controller
     {
         if ($request->ajax()) {
             $filters = [
-                // 'company_id' => $request->company_id,
+                'company_id' => auth()->user()->company_id,
                 'search' => $request->search['value'] ?? null
             ];
             return $this->bankService->getDataTable($filters);
@@ -106,8 +106,11 @@ class BankController extends Controller
     public function exportBanks(Request $request)
     {
         $search = request('search');
+        $filters = [
+            'company_id' => auth()->user()->company_id,
+        ];
 
-        return Excel::download(new BankExport($search), 'banks.xlsx');
+        return Excel::download(new BankExport($search, $filters), 'banks.xlsx');
     }
 
     public function importBank(Request $request)

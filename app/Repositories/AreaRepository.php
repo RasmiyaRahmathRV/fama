@@ -92,4 +92,9 @@ class AreaRepository
             return $existing;
         }
     }
+
+    public function insertBulk(array $rows)
+    {
+        return Area::insert($rows); // bulk insert
+    }
 }

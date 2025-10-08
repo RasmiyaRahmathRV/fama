@@ -12,12 +12,10 @@ class UserExport implements FromCollection, WithHeadings
      * @return \Illuminate\Support\Collection
      */
 
-    protected $search;
-
-    public function __construct($search = null)
-    {
-        $this->search = $search;
-    }
+    public function __construct(
+        protected $search = null,
+        protected $filter = null,
+    ) {}
 
     public function collection()
     {
@@ -41,6 +39,10 @@ class UserExport implements FromCollection, WithHeadings
                     })
                     ->orWhereRaw("CAST(users.id AS CHAR) LIKE ?", ["%{$search}%"]);
             });
+        }
+
+        if ($this->filter) {
+            $query->where('company_id', $this->filter);
         }
 
 

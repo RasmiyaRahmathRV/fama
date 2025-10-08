@@ -5,7 +5,9 @@ namespace App\Services;
 use App\Imports\VendorImport;
 use App\Repositories\PermissionRepository;
 use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -53,8 +55,8 @@ class UserService
 
     public function createUserWithPermissions(array $data, $file = null, $user_id = null)
     {
+
         $userData = $data;
-        $permissionIds = $data['permission_id'];
         $user_id = $userData['id'] ?? null;
 
         if ($file) {
@@ -70,8 +72,8 @@ class UserService
             $userData['profile_path'] = $path;
         }
 
-
-        $this->validate($userData, $user_id);
+        $this->validate($data, $user_id);
+        $permissionIds = $data['permission_id'];
         if (!empty($userData['password'])) {
             $userData['password'] =  bcrypt($userData['password']);
         } else {
@@ -129,6 +131,10 @@ class UserService
 
         $validator = Validator::make($data, [
             // 'email' => 'required|email|unique:users,email',
+            'first_name' => 'required',
+            'password' => 'required',
+            'user_type_id' => 'required',
+            'company_id' => 'required|exists:companies,id',
             'username' => [
                 'required',
                 Rule::unique('users', 'username')->ignore($id)
@@ -139,15 +145,25 @@ class UserService
                 'required',
                 Rule::unique('users', 'email')
                     ->ignore($id)
-                    ->where(fn($q) => $q->where('company_id', $data['company_id'])
-                        ->whereNull('deleted_at')),
+                    ->where(
+                        fn($q) => $q->where('company_id', $data['company_id'])
+                            ->whereNull('deleted_at')
+                    ),
             ],
-            'company_id' => 'required|exists:companies,id',
+            'permission_id' => 'required|array|min:1',
+            'password' => $id ? 'nullable|string|min:6' : 'required|string|min:6',
+            // 'permission_id.*' => 'integer|exists:permissions,id',
+
+        ], [
+            'company_id.required' => 'Please select Company.',
+            'user_type_id.required' => 'Please select a User Type.',
+            'permission_id.required' => 'Please provide at least one permission.',
         ]);
 
         if ($validator->fails()) {
-            dd($validator->errors(), DB::getQueryLog());
-            // throw new ValidationException($validator);
+            // dd($validator->errors());
+            // dd($validator->errors(), DB::getQueryLog());
+            throw new ValidationException($validator);
         }
     }
 
@@ -166,8 +182,8 @@ class UserService
             ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'first_name', 'name' => 'first_name'],
             ['data' => 'last_name', 'last_name' => 'last_name'],
-            ['data' => 'phone', 'name' => 'phone'],
             ['data' => 'email', 'name' => 'email'],
+            ['data' => 'phone', 'name' => 'phone'],
             ['data' => 'username', 'name' => 'username'],
             ['data' => 'user_type', 'name' => 'user_type'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
@@ -181,12 +197,21 @@ class UserService
                 : '-')
             ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('full_name', fn($row) => $row->first_name . ' ' . $row->last_name ?? '-')
-            ->addColumn('phone', fn($row) => $row->phone ?? '-')
             ->addColumn('email', fn($row) => $row->email ?? '-')
+            ->addColumn('phone', fn($row) => $row->phone ?? '-')
             ->addColumn('username', fn($row) => $row->username ?? '-')
             ->addColumn('user_type', fn($row) => $row->user_type ?? '-')
-            ->addColumn('action', fn($row) => '<a class="btn btn-info" href="' . route('user.createoredit', $row->id) . '">Edit</a>
-                                                        <button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>')
+            ->addColumn('action', function ($row) {
+                $action = '';
+                if (Gate::allows('user.edit')) {
+                    $action .= '<a class="btn btn-info" href="' . route('user.createoredit', $row->id) . '">Edit</a>';
+                }
+                if (Gate::allows('user.delete')) {
+                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                }
+
+                return $action ?: '-';
+            })
             ->rawColumns(['profile_photo', 'action'])
             ->with(['columns' => $columns]) // send columns too
             ->toJson();

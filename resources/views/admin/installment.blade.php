@@ -36,14 +36,16 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
-                                <span class="float-right">
-                                    <button class="btn btn-info float-right m-1" data-toggle="modal"
-                                        data-target="#modal-installment">Add Installment</button>
-                                    <button class="btn btn-secondary float-right m-1" data-toggle="modal"
-                                        data-target="#modal-import">Import</button>
-                                </span>
-                            </div>
+                            @can('installments.add')
+                                <div class="card-header">
+                                    <span class="float-right">
+                                        <button class="btn btn-info float-right m-1" data-toggle="modal"
+                                            data-target="#modal-installment">Add Installment</button>
+                                        <button class="btn btn-secondary float-right m-1" data-toggle="modal"
+                                            data-target="#modal-import">Import</button>
+                                    </span>
+                                </div>
+                            @endcan
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <table id="installmentTable" class="table table-bordered table-hover">

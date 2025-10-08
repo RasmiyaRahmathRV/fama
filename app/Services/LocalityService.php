@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Imports\LocalityImport;
 use App\Repositories\LocalityRepository;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -123,11 +124,20 @@ class LocalityService
             ->addColumn('locality_name', fn($row) => $row->locality_name ?? '-')
             ->addColumn('area_name', fn($row) => $row->area->area_name ?? '-')
             ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
-            ->addColumn('action', fn($row) => '<button class="btn btn-info" data-toggle="modal"
+            ->addColumn('action', function ($row) {
+                $action = '';
+                if (Gate::allows('locality.edit')) {
+                    $action .= '<button class="btn btn-info" data-toggle="modal"
                                                         data-target="#modal-locality" data-id="' . $row->id . '"
                                                         data-name="' . $row->locality_name . '"
-                                                        data-company="' . $row->company_id . '" data-area="' . $row->area_id . '">Edit</button>
-                                                        <button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>')
+                                                        data-company="' . $row->company_id . '" data-area="' . $row->area_id . '">Edit</button>';
+                }
+                if (Gate::allows('locality.delete')) {
+                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                }
+
+                return $action ?: '-';
+            })
             ->rawColumns(['action'])
             ->with(['columns' => $columns]) // send columns too
             ->toJson();
@@ -142,7 +152,7 @@ class LocalityService
         $insertData = [];
         foreach ($rows as $key => $row) {
             // dd($row);
-            $area = $this->areaService->getByName($row['area']);
+            $area = $this->areaService->getByName(['area_name' => $row['area']]);
             $company_id = $this->companyService->getIdByCompanyname($row['company']);
 
             if (empty($area)) {

@@ -59,7 +59,7 @@
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="{{ asset('img/user1-128x128.jpg') }}" alt="User Avatar"
+                                <img src="{{ asset('storage/' . auth()->user()->profile_path) }}" alt="User Avatar"
                                     class="img-size-50 mr-3 img-circle">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
@@ -159,7 +159,7 @@
             <a href="index3.html" class="brand-link">
                 <img src="{{ asset('img/AdminLTELogo.png') }}" alt="AdminLTE Logo"
                     class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">AdminLTE 3</span>
+                <span class="brand-text font-weight-light">Fama Real Estate</span>
             </a>
 
             <!-- Sidebar -->
@@ -167,8 +167,8 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="{{ asset('img/user2-160x160.jpg') }}" class="img-circle elevation-2"
-                            alt="User Image">
+                        <img src="{{ auth()->user()->profile_path ? asset('storage/' . auth()->user()->profile_path) : asset('img/profile1.png') }}"
+                            class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
                         <a href="#" class="d-block">{{ auth()->user()->first_name }}
@@ -182,7 +182,6 @@
                         data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-
                         <li class="nav-item">
                             <a href="{{ route('dashboard.index') }}"
                                 class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
@@ -208,112 +207,117 @@
                                 $master = 1;
                             }
                         @endphp
-                        <li class="nav-item {{ $master ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ $master ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-copy"></i>
-                                <p>
-                                    Masters
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('areas.index') }}"
-                                        class="nav-link {{ request()->is('areas') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Area</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('locality.index') }}"
-                                        class="nav-link {{ request()->is('locality') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Locality</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('property_type.index') }}"
-                                        class="nav-link {{ request()->is('property_type') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Property Type</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('property.index') }}"
-                                        class="nav-link {{ request()->is('property') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Property</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('vendors.index') }}"
-                                        class="nav-link {{ request()->is('vendors') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Vendor</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('bank.index') }}"
-                                        class="nav-link {{ request()->is('bank') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Bank</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('installment.index') }}"
-                                        class="nav-link {{ request()->is('installment') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Installment</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('payment_mode.index') }}"
-                                        class="nav-link {{ request()->is('payment_mode') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Payment Mode</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('nationality.index') }}"
-                                        class="nav-link {{ request()->is('nationality') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Nationality</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>
-                                    Project
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="pages/forms/general.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Add Project</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="pages/forms/advanced.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Projects</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item {{ request()->is('user') ? 'menu-open' : '' }}">
-                            <a href="{{ route('user.index') }}"
-                                class="nav-link {{ request()->is('user') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-user"></i>
-                                <p>
-                                    Users
-                                </p>
-                            </a>
-                        </li>
+                        @if (auth()->user()->hasPermissionInRange(1, 45))
+                            <li class="nav-item {{ $master ? 'menu-open' : '' }}">
+                                <a href="#" class="nav-link {{ $master ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-copy"></i>
+                                    <p>
+                                        Masters
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    @if (Gate::any(['Area', 'area.add', 'area.view', 'area.edit', 'area.delete']))
+                                        <li class="nav-item">
+                                            <a href="{{ route('areas.index') }}"
+                                                class="nav-link {{ request()->is('areas') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Area</p>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @if (Gate::any(['Locality', 'locality.add', 'locality.view', 'locality.edit', 'locality.delete']))
+                                        <li class="nav-item">
+                                            <a href="{{ route('locality.index') }}"
+                                                class="nav-link {{ request()->is('locality') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Locality</p>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @if (Gate::any([
+                                            'Property_type',
+                                            'property_type.add',
+                                            'property_type.view',
+                                            'property_type.edit',
+                                            'property_type.delete',
+                                        ]))
+                                        <li class="nav-item">
+                                            <a href="{{ route('property_type.index') }}"
+                                                class="nav-link {{ request()->is('property_type') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Property Type</p>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @if (Gate::any(['Property', 'property.add', 'property.view', 'property.edit', 'property.delete']))
+                                        <li class="nav-item">
+                                            <a href="{{ route('property.index') }}"
+                                                class="nav-link {{ request()->is('property') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Property</p>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @if (Gate::any(['Vendor', 'vendor.add', 'vendor.view', 'vendor.edit', 'vendor.delete']))
+                                        <li class="nav-item">
+                                            <a href="{{ route('vendors.index') }}"
+                                                class="nav-link {{ request()->is('vendors') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Vendor</p>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @if (Gate::any(['Bank', 'bank.add', 'bank.view', 'bank.edit', 'bank.delete']))
+                                        <li class="nav-item">
+                                            <a href="{{ route('bank.index') }}"
+                                                class="nav-link {{ request()->is('bank') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Bank</p>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @if (Gate::any(['Installments', 'installments.add', 'installments.view', 'installments.edit', 'installments.delete']))
+                                        <li class="nav-item">
+                                            <a href="{{ route('installment.index') }}"
+                                                class="nav-link {{ request()->is('installment') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Installment</p>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @if (Gate::any(['Payment_mode', 'payment_mode.add', 'payment_mode.view', 'payment_mode.edit', 'payment_mode.delete']))
+                                        <li class="nav-item">
+                                            <a href="{{ route('payment_mode.index') }}"
+                                                class="nav-link {{ request()->is('payment_mode') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Payment Mode</p>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @if (Gate::any(['Nationality', 'nationality.add', 'nationality.view', 'nationality.edit', 'nationality.delete']))
+                                        <li class="nav-item">
+                                            <a href="{{ route('nationality.index') }}"
+                                                class="nav-link {{ request()->is('nationality') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Nationality</p>
+                                            </a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </li>
+                        @endif
+                        @if (Gate::any(['User', 'user.add', 'user.view', 'user.edit', 'user.delete']))
+                            <li class="nav-item {{ request()->is('user') ? 'menu-open' : '' }}">
+                                <a href="{{ route('user.index') }}"
+                                    class="nav-link {{ request()->is('user') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-user"></i>
+                                    <p>
+                                        Users
+                                    </p>
+                                </a>
+                            </li>
+                        @endif
                         {{-- onclick="signoutConf()" --}}
                         <li class="nav-item">
                             <a href="javascript:void(0)" onclick="signoutConf()" class="nav-link">
@@ -363,7 +367,7 @@
     <script src="{{ asset('assets/select2/js/select2.full.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.5/dist/sweetalert2.all.min.js"></script>
 
-    <script>
+    {{-- <script>
         window.addEventListener("pageshow", function(event) {
             // If page was loaded from back/forward cache
             if (event.persisted ||
@@ -374,7 +378,7 @@
                 window.location.href = "{{ route('login') }}";
             }
         });
-    </script>
+    </script> --}}
     @yield('custom_js')
 
     <!-- AdminLTE -->

@@ -113,7 +113,7 @@ class PropertyTypeController extends Controller
     {
         if ($request->ajax()) {
             $filters = [
-                // 'company_id' => $request->company_id,
+                'company_id' => auth()->user()->company_id,
                 'search' => $request->search['value'] ?? null
             ];
             return $this->propertyTypeService->getDataTable($filters);
@@ -137,7 +137,10 @@ class PropertyTypeController extends Controller
     public function exportPropertyType(Request $request)
     {
         $search = request('search');
+        $filters = [
+            'company_id' => auth()->user()->company_id,
+        ];
 
-        return Excel::download(new PropertyTypeExport($search), 'property_type.xlsx');
+        return Excel::download(new PropertyTypeExport($search, $filters), 'property_type.xlsx');
     }
 }

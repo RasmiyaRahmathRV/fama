@@ -36,15 +36,17 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
-                                <!-- <h3 class="card-title">Nationality Details</h3> -->
-                                <span class="float-right">
-                                    <button class="btn btn-info float-right m-1" data-toggle="modal"
-                                        data-target="#modal-nationality">Add Nationality</button>
-                                    <button class="btn btn-secondary float-right m-1" data-toggle="modal"
-                                        data-target="#modal-import">Import</button>
-                                </span>
-                            </div>
+                            @can('nationality.add')
+                                <div class="card-header">
+                                    <!-- <h3 class="card-title">Nationality Details</h3> -->
+                                    <span class="float-right">
+                                        <button class="btn btn-info float-right m-1" data-toggle="modal"
+                                            data-target="#modal-nationality">Add Nationality</button>
+                                        <button class="btn btn-secondary float-right m-1" data-toggle="modal"
+                                            data-target="#modal-import">Import</button>
+                                    </span>
+                                </div>
+                            @endcan
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <table id="nationalityTable" class="table table-bordered table-hover">

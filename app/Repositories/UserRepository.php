@@ -83,6 +83,10 @@ class UserRepository
             $query->Where('company_id', $filters['company_id']);
         }
 
+        // if (auth()->user()->company_id != NULL) {
+        //     $query->Where('users.added_by', auth()->user()->id);
+        // }
+
         return $query;
     }
 

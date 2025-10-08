@@ -102,6 +102,7 @@ class InstallmentController extends Controller
     {
         if ($request->ajax()) {
             $filters = [
+                'company_id' => auth()->user()->company_id,
                 'search' => $request->search['value'] ?? null
             ];
             return $this->installmentService->getDataTable($filters);
@@ -125,7 +126,10 @@ class InstallmentController extends Controller
     public function exportInstallments(Request $request)
     {
         $search = request('search');
+        $filters = [
+            'company_id' => auth()->user()->company_id,
+        ];
 
-        return Excel::download(new InstallmentExport($search), 'installments.xlsx');
+        return Excel::download(new InstallmentExport($search, $filters), 'installments.xlsx');
     }
 }

@@ -77,7 +77,7 @@ class NationalityRepository
         }
 
         if (!empty($filters['company_id'])) {
-            $query->Where('company_id', $filters['company_id']);
+            $query->Where('nationalities.company_id', $filters['company_id']);
         }
 
         return $query;

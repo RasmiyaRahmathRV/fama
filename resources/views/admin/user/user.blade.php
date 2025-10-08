@@ -40,15 +40,17 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
-                                <!-- <h3 class="card-title">User Details</h3> -->
-                                <span class="float-right">
-                                    <a class="btn btn-info float-right m-1" href="{{ route('user.createoredit') }}">Add
-                                        User</a>
-                                    {{-- <button class="btn btn-secondary float-right m-1" data-toggle="modal"
+                            @can('user.add')
+                                <div class="card-header">
+                                    <!-- <h3 class="card-title">User Details</h3> -->
+                                    <span class="float-right">
+                                        <a class="btn btn-info float-right m-1" href="{{ route('user.createoredit') }}">Add
+                                            User</a>
+                                        {{-- <button class="btn btn-secondary float-right m-1" data-toggle="modal"
                                         data-target="#modal-import">Import</button> --}}
-                                </span>
-                            </div>
+                                    </span>
+                                </div>
+                            @endcan
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <table id="userTable" class="table table-bordered table-hover">
@@ -137,76 +139,72 @@
     <script src="{{ asset('assets/bs-stepper/js/bs-stepper.min.js') }}"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            @if (Auth::check())
-                $(function() {
-                    let table = $('#userTable').DataTable({
-                        processing: true,
-                        serverSide: true,
+        $(function() {
+            let table = $('#userTable').DataTable({
+                processing: true,
+                serverSide: true,
 
-                        ajax: {
-                            url: "{{ route('user.list') }}",
-                            data: function(d) {
-                                // d.company_id = $('#companyFilter').val();
-                            },
-                        },
-                        columns: [{
-                                data: 'DT_RowIndex',
-                                name: 'users.id',
-                                orderable: true,
-                                searchable: false
-                            },
-                            {
-                                data: 'profile_photo',
-                                name: 'users.profile_photo',
-                            },
-                            {
-                                data: 'company_name',
-                                name: 'companies.company_name',
-                            },
-                            {
-                                data: 'first_name',
-                                name: 'users.first_name',
-                            },
-                            {
-                                data: 'phone',
-                                name: 'users.phone',
-                            },
-                            {
-                                data: 'email',
-                                name: 'users.email',
-                            },
-                            {
-                                data: 'username',
-                                name: 'users.username',
-                            },
-                            {
-                                data: 'user_type',
-                                name: 'users.user_type_id',
-                            },
-                            {
-                                data: 'action',
-                                name: 'action',
-                                orderable: false,
-                                searchable: false
-                            },
-                        ],
-                        order: [
-                            [0, 'desc']
-                        ],
-                        dom: 'Bfrtip', // This is important for buttons
-                        buttons: [{
-                            extend: 'excelHtml5',
-                            text: 'Export Excel',
-                            title: 'User Data',
-                            action: function(e, dt, node, config) {
-                                // redirect to your Laravel export route
-                                window.location.href = "{{ route('user.export') }}";
-                            }
-                        }]
-                    });
-                });
-            @endif
+                ajax: {
+                    url: "{{ route('user.list') }}",
+                    data: function(d) {
+                        // d.company_id = $('#companyFilter').val();
+                    },
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'users.id',
+                        orderable: true,
+                        searchable: false
+                    },
+                    {
+                        data: 'profile_photo',
+                        name: 'users.profile_photo',
+                    },
+                    {
+                        data: 'company_name',
+                        name: 'companies.company_name',
+                    },
+                    {
+                        data: 'first_name',
+                        name: 'users.first_name',
+                    },
+                    {
+                        data: 'email',
+                        name: 'users.email',
+                    },
+                    {
+                        data: 'phone',
+                        name: 'users.phone',
+                    },
+                    {
+                        data: 'username',
+                        name: 'users.username',
+                    },
+                    {
+                        data: 'user_type',
+                        name: 'users.user_type_id',
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ],
+                order: [
+                    [0, 'desc']
+                ],
+                dom: 'Bfrtip', // This is important for buttons
+                buttons: [{
+                    extend: 'excelHtml5',
+                    text: 'Export Excel',
+                    title: 'User Data',
+                    action: function(e, dt, node, config) {
+                        // redirect to your Laravel export route
+                        window.location.href = "{{ route('user.export') }}";
+                    }
+                }]
+            });
         });
 
         function deleteConf(id) {

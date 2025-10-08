@@ -270,7 +270,6 @@
                     if ($('#user_id').val()) {
                         $('#company_id').prop('disabled', true);
                     }
-
                 }
             });
         });

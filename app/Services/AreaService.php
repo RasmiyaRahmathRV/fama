@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Imports\AreaImport;
 use App\Repositories\AreaRepository;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -12,12 +14,11 @@ use Yajra\DataTables\Facades\DataTables;
 
 class AreaService
 {
-    protected $areaRepository;
+    public function __construct(
+        protected AreaRepository $areaRepository,
+        protected CompanyService $companyService,
+    ) {}
 
-    public function __construct(AreaRepository $areaRepository)
-    {
-        $this->areaRepository = $areaRepository;
-    }
 
     public function getAll()
     {
@@ -113,11 +114,20 @@ class AreaService
             ->addIndexColumn()
             ->addColumn('area_name', fn($row) => $row->area_name ?? '-')
             ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
-            ->addColumn('action', fn($row) => '<button class="btn btn-info" data-toggle="modal"
+            ->addColumn('action', function ($row) {
+                $action = '';
+                if (Gate::allows('area.edit')) {
+                    $action .= '<button class="btn btn-info" data-toggle="modal"
                                                         data-target="#modal-area" data-id="' . $row->id . '"
                                                         data-name="' . $row->area_name . '"
-                                                        data-company="' . $row->company_id . '">Edit</button>
-                                                        <button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>')
+                                                        data-company="' . $row->company_id . '">Edit</button>';
+                }
+                if (Gate::allows('area.delete')) {
+                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                }
+
+                return $action ?: '-';
+            })
             ->rawColumns(['action'])
             ->with(['columns' => $columns]) // send columns too
             ->toJson();
@@ -132,4 +142,61 @@ class AreaService
     // {
     //     return Excel::download(new AreaExport($filters), 'areas.xlsx');
     // }
+
+    public function importExcel($file, $user_id)
+    {
+        // Read Excel as collection
+        $rows = Excel::toCollection(new AreaImport, $file)->first();
+
+        $insertData = [];
+        foreach ($rows as $rowindx => $row) {
+            // dd($row);
+            $company_id = $this->existCheck(
+                'companyService',
+                'getByData',
+                'checkIfExist',
+                array('company_name' => $row['company_name']),
+                ['company_name' => $row['company_name'],],
+                $user_id
+            );
+
+            $insertData[] = [
+                'company_id' => $company_id,
+                'area_name' => $row['area_name'],
+                'area_code' => $this->setAreacode($rowindx + 1),
+                'added_by' => $user_id,
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+        }
+
+        $this->areaRepository->insertBulk($insertData);
+
+        return count($insertData);
+    }
+
+    public function existCheck($service, $funName, $existfuncName, $data1, $createData, $user_id)
+    {
+        $retId = $this->$service->$funName($data1);
+
+        if ($retId == null) {
+            $existing = $this->$service->$existfuncName($data1);
+
+            if (!empty($existing)) {
+                // echo "exist";
+                $existing->restore();
+
+                $retId = $existing->id;
+            } else {
+                $retId = $this->$service->createOrRestore(
+                    $createData,
+                    $user_id
+                )->id;
+            }
+        } else {
+            $retId = $retId->id;
+        }
+
+        return $retId;
+    }
 }

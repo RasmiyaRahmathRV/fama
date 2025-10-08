@@ -7,6 +7,7 @@ use App\Imports\PropertyImport;
 use App\Repositories\PropertyRepository;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -127,7 +128,10 @@ class PropertyService
             ->addColumn('locality_name', fn($row) => $row->locality_name ?? '-')
             ->addColumn('property_type', fn($row) => $row->property_type ?? '-')
             ->addColumn('property_size', fn($row) => $row->property_size . ' ' . $row->unit_name ?? '-')
-            ->addColumn('action', fn($row) => '<button class="btn btn-info" data-toggle="modal"
+            ->addColumn('action', function ($row) {
+                $action = '';
+                if (Gate::allows('property.edit')) {
+                    $action .= '<button class="btn btn-info" data-toggle="modal"
                                                         data-target="#modal-property" data-id="' . $row->id . '"
                                                         data-name="' . $row->property_name . '"
                                                         data-company="' . $row->company_id . '" 
@@ -136,8 +140,14 @@ class PropertyService
                                                         data-property_type="' . $row->property_type_id . '"
                                                         data-property_size="' . $row->property_size . '"
                                                         data-property_size_unit="' . $row->property_size_unit . '"
-                                                        data-plot_no="' . $row->plot_no . '">Edit</button>
-                                                        <button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>')
+                                                        data-plot_no="' . $row->plot_no . '">Edit</button>';
+                }
+                if (Gate::allows('property.delete')) {
+                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                }
+
+                return $action ?: '-';
+            })
             ->rawColumns(['action'])
             ->with(['columns' => $columns]) // send columns too
             ->toJson();

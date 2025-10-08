@@ -122,4 +122,25 @@ class User extends Authenticatable
             'permission_id'        // Foreign key on pivot table for Permission
         )->withTimestamps();
     }
+
+    public function hasPermission($perm)
+    {
+        if (is_array($perm)) {
+            // Check if user has any permission in the array
+            return $this->permissions->pluck('permission_name')
+                ->intersect($perm)
+                ->isNotEmpty();
+        }
+        return $this->permissions->contains('permission_name', $perm);
+    }
+
+    public function hasPermissionInRange($minId, $maxId)
+    {
+        // Filter user's permissions based on the dynamic range
+        $validPermissions = $this->permissions
+            ->filter(fn($p) => $p->id >= $minId && $p->id <= $maxId);
+
+        // Returns true if user has **any permission** in the range
+        return $validPermissions->isNotEmpty();
+    }
 }
