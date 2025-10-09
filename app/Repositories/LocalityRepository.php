@@ -52,10 +52,10 @@ class LocalityRepository
         if (!empty($filters['search'])) {
             $query->orwhere('locality_name', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('locality_code', 'like', '%' . $filters['search'] . '%')
-                ->orWhereHas('companies', function ($q) use ($filters) {
+                ->orWhereHas('company', function ($q) use ($filters) {
                     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
                 })
-                ->orWhereHas('areas', function ($q) use ($filters) {
+                ->orWhereHas('area', function ($q) use ($filters) {
                     $q->where('area_name', 'like', '%' . $filters['search'] . '%');
                 })
                 ->orWhereRaw("CAST(localities.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);

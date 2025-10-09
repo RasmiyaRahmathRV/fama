@@ -260,7 +260,10 @@
                     title: 'Bank Data',
                     action: function(e, dt, node, config) {
                         // redirect to your Laravel export route
-                        window.location.href = "{{ route('bank.export') }}";
+                        let searchValue = dt.search();
+                        let url = "{{ route('bank.export') }}" + "?search=" +
+                            encodeURIComponent(searchValue);
+                        window.location.href = url;
                     }
                 }]
             });

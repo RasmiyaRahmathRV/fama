@@ -201,7 +201,10 @@
                     title: 'User Data',
                     action: function(e, dt, node, config) {
                         // redirect to your Laravel export route
-                        window.location.href = "{{ route('user.export') }}";
+                        let searchValue = dt.search();
+                        let url = "{{ route('user.export') }}" + "?search=" +
+                            encodeURIComponent(searchValue);
+                        window.location.href = url;
                     }
                 }]
             });

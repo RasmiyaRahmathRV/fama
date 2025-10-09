@@ -275,7 +275,10 @@
                     title: 'Area Data',
                     action: function(e, dt, node, config) {
                         // redirect to your Laravel export route
-                        window.location.href = "{{ route('locality.export') }}";
+                        let searchValue = dt.search();
+                        let url = "{{ route('locality.export') }}" + "?search=" +
+                            encodeURIComponent(searchValue);
+                        window.location.href = url;
                     }
                 }]
             });

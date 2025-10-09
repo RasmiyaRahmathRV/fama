@@ -255,7 +255,10 @@
                     title: 'Vendor Data',
                     action: function(e, dt, node, config) {
                         // redirect to your Laravel export route
-                        window.location.href = "{{ route('company.export') }}";
+                        let searchValue = dt.search();
+                        let url = "{{ route('company.export') }}" + "?search=" +
+                            encodeURIComponent(searchValue);
+                        window.location.href = url;
                     }
                 }]
             });

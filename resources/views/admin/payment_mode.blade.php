@@ -260,7 +260,10 @@
                     title: 'Payment Mode Data',
                     action: function(e, dt, node, config) {
                         // redirect to your Laravel export route
-                        window.location.href = "{{ route('paymentMode.export') }}";
+                        let searchValue = dt.search();
+                        let url = "{{ route('paymentMode.export') }}" + "?search=" +
+                            encodeURIComponent(searchValue);
+                        window.location.href = url;
                     }
                 }]
             });

@@ -334,7 +334,10 @@
                     title: 'Vendor Data',
                     action: function(e, dt, node, config) {
                         // redirect to your Laravel export route
-                        window.location.href = "{{ route('vendor.export') }}";
+                        let searchValue = dt.search();
+                        let url = "{{ route('vendor.export') }}" + "?search=" +
+                            encodeURIComponent(searchValue);
+                        window.location.href = url;
                     }
                 }]
             });
