@@ -126,9 +126,9 @@ class InstallmentController extends Controller
     public function exportInstallments(Request $request)
     {
         $search = request('search');
-        $filters = [
+        $filters = auth()->user()->company_id ? [
             'company_id' => auth()->user()->company_id,
-        ];
+        ] : null;
 
         return Excel::download(new InstallmentExport($search, $filters), 'installments.xlsx');
     }

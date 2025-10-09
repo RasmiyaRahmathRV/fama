@@ -106,9 +106,9 @@ class PaymentModeController extends Controller
     public function exportPaymentModes(Request $request)
     {
         $search = request('search');
-        $filters = [
+        $filters = auth()->user()->company_id ? [
             'company_id' => auth()->user()->company_id,
-        ];
+        ] : null;
 
         return Excel::download(new PaymentModeExport($search, $filters), 'payment_modes.xlsx');
     }

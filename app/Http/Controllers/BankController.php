@@ -106,9 +106,9 @@ class BankController extends Controller
     public function exportBanks(Request $request)
     {
         $search = request('search');
-        $filters = [
+        $filters = auth()->user()->company_id ? [
             'company_id' => auth()->user()->company_id,
-        ];
+        ] : null;
 
         return Excel::download(new BankExport($search, $filters), 'banks.xlsx');
     }
