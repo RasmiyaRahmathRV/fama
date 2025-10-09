@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\BankController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InstallmentController;
@@ -48,6 +49,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('payment_mode', PaymentModeController::class);
     Route::resource('nationality', NationalityController::class);
     Route::resource('user', UserController::class);
+    Route::resource('company', CompanyController::class);
 
 
     Route::post('import-area', [AreaController::class, 'import'])->name('import.area');
@@ -90,4 +92,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('user-list', [UserController::class, 'getUsers'])->name('user.list');
     Route::get('user-createoredit/{id?}', [UserController::class, 'createOrEdit'])->name('user.createoredit');
     Route::get('export-user', [UserController::class, 'exportUsers'])->name('user.export');
+
+    Route::get('company-list', [CompanyController::class, 'getCompanies'])->name('company.list');
+    Route::get('export-company', [CompanyController::class, 'exportCompany'])->name('company.export');
 });

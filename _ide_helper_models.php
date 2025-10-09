@@ -149,6 +149,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Company withoutTrashed()
  * @method static \Database\Factories\CompanyFactory factory($count = null, $state = [])
  * @mixin \Eloquent
+ * @property int $industry_id
+ * @property int|null $deleted_by
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereIndustryId($value)
  */
 	class Company extends \Eloquent {}
 }
@@ -177,6 +181,23 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	class ImportBatch extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Industry newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Industry newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Industry query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Industry whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Industry whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Industry whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Industry whereUpdatedAt($value)
+ */
+	class Industry extends \Eloquent {}
 }
 
 namespace App\Models{

@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\Area;
 use App\Repositories\CompanyRepository;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class CompanyService
@@ -58,7 +60,7 @@ class CompanyService
 
     public function update($id, array $data)
     {
-        $this->validate($data);
+        $this->validate($data, $id);
         $data['updated_by'] = auth()->user()->id;
         return $this->companyRepository->update($id, $data);
     }
@@ -74,12 +76,24 @@ class CompanyService
         return $codeService->generateNextCode('companies', 'company_code', 'CMP', 5, $addval);
     }
 
-    private function validate(array $data)
+    private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
-            'company_name' => 'required|unique:companies,company_name',
+            // 'company_name' => 'required|unique:companies,company_name',
             // ], [
             //     'company_name.unique' => 'This company name already exists. Please choose another.',
+            'company_name' => [
+                'required',
+                Rule::unique('companies', 'company_name')
+                    ->ignore($id)
+                    ->where(fn($q) => $q->whereNull('deleted_at'))
+            ],
+            'email' => 'required|email',
+            'industry_id' => 'required',
+            'phone'   => 'required|',
+        ], [
+
+            'industry_id.required' => 'Please select an industry.'
         ]);
 
         if ($validator->fails()) {
@@ -90,5 +104,48 @@ class CompanyService
     public function checkIfExist($data)
     {
         return $this->companyRepository->checkIfExist($data);
+    }
+
+    public function getDataTable(array $filters = [])
+    {
+        $query = $this->companyRepository->getQuery($filters);
+
+        $columns = [
+            ['data' => 'DT_RowIndex', 'name' => 'id'],
+            ['data' => 'company_name', 'name' => 'company_name'],
+            ['data' => 'industry', 'name' => 'industry'],
+            ['data' => 'address', 'name' => 'address'],
+            ['data' => 'phone', 'name' => 'phone'],
+            ['data' => 'email', 'name' => 'email'],
+            ['data' => 'website', 'name' => 'website'],
+            ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
+        ];
+
+        return datatables()
+            ->of($query)
+            ->addIndexColumn()
+            ->addColumn('company_name', fn($row) => ucfirst($row->company_name) ?? '-')
+            ->addColumn('industry', fn($row) => $row->industries_name ?? '-')
+            ->addColumn('address', fn($row) => $row->address ?? '-')
+            ->addColumn('phone', fn($row) => $row->phone ?? '-')
+            ->addColumn('email', fn($row) => $row->email ?? '-')
+            ->addColumn('website', fn($row) => $row->website ?? '-')
+
+            ->addColumn('action', function ($row) {
+                $action = '';
+                if (Gate::allows('company.edit')) {
+                    $action .= '<button class="btn btn-info" data-toggle="modal"
+                                                       data-target="#modal-company"
+                                                         data-row=\'' .  json_encode($row)  . '\'>Edit</button>';
+                }
+                if (Gate::allows('company.delete')) {
+                    $action .= '<button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                }
+
+                return $action ?: '-';
+            })
+            ->rawColumns(['action'])
+            ->with(['columns' => $columns]) // send columns too
+            ->toJson();
     }
 }

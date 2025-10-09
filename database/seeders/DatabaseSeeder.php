@@ -22,8 +22,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             UserSeeder::class,
+            Industryseeder::class,
             CompanySeeder::class,
             LookupTablesSeeder::class,
+
         ]);
     }
 }

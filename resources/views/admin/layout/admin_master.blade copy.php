@@ -319,9 +319,9 @@
                             </li>
                         @endif
                         @if (Gate::any(['Company', 'company.add', 'company.view', 'company.edit', 'company.delete']))
-                            <li class="nav-item {{ request()->is('company') ? 'menu-open' : '' }}">
+                            <li class="nav-item {{ request()->is('user') ? 'menu-open' : '' }}">
                                 <a href="{{ route('company.index') }}"
-                                    class="nav-link {{ request()->is('coimpany') ? 'active' : '' }}">
+                                    class="nav-link {{ request()->is('user') ? 'active' : '' }}">
                                     <i class="nav-icon fas fa-building"></i>
                                     <p>
                                         Company

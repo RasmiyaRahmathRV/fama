@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Company;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class CompanyRepository
@@ -37,6 +38,8 @@ class CompanyRepository
     public function delete($id)
     {
         $company = $this->find($id);
+        $company->deleted_by = auth()->user()->id;
+        $company->save();
         return $company->delete();
     }
 
@@ -55,5 +58,31 @@ class CompanyRepository
     public function getByData($companyData)
     {
         return Company::where($companyData)->first();
+    }
+    public function getQuery(array $filters = []): Builder
+    {
+        $query = Company::query()
+            ->select('companies.*', 'industries.name as industry_name')
+            ->join('industries', 'industries.id', '=', 'companies.industry_id');
+
+        if (!empty($filters['search'])) {
+            $query->orwhere('company_name', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('company_code', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('phone', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('email', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('address', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('website', 'like', '%' . $filters['search'] . '%')
+
+                ->orWhereHas('industry', function ($q) use ($filters) {
+                    $q->where('name', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereRaw("CAST(companies.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
+        }
+
+        if (!empty($filters['company_id'])) {
+            $query->Where('companies.id', $filters['company_id']);
+        }
+
+        return $query;
     }
 }

@@ -60,13 +60,14 @@ class Company extends Model
     protected $fillable = [
         'company_code',
         'company_name',
-        'industry',
+        'industry_id',
         'address',
         'phone',
         'email',
         'website',
         'added_by',
         'updated_by',
+        'deleted_by',
         'status'
     ];
 
@@ -88,5 +89,10 @@ class Company extends Model
     public function setUpdatedDateAttribute($value)
     {
         $this->attributes['updated_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+
+    public function industry()
+    {
+        return $this->belongsTo(Industry::class, 'industry_id', 'id');
     }
 }
