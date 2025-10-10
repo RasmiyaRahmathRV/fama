@@ -48,7 +48,7 @@ class Locality extends Model
 {
     use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
 
-    protected $fillable = ['company_id', 'area_id', 'locality_code', 'locality_name', 'added_by', 'updated_by', 'status'];
+    protected $fillable = ['company_id', 'area_id', 'locality_code', 'locality_name', 'added_by', 'updated_by', 'deleted_by', 'status'];
 
     public function user()
     {

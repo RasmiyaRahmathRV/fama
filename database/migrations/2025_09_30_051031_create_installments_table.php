@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('installment_name');
             $table->integer('added_by')->nullable();
             $table->integer('updated_by')->nullable();
+            $table->unsignedBigInteger('deleted_by')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
 

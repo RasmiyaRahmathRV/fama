@@ -43,7 +43,7 @@ class PropertyType extends Model
 {
     use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
 
-    protected $fillable = ['company_id', 'property_type_code', 'property_type', 'added_by', 'updated_by', 'status'];
+    protected $fillable = ['company_id', 'property_type_code', 'property_type', 'added_by', 'updated_by', 'deleted_by', 'status'];
 
     public function user()
     {

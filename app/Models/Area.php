@@ -52,6 +52,7 @@ class Area extends Model
         'area_name',
         'added_by',
         'updated_by',
+        'deleted_by',
         'status'
     ];
 

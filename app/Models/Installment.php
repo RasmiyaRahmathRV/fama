@@ -18,6 +18,7 @@ class Installment extends Model
         'installment_name',
         'added_by',
         'updated_by',
+        'deleted_by',
         'status',
     ];
 
