@@ -16,6 +16,7 @@ class Installment extends Model
         'company_id',
         'installment_code',
         'installment_name',
+        'interval',
         'added_by',
         'updated_by',
         'deleted_by',

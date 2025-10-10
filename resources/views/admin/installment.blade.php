@@ -54,6 +54,7 @@
                                             <th>#</th>
                                             <th>Company Name</th>
                                             <th>Installments</th>
+                                            <th>Interval</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -108,11 +109,11 @@
                                         <input type="number" name="installment_name" id="installment_name"
                                             class="col-sm-9 form-control" id="inputEmail3" placeholder="Installment">
                                     </div>
-                                    {{-- <div class="form-group row">
+                                    <div class="form-group row">
                                         <label for="inputEmail3" class="col-sm-3 col-form-label">Interval</label>
-                                        <input type="text" name="Instalment_name" id="Instalment_name"
+                                        <input type="number" name="interval" id="interval" min="1" step="1"
                                             class="col-sm-9 form-control" id="inputEmail3" placeholder="Interval">
-                                    </div> --}}
+                                    </div>
                                 </div>
                                 <!-- /.card-body -->
                             </div>
@@ -236,6 +237,10 @@
                     {
                         data: 'installment_name',
                         name: 'installments.installment_name',
+                    },
+                    {
+                        data: 'interval',
+                        name: 'installments.interval',
                     },
                     {
                         data: 'action',

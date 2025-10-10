@@ -69,6 +69,7 @@ class InstallmentRepository
         if (!empty($filters['search'])) {
             $query->orwhere('installment_name', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('installment_code', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('interval', 'like', '%' . $filters['search'] . '%')
                 ->orWhereHas('company', function ($q) use ($filters) {
                     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
                 })
