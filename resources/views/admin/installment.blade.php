@@ -74,59 +74,7 @@
             <!-- /.container-fluid -->
 
 
-            <div class="modal fade" id="modal-installment">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Instalment</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form action="" id="installmentForm">
-                            @csrf
-                            <input type="hidden" name="id" id="installment_id">
-                            <div class="modal-body">
-                                <div class="card-body">
-                                    <div class="form-group row">
-                                        @if (auth()->user()->company_id)
-                                            <input type="hidden" name="company_id" id="company_id"
-                                                value="{{ auth()->user()->company_id }}">
-                                        @else
-                                            <label class="col-sm-3 col-form-label">Company</label>
-                                            <select class="form-control select2 col-sm-9" style="width: 75%;"
-                                                name="company_id" id="company_id">
-                                                <option value="">Select Company</option>
-                                                @foreach ($companies as $company)
-                                                    <option value="{{ $company->id }}">{{ $company->company_name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        @endif
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Installment</label>
-                                        <input type="number" name="installment_name" id="installment_name"
-                                            class="col-sm-9 form-control" id="inputEmail3" placeholder="Installment">
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Interval</label>
-                                        <input type="number" name="interval" id="interval" min="1" step="1"
-                                            class="col-sm-9 form-control" id="inputEmail3" placeholder="Interval">
-                                    </div>
-                                </div>
-                                <!-- /.card-body -->
-                            </div>
-                            <div class="modal-footer justify-content-between">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-info">Save changes</button>
-                            </div>
-                        </form>
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+
             <!-- /.modal -->
 
             <div class="modal fade" id="modal-import">
@@ -183,36 +131,15 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
-
+    @component('admin.modals.modal-installment')
+        @slot('company_dropdown')
+            @foreach ($companies as $company)
+                <option value="{{ $company->id }}">{{ $company->company_name }}
+                </option>
+            @endforeach
+        @endslot
+    @endcomponent
     <script>
-        $('#installmentForm').submit(function(e) {
-            e.preventDefault();
-            $('#company_id').prop('disabled', false);
-
-            var form = document.getElementById('installmentForm');
-            var fdata = new FormData(form);
-
-            $.ajax({
-                type: "POST",
-                url: "{{ route('installment.store') }}",
-                data: fdata,
-                dataType: "json",
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    toastr.success(response.message);
-                    window.location.reload();
-                },
-                error: function(errors) {
-                    toastr.error(errors.responseJSON.message);
-                    if ($('#installment_id').val()) {
-                        $('#company_id').prop('disabled', true);
-                    }
-
-                }
-            });
-        });
-
         $(function() {
             let table = $('#installmentTable').DataTable({
                 processing: true,
