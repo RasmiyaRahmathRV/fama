@@ -72,7 +72,7 @@ class PropertyController extends Controller
         } catch (\Exception $e) {
             if ($e->getCode() == 23000) { // integrity constraint violation
                 throw ValidationException::withMessages([
-                    'property' => 'Property  already exists for this locality under this company.',
+                    'property' => 'Property already exists for this locality under this company.',
                 ]);
             } else {
                 return response()->json([
