@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasActivityLog;
+use App\Models\Traits\HasDeletedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -30,7 +32,7 @@ use Illuminate\Database\Eloquent\Model;
 class ImportBatch extends Model
 {
 
-    use HasFactory;
+    use HasFactory, HasActivityLog, HasDeletedBy;
 
     protected $fillable = [
         'file_name',

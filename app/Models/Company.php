@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasActivityLog;
+use App\Models\Traits\HasDeletedBy;
 use App\Services\CodeGeneratorService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,8 +56,7 @@ class Company extends Model
 {
     protected $table = 'companies';
 
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
 
     protected $fillable = [
         'company_code',

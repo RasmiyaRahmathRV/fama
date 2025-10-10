@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasActivityLog;
+use App\Models\Traits\HasDeletedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -55,8 +57,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Property extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
 
     protected $fillable = ['company_id', 'area_id', 'locality_id', 'property_type_id', 'property_code', 'property_name', 'property_size', 'property_size_unit', 'plot_no', 'added_by', 'updated_by', 'status'];
 
