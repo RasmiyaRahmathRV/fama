@@ -184,36 +184,15 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
-
+    @component('admin.modals.modal-bank')
+        @slot('company_dropdown')
+            @foreach ($companies as $company)
+                <option value="{{ $company->id }}">{{ $company->company_name }}
+                </option>
+            @endforeach
+        @endslot
+    @endcomponent
     <script>
-        $('#BankForm').submit(function(e) {
-            e.preventDefault();
-            $('#company_id').prop('disabled', false);
-
-            var form = document.getElementById('BankForm');
-            var fdata = new FormData(form);
-
-            $.ajax({
-                type: "POST",
-                url: "{{ route('bank.store') }}",
-                data: fdata,
-                dataType: "json",
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    toastr.success(response.message);
-                    window.location.reload();
-                },
-                error: function(errors) {
-                    toastr.error(errors.responseJSON.message);
-                    if ($('#bank_id').val()) {
-                        $('#company_id').prop('disabled', true);
-                    }
-
-                }
-            });
-        });
-
         $(function() {
             let table = $('#bankTable').DataTable({
                 processing: true,
@@ -288,6 +267,7 @@
         });
 
         $('#modal-bank').on('show.bs.modal', function(event) {
+            document.activeElement.blur();
             let rowData = $(event.relatedTarget).data('row');
 
             if (rowData) {
