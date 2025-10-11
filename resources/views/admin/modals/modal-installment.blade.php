@@ -79,6 +79,7 @@
 
                       $('#no_of_installments').prepend(newOption).val(response.data.id).trigger(
                           'change');
+                      $('#interval').val(response.data.interval);
 
                       $('#modal-installment').modal('hide');
                   @endif
