@@ -71,55 +71,7 @@
             <!-- /.container-fluid -->
 
 
-            {{-- <div class="modal fade" id="modal-property-type">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Property Type</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form action="" id="PropertyTypeForm">
-                            @csrf
-                            <input type="hidden" name="id" id="property_type_id">
-                            <div class="modal-body">
-                                <div class="card-body">
-                                    @if (auth()->user()->company_id)
-                                        <input type="hidden" name="company_id" id="company_id"
-                                            value="{{ auth()->user()->company_id }}">
-                                    @else
-                                        <div class="form-group row">
-                                            <label for="inputEmail3" class="col-sm-4 col-form-label">Company</label>
-                                            <select class="form-control select2 col-sm-8" name="company_id" id="company_id">
-                                                <option value="">Select Company</option>
-                                                @foreach ($companies as $company)
-                                                    <option value="{{ $company->id }}">{{ $company->company_name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    @endif
 
-                                    <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Property Type</label>
-                                        <input type="text" name="property_type" id="property_type"
-                                            class="col-sm-8 form-control" id="inputEmail3" placeholder="Property Type">
-                                    </div>
-                                </div>
-                                <!-- /.card-body -->
-                            </div>
-                            <div class="modal-footer justify-content-between">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-info">Save changes</button>
-                            </div>
-                        </form>
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!-- /.modal --> --}}
 
             <div class="modal fade" id="modal-import">
                 <div class="modal-dialog">

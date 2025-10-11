@@ -84,9 +84,7 @@ class PropertyService
             'company_id' => 'required|exists:companies,id',
             'area_id' => 'required|exists:areas,id',
             'locality_id' => 'required|exists:localities,id',
-            'property_type_id' => 'required|exists:properties,id',
-            'property_size_unit' => 'required',
-            'property_size' => 'required',
+            'property_type_id' => 'required|exists:property_types,id',
             'plot_no' => 'required',
             'property_name' => [
                 'required',

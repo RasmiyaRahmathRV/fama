@@ -26,6 +26,7 @@ class PropertyExport implements FromCollection, WithHeadings
 
         if ($this->search) {
             $search = $this->search;
+            // dd($search);
             $query->where(function ($q) use ($search) {
                 $q->where('property_name', 'like', "%{$search}%")
                     ->orWhere('property_code', 'like', "%{$search}%")
@@ -36,15 +37,15 @@ class PropertyExport implements FromCollection, WithHeadings
                         $q2->where('company_name', 'like', "%{$search}%");
                     })
                     ->orWhereHas('area', function ($q) use ($search) {
-                        $q->where('area_name', 'like', '%' . $search['search'] . '%');
+                        $q->where('area_name', 'like', '%' . $search . '%');
                     })
                     ->orWhereHas('locality', function ($q) use ($search) {
-                        $q->where('locality_name', 'like', '%' . $search['search'] . '%');
+                        $q->where('locality_name', 'like', '%' . $search . '%');
                     })
                     ->orWhereHas('propertyType', function ($q) use ($search) {
-                        $q->where('property_type', 'like', '%' . $search['search'] . '%');
+                        $q->where('property_type', 'like', '%' . $search . '%');
                     })
-                    ->orWhereRaw("CAST(property_types.id AS CHAR) LIKE ?", ["%{$search}%"]);
+                    ->orWhereRaw("CAST(properties.id AS CHAR) LIKE ?", ["%{$search}%"]);
             });
         }
 

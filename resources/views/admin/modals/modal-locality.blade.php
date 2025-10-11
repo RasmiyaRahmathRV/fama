@@ -52,7 +52,6 @@
  <!-- /.modal -->
  <script>
      let allAreas = @json($areas);
-     console.log()
 
      $('#company_id').on('change', function() {
          let companyId = $(this).val();
