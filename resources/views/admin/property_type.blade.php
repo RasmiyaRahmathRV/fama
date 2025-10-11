@@ -71,7 +71,7 @@
             <!-- /.container-fluid -->
 
 
-            <div class="modal fade" id="modal-property-type">
+            {{-- <div class="modal fade" id="modal-property-type">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -119,7 +119,7 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
-            <!-- /.modal -->
+            <!-- /.modal --> --}}
 
             <div class="modal fade" id="modal-import">
                 <div class="modal-dialog">
@@ -172,34 +172,16 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
-
+    @component('admin.modals.modal-propertyType')
+        @slot('company_dropdown')
+            @foreach ($companies as $company)
+                <option value="{{ $company->id }}">{{ $company->company_name }}
+                </option>
+            @endforeach
+        @endslot
+    @endcomponent
 
     <script>
-        $('#PropertyTypeForm').submit(function(e) {
-            e.preventDefault();
-            $('#company_id').prop('disabled', false);
-
-            var form = document.getElementById('PropertyTypeForm');
-            var fdata = new FormData(form);
-
-            $.ajax({
-                type: "POST",
-                url: "{{ route('property_type.store') }}",
-                data: fdata,
-                dataType: "json",
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    toastr.success(response.message);
-                    window.location.reload();
-                },
-                error: function(errors) {
-                    toastr.error(errors.responseJSON.message);
-                    $('#company_id').prop('disabled', true);
-                }
-            });
-        });
-
         $(function() {
             let table = $('#propertyTypeTable').DataTable({
                 processing: true,
@@ -306,6 +288,7 @@
         }
 
         $("#modal-property-type").on('shown.bs.modal', function(e) {
+            document.activeElement.blur();
             var id = $(e.relatedTarget).data('id');
             var name = $(e.relatedTarget).data('name');
             var company_id = $(e.relatedTarget).data('company');
