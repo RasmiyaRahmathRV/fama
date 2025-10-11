@@ -94,6 +94,9 @@
                      console.log(newOption);
 
                      $('#locality_id').prepend(newOption).val(response.data.id).trigger('change');
+                     if (document.activeElement) {
+                         document.activeElement.blur();
+                     }
 
                      $('#modal-locality').modal('hide');
                  @endif

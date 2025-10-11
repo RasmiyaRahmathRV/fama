@@ -297,6 +297,7 @@
 
 
         $("#modal-locality").on('shown.bs.modal', function(e) {
+            document.activeElement.blur();
             var id = $(e.relatedTarget).data('id');
             var name = $(e.relatedTarget).data('name');
             var company_id = $(e.relatedTarget).data('company');
