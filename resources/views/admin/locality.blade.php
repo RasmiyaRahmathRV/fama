@@ -311,7 +311,7 @@
                 $('#company_id').val(company_id).trigger('change');
                 companyChange(company_id, $(e.relatedTarget).data('area'));
 
-                $('#company_id').prop('disabled', true);
+                // $('#company_id').prop('disabled', true);
                 $('#locality_id').val(id);
                 $('#locality_name').val(name);
 

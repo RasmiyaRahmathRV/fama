@@ -91,7 +91,7 @@
                  @else
                      let newOption = new Option(response.data.locality_name, response.data.id, true,
                          true);
-                     console.log(newOption);
+                     //  console.log(newOption);
 
                      $('#locality_id').prepend(newOption).val(response.data.id).trigger('change');
                      if (document.activeElement) {

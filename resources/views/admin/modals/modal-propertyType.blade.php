@@ -81,7 +81,7 @@
               },
               error: function(errors) {
                   toastr.error(errors.responseJSON.message);
-                  $('#company_id').prop('disabled', true);
+                  //   $('#company_id').prop('disabled', true);
               }
           });
       });

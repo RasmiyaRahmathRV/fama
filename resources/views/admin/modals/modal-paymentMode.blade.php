@@ -88,9 +88,9 @@
              },
              error: function(errors) {
                  toastr.error(errors.responseJSON.message);
-                 if ($('#payment_mode_id').val()) {
-                     $('#company_id').prop('disabled', true);
-                 }
+                 //  if ($('#payment_mode_id').val()) {
+                 //      $('#company_id').prop('disabled', true);
+                 //  }
 
              }
          });

@@ -86,9 +86,9 @@
             },
             error: function(errors) {
                 toastr.error(errors.responseJSON.message);
-                if ($('#bank_id').val()) {
-                    $('#company_id').prop('disabled', true);
-                }
+                // if ($('#bank_id').val()) {
+                //     $('#company_id').prop('disabled', true);
+                // }
 
             }
         });

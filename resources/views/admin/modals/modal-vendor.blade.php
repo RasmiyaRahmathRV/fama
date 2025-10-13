@@ -138,9 +138,9 @@
              },
              error: function(errors) {
                  toastr.error(errors.responseJSON.message);
-                 if ($('#vendor_id').val()) {
-                     $('#company_id').prop('disabled', true);
-                 }
+                 //  if ($('#vendor_id').val()) {
+                 //      $('#company_id').prop('disabled', true);
+                 //  }
 
              }
          });

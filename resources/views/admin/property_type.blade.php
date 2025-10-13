@@ -248,7 +248,7 @@
             if (id) {
                 $('#company_id').val(company_id).trigger('change');
 
-                $('#company_id').prop('disabled', true);
+                // $('#company_id').prop('disabled', true);
                 $('#property_type_id').val(id);
                 $('#property_type').val(name);
 

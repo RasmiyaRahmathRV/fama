@@ -14,18 +14,18 @@
                      <div class="card-body">
                          <div class="form-group row">
 
-                             @if (auth()->user()->company_id)
+                             {{-- @if (auth()->user()->company_id)
                                  <input type="hidden" name="company_id" id="company_id"
                                      value="{{ auth()->user()->company_id }}">
-                             @else
-                                 <div class="col-sm-4">
-                                     <label>Company</label>
-                                     <select class="form-control select2" name="company_id" id="company_id">
-                                         <option value="">Select Company</option>
-                                         {{ $company_dropdown }}
-                                     </select>
-                                 </div>
-                             @endif
+                             @else --}}
+                             <div class="col-sm-4">
+                                 <label>Company</label>
+                                 <select class="form-control select2" name="company_id" id="company_id">
+                                     <option value="">Select Company</option>
+                                     {{ $company_dropdown }}
+                                 </select>
+                             </div>
+                             {{-- @endif --}}
                              <div class="col-sm-4">
                                  <label>Area</label>
                                  <select class="form-control select2" name="area_id" id="area_id">
@@ -163,7 +163,7 @@
                  @else
                      let newOption = new Option(response.data.property_name, response.data.id, true,
                          true);
-                     console.log(newOption);
+                     //  console.log(newOption);
 
                      $('#property_id').prepend(newOption).val(response.data.id).trigger('change');
                      if (document.activeElement) {
@@ -174,9 +174,9 @@
              },
              error: function(errors) {
                  toastr.error(errors.responseJSON.message);
-                 if ($('#Property_id').val()) {
-                     $('#company_id').prop('disabled', true);
-                 }
+                 //  if ($('#property_id').val()) {
+                 //      $('#company_id').prop('disabled', true);
+                 //  }
 
              }
          });

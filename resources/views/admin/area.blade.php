@@ -146,7 +146,7 @@
                 $('#areaForm').trigger("reset");
             } else {
                 $('#company_id').val($(e.relatedTarget).data('company')).trigger('change');
-                $('#company_id').prop('disabled', true);
+                // $('#company_id').prop('disabled', true);
                 $('#area_id').val(id);
                 $('#area_name').val(name);
             }
