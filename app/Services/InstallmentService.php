@@ -76,6 +76,8 @@ class InstallmentService
                         ->whereNull('deleted_at'))
             ],
             'company_id' => 'required|exists:companies,id',
+            'interval' => 'required|numeric|min:1',
+
         ]);
 
         if ($validator->fails()) {
@@ -91,6 +93,7 @@ class InstallmentService
             ['data' => 'DT_RowIndex', 'name' => 'id'],
             ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'installment_name', 'name' => 'installment_name'],
+            ['data' => 'interval', 'name' => 'interval'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
         ];
 
@@ -99,6 +102,7 @@ class InstallmentService
             ->addIndexColumn()
             ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('installment_name', fn($row) => $row->installment_name ?? '-')
+            ->addColumn('interval', fn($row) => $row->interval ?? '-')
             ->addColumn('action', function ($row) {
                 $action = '';
                 if (Gate::allows('installments.edit')) {
@@ -142,13 +146,14 @@ class InstallmentService
                 }
             }
 
-            $bankexist = $this->installmentRepository->checkIfExist(array('installment_name' => $row['installment'], 'company_id' => $company_id));
+            $bankexist = $this->installmentRepository->checkIfExist(array('installment_name' => $row['installment'], 'interval' => $row['interval'], 'company_id' => $company_id));
 
             if (empty($bankexist)) {
                 $insertData[] = [
                     'company_id' => $company_id,
                     'installment_code' => $this->setInstallmentCode($key + 1),
                     'installment_name' => $row['installment'],
+                    'interval' => $row['interval'],
                     'created_at' => now(),
                     'updated_at' => now(),
                     'added_by' => $user_id,

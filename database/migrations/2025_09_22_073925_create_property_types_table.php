@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('property_type');
             $table->integer('added_by');
             $table->integer('updated_by')->nullable();
+            $table->unsignedBigInteger('deleted_by')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
 

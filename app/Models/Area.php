@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasActivityLog;
+use App\Models\Traits\HasDeletedBy;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -42,8 +44,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Area extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
 
     protected $fillable = [
         'company_id',
@@ -51,6 +52,7 @@ class Area extends Model
         'area_name',
         'added_by',
         'updated_by',
+        'deleted_by',
         'status'
     ];
 

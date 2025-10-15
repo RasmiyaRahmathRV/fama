@@ -79,10 +79,13 @@ class PropertyService
 
     private function validate(array $data, $id = null)
     {
+        // dd($data);
         $validator = Validator::make($data, [
             'company_id' => 'required|exists:companies,id',
             'area_id' => 'required|exists:areas,id',
             'locality_id' => 'required|exists:localities,id',
+            'property_type_id' => 'required|exists:property_types,id',
+            'plot_no' => 'required',
             'property_name' => [
                 'required',
                 'string',
@@ -95,7 +98,12 @@ class PropertyService
             ],
         ], [
             'property_name.unique' => 'This property name already exists. Please choose another.',
+            'property_type_id.required' => 'Please select a propert type.',
+
+
+
         ]);
+        // dd($validator);
 
         if ($validator->fails()) {
             throw new ValidationException($validator);

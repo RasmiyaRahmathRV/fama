@@ -30,7 +30,7 @@ class LocalityExport implements FromCollection, WithHeadings
                     ->orWhereHas('company', function ($q2) use ($search) {
                         $q2->where('company_name', 'like', "%{$search}%");
                     })
-                    ->orWhereHas('areas', function ($q2) use ($search) {
+                    ->orWhereHas('area', function ($q2) use ($search) {
                         $q2->where('area_name', 'like', "%{$search}%");
                     })
                     ->orWhereRaw("CAST(localities.id AS CHAR) LIKE ?", ["%{$search}%"]);

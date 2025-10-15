@@ -21,7 +21,6 @@ return new class extends Migration
             $table->foreignId('industry_id')->constrained('industries')->restrictOnDelete();
             $table->string('company_code');
             $table->string('company_name');
-            // $table->string('industry')->nullable();
             $table->text('address')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();

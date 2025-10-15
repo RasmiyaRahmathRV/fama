@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasActivityLog;
+use App\Models\Traits\HasDeletedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -57,10 +59,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Vendor extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
 
-    protected $fillable = ['company_id', 'vendor_code', 'vendor_name', 'vendor_phone', 'vendor_email', 'vendor_address', 'accountant_name', 'accountant_phone', 'accountant_email', 'contact_person', 'contact_person_phone', 'contact_person_email', 'added_by', 'updated_by', 'status'];
+    protected $fillable = ['company_id', 'vendor_code', 'vendor_name', 'vendor_phone', 'vendor_email', 'vendor_address', 'accountant_name', 'accountant_phone', 'accountant_email', 'contact_person', 'contact_person_phone', 'contact_person_email', 'added_by', 'updated_by', 'deleted_by', 'status'];
 
     public function company()
     {

@@ -72,7 +72,7 @@
             <!-- /.container-fluid -->
 
 
-            <div class="modal fade" id="modal-locality">
+            {{-- <div class="modal fade" id="modal-locality">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -125,7 +125,7 @@
                     <!-- /.modal-content -->
                 </div>
                 <!-- /.modal-dialog -->
-            </div>
+            </div> --}}
             <!-- /.modal -->
 
             <div class="modal fade" id="modal-import">
@@ -180,55 +180,17 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.5/dist/sweetalert2.all.min.js"></script>
 
-    <script>
-        // Preload all areas into JS
-        let allAreas = @json($areas);
-    </script>
+    @component('admin.modals.modal-locality', ['areas' => $areas])
+        @slot('company_dropdown')
+            @foreach ($companies as $company)
+                <option value="{{ $company->id }}">{{ $company->company_name }}
+                </option>
+            @endforeach
+        @endslot
+    @endcomponent
 
-    <script>
-        $('#company_id').on('change', function() {
-            let companyId = $(this).val();
-            companyChange(companyId, null); // reset areaVal when adding
-        });
-
-        function companyChange(companyId, areaVal) {
-            let options = '<option value="">Select Area</option>';
-
-            allAreas
-                .filter(a => a.company_id == companyId)
-                .forEach(a => {
-                    options += `<option value="${a.id}" ${(a.id == areaVal) ? 'selected' : ''}>${a.area_name}</option>`;
-                });
-            $('#area_select').html(options).trigger('change');
-        }
-    </script>
 
     <script>
-        $('#localityForm').submit(function(e) {
-            e.preventDefault();
-            $('#company_id').prop('disabled', false);
-
-            var form = document.getElementById('localityForm');
-            var fdata = new FormData(form);
-
-            $.ajax({
-                type: "POST",
-                url: "{{ route('locality.store') }}",
-                data: fdata,
-                dataType: "json",
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    toastr.success(response.message);
-                    window.location.reload();
-                },
-                error: function(errors) {
-                    toastr.error(errors.responseJSON.message);
-                }
-            });
-        });
-
-
         $(function() {
             let table = $('#localityTable').DataTable({
                 processing: true,
@@ -335,6 +297,7 @@
 
 
         $("#modal-locality").on('shown.bs.modal', function(e) {
+            document.activeElement.blur();
             var id = $(e.relatedTarget).data('id');
             var name = $(e.relatedTarget).data('name');
             var company_id = $(e.relatedTarget).data('company');
@@ -348,7 +311,7 @@
                 $('#company_id').val(company_id).trigger('change');
                 companyChange(company_id, $(e.relatedTarget).data('area'));
 
-                $('#company_id').prop('disabled', true);
+                // $('#company_id').prop('disabled', true);
                 $('#locality_id').val(id);
                 $('#locality_name').val(name);
 

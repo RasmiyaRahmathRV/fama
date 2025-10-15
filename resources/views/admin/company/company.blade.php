@@ -76,77 +76,7 @@
             <!-- /.container-fluid -->
 
 
-            <div class="modal fade" id="modal-company">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Company</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form action="" id="companyForm">
-                            @csrf
-                            <input type="hidden" name="id" id="company_id">
-                            <div class="modal-body">
-                                <div class="card-body">
-                                    <div class="form-group row">
-                                        <div class="col-sm-6">
-                                            <label for="inputEmail3" class="col-form-label">Company Name</label>
-                                            <input type="text" name="company_name" id="company_name" class="form-control"
-                                                id="inputEmail3" placeholder="Company Name">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label for="industry_id" class="col-form-label">Industry</label>
-                                            <select name="industry_id" id="industry_id" class="form-control select2"
-                                                style="width: 100%;">
-                                                <option value="">-- Select Industry --</option>
-                                                @foreach ($industries as $industry)
-                                                    <option value="{{ $industry->id }}">{{ $industry->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
 
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-sm-6">
-                                            <label for="inputEmail3" class="col-form-label">Website</label>
-                                            <input type="text" name="website" id="website" class="form-control"
-                                                id="inputEmail3" placeholder="Website">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label for="inputEmail3" class="col-form-label">Phone</label>
-                                            <input type="number" name="phone" id="phone" class="form-control"
-                                                id="inputEmail3" placeholder="Phone">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-sm-6">
-                                            <label for="inputEmail3" class="col-form-label">Email</label>
-                                            <input type="email" name="email" id="email" class="form-control"
-                                                id="inputEmail3" placeholder="Email">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label for="inputEmail3" class="col-form-label">Address</label>
-                                            <textarea name="address" class="form-control" id="address"></textarea>
-
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <!-- /.card-body -->
-                            </div>
-                            <div class="modal-footer justify-content-between">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-info">Save changes</button>
-                            </div>
-                        </form>
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!-- /.modal -->
 
 
         </section>
@@ -169,33 +99,14 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
-
+    @component('admin.modals.modal-company')
+        @slot('industry_dropdown')
+            @foreach ($industries as $industry)
+                <option value="{{ $industry->id }}">{{ $industry->name }}</option>
+            @endforeach
+        @endslot
+    @endcomponent
     <script>
-        $('#companyForm').submit(function(e) {
-            e.preventDefault();
-            $('#company_id').prop('disabled', false);
-
-            var form = document.getElementById('companyForm');
-            var fdata = new FormData(form);
-
-            $.ajax({
-                type: "POST",
-                url: "{{ route('company.store') }}",
-                data: fdata,
-                dataType: "json",
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    toastr.success(response.message);
-                    window.location.reload();
-                },
-                error: function(errors) {
-                    toastr.error(errors.responseJSON.message);
-
-                }
-            });
-        });
-
         $(function() {
             let table = $('#companyTable').DataTable({
                 processing: true,
@@ -265,6 +176,8 @@
         });
 
         $('#modal-company').on('show.bs.modal', function(event) {
+
+            document.activeElement.blur();
             let rowData = $(event.relatedTarget).data('row');
 
             if (rowData) {

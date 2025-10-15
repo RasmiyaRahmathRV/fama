@@ -79,9 +79,6 @@ class CompanyService
     private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
-            // 'company_name' => 'required|unique:companies,company_name',
-            // ], [
-            //     'company_name.unique' => 'This company name already exists. Please choose another.',
             'company_name' => [
                 'required',
                 Rule::unique('companies', 'company_name')
@@ -89,8 +86,8 @@ class CompanyService
                     ->where(fn($q) => $q->whereNull('deleted_at'))
             ],
             'email' => 'required|email',
-            'industry_id' => 'required',
-            'phone'   => 'required|',
+            'industry_id' => 'required|exists:industries,id',
+            'phone'   => 'required',
         ], [
 
             'industry_id.required' => 'Please select an industry.'

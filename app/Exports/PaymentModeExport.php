@@ -30,7 +30,7 @@ class PaymentModeExport implements FromCollection, WithHeadings
                     ->orWhereHas('company', function ($q2) use ($search) {
                         $q2->where('company_name', 'like', "%{$search}%");
                     })
-                    ->orWhereRaw("CAST(pament_modes.id AS CHAR) LIKE ?", ["%{$search}%"]);
+                    ->orWhereRaw("CAST(payment_modes.id AS CHAR) LIKE ?", ["%{$search}%"]);
             });
         }
 
