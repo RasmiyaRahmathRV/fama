@@ -3,4 +3,50 @@
     background-color: #17a2b8;
     color: #fff;
 }
+/* Make Select2 behave like Bootstrap inputs inside input-group */
+.input-group .select2-container {
+    flex: 1 1 auto !important;
+    width: 1% !important;
+}
+
+.select2-container .select2-selection--single {
+    height: 38px !important; /* same as .form-control height */
+    line-height: 38px !important;
+    padding: 6px 12px !important;
+}
+
+.select2-selection__rendered {
+    line-height: 38px !important;
+}
+
+.select2-selection__arrow {
+    height: 38px !important;
+}
+
+/* make BS stepper responsive */
+/* Make stepper header scrollable on small screens */
+.bs-stepper-header {
+  display: flex;
+  flex-wrap: nowrap; /* keep in single row */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+ 
+/* Shrink circle and label on small devices */
+@media (max-width: 768px) {
+  .bs-stepper .bs-stepper-circle {
+    width: 25px;
+    height: 25px;
+    font-size: 0.8rem;
+  }
+  .bs-stepper .bs-stepper-label {
+    font-size: 0.8rem;
+  }
+  .bs-stepper .line {
+    flex-grow: 1;
+  }
+}
+ 
+
+
 
