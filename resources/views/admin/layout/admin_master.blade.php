@@ -24,6 +24,8 @@
 
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('css/adminlte.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+
 </head>
 <!--
 `body` tag options:
@@ -191,6 +193,7 @@
                         </li>
                         @php
                             $master = 0;
+                            $project = 0;
                             if (
                                 request()->is([
                                     'areas',
@@ -205,6 +208,9 @@
                                 ])
                             ) {
                                 $master = 1;
+                            }
+                            if (request()->is(['contract', 'agreement'])) {
+                                $project = 1;
                             }
                         @endphp
                         @if (auth()->user()->hasPermissionInRange(1, 45))
@@ -307,6 +313,25 @@
                                 </ul>
                             </li>
                         @endif
+                        <li class="nav-item {{ $project ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $project ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    Project
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('contract.index') }}"
+                                        class="nav-link {{ request()->is('contract') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Contract</p>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </li>
                         @if (Gate::any(['User', 'user.add', 'user.view', 'user.edit', 'user.delete']))
                             <li class="nav-item {{ request()->is('user') ? 'menu-open' : '' }}">
                                 <a href="{{ route('user.index') }}"

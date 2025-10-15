@@ -53,7 +53,9 @@
  <script>
      $('#PaymentModeForm').submit(function(e) {
          e.preventDefault();
-         $('#company_id').prop('disabled', false);
+         //  $('#company_id').prop('disabled', false);
+         const pmform = $(this);
+         pmform.find('select[name="company_id"]').prop('disabled', false);
 
          var form = document.getElementById('PaymentModeForm');
          var fdata = new FormData(form);
@@ -76,12 +78,15 @@
                          true);
                      //  console.log(newOption);
 
-                     $('#payment_mode_id').prepend(newOption).val(response.data.id).trigger(
+                     $('#payment_mode0').prepend(newOption).val(response.data.id).trigger(
                          'change');
 
                      if (document.activeElement) {
                          document.activeElement.blur();
                      }
+                     pmform[0].reset();
+                     pmform.find('select[name="company_id"]').prop('disabled', true);
+
 
                      $('#modal-payment-mode').modal('hide');
                  @endif

@@ -12,19 +12,19 @@
                   <input type="hidden" name="id" id="installment_id">
                   <div class="modal-body">
                       <div class="card-body">
-                          <div class="form-group row">
-                              {{-- @if (auth()->user()->company_id)
+                          {{-- <div class="form-group row">
+                              @if (auth()->user()->company_id)
                                   <input type="hidden" name="company_id" id="company_id"
                                       value="{{ auth()->user()->company_id }}">
-                              @else --}}
-                              <label class="col-sm-3 col-form-label">Company</label>
-                              <select class="form-control select2 col-sm-9" style="width: 75%;" name="company_id"
-                                  id="company_id">
-                                  <option value="">Select Company</option>
-                                  {{ $company_dropdown }}
-                              </select>
-                              {{-- @endif --}}
-                          </div>
+                              @else
+                                  <label class="col-sm-3 col-form-label">Company</label>
+                                  <select class="form-control select2 col-sm-9" style="width: 75%;" name="company_id"
+                                      id="company_id">
+                                      <option value="">Select Company</option>
+                                      {{ $company_dropdown }}
+                                  </select>
+                              @endif
+                          </div> --}}
 
 
                           <div class="form-group row">
@@ -53,7 +53,9 @@
   <script>
       $('#installmentForm').submit(function(e) {
           e.preventDefault();
-          $('#company_id').prop('disabled', false);
+          //   $('#company_id').prop('disabled', false);
+          //   const instform = $(this);
+          //   instform.find('select[name="company_id"]').prop('disabled', false);
 
           var form = document.getElementById('installmentForm');
           var fdata = new FormData(form);
@@ -80,6 +82,10 @@
                       $('#no_of_installments').prepend(newOption).val(response.data.id).trigger(
                           'change');
                       $('#interval').val(response.data.interval);
+
+                      //   instform[0].reset();
+                      //   instform.find('select[name="company_id"]').prop('disabled', true);
+
 
                       $('#modal-installment').modal('hide');
                   @endif
