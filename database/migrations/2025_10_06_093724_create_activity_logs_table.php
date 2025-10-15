@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('module'); // e.g. 'customers', 'leads'
             $table->unsignedBigInteger('record_id')->nullable(); // affected record
             $table->string('action'); // created, updated, deleted, restored
+            $table->text('description'); // created, updated, deleted, restored
             $table->json('changes')->nullable(); // what changed (optional)
             $table->timestamp('created_at')->useCurrent();
         });

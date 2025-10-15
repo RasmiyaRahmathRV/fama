@@ -367,18 +367,6 @@
     <script src="{{ asset('assets/select2/js/select2.full.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.5/dist/sweetalert2.all.min.js"></script>
 
-    {{-- <script>
-        window.addEventListener("pageshow", function(event) {
-            // If page was loaded from back/forward cache
-            if (event.persisted ||
-                (window.performance && window.performance.getEntriesByType("navigation")[0].type === "back_forward")
-            ) {
-
-                // Redirect to login
-                window.location.href = "{{ route('login') }}";
-            }
-        });
-    </script> --}}
     @yield('custom_js')
 
     <!-- AdminLTE -->
