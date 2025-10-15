@@ -28,7 +28,7 @@ class PropertyTypeController extends Controller
     {
         $title = 'Property Type';
         $companies = $this->companyService->getAll();
-        return view("admin.property_type", compact("companies"));
+        return view("admin.master.property_type", compact("companies"));
     }
 
     /**

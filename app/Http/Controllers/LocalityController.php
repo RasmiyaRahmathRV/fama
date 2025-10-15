@@ -27,7 +27,7 @@ class LocalityController extends Controller
         $title = 'Locality';
         $areas = Area::all();
         $companies = $this->companyService->getAll();
-        return view("admin.locality", compact("companies", "areas"));
+        return view("admin.master.locality", compact("companies", "areas"));
     }
 
     /**

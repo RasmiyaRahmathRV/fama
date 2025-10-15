@@ -22,7 +22,7 @@ class BankController extends Controller
         $title = 'Banks';
         $companies = $this->companyService->getAll();
 
-        return view("admin.bank", compact("title", "companies"));
+        return view("admin.master.bank", compact("title", "companies"));
     }
 
     /**

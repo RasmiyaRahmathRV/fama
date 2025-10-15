@@ -24,7 +24,7 @@ class VendorController extends Controller
         $title = 'Vendors';
         $companies = $this->companyService->getAll();
 
-        return view("admin.vendor", compact("title", "companies"));
+        return view("admin.master.vendor", compact("title", "companies"));
     }
 
     /**

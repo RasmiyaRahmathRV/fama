@@ -25,7 +25,7 @@ class InstallmentController extends Controller
         $title = 'Installments';
         $companies = $this->companyService->getAll();
 
-        return view("admin.installment", compact("title", "companies"));
+        return view("admin.master.installment", compact("title", "companies"));
     }
 
     /**
