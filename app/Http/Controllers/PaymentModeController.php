@@ -22,7 +22,7 @@ class PaymentModeController extends Controller
         $title = 'Payment Modes';
         $companies = $this->companyService->getAll();
 
-        return view("admin.payment_mode", compact("title", "companies"));
+        return view("admin.master.payment_mode", compact("title", "companies"));
     }
 
     /**

@@ -28,7 +28,7 @@ class AreaController extends Controller
     {
         $title = 'Area';
         $companies = $this->companyService->getAll();
-        return view('admin.area', compact('title', 'companies'));
+        return view('admin.master.area', compact('title', 'companies'));
     }
 
     /**

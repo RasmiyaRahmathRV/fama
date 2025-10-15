@@ -23,7 +23,7 @@ class NationalityController extends Controller
         $title = 'Nationalities';
         $companies = $this->companyService->getAll();
 
-        return view("admin.nationality", compact("title", "companies"));
+        return view("admin.master.nationality", compact("title", "companies"));
     }
 
     /**

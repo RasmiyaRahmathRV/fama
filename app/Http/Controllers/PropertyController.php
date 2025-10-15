@@ -36,7 +36,7 @@ class PropertyController extends Controller
         $property_types = $this->propertyTypeService->getAll();
         $propertySizeUnits = PropertySizeUnit::all();
 
-        return view("admin.property", compact("companies", "localities", "areas", "property_types", "propertySizeUnits"));
+        return view("admin.master.property", compact("companies", "localities", "areas", "property_types", "propertySizeUnits"));
     }
 
     /**
