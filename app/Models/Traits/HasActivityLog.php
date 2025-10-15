@@ -4,6 +4,7 @@ namespace App\Models\Traits;
 
 use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 
 trait HasActivityLog
 {
@@ -31,11 +32,17 @@ trait HasActivityLog
 
     protected function addActivityLog(string $action, array $changes = [])
     {
+
+        $currentUrl = Request::fullUrl();
+        $description = $description ?? "{$action} performed on " . class_basename($this);
+        $description .= " (URL: {$currentUrl})";
+
         ActivityLog::create([
             'user_id'   => Auth::id(),
             'module'    => $this->getTable(),
             'record_id' => $this->id,
             'action'    => $action,
+            'description' => $description,
             'changes'   => $changes ? json_encode($changes) : null,
             'created_at' => now(),
         ]);
