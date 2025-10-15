@@ -3,6 +3,7 @@
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InstallmentController;
@@ -50,6 +51,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('nationality', NationalityController::class);
     Route::resource('user', UserController::class);
     Route::resource('company', CompanyController::class);
+    Route::resource('contract', ContractController::class);
+
 
 
     Route::post('import-area', [AreaController::class, 'import'])->name('import.area');
@@ -95,4 +98,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('company-list', [CompanyController::class, 'getCompanies'])->name('company.list');
     Route::get('export-company', [CompanyController::class, 'exportCompany'])->name('company.export');
+
+    Route::get('contract-list', [ContractController::class, 'getContracts'])->name('contract.list');
+    Route::post('contract-approve', [ContractController::class, 'approveContract'])->name('contract.approve');
+    Route::post('contract-reject', [ContractController::class, 'rejectContract'])->name('contract.reject');
+    Route::get('contract-documents', [ContractController::class, 'contract_documents'])->name('contract.documents');
+    Route::post('contract-document-upload', [ContractController::class, 'document_upload'])->name('contract.document_upload');
+    Route::get('export-contract', [ContractController::class, 'exportContract'])->name('contract.export');
 });
