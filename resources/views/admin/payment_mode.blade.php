@@ -75,60 +75,7 @@
             <!-- /.container-fluid -->
 
 
-            <div class="modal fade" id="modal-payment-mode">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Payment mode</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form action="" id="PaymentModeForm">
-                            @csrf
-                            <input type="hidden" name="id" id="payment_mode_id">
-                            <div class="modal-body">
-                                <div class="card-body">
-                                    <div class="form-group row">
-                                        @if (auth()->user()->company_id)
-                                            <input type="hidden" name="company_id" id="company_id"
-                                                value="{{ auth()->user()->company_id }}">
-                                        @else
-                                            <label class="col-sm-4 col-form-label">Company</label>
-                                            <select class="form-control select2 col-sm-8" name="company_id" id="company_id">
-                                                <option value="">Select Company</option>
-                                                @foreach ($companies as $company)
-                                                    <option value="{{ $company->id }}">{{ $company->company_name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        @endif
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Payment mode</label>
-                                        <input type="text" name="payment_mode_name" id="payment_mode_name"
-                                            class="col-sm-8 form-control" id="inputEmail3" placeholder="Payment mode">
-                                    </div>
 
-                                    <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Short code</label>
-                                        <input type="text" name="payment_mode_short_code" id="payment_mode_short_code"
-                                            class="col-sm-8 form-control" id="inputEmail3" placeholder="Short code">
-                                    </div>
-                                </div>
-                                <!-- /.card-body -->
-                            </div>
-                            <div class="modal-footer justify-content-between">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-info">Save changes</button>
-                            </div>
-                        </form>
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!-- /.modal -->
 
             <div class="modal fade" id="modal-import">
                 <div class="modal-dialog">
@@ -184,36 +131,16 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
+    @component('admin.modals.modal-paymentMode')
+        @slot('company_dropdown')
+            @foreach ($companies as $company)
+                <option value="{{ $company->id }}">{{ $company->company_name }}
+                </option>
+            @endforeach
+        @endslot
+    @endcomponent
 
     <script>
-        $('#PaymentModeForm').submit(function(e) {
-            e.preventDefault();
-            $('#company_id').prop('disabled', false);
-
-            var form = document.getElementById('PaymentModeForm');
-            var fdata = new FormData(form);
-
-            $.ajax({
-                type: "POST",
-                url: "{{ route('payment_mode.store') }}",
-                data: fdata,
-                dataType: "json",
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    toastr.success(response.message);
-                    window.location.reload();
-                },
-                error: function(errors) {
-                    toastr.error(errors.responseJSON.message);
-                    if ($('#payment_mode_id').val()) {
-                        $('#company_id').prop('disabled', true);
-                    }
-
-                }
-            });
-        });
-
         $(function() {
             let table = $('#paymentModeTable').DataTable({
                 processing: true,
@@ -260,7 +187,10 @@
                     title: 'Payment Mode Data',
                     action: function(e, dt, node, config) {
                         // redirect to your Laravel export route
-                        window.location.href = "{{ route('paymentMode.export') }}";
+                        let searchValue = dt.search();
+                        let url = "{{ route('paymentMode.export') }}" + "?search=" +
+                            encodeURIComponent(searchValue);
+                        window.location.href = url;
                     }
                 }]
             });
@@ -285,6 +215,7 @@
         });
 
         $('#modal-payment-mode').on('show.bs.modal', function(event) {
+            document.activeElement.blur();
             let rowData = $(event.relatedTarget).data('row');
 
             if (rowData) {
@@ -296,7 +227,7 @@
                     if ($el.is('input, textarea')) {
                         $el.val(value);
                     } else if ($el.is('select')) {
-                        $el.val(value).trigger('change');;
+                        $el.val(value).trigger('change');
                     } else {
                         $el.text(value);
                     }

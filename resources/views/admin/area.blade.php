@@ -74,55 +74,7 @@
             <!-- /.container-fluid -->
 
 
-            <div class="modal fade" id="modal-area">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Area</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form action="" id="areaForm">
-                            @csrf
-                            <input type="hidden" name="id" id="area_id">
-                            <div class="modal-body">
-                                <div class="card-body">
-                                    @if (auth()->user()->company_id)
-                                        <input type="hidden" name="company_id" id="company_id"
-                                            value="{{ auth()->user()->company_id }}">
-                                    @else
-                                        <div class="form-group row">
-                                            <label for="inputEmail3" class="col-sm-4 col-form-label">Company</label>
-                                            <select class="form-control select2 col-sm-8" name="company_id" id="company_id">
-                                                <option value="">Select Company</option>
-                                                @foreach ($companies as $company)
-                                                    <option value="{{ $company->id }}">{{ $company->company_name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    @endif
 
-                                    <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Area Name</label>
-                                        <input type="text" name="area_name" id="area_name" class="col-sm-8 form-control"
-                                            id="inputEmail3" placeholder="Area Name">
-                                    </div>
-                                </div>
-                                <!-- /.card-body -->
-                            </div>
-                            <div class="modal-footer justify-content-between">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-info">Save changes</button>
-                            </div>
-                        </form>
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!-- /.modal -->
 
             <div class="modal fade" id="modal-import">
                 <div class="modal-dialog">
@@ -176,33 +128,16 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.5/dist/sweetalert2.all.min.js"></script>
 
+    @component('admin.modals.modal-area')
+        @slot('company_dropdown')
+            @foreach ($companies as $company)
+                <option value="{{ $company->id }}">{{ $company->company_name }}
+                </option>
+            @endforeach
+        @endslot
+    @endcomponent
+
     <script>
-        $('#areaForm').submit(function(e) {
-            e.preventDefault();
-            $('#company_id').prop('disabled', false);
-
-            var form = document.getElementById('areaForm');
-            var fdata = new FormData(form);
-
-            $.ajax({
-                type: "POST",
-                url: "{{ route('areas.store') }}",
-                data: fdata,
-                dataType: "json",
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    toastr.success(response.message);
-                    window.location.reload();
-                },
-                error: function(errors) {
-                    toastr.error(errors.responseJSON.message);
-                    $('#company_id').prop('disabled', true);
-                }
-            });
-        });
-
-
         $("#modal-area").on('shown.bs.modal', function(e) {
             var id = $(e.relatedTarget).data('id');
             var name = $(e.relatedTarget).data('name');
@@ -211,12 +146,11 @@
                 $('#areaForm').trigger("reset");
             } else {
                 $('#company_id').val($(e.relatedTarget).data('company')).trigger('change');
-                $('#company_id').prop('disabled', true);
+                // $('#company_id').prop('disabled', true);
                 $('#area_id').val(id);
                 $('#area_name').val(name);
             }
         });
-
 
         $('#importBtn').on('click', function() {
             let formData = new FormData($('#areaImportForm')[0]);
@@ -283,7 +217,10 @@
                     title: 'Area Data',
                     action: function(e, dt, node, config) {
                         // redirect to your Laravel export route
-                        window.location.href = "{{ route('area.export') }}";
+                        let searchValue = dt.search();
+                        let url = "{{ route('area.export') }}" + "?search=" +
+                            encodeURIComponent(searchValue);
+                        window.location.href = url;
                     }
                 }]
             });

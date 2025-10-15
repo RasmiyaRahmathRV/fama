@@ -107,9 +107,9 @@ class NationalityController extends Controller
     public function exportNationalities(Request $request)
     {
         $search = request('search');
-        $filters = [
+        $filters = auth()->user()->company_id ? [
             'company_id' => auth()->user()->company_id,
-        ];
+        ] : null;
 
         return Excel::download(new NationalityExport($search, $filters), 'nationalities.xlsx');
     }

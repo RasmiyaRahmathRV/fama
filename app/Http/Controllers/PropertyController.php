@@ -72,7 +72,7 @@ class PropertyController extends Controller
         } catch (\Exception $e) {
             if ($e->getCode() == 23000) { // integrity constraint violation
                 throw ValidationException::withMessages([
-                    'property' => 'Property  already exists for this locality under this company.',
+                    'property' => 'Property already exists for this locality under this company.',
                 ]);
             } else {
                 return response()->json([
@@ -132,9 +132,9 @@ class PropertyController extends Controller
     public function exportProperty(Request $request)
     {
         $search = request('search');
-        $filters = [
+        $filters = auth()->user()->company_id ? [
             'company_id' => auth()->user()->company_id,
-        ];
+        ] : null;
 
 
         return Excel::download(new PropertyExport($search, $filters), 'property.xlsx');

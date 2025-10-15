@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasActivityLog;
+use App\Models\Traits\HasDeletedBy;
 use App\Services\CodeGeneratorService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,19 +56,19 @@ class Company extends Model
 {
     protected $table = 'companies';
 
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
 
     protected $fillable = [
         'company_code',
         'company_name',
-        'industry',
+        'industry_id',
         'address',
         'phone',
         'email',
         'website',
         'added_by',
         'updated_by',
+        'deleted_by',
         'status'
     ];
 
@@ -88,5 +90,10 @@ class Company extends Model
     public function setUpdatedDateAttribute($value)
     {
         $this->attributes['updated_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+
+    public function industry()
+    {
+        return $this->belongsTo(Industry::class, 'industry_id', 'id');
     }
 }

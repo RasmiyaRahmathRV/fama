@@ -318,6 +318,17 @@
                                 </a>
                             </li>
                         @endif
+                        @if (Gate::any(['Company', 'company.add', 'company.view', 'company.edit', 'company.delete']))
+                            <li class="nav-item {{ request()->is('company') ? 'menu-open' : '' }}">
+                                <a href="{{ route('company.index') }}"
+                                    class="nav-link {{ request()->is('coimpany') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-building"></i>
+                                    <p>
+                                        Company
+                                    </p>
+                                </a>
+                            </li>
+                        @endif
                         {{-- onclick="signoutConf()" --}}
                         <li class="nav-item">
                             <a href="javascript:void(0)" onclick="signoutConf()" class="nav-link">
@@ -367,6 +378,26 @@
     <script src="{{ asset('assets/select2/js/select2.full.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.5/dist/sweetalert2.all.min.js"></script>
 
+    {{-- <script>
+        window.addEventListener("pageshow", function(event) {
+            // If page was loaded from back/forward cache
+            if (event.persisted ||
+                (window.performance && window.performance.getEntriesByType("navigation")[0].type === "back_forward")
+            ) {
+
+                // Redirect to login
+                window.location.href = "{{ route('login') }}";
+            }
+        });
+    </script> --}}
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "3000"
+        };
+    </script>
     @yield('custom_js')
 
     <!-- AdminLTE -->

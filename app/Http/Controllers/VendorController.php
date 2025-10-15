@@ -122,9 +122,10 @@ class VendorController extends Controller
     public function exportVendor(Request $request)
     {
         $search = request('search');
-        $filters = [
+
+        $filters = auth()->user()->company_id ? [
             'company_id' => auth()->user()->company_id,
-        ];
+        ] : null;
 
         return Excel::download(new VendorExport($search, $filters), 'vendors.xlsx');
     }

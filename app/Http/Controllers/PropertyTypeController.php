@@ -137,9 +137,9 @@ class PropertyTypeController extends Controller
     public function exportPropertyType(Request $request)
     {
         $search = request('search');
-        $filters = [
+        $filters = auth()->user()->company_id ? [
             'company_id' => auth()->user()->company_id,
-        ];
+        ] : null;
 
         return Excel::download(new PropertyTypeExport($search, $filters), 'property_type.xlsx');
     }

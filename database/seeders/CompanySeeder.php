@@ -13,10 +13,12 @@ class CompanySeeder extends Seeder
      */
     public function run(): void
     {
-        Company::create([
-            'company_code' => 'CMP00001',
-            'company_name' => 'Fama',
-            'added_by' => 1,
-        ]);
+        // Company::create([
+        //     'company_code' => 'CMP00001',
+        //     'company_name' => 'Fama',
+        //     'added_by' => 1,
+        //     'industry_id' => 1,
+        // ]);
+
     }
 }

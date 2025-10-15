@@ -100,9 +100,9 @@ class LocalityController extends Controller
     public function export()
     {
         $search = request('search');
-        $filters = [
+        $filters = auth()->user()->company_id ? [
             'company_id' => auth()->user()->company_id,
-        ];
+        ] : null;
 
         return Excel::download(new LocalityExport($search, $filters), 'localities.xlsx');
     }

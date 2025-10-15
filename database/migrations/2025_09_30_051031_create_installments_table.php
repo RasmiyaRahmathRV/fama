@@ -16,8 +16,10 @@ return new class extends Migration
             $table->Unsignedinteger('company_id');
             $table->string('installment_code');
             $table->string('installment_name');
+            $table->unsignedInteger('interval');
             $table->integer('added_by')->nullable();
             $table->integer('updated_by')->nullable();
+            $table->unsignedBigInteger('deleted_by')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
 

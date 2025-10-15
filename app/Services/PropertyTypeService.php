@@ -101,11 +101,12 @@ class PropertyTypeService
             ->of($query)
             ->addIndexColumn()
             ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            ->addColumn('property_type', fn($row) => $row->property_type ?? '-')
             ->addColumn('action', function ($row) {
                 $action = '';
                 if (Gate::allows('property_type.edit')) {
                     $action .= '<button class="btn btn-info" data-toggle="modal"
-                                                        data-target="#modal-property-type" data-id="' . $row->id . '"
+                                                        data-target="#modal-property-type" data-id="' . $row->id . '"  data-name="' . $row->property_type . '"
                                                         data-company="' . $row->company_id . '" data-row=' . json_encode($row) . '>Edit</button>';
                 }
                 if (Gate::allows('property_type.delete')) {
@@ -114,7 +115,6 @@ class PropertyTypeService
 
                 return $action ?: '-';
             })
-            ->addColumn('property_type', fn($row) => $row->property_type ?? '-')
             ->rawColumns(['action'])
             ->with(['columns' => $columns]) // send columns too
             ->toJson();

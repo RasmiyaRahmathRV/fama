@@ -26,6 +26,7 @@ class InstallmentExport implements FromCollection, WithHeadings
             $query->where(function ($q) use ($search) {
                 $q->where('installment_name', 'like', "%{$search}%")
                     ->orWhere('installment_code', 'like', "%{$search}%")
+                    ->orWhere('interval', 'like', "%{$search}%")
                     ->orWhereHas('company', function ($q2) use ($search) {
                         $q2->where('company_name', 'like', "%{$search}%");
                     })
@@ -44,6 +45,7 @@ class InstallmentExport implements FromCollection, WithHeadings
                     'Installment Code' => $installment->installment_code,
                     'Company' => $installment->company->company_name ?? '',
                     'Installment Name' => $installment->installment_name,
+                    'Interval'    => $installment->interval,
                 ];
             });
     }
@@ -55,6 +57,7 @@ class InstallmentExport implements FromCollection, WithHeadings
             'Installment Code',
             'Company',
             'Installment Name',
+            'Interval',
         ];
     }
 }
