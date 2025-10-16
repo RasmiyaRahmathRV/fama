@@ -50,21 +50,21 @@ class PropertyTypeRepository
     public function getQuery(array $filters = []): Builder
     {
         $query = PropertyType::query()
-            ->select('property_types.*', 'companies.company_name')
-            ->join('companies', 'companies.id', '=', 'property_types.company_id');
+            ->select('property_types.*'); //, 'companies.company_name'
+        // ->join('companies', 'companies.id', '=', 'property_types.company_id');
 
         if (!empty($filters['search'])) {
             $query->orwhere('property_type', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('property_type_code', 'like', '%' . $filters['search'] . '%')
-                ->orWhereHas('company', function ($q) use ($filters) {
-                    $q->where('company_name', 'like', '%' . $filters['search'] . '%');
-                })
+                // ->orWhereHas('company', function ($q) use ($filters) {
+                //     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
+                // })
                 ->orWhereRaw("CAST(property_types.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
 
-        if (!empty($filters['company_id'])) {
-            $query->Where('company_id', $filters['company_id']);
-        }
+        // if (!empty($filters['company_id'])) {
+        //     $query->Where('company_id', $filters['company_id']);
+        // }
 
         return $query;
     }
@@ -87,7 +87,7 @@ class PropertyTypeRepository
     public function checkIfExist($data)
     {
         $existing = PropertyType::withTrashed()
-            ->where('company_id', $data['company_id'])
+            // ->where('company_id', $data['company_id'])
             ->where('property_type', $data['property_type'])
             ->first();
 

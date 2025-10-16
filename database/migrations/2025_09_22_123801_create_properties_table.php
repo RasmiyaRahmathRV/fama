@@ -16,7 +16,7 @@ return new class extends Migration
             $table->Unsignedinteger('company_id');
             $table->Unsignedinteger('area_id');
             $table->Unsignedinteger('locality_id');
-            $table->Unsignedinteger('property_type_id');
+            $table->Unsignedinteger('property_type_id')->nullable();
             $table->string('property_code');
             $table->string('property_name');
             $table->string('property_size')->nullable();

@@ -53,7 +53,7 @@
                                             <th>Company</th>
                                             <th>Area</th>
                                             <th>Locality</th>
-                                            <th>Property Type</th>
+                                            {{-- <th>Property Type</th> --}}
                                             <th>Property Name</th>
                                             <th>Property size</th>
                                             <th>Plot no</th>
@@ -185,10 +185,10 @@
                         data: 'locality_name',
                         name: 'localities.locality_name',
                     },
-                    {
-                        data: 'property_type',
-                        name: 'property_types.property_type',
-                    },
+                    // {
+                    //     data: 'property_type',
+                    //     name: 'property_types.property_type',
+                    // },
                     {
                         data: 'property_name',
                         name: 'properties.property_name'

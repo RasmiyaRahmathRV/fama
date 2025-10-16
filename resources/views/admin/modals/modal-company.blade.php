@@ -87,13 +87,26 @@
                 @if (request()->is('company'))
                     window.location.reload();
                 @else
-                    let newOption = new Option(response.data.company_name, response.data
-                        .id, true,
-                        true);
-                    // console.log(newOption);
+                    let newCompany = {
+                        id: response.data.id,
+                        name: response.data.company_name
+                    };
 
-                    $('#company_id').prepend(newOption).val(response.data.id).trigger(
-                        'change');
+                    // 1️⃣ Create and prepend new option
+                    let newOption = new Option(newCompany.name, newCompany.id, true, true);
+                    $('#vc_company_id')
+                        .prepend(newOption) // adds at top
+                        .val(newCompany.id) // select it
+                        .trigger('change'); // refresh select2
+
+                    // 2️⃣ Store globally for use elsewhere (like vendor modal)
+                    window.lastAddedCompanyId = newCompany.id;
+                    window.lastAddedCompanyName = newCompany.name;
+
+                    window.addedCompanyIdCopy = newCompany.id;
+                    window.addedCompanyNameCopy = newCompany.name;
+
+
 
                     if (document.activeElement) {
                         document.activeElement.blur();

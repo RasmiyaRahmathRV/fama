@@ -50,7 +50,7 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Company</th>
+                                            {{-- <th>Company</th> --}}
                                             <th>Property Type Name</th>
                                             <th>Action</th>
                                         </tr>
@@ -125,12 +125,12 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
     @component('admin.modals.modal-propertyType')
-        @slot('company_dropdown')
+        {{-- @slot('company_dropdown')
             @foreach ($companies as $company)
                 <option value="{{ $company->id }}">{{ $company->company_name }}
                 </option>
             @endforeach
-        @endslot
+        @endslot --}}
     @endcomponent
 
     <script>
@@ -157,10 +157,10 @@
                     //     visible: false
                     // },
 
-                    {
-                        data: 'company_name',
-                        name: 'companies.company_name',
-                    },
+                    // {
+                    //     data: 'company_name',
+                    //     name: 'companies.company_name',
+                    // },
                     {
                         data: 'property_type',
                         name: 'property_types.property_type'

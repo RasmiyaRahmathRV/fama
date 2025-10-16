@@ -17,12 +17,12 @@
                                   <input type="hidden" name="company_id" id="company_id"
                                       value="{{ auth()->user()->company_id }}">
                               @else
-                                  <label class="col-sm-3 col-form-label">Company</label>
-                                  <select class="form-control select2 col-sm-9" style="width: 75%;" name="company_id"
-                                      id="company_id">
-                                      <option value="">Select Company</option>
-                                      {{ $company_dropdown }}
-                                  </select>
+                              <label class="col-sm-3 col-form-label">Company</label>
+                              <select class="form-control select2 col-sm-9" style="width: 75%;" name="company_id"
+                                  id="company_id">
+                                  <option value="">Select Company</option>
+                                  {{ $company_dropdown }}
+                              </select>
                               @endif
                           </div> --}}
 

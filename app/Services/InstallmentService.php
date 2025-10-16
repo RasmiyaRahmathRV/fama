@@ -69,13 +69,24 @@ class InstallmentService
     private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
+            // 'installment_name' => [
+            //     'required',
+            //     Rule::unique('installments')->ignore($id)
+            //         ->where(fn($q) => $q->where('company_id', $data['company_id'])
+            //             ->whereNull('deleted_at'))
+            // ],
+            // 'company_id' => 'required|exists:companies,id',
+
             'installment_name' => [
                 'required',
-                Rule::unique('installments')->ignore($id)
-                    ->where(fn($q) => $q->where('company_id', $data['company_id'])
-                        ->whereNull('deleted_at'))
+                'numeric',
+                'min:1',
+                Rule::unique('installments')
+                    ->ignore($id)          // ignore current record when updating
+                    ->whereNull('deleted_at'), // ignore soft-deleted rows
             ],
-            'company_id' => 'required|exists:companies,id',
+
+
             'interval' => 'required|numeric|min:1',
 
         ]);
@@ -91,7 +102,7 @@ class InstallmentService
 
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
-            ['data' => 'company_name', 'name' => 'company_name'],
+            // ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'installment_name', 'name' => 'installment_name'],
             ['data' => 'interval', 'name' => 'interval'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
@@ -100,7 +111,7 @@ class InstallmentService
         return datatables()
             ->of($query)
             ->addIndexColumn()
-            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            // ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('installment_name', fn($row) => $row->installment_name ?? '-')
             ->addColumn('interval', fn($row) => $row->interval ?? '-')
             ->addColumn('action', function ($row) {
@@ -129,28 +140,28 @@ class InstallmentService
         $insertData = [];
         foreach ($rows as $key => $row) {
             // dd($row);
-            $company_id = $this->companyService->getIdByCompanyname($row['company']);
+            // $company_id = $this->companyService->getIdByCompanyname($row['company']);
 
-            if ($company_id == null) {
-                $existing = $this->companyService->checkIfExist(array('company_name' => $row['company'], 'installment_name' => $row['installment']));
+            // if ($company_id == null) {
+            //     $existing = $this->companyService->checkIfExist(array('company_name' => $row['company'], 'installment_name' => $row['installment']));
 
-                if (!empty($existing)) {
-                    // echo "exist";
-                    $existing->restore();
+            //     if (!empty($existing)) {
+            //         // echo "exist";
+            //         $existing->restore();
 
-                    $company_id = $existing->id;
-                } else {
-                    $company_id = $this->companyService->createOrRestore([
-                        'company_name' => $row['company'],
-                    ], $user_id)->id;
-                }
-            }
+            //         $company_id = $existing->id;
+            //     } else {
+            //         $company_id = $this->companyService->createOrRestore([
+            //             'company_name' => $row['company'],
+            //         ], $user_id)->id;
+            //     }
+            // }
 
-            $bankexist = $this->installmentRepository->checkIfExist(array('installment_name' => $row['installment'], 'interval' => $row['interval'], 'company_id' => $company_id));
+            $bankexist = $this->installmentRepository->checkIfExist(array('installment_name' => $row['installment'], 'interval' => $row['interval']));  //, 'company_id' => $company_id
 
             if (empty($bankexist)) {
                 $insertData[] = [
-                    'company_id' => $company_id,
+                    // 'company_id' => $company_id,
                     'installment_code' => $this->setInstallmentCode($key + 1),
                     'installment_name' => $row['installment'],
                     'interval' => $row['interval'],

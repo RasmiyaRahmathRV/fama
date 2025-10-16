@@ -42,20 +42,17 @@
                          </div>
 
                          <div class="form-group row">
-                             <div class="col-sm-6">
+                             {{-- <div class="col-sm-6">
                                  <label for="inputEmail3" class="col-form-label">Property Type</label>
                                  <select class="form-control select2" name="property_type_id" id="property_type_id">
                                      <option value="">Select Property Type</option>
                                  </select>
-                             </div>
+                             </div> --}}
                              <div class="col-sm-6">
                                  <label for="inputEmail3" class="col-form-label">Property Name</label>
                                  <input type="text" name="property_name" id="property_name" class="form-control"
                                      id="inputEmail3" placeholder="Property Name">
                              </div>
-                         </div>
-
-                         <div class="form-group row">
                              <div class="col-sm-6">
                                  <label>Property Size</label>
                                  <div class="input-group input-group">
@@ -71,6 +68,10 @@
                                          placeholder="Property Size">
                                  </div>
                              </div>
+                         </div>
+
+                         <div class="form-group row">
+
                              <div class="col-sm-6">
                                  <label>Plot No</label>
                                  <input type="text" name="plot_no" id="plot_no" class="form-control"
@@ -92,7 +93,7 @@
  </div>
  <!-- /.modal -->
  <script>
-     let allAreas = @json($areas);
+     let Areas = @json($areas);
      let allLocalities = @json($localities);
      let allpropertytypes = @json($property_types);
 
@@ -105,7 +106,7 @@
          let options = '<option value="">Select Area</option>';
          let options2 = '<option value="">Select Property Type</option>';
 
-         allAreas
+         Areas
              .filter(a => a.company_id == companyId)
              .forEach(a => {
                  options += `<option value="${a.id}" ${(a.id == areaVal) ? 'selected' : ''}>${a.area_name}</option>`;
@@ -143,7 +144,14 @@
  <script>
      $('#PropertyForm').submit(function(e) {
          e.preventDefault();
-         $('#company_id').prop('disabled', false);
+         //  $('#company_id').prop('disabled', false);
+         const ptform = $(this);
+         ptform.find('select[name="company_id"]').prop('disabled', false);
+         ptform.find('select[name="area_id"]').prop('disabled', false);
+         ptform.find('select[name="locality_id"]').prop('disabled', false);
+         ptform.find('select[name="property_type_id"]').prop('disabled', false);
+
+
 
          var form = document.getElementById('PropertyForm');
          var fdata = new FormData(form);
@@ -165,10 +173,15 @@
                          true);
                      //  console.log(newOption);
 
-                     $('#property_id').prepend(newOption).val(response.data.id).trigger('change');
+                     $('#vc_property_id').prepend(newOption).val(response.data.id).trigger('change');
                      if (document.activeElement) {
                          document.activeElement.blur();
                      }
+                     ptform[0].reset();
+                     ptform.find('select[name="company_id"]').prop('disabled', true);
+                     ptform.find('select[name="area_id"]').prop('disabled', true);
+                     ptform.find('select[name="locality_id"]').prop('disabled', true);
+                     ptform.find('select[name="property_type_id"]').prop('disabled', true);
                      $('#modal-property').modal('hide');
                  @endif
              },
@@ -179,6 +192,25 @@
                  //  }
 
              }
+         });
+     });
+
+     $('#modal-property').on('hidden.bs.modal', function() {
+         const $modal = $(this);
+         const $form = $modal.find('form#PropertyForm');
+
+         $form[0].reset();
+
+         $form.find(
+             'select[name="company_id"], select[name="area_id"], select[name="locality_id"]]'
+         ).each(function() {
+             const $select = $(this);
+
+             $select.empty();
+
+             $select.val(null).trigger('change');
+
+             $select.prop('disabled', false);
          });
      });
  </script>

@@ -241,13 +241,7 @@
                                             </a>
                                         </li>
                                     @endif
-                                    @if (Gate::any([
-                                            'Property_type',
-                                            'property_type.add',
-                                            'property_type.view',
-                                            'property_type.edit',
-                                            'property_type.delete',
-                                        ]))
+                                    {{-- @if (Gate::any(['Property_type', 'property_type.add', 'property_type.view', 'property_type.edit', 'property_type.delete']))
                                         <li class="nav-item">
                                             <a href="{{ route('property_type.index') }}"
                                                 class="nav-link {{ request()->is('property_type') ? 'active' : '' }}">
@@ -255,7 +249,7 @@
                                                 <p>Property Type</p>
                                             </a>
                                         </li>
-                                    @endif
+                                    @endif --}}
                                     @if (Gate::any(['Property', 'property.add', 'property.view', 'property.edit', 'property.delete']))
                                         <li class="nav-item">
                                             <a href="{{ route('property.index') }}"

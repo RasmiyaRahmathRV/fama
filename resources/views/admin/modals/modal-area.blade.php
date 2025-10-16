@@ -49,7 +49,9 @@
 <script>
     $('#areaForm').submit(function(e) {
         e.preventDefault();
-        $('#company_id').prop('disabled', false);
+        // $('#company_id').prop('disabled', false);
+        const areaform = $(this);
+        areaform.find('select[name="company_id"]').prop('disabled', false);
 
         var form = document.getElementById('areaForm');
         var fdata = new FormData(form);
@@ -68,19 +70,40 @@
                 @if (request()->is('areas'))
                     window.location.reload();
                 @else
-                    let newOption = new Option(response.data.area_name, response.data.id, true,
-                        true);
-                    // console.log(newOption);
+                    // let newOption = new Option(response.data.area_name, response.data.id, true,
+                    //     true);
+                    // // console.log(newOption);
 
-                    $('#area_id').prepend(newOption).val(response.data.id).trigger('change');
+                    // $('#vc_area_id').prepend(newOption).val(response.data.id).trigger('change');
 
+                    let newArea = {
+                        id: response.data.id,
+                        name: response.data.area_name
+                    };
+
+                    // 1️⃣ Create and prepend new option
+                    let newOption = new Option(newArea.name, newArea.id, true, true);
+                    $('#vc_area_id')
+                        .prepend(newOption) // adds at top
+                        .val(newArea.id) // select it
+                        .trigger('change'); // refresh select2
+
+                    // 2️⃣ Store globally for use elsewhere (like vendor modal)
+                    window.lastAddedAreaId = newArea.id;
+                    window.lastAddedAreaName = newArea.name;
+
+                    window.lastAddedAreaIdCopy = newArea.id;
+                    window.lastAddedAreaNameCopy = newArea.name;
+
+                    areaform[0].reset();
+                    areaform.find('select[name="company_id"]').prop('disabled', true);
                     $('#modal-area').modal('hide');
                 @endif
 
             },
             error: function(errors) {
                 toastr.error(errors.responseJSON.message);
-                // $('#company_id').prop('disabled', true);
+                $('#company_id').prop('disabled', true);
             }
         });
     });

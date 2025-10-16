@@ -16,13 +16,13 @@
                               <input type="hidden" name="company_id" id="company_id"
                                   value="{{ auth()->user()->company_id }}">
                           @else --}}
-                          <div class="form-group row">
+                          {{-- <div class="form-group row">
                               <label for="inputEmail3" class="col-sm-4 col-form-label">Company</label>
                               <select class="form-control select2 col-sm-8" name="company_id" id="company_id">
                                   <option value="">Select Company</option>
                                   {{ $company_dropdown }}
                               </select>
-                          </div>
+                          </div> --}}
                           {{-- @endif --}}
 
                           <div class="form-group row">
@@ -47,7 +47,10 @@
   <script>
       $('#PropertyTypeForm').submit(function(e) {
           e.preventDefault();
-          $('#company_id').prop('disabled', false);
+          //   $('#company_id').prop('disabled', false);
+          const ptyform = $(this);
+          ptyform.find('select[name="company_id"]').prop('disabled', false);
+
 
           var form = document.getElementById('PropertyTypeForm');
           var fdata = new FormData(form);
@@ -65,15 +68,35 @@
                   @if (request()->is('property_type'))
                       window.location.reload();
                   @else
-                      let newOption = new Option(response.data.property_type, response.data.id, true,
-                          true);
-                      //   console.log(newOption);
+                      //   let newOption = new Option(response.data.property_type, response.data.id, true,
+                      //       true);
+                      //   //   console.log(newOption);
 
-                      $('#property_type').prepend(newOption).val(response.data.id).trigger('change');
+                      //   $('#property_type').prepend(newOption).val(response.data.id).trigger('change');
+                      let newPropertyType = {
+                          id: response.data.id,
+                          name: response.data.property_type
+                      };
+
+                      // 1️⃣ Create and prepend new option
+                      let newOption = new Option(newPropertyType.name, newPropertyType.id, true,
+                          true);
+                      $('#vc_property_type_id')
+                          .prepend(newOption) // adds at top
+                          .val(newPropertyType.id) // select it
+                          .trigger('change'); // refresh select2
+
+                      // 2️⃣ Store globally for use elsewhere (like vendor modal)
+                      window.lastAddedPropertyTypeId = newPropertyType.id;
+                      window.lastAddedPropertyTypeName = newPropertyType.name;
 
                       if (document.activeElement) {
                           document.activeElement.blur();
                       }
+
+                      ptyform[0].reset();
+                      ptyform.find('select[name="company_id"]').prop('disabled', true);
+
 
                       $('#modal-property-type').modal('hide');
                   @endif

@@ -84,7 +84,7 @@ class PropertyService
             'company_id' => 'required|exists:companies,id',
             'area_id' => 'required|exists:areas,id',
             'locality_id' => 'required|exists:localities,id',
-            'property_type_id' => 'required|exists:property_types,id',
+            // 'property_type_id' => 'required|exists:property_types,id',
             'plot_no' => 'required',
             'property_name' => [
                 'required',
@@ -98,7 +98,7 @@ class PropertyService
             ],
         ], [
             'property_name.unique' => 'This property name already exists. Please choose another.',
-            'property_type_id.required' => 'Please select a propert type.',
+            // 'property_type_id.required' => 'Please select a propert type.',
 
 
 
@@ -119,7 +119,7 @@ class PropertyService
             ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'area_name', 'name' => 'area_name'],
             ['data' => 'locality_name', 'name' => 'locality_name'],
-            ['data' => 'property_type', 'name' => 'property_type'],
+            // ['data' => 'property_type', 'name' => 'property_type'],
             ['data' => 'property_name', 'name' => 'property_name'],
             ['data' => 'property_size_unit', 'name' => 'property_size_unit'],
             ['data' => 'property_size', 'name' => 'property_size'],
@@ -134,7 +134,7 @@ class PropertyService
             ->addColumn('company_name', fn($row) => $row->company_name ?? '-')
             ->addColumn('area_name', fn($row) => $row->area_name ?? '-')
             ->addColumn('locality_name', fn($row) => $row->locality_name ?? '-')
-            ->addColumn('property_type', fn($row) => $row->property_type ?? '-')
+            // ->addColumn('property_type', fn($row) => $row->property_type ?? '-')
             ->addColumn('property_size', fn($row) => $row->property_size . ' ' . $row->unit_name ?? '-')
             ->addColumn('action', function ($row) {
                 $action = '';
@@ -145,10 +145,10 @@ class PropertyService
                                                         data-company="' . $row->company_id . '" 
                                                         data-area="' . $row->area_id . '" 
                                                         data-locality="' . $row->locality_id . '"
-                                                        data-property_type="' . $row->property_type_id . '"
+                                                        
                                                         data-property_size="' . $row->property_size . '"
                                                         data-property_size_unit="' . $row->property_size_unit . '"
-                                                        data-plot_no="' . $row->plot_no . '">Edit</button>';
+                                                        data-plot_no="' . $row->plot_no . '">Edit</button>';  //data-property_type="' . $row->property_type_id . '"
                 }
                 if (Gate::allows('property.delete')) {
                     $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
@@ -216,17 +216,17 @@ class PropertyService
                 $user_id
             );
 
-            $property_type_id = $this->existCheck(
-                'propertyTypeService',
-                'getByData',
-                'checkIfExist',
-                array('company_id' => $company_id, 'property_type' => $row['property_type']),
-                [
-                    'company_id' => $company_id,
-                    'property_type' => $row['property_type']
-                ],
-                $user_id
-            );
+            // $property_type_id = $this->existCheck(
+            //     'propertyTypeService',
+            //     'getByData',
+            //     'checkIfExist',
+            //     array('company_id' => $company_id, 'property_type' => $row['property_type']),
+            //     [
+            //         'company_id' => $company_id,
+            //         'property_type' => $row['property_type']
+            //     ],
+            //     $user_id
+            // );
 
 
             $seenKey = $company_id . '-' . $area_id . '-' . $locality_id . '-' . strtolower($row['building_name']);
@@ -237,7 +237,7 @@ class PropertyService
                     'company_id' => $company_id,
                     'area_id' => $area_id,
                     'locality_id' => $locality_id,
-                    'property_type_id' => $property_type_id,
+                    // 'property_type_id' => $property_type_id,
                     'property_code' => $this->setPropertyCode($rowindx + 1),
                     'property_name' => $row['building_name'],
                     'property_size' => $row['property_size'],

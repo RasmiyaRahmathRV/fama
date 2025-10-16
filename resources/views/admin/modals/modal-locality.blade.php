@@ -72,7 +72,11 @@
 
      $('#localityForm').submit(function(e) {
          e.preventDefault();
-         $('#company_id').prop('disabled', false);
+         //  $('#company_id').prop('disabled', false);
+         const locform = $(this);
+         locform.find('select[name="company_id"]').prop('disabled', false);
+         locform.find('select[name="area_id"]').prop('disabled', false);
+
 
          var form = document.getElementById('localityForm');
          var fdata = new FormData(form);
@@ -89,14 +93,37 @@
                  @if (request()->is('locality'))
                      window.location.reload();
                  @else
-                     let newOption = new Option(response.data.locality_name, response.data.id, true,
-                         true);
-                     //  console.log(newOption);
+                     //  let newOption = new Option(response.data.locality_name, response.data.id, true,
+                     //      true);
+                     //  //  console.log(newOption);
 
-                     $('#locality_id').prepend(newOption).val(response.data.id).trigger('change');
+                     //  $('#vc_locality_id').prepend(newOption).val(response.data.id).trigger('change');
+
+                     let newLocality = {
+                         id: response.data.id,
+                         name: response.data.locality_name
+                     };
+
+                     // 1️⃣ Create and prepend new option
+                     let newOption = new Option(newLocality.name, newLocality.id, true, true);
+                     $('#vc_locality_id')
+                         .prepend(newOption) // adds at top
+                         .val(newLocality.id) // select it
+                         .trigger('change'); // refresh select2
+
+                     // 2️⃣ Store globally for use elsewhere (like vendor modal)
+                     window.lastAddedLocalityId = newLocality.id;
+                     window.lastAddedLocalityName = newLocality.name;
+
+                     window.lastAddedLocalityIdCopy = newLocality.id;
+                     window.lastAddedLocalityNameCopy = newLocality.name;
+
                      if (document.activeElement) {
                          document.activeElement.blur();
                      }
+                     locform[0].reset();
+                     locform.find('select[name="company_id"]').prop('disabled', true);
+                     locform.find('select[name="area_id"]').prop('disabled', true);
 
                      $('#modal-locality').modal('hide');
                  @endif
@@ -104,6 +131,24 @@
              error: function(errors) {
                  toastr.error(errors.responseJSON.message);
              }
+         });
+     });
+     $('#modal-locality').on('hidden.bs.modal', function() {
+         const $modal = $(this);
+         const $form = $modal.find('form#localityForm');
+
+         $form[0].reset();
+
+         $form.find(
+             'select[name="company_id"], select[name="area_id"]]'
+         ).each(function() {
+             const $select = $(this);
+
+             $select.empty();
+
+             $select.val(null).trigger('change');
+
+             $select.prop('disabled', false);
          });
      });
  </script>

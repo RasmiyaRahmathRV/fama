@@ -166,6 +166,22 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property-read \App\Models\Company|null $company
+ * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\Property|null $property
+ * @property-read \App\Models\Vendor|null $vendor
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract withoutTrashed()
+ */
+	class Contract extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * @property int $id
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -187,6 +203,7 @@ namespace App\Models{
  * @property int $company_id
  * @property string $installment_code
  * @property string $installment_name
+ * @property int $interval
  * @property int|null $added_by
  * @property int|null $updated_by
  * @property int|null $deleted_by
@@ -209,6 +226,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereInstallmentCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereInstallmentName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment whereInterval($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereUpdatedBy($value)

@@ -52,7 +52,7 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Company Name</th>
+                                            {{-- <th>Company Name</th> --}}
                                             <th>Installments</th>
                                             <th>Interval</th>
                                             <th>Action</th>
@@ -157,10 +157,10 @@
                         orderable: true,
                         searchable: false
                     },
-                    {
-                        data: 'company_name',
-                        name: 'companies.company_name',
-                    },
+                    // {
+                    //     data: 'company_name',
+                    //     name: 'companies.company_name',
+                    // },
                     {
                         data: 'installment_name',
                         name: 'installments.installment_name',
