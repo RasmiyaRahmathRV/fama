@@ -43,11 +43,11 @@ class PropertyRepository
     public function getQuery(array $filters = []): Builder
     {
         $query = Property::query()
-            ->select('properties.*', 'companies.company_name', 'areas.area_name', 'localities.locality_name', 'property_types.property_type', 'property_size_units.id as unit_id', 'property_size_units.unit_name as unit_name')
+            ->select('properties.*', 'companies.company_name', 'areas.area_name', 'localities.locality_name', 'property_size_units.id as unit_id', 'property_size_units.unit_name as unit_name')  //, 'property_types.property_type'
             ->join('companies', 'companies.id', '=', 'properties.company_id')
             ->join('areas', 'areas.id', '=', 'properties.area_id')
             ->join('localities', 'localities.id', '=', 'properties.locality_id')
-            ->join('property_types', 'property_types.id', '=', 'properties.property_type_id')
+            // ->join('property_types', 'property_types.id', '=', 'properties.property_type_id')
             ->leftJoin('property_size_units', function ($join) {
                 $join->on('property_size_units.id', '=', 'properties.property_size_unit')
                     ->whereNotNull('properties.property_size_unit');
@@ -67,9 +67,9 @@ class PropertyRepository
                 ->orWhereHas('locality', function ($q) use ($filters) {
                     $q->where('locality_name', 'like', '%' . $filters['search'] . '%');
                 })
-                ->orWhereHas('propertyType', function ($q) use ($filters) {
-                    $q->where('property_type', 'like', '%' . $filters['search'] . '%');
-                })
+                // ->orWhereHas('propertyType', function ($q) use ($filters) {
+                //     $q->where('property_type', 'like', '%' . $filters['search'] . '%');
+                // })
                 ->orWhereRaw("CAST(properties.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
 

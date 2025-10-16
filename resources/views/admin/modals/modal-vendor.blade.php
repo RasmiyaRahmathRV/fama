@@ -105,10 +105,14 @@
  <script>
      $('#VendorForm').submit(function(e) {
          e.preventDefault();
-         $('#company_id').prop('disabled', false);
+
+         //  $('#company_id').prop('disabled', false);
+         const venform = $(this);
+         venform.find('select[name="company_id"]').prop('disabled', false);
 
          var form = document.getElementById('VendorForm');
          var fdata = new FormData(form);
+
 
          $.ajax({
              type: "POST",
@@ -127,11 +131,15 @@
                          true);
                      //  console.log(newOption);
 
-                     $('#vendor_id').prepend(newOption).val(response.data.id).trigger('change');
+                     $('#vc_vendor_id').prepend(newOption).val(response.data.id).trigger('change');
 
                      if (document.activeElement) {
                          document.activeElement.blur();
                      }
+                     //  $(this).find('select[name="company_id"]').prop('disabled', true);
+                     venform[0].reset();
+                     venform.find('select[name="company_id"]').prop('disabled', true);
+
 
                      $('#modal-vendor').modal('hide');
                  @endif
@@ -141,6 +149,9 @@
                  //  if ($('#vendor_id').val()) {
                  //      $('#company_id').prop('disabled', true);
                  //  }
+                 $('#company_id').prop('disabled', true);
+                 $(this).find('select[name="company_id"]').prop('disabled', false);
+
 
              }
          });

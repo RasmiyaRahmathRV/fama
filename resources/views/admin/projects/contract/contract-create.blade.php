@@ -41,7 +41,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
+                            {{-- <div class="card-header">
                                 <!-- <h3 class="card-title">Contract Details</h3> -->
                                 <span class="float-right">
                                     <button class="btn btn-info float-right m-1" data-toggle="modal"
@@ -49,7 +49,7 @@
                                     <button class="btn btn-secondary float-right m-1" data-toggle="modal"
                                         data-target="#modal-import">Import</button>
                                 </span>
-                            </div>
+                            </div> --}}
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <div class="bs-stepper">
@@ -120,7 +120,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="bs-stepper-content card">
+                                    <div class="bs-stepper-content card p-3">
                                         <!-- your steps content here -->
                                         <div id="lead-step" class="content" role="tabpanel"
                                             aria-labelledby="lead-step-trigger">
@@ -183,12 +183,12 @@
                                                         id="contact_no" placeholder="Contact No">
                                                 </div>
                                                 <!-- <div class="col-md-4">
-                                                                                                                            <label for="exampleInputEmail1">Agent</label>
-                                                                                                                            <select class="form-control select2" name="agent" id="agent">
-                                                                                                                                <option value="">Select Agent</option>
-                                                                                                                                <option value="1">Agent 1</option>
-                                                                                                                            </select>
-                                                                                                                        </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="exampleInputEmail1">Agent</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <select class="form-control select2" name="agent" id="agent">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="">Select Agent</option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="1">Agent 1</option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </select>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
 
                                             </div>
                                             <button class="btn btn-info" onclick="stepper.next()">Next</button>
@@ -198,8 +198,7 @@
                                             <div class="form-group row">
                                                 <div class="col-md-4">
                                                     <label for="exampleInputEmail1">Area</label>
-                                                    {{-- <select class="form-control select2" name="area_id" id="vc_area_id">
-                                                    </select> --}}
+
 
                                                     <div class="input-group">
                                                         <select class="form-control select2" name="area_id"
@@ -214,10 +213,7 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="exampleInputEmail1">Locality</label>
-                                                    {{-- <select class="form-control select2" name="vc_locality_id"
-                                                        id="vc_locality_id">
 
-                                                    </select> --}}
                                                     <div class="input-group">
                                                         <select class="form-control select2" name="locality_id"
                                                             id="vc_locality_id">
@@ -225,39 +221,56 @@
                                                         </select>
                                                         <span class="input-group-append">
                                                             <button type="button" class="btn btn-info btn-flat"
-                                                                id="addVendorButton"><i class="fa fa-plus"></i></button>
+                                                                id="addLocalityButton"><i class="fa fa-plus"></i></button>
                                                         </span>
                                                     </div>
 
                                                 </div>
+
+                                                {{-- <div class="col-md-4">
+                                                    <label for="exampleInputEmail1">Property type</label>
+
+                                                    <div class="input-group">
+                                                        <select class="form-control select2" name="property_type"
+                                                            id="vc_property_type_id">
+
+                                                        </select>
+                                                        <span class="input-group-append">
+                                                            <button type="button" class="btn btn-info btn-flat"
+                                                                id="addPropertyTypeButton"><i
+                                                                    class="fa fa-plus"></i></button>
+                                                        </span>
+                                                    </div>
+                                                </div> --}}
+
                                                 <div class="col-md-4">
                                                     <label for="exampleInputEmail1">Property</label>
-                                                    <select class="form-control select2" name="property_id"
-                                                        id="property_id">
 
-                                                    </select>
+                                                    <div class="input-group">
+                                                        <select class="form-control select2" name="property_id"
+                                                            id="vc_property_id">
+
+                                                        </select>
+                                                        <span class="input-group-append">
+                                                            <button type="button" class="btn btn-info btn-flat"
+                                                                id="addPropertyButton"><i class="fa fa-plus"></i></button>
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
+
                                                 <div class="col-md-4">
                                                     <label for="exampleInputEmail1">No. of Units</label>
                                                     <input type="text" class="form-control" id="no_of_units"
                                                         placeholder="No. of Units">
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <label for="exampleInputEmail1">Property type</label>
-                                                    <select class="form-control select2" name="property_type"
-                                                        id="vc_property_type_id">
 
-                                                    </select>
-                                                </div>
                                                 <div class="col-md-4">
                                                     <label for="exampleInputEmail1">Grace period (in months)</label>
                                                     <input type="number" class="form-control" id="exampleInputEmail1"
                                                         placeholder="Grace period" value="1">
                                                 </div>
-                                            </div>
-                                            <div class="form-group row">
                                                 <div class="col-md-4">
                                                     <label for="exampleInputEmail1">Closing Date</label>
                                                     <div class="input-group date" id="closingdate"
@@ -271,8 +284,11 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                             </div>
+                                            {{-- <div class="form-group row">
+                                                
+
+                                            </div> --}}
 
                                             <button class="btn btn-info" onclick="stepper.previous()">Previous</button>
                                             <button class="btn btn-info" onclick="stepper.next()">Next</button>
@@ -307,20 +323,20 @@
                                                 </div>
 
                                                 <!-- <div class="form-group">
-                                                                                                                            <div class="col-sm-6">
-                                                                                                                                <button type="button" class=" btn btn-success" title="Add more" id="add-more"> Add more <i class="fa fa-plus"></i></button>
-                                                                                                                            </div>
-                                                                                                                        </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-sm-6">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <button type="button" class=" btn btn-success" title="Add more" id="add-more"> Add more <i class="fa fa-plus"></i></button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
                                             </div>
                                             <div class="fullBuilding">
                                                 <div id="append-div-fullb">
 
                                                 </div>
                                                 <!-- <div class="form-group">
-                                                                                                                            <div class="col-sm-6">
-                                                                                                                                <button type="button" class=" btn btn-success" title="Add more" id="add-more-fullBuilding"> Add more <i class="fa fa-plus"></i></button>
-                                                                                                                            </div>
-                                                                                                                        </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-sm-6">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <button type="button" class=" btn btn-success" title="Add more" id="add-more-fullBuilding"> Add more <i class="fa fa-plus"></i></button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
                                             </div>
 
                                             <button class="btn btn-info" onclick="stepper.previous()">Previous</button>
@@ -461,14 +477,32 @@
                                             <div class="form-group row">
                                                 <div class="col-md-4">
                                                     <label for="exampleInputEmail1">No. of Installments</label>
-                                                    <select class="form-control select2" name="no_of_installments"
-                                                        id="no_of_installments">
-                                                        <option value="">Select</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                        <option value="12">12</option>
-                                                        <option value="13">13</option>
-                                                    </select>
+                                                    <div class="input-group">
+                                                        <select class="form-control select2" name="no_of_installments"
+                                                            id="no_of_installments">
+                                                            <option value="">Select</option>
+                                                            @foreach ($installments as $installment)
+                                                                <option value="{{ $installment->id }}">
+                                                                    {{ $installment->installment_name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        <span class="input-group-append">
+                                                            <button type="button" class="btn btn-info btn-flat"
+                                                                id="addInstallmentButton"><i
+                                                                    class="fa fa-plus"></i></button>
+                                                        </span>
+                                                    </div>
+                                                    {{-- <div class="input-group">
+                                                        <select class="form-control select2" name="no_of_installments"
+                                                            id="no_of_installments">
+
+                                                        </select>
+                                                        <span class="input-group-append">
+                                                            <button type="button" class="btn btn-info btn-flat"
+                                                                id="addInstallmentButton"><i
+                                                                    class="fa fa-plus"></i></button>
+                                                        </span>
+                                                    </div> --}}
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="exampleInputEmail1">Interval</label>
@@ -490,10 +524,21 @@
                                                             id="payment_mode0">
                                                             <option value="">Select</option>
                                                             <option value="1">Cash</option>
-                                                            <option value="bank">Bank Transfer</option>
-                                                            <option value="chq">Cheque</option>
-                                                            <option value="cc">Credit card</option>
+                                                            <option value="2">Bank Transfer</option>
+                                                            <option value="3">Cheque</option>
+                                                            <option value="4">Credit card</option>
                                                         </select>
+                                                        {{-- <div class="input-group">
+                                                            <select class="form-control select2" name="payment_mode[]"
+                                                                id="payment_mode0">
+
+                                                            </select>
+                                                            <span class="input-group-append">
+                                                                <button type="button" class="btn btn-info btn-flat"
+                                                                    id="addPaymentModeButton"><i
+                                                                        class="fa fa-plus"></i></button>
+                                                            </span>
+                                                        </div> --}}
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="exampleInputEmail1">Payment Date</label>
@@ -567,13 +612,13 @@
                                             <div class=" p-3 mb-3">
                                                 <!-- title row -->
                                                 <!-- <div class="row">
-                                                                                                                            <div class="col-12">
-                                                                                                                                <h4>
-                                                                                                                                    <i class="fas fa-globe"></i> Fama Real Estate
-                                                                                                                                    <small class="float-right">Date: 2/10/2014</small>
-                                                                                                                                </h4>
-                                                                                                                            </div>
-                                                                                                                        </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <h4>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="fas fa-globe"></i> Fama Real Estate
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <small class="float-right">Date: 2/10/2014</small>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </h4>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
                                                 <!-- info row -->
                                                 <div class="row invoice-info">
                                                     <div class="col-sm-6 float-left">
@@ -603,8 +648,8 @@
                                                                 Total Rental - <span class="total_rental">0.00</span> <br>
                                                             </address>
                                                             <!-- <address>
-                                                                                                                                        <span class="project_id">P-11231</span></br>
-                                                                                                                                    </address> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <span class="project_id">P-11231</span></br>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </address> -->
                                                         </span>
                                                     </div>
                                                     <!-- /.col -->
@@ -662,9 +707,9 @@
                                                         placeholder="Profit" readonly>
                                                 </div>
                                                 <!-- <div class="col-md-3">
-                                                                                                                            <label for="exampleInputEmail1">Rent per Room</label>
-                                                                                                                            <input type="text" class="form-control" id="rent_per_room" placeholder="Rent per Room">
-                                                                                                                        </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="exampleInputEmail1">Rent per Room</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <input type="text" class="form-control" id="rent_per_room" placeholder="Rent per Room">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
                                             </div>
 
                                             <button class="btn btn-info" onclick="stepper.previous()">Previous</button>
@@ -783,6 +828,11 @@
 
             // unit add more for normal
             function unitAddmore(i) {
+                let allPropertyTypes = @json($property_types);
+                let propertyTypeOptions = '<option value="">Select</option>';
+                allPropertyTypes.forEach(pt => {
+                    propertyTypeOptions += `<option value="${pt.id}">${pt.property_type}</option>`;
+                });
                 const newBlock = document.createElement('div');
                 newBlock.classList.add('apdi');
                 newBlock.innerHTML = '<div class="form-group row">' +
@@ -795,6 +845,10 @@
                     '<option value="2">2BHK</option>' +
                     '<option value="3">3BHK</option>' +
                     '</select></div>' +
+
+
+
+
                     '<div class="col-sm-1 add-morecol2">' +
                     '<label class="control-label"> Floor No </label>' +
                     '<input type="text" name="l_name[]" class="form-control" placeholder="Floor No">' +
@@ -824,7 +878,12 @@
                     '</div>' +
                     '</div>' +
                     '<div class="form-group row">' +
-                    '<div class="col-sm-3">' +
+                    '<div class="col-sm-2 add-morecol2"><label class="control-label"> Property type</label>' +
+                    '<select class="form-control select2" name="property_type" id="" >' +
+                    propertyTypeOptions +
+                    '</select>' +
+                    '</div>' +
+                    '<div class="col-sm-3 m-4">' +
                     '<div class="icheck-success d-inline">' +
                     '<input type="checkbox" id="partition' + i + '" class="partcheck" value="1">' +
                     '<label class="labelpermission" for="partition' + i + '"> Partition </label>' +
@@ -1415,13 +1474,13 @@
 
         function paymentModeChange(i) {
             var payment_mode = $('#payment_mode' + i).val();
-            if (payment_mode == 'chq') {
+            if (payment_mode == '3') {
                 $('#chq' + i).show();
                 $('#bank' + i).hide();
                 $('#chqot' + i).hide();
                 $('#chqiss' + i).show();
                 $('#chqotiss' + i).hide();
-            } else if (payment_mode == 'bank') {
+            } else if (payment_mode == '2') {
                 $('#bank' + i).show();
                 $('#chq' + i).hide();
                 $('#chqot' + i).hide();
@@ -1638,6 +1697,9 @@
     <!-- roi and profit calculations -->
 
 
+    <!-- Model components and add more modal js -->
+
+
     @component('admin.modals.modal-company')
         @slot('industry_dropdown')
             @foreach ($industries as $industry)
@@ -1646,27 +1708,123 @@
         @endslot
     @endcomponent
     <script>
-        $('#addVendorButton').on('click', function() {
-            $('#modal-vendor').modal('show');
-            let $modal = $('#modal-vendor');
-            let $vendorCompanySelect = $modal.find('select[name="company_id"]');
-
-
-            if (window.lastAddedCompanyId) {
-                // alert(window.lastAddedCompanyId);
-                // alert("hi");
-
-
-                // Add the option if it doesn't exist already
-                if ($vendorCompanySelect.find('option[value="' + window.lastAddedCompanyId + '"]').length === 0) {
-                    let newOption = new Option(window.lastAddedCompanyName, window.lastAddedCompanyId, true, true);
-                    $vendorCompanySelect.append(newOption);
-                }
-
-                // Select it and refresh Select2
-                $vendorCompanySelect.val(window.lastAddedCompanyId).trigger('change.select2');
-
+        function setupModal(modalId, selectMappings, showModal = true) {
+            const $modal = $(modalId);
+            // Only show modal if requested
+            if (showModal) {
+                $modal.modal('show');
             }
+
+
+            // Loop through each select mapping
+            selectMappings.forEach(map => {
+                const $select = $modal.find(`select[name="${map.name}"]`);
+                const windowId = map.windowId;
+                const windowName = map.windowName;
+
+                // If that window variable exists
+                if (window[windowId]) {
+
+
+                    let existingOption = $select.find(`option[value="${window[windowId]}"]`);
+                    if (existingOption.length > 0) {
+                        existingOption.text(window[windowName].trim());
+                    } else {
+                        $select.append(new Option(window[windowName].trim(), window[windowId], true, true));
+                    }
+
+                    $select.val(window[windowId]).trigger('change.select2');
+
+                    $select.prop('disabled', true);
+                    if ($select.data('select2')) {
+                        $select.next('.select2-container').addClass('select2-container--disabled');
+                    }
+                }
+            });
+        }
+
+        $('#addVendorButton').on('click', function() {
+            setupModal('#modal-vendor', [{
+                name: 'company_id',
+                windowId: 'lastAddedCompanyId',
+                windowName: 'lastAddedCompanyName'
+            }]);
+        });
+
+        $('#addAreaButton').on('click', function() {
+            setupModal('#modal-area', [{
+                name: 'company_id',
+                windowId: 'lastAddedCompanyId',
+                windowName: 'lastAddedCompanyName'
+            }]);
+        });
+
+        $('#addLocalityButton').on('click', function() {
+            setupModal('#modal-locality', [{
+                    name: 'company_id',
+                    windowId: 'lastAddedCompanyId',
+                    windowName: 'lastAddedCompanyName'
+                },
+                {
+                    name: 'area_id',
+                    windowId: 'lastAddedAreaId',
+                    windowName: 'lastAddedAreaName'
+                }
+            ]);
+        });
+
+        // $('#addPropertyTypeButton').on('click', function() {
+        //     setupModal('#modal-property-type', [{
+        //         name: 'company_id',
+        //         windowId: 'lastAddedCompanyId',
+        //         windowName: 'lastAddedCompanyName'
+        //     }]);
+        // });
+
+        $(document).on('click', '.addPropertyTypeButton', function(e) {
+            e.preventDefault();
+            setupModal('#modal-property-type', [{
+                name: 'company_id',
+                windowId: 'lastAddedCompanyId',
+                windowName: 'lastAddedCompanyName'
+            }]);
+        });
+
+        $('#addPropertyButton').on('click', function() {
+            setupModal('#modal-property', [{
+                    name: 'company_id',
+                    windowId: 'lastAddedCompanyId',
+                    windowName: 'lastAddedCompanyName'
+                },
+                {
+                    name: 'area_id',
+                    windowId: 'lastAddedAreaId',
+                    windowName: 'lastAddedAreaName'
+                },
+                {
+                    name: 'locality_id',
+                    windowId: 'lastAddedLocalityId',
+                    windowName: 'lastAddedLocalityName'
+                },
+                {
+                    name: 'property_type_id',
+                    windowId: 'lastAddedPropertyTypeId',
+                    windowName: 'lastAddedPropertyTypeName'
+                }
+            ]);
+        });
+
+
+        $('#addInstallmentButton').on('click', function() {
+            $('#modal-installment').modal('show');
+        });
+
+        $('#addPaymentModeButton').on('click', function() {
+            setupModal('#modal-payment-mode', [{
+                name: 'company_id',
+                windowId: 'lastAddedCompanyId',
+                windowName: 'lastAddedCompanyName'
+            }]);
         });
     </script>
     @component('admin.modals.modal-vendor')
@@ -1678,42 +1836,110 @@
         @endslot
     @endcomponent
 
+    @component('admin.modals.modal-area')
+        @slot('company_dropdown')
+            @foreach ($companies as $company)
+                <option value="{{ $company->id }}">{{ $company->company_name }}
+                </option>
+            @endforeach
+        @endslot
+    @endcomponent
+
+    @component('admin.modals.modal-locality', ['areas' => $areas])
+        @slot('company_dropdown')
+            @foreach ($companies as $company)
+                <option value="{{ $company->id }}">{{ $company->company_name }}
+                </option>
+            @endforeach
+        @endslot
+    @endcomponent
+
+    @component('admin.modals.modal-property', [
+        'areas' => $areas,
+        'localities' => $localities,
+        'property_types' => $property_types,
+    ])
+        @slot('company_dropdown')
+            @foreach ($companies as $company)
+                <option value="{{ $company->id }}">{{ $company->company_name }}
+                </option>
+            @endforeach
+        @endslot
+
+        @slot('propertySizeUnits_dropdown')
+            @foreach ($propertySizeUnits as $unit)
+                <option value="{{ $unit->id }}">{{ $unit->unit_name }}
+                </option>
+            @endforeach
+        @endslot
+    @endcomponent
+
+    @component('admin.modals.modal-propertyType')
+        @slot('company_dropdown')
+            @foreach ($companies as $company)
+                <option value="{{ $company->id }}">{{ $company->company_name }}
+                </option>
+            @endforeach
+        @endslot
+    @endcomponent
+
+    @component('admin.modals.modal-nationality')
+        @slot('company_dropdown')
+            @foreach ($companies as $company)
+                <option value="{{ $company->id }}">{{ $company->company_name }}
+                </option>
+            @endforeach
+        @endslot
+    @endcomponent
+
+    @component('admin.modals.modal-installment')
+    @endcomponent
+
+    @component('admin.modals.modal-paymentMode')
+        @slot('company_dropdown')
+            @foreach ($companies as $company)
+                <option value="{{ $company->id }}">{{ $company->company_name }}
+                </option>
+            @endforeach
+        @endslot
+    @endcomponent
+
+    {{-- Companywise deopdown selection --}}
+
     <script>
         let allVendors = @json($vendors);
-        let allAreas = @json($areas);
-        let allLocalities = @json($localities);
-        let allpropertytypes = @json($property_types);
-
+        let allproperties = @json($properties);
 
 
         $(document).on('change', '#vc_company_id', function() {
-            // alert("hi");
-            let companyId = $(this).val();
-            // alert(companyId);
+            const companyId = $(this).val();
+            const companyName = $(this).find('option:selected').text().trim();
+
+            // // store clean globals
+            lastAddedCompanyId = companyId;
+            lastAddedCompanyName = companyName;
+
             contractCompanyChange(companyId, null);
+
         });
 
         function contractCompanyChange(companyId, vendorVal, areaVal, propertytypeVal, localityVal) {
-            // alert('test');
             let options = '<option value="">Select Vendor</option>';
             let option1 = '<option value="">Select Area</option>';
             let option2 = '<option value="">Select PropertyType</option>';
-
-
-            // dd($options);
 
             allVendors
                 .filter(v => v.company_id == companyId)
                 .forEach(v => {
                     options +=
-                        `<option value="${v.id}" ${(v.id == vendorVal) ? 'selected' : ''}>${v.vendor_name}</option>`;
+                        `<option value="${v.id}" }>${v.vendor_name}</option>`;
                 });
             $('#vc_vendor_id').html(options).trigger('change');
 
             allAreas
                 .filter(a => a.company_id == companyId)
                 .forEach(a => {
-                    option1 += `<option value="${a.id}" ${(a.id == areaVal) ? 'selected' : ''}>${a.area_name}</option>`;
+                    option1 += `<option value="${a.id}"}>${a.area_name}</option>`;
                 });
             $('#vc_area_id').html(option1).trigger('change');
             contractAreaChange(areaVal, localityVal);
@@ -1722,29 +1948,61 @@
                 .filter(pt => pt.company_id == companyId)
                 .forEach(pt => {
                     option2 +=
-                        `<option value="${pt.id}" ${(pt.id == propertytypeVal) ? 'selected' : ''}>${pt.property_type}</option>`;
+                        `<option value="${pt.id}" }>${pt.property_type}</option>`;
                 });
+            $('#property_type_id').html(option2).trigger('change');
             $('#vc_property_type_id').html(option2).trigger('change');
-
 
         }
         $('#vc_area_id').on('change', function() {
             let areaId = $(this).val();
+            let areaName = $(this).find('option:selected').text().trim();
+
+            lastAddedAreaName = areaName;
+            lastAddedAreaId = areaId;
+
             contractAreaChange(areaId, null); // reset areaVal when adding
+
         });
 
-        function contractAreaChange(areaId, localityVal) {
-            let options = '<option value="">Select Locality</option>';
+        function contractAreaChange(areaId, localityVal, propertyVal) {
+            let option3 = '<option value="">Select Locality</option>';
 
             allLocalities
                 .filter(l => l.area_id == areaId)
                 .forEach(l => {
-                    options +=
-                        `<option value="${l.id}" ${(l.id == localityVal) ? 'selected' : ''}>${l.locality_name}</option>`;
+                    option3 +=
+                        `<option value="${l.id}"}>${l.locality_name}</option>`;
                 });
-            $('#vc_locality_id').html(options).trigger('change');
+            $('#vc_locality_id').html(option3).trigger('change');
+            contractLocalityChange(localityVal, propertyVal);
+        }
+
+        $('#vc_locality_id').on('change', function() {
+            let localityId = $(this).val();
+            let locaityName = $(this).find('option:selected').text()
+                .trim();
+
+            lastAddedLocalityName = locaityName;
+            lastAddedLocalityId = localityId;
+            contractLocalityChange(localityId, null); // reset areaVal when adding
+
+        });
+
+
+        function contractLocalityChange(localityId, propertyVal = null) {
+            let option4 = '<option value="">Select Property</option>';
+
+            allproperties
+                .filter(pt => pt.locality_id == localityId)
+                .forEach(pt => {
+                    option4 +=
+                        `<option value="${pt.id}" }>${pt.property_name}</option>`;
+                });
+            $('#vc_property_id').html(option4).trigger('change');
         }
     </script>
+
 
 
 @endsection

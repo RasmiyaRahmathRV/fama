@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Exports\ContractExport;
 use App\Models\Contract;
 use App\Models\Industry;
+use App\Models\Installment;
+use App\Models\PropertySizeUnit;
 use App\Services\AreaService;
 use App\Services\CompanyService;
 use Illuminate\Http\Request;
@@ -48,10 +50,13 @@ class ContractController extends Controller
         $properties = $this->propertyService->getAll();
         $installments = $this->installmentService->getAll();
         $vendors = $this->vendorService->getAll();
+        $propertySizeUnits = PropertySizeUnit::all();
+        $installments = Installment::all();
+
 
         // dd($companies, $localities, $areas, $property_types, $properties);
 
-        return view("admin.projects.contract.contract-create", compact("title", "companies", "localities", "areas", "property_types", "properties", "installments", "vendors", "industries"));
+        return view("admin.projects.contract.contract-create", compact("title", "companies", "localities", "areas", "property_types", "properties", "installments", "vendors", "industries", "propertySizeUnits", "installments"));
     }
 
     public function store(Request $request)

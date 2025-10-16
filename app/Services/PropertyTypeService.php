@@ -72,13 +72,20 @@ class PropertyTypeService
     private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
+            // 'property_type' => [
+            //     'required',
+            //     Rule::unique('property_types', 'property_type')->ignore($id)
+            //         ->where(fn($q) => $q->where('company_id', $data['company_id'])
+            //             ->whereNull('deleted_at'))
+            // ],
+            // 'company_id' => 'required|exists:companies,id',
+
             'property_type' => [
                 'required',
-                Rule::unique('property_types', 'property_type')->ignore($id)
-                    ->where(fn($q) => $q->where('company_id', $data['company_id'])
-                        ->whereNull('deleted_at'))
+                Rule::unique('property_types', 'property_type')
+                    ->ignore($id)
+                    ->whereNull('deleted_at'),
             ],
-            'company_id' => 'required|exists:companies,id',
         ]);
 
         if ($validator->fails()) {
@@ -92,7 +99,7 @@ class PropertyTypeService
 
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
-            ['data' => 'company_name', 'name' => 'company_name'],
+            // ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'property_type', 'name' => 'property_type'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
         ];
@@ -100,14 +107,14 @@ class PropertyTypeService
         return datatables()
             ->of($query)
             ->addIndexColumn()
-            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            // ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('property_type', fn($row) => $row->property_type ?? '-')
             ->addColumn('action', function ($row) {
                 $action = '';
                 if (Gate::allows('property_type.edit')) {
                     $action .= '<button class="btn btn-info" data-toggle="modal"
                                                         data-target="#modal-property-type" data-id="' . $row->id . '"  data-name="' . $row->property_type . '"
-                                                        data-company="' . $row->company_id . '" data-row=' . json_encode($row) . '>Edit</button>';
+                                                         data-row=' . json_encode($row) . '>Edit</button>'; //data-company="' . $row->company_id . '"
                 }
                 if (Gate::allows('property_type.delete')) {
                     $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
@@ -129,26 +136,26 @@ class PropertyTypeService
         $insertData = [];
         foreach ($rows as $key => $row) {
             // dd($row);
-            $company_id = $this->companyService->getIdByCompanyname($row['company']);
+            // $company_id = $this->companyService->getIdByCompanyname($row['company']);
 
-            if ($company_id == null) {
-                $existing = $this->companyService->checkIfExist(array('company_name' => $row['company']));
+            // if ($company_id == null) {
+            //     $existing = $this->companyService->checkIfExist(array('company_name' => $row['company']));
 
 
-                if (!empty($existing)) {
-                    // echo "exist";
-                    $existing->restore();
+            //     if (!empty($existing)) {
+            //         // echo "exist";
+            //         $existing->restore();
 
-                    $company_id = $existing->id;
-                } else {
-                    $company_id = $this->companyService->createOrRestore([
-                        'company_name' => $row['company'],
-                    ], $user_id)->id;
-                }
-            }
+            //         $company_id = $existing->id;
+            //     } else {
+            //         $company_id = $this->companyService->createOrRestore([
+            //             'company_name' => $row['company'],
+            //         ], $user_id)->id;
+            //     }
+            // }
 
             $insertData[] = [
-                'company_id' => $company_id,
+                // 'company_id' => $company_id,
                 'property_type_code' => $this->setPropertyTypeCode($key + 1),
                 'property_type' => $row['property_type'],
                 'created_at' => now(),

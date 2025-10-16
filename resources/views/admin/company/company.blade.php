@@ -163,7 +163,7 @@
                 buttons: [{
                     extend: 'excelHtml5',
                     text: 'Export Excel',
-                    title: 'Vendor Data',
+                    title: 'Company Data',
                     action: function(e, dt, node, config) {
                         // redirect to your Laravel export route
                         let searchValue = dt.search();

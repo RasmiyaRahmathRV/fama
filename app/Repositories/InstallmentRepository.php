@@ -49,7 +49,7 @@ class InstallmentRepository
     public function checkIfExist($data)
     {
         $existing = Installment::withTrashed()
-            ->where('company_id', $data['company_id'])
+            // ->where('company_id', $data['company_id'])
             ->where('installment_name', $data['installment_name'])
             ->first();
 
@@ -63,22 +63,22 @@ class InstallmentRepository
     {
         // print_r($filters);
         $query = Installment::query()
-            ->select('installments.*', 'companies.company_name')
-            ->join('companies', 'companies.id', '=', 'installments.company_id');
+            ->select('installments.*');  //, 'companies.company_name'
+        // ->join('companies', 'companies.id', '=', 'installments.company_id');
 
         if (!empty($filters['search'])) {
             $query->orwhere('installment_name', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('installment_code', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('interval', 'like', '%' . $filters['search'] . '%')
-                ->orWhereHas('company', function ($q) use ($filters) {
-                    $q->where('company_name', 'like', '%' . $filters['search'] . '%');
-                })
+                // ->orWhereHas('company', function ($q) use ($filters) {
+                //     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
+                // })
                 ->orWhereRaw("CAST(installments.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
 
-        if (!empty($filters['company_id'])) {
-            $query->Where('installments.company_id', $filters['company_id']);
-        }
+        // if (!empty($filters['company_id'])) {
+        //     $query->Where('installments.company_id', $filters['company_id']);
+        // }
 
         return $query;
     }

@@ -174,6 +174,10 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $name
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|Industry newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Industry newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Industry query()
@@ -187,6 +191,7 @@ namespace App\Models{
  * @property int|null $company_id
  * @property string $installment_code
  * @property string $installment_name
+ * @property int $interval
  * @property int|null $added_by
  * @property int|null $updated_by
  * @property int $status
@@ -207,6 +212,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereInstallmentCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereInstallmentName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment whereInterval($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereUpdatedBy($value)
