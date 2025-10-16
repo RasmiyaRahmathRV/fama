@@ -72,11 +72,15 @@ class BankService
             'bank_name' => [
                 'required',
                 Rule::unique('banks')->ignore($id)
-                    ->where(fn($q) => $q->where('company_id', $data['company_id'])
-                        ->whereNull('deleted_at'))
+                    ->where(
+                        fn($q) =>
+                        $q
+                            // ->where('company_id', $data['company_id'])
+                            ->whereNull('deleted_at')
+                    )
             ],
             'bank_short_code' => 'required',
-            'company_id' => 'required|exists:companies,id',
+            // 'company_id' => 'required|exists:companies,id',
         ]);
 
         if ($validator->fails()) {
@@ -90,7 +94,7 @@ class BankService
 
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
-            ['data' => 'company_name', 'name' => 'company_name'],
+            // ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'bank_name', 'name' => 'bank_name'],
             ['data' => 'back_short_code', 'name' => 'back_short_code'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
@@ -99,7 +103,7 @@ class BankService
         return datatables()
             ->of($query)
             ->addIndexColumn()
-            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            // ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('bank_name', fn($row) => $row->bank_name ?? '-')
             ->addColumn('back_short_code', fn($row) => $row->back_short_code ?? '-')
             ->addColumn('action', function ($row) {

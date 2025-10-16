@@ -49,13 +49,13 @@ class BankController extends Controller
                 return response()->json(['success' => true, 'data' => $bank, 'message' => 'Bank created successfully'], 201);
             }
         } catch (\Exception $e) {
-            if ($e->getCode() == 23000) { // integrity constraint violation
-                throw ValidationException::withMessages([
-                    'bank_name' => 'This bank name already exists for this company.',
-                ]);
-            } else {
-                return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
-            }
+            // if ($e->getCode() == 23000) { // integrity constraint violation
+            //     throw ValidationException::withMessages([
+            //         'bank_name' => 'This bank name already exists for this company.',
+            //     ]);
+            // } else {
+            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
+            // }
         }
     }
 
@@ -96,7 +96,7 @@ class BankController extends Controller
     {
         if ($request->ajax()) {
             $filters = [
-                'company_id' => auth()->user()->company_id,
+                // 'company_id' => auth()->user()->company_id,
                 'search' => $request->search['value'] ?? null
             ];
             return $this->bankService->getDataTable($filters);

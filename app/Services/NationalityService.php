@@ -72,11 +72,12 @@ class NationalityService
             'nationality_name' => [
                 'required',
                 Rule::unique('nationalities')->ignore($id)
-                    ->where(fn($q) => $q->where('company_id', $data['company_id'])
+                    ->where(fn($q) => $q
+                        // ->where('company_id', $data['company_id'])
                         ->whereNull('deleted_at'))
             ],
             'nationality_short_code' => 'required',
-            'company_id' => 'required|exists:companies,id',
+            // 'company_id' => 'required|exists:companies,id',
         ]);
 
         if ($validator->fails()) {
@@ -90,7 +91,7 @@ class NationalityService
 
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
-            ['data' => 'company_name', 'name' => 'company_name'],
+            // ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'nationality_name', 'name' => 'nationality_name'],
             ['data' => 'nationality_short_code', 'name' => 'nationality_short_code'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
@@ -99,7 +100,7 @@ class NationalityService
         return datatables()
             ->of($query)
             ->addIndexColumn()
-            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            // ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('nationality_name', fn($row) => $row->nationality_name ?? '-')
             ->addColumn('nationality_short_code', fn($row) => $row->nationality_short_code ?? '-')
             ->addColumn('action', function ($row) {
@@ -128,28 +129,28 @@ class NationalityService
         $insertData = [];
         foreach ($rows as $key => $row) {
             // print_r($row);
-            $company_id = $this->companyService->getIdByCompanyname($row['company']);
+            // $company_id = $this->companyService->getIdByCompanyname($row['company']);
 
-            if ($company_id == null) {
-                $existing = $this->companyService->checkIfExist(array('company_name' => $row['company'], 'nationality_name' => $row['country_name']));
+            // if ($company_id == null) {
+            //     $existing = $this->companyService->checkIfExist(array('company_name' => $row['company'], 'nationality_name' => $row['country_name']));
 
-                if (!empty($existing)) {
-                    // echo "exist";
-                    $existing->restore();
+            //     if (!empty($existing)) {
+            //         // echo "exist";
+            //         $existing->restore();
 
-                    $company_id = $existing->id;
-                } else {
-                    $company_id = $this->companyService->createOrRestore([
-                        'company_name' => $row['company'],
-                    ], $user_id)->id;
-                }
-            }
+            //         $company_id = $existing->id;
+            //     } else {
+            //         $company_id = $this->companyService->createOrRestore([
+            //             'company_name' => $row['company'],
+            //         ], $user_id)->id;
+            //     }
+            // }
 
-            $paymentModeexist = $this->nationalityRepository->checkIfExist(array('nationality_name' => $row['country_name'], 'company_id' => $company_id));
+            $paymentModeexist = $this->nationalityRepository->checkIfExist(array('nationality_name' => $row['country_name'])); //, 'company_id' => $company_id
 
             if (empty($paymentModeexist)) {
                 $insertData[] = [
-                    'company_id' => $company_id,
+                    // 'company_id' => $company_id,
                     'nationality_code' => $this->setPaymentModeCode($key + 1),
                     'nationality_name' => $row['country_name'],
                     'nationality_short_code' => $row['country_code'],

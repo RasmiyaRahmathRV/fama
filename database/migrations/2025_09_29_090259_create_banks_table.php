@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('banks', function (Blueprint $table) {
             $table->id();
-            $table->Unsignedinteger('company_id');
+            $table->Unsignedinteger('company_id')->nullable();
             $table->string('bank_code');
             $table->string('bank_name');
             $table->string('bank_short_code');
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
 
-            $table->unique(['company_id', 'bank_name']);
+            // $table->unique(['company_id', 'bank_name']);
 
             $table->softDeletes();
         });
