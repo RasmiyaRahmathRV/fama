@@ -49,13 +49,13 @@ class PaymentModeController extends Controller
                 return response()->json(['success' => true, 'data' => $payment_mode, 'message' => 'Payment mode created successfully'], 201);
             }
         } catch (\Exception $e) {
-            if ($e->getCode() == 23000) { // integrity constraint violation
-                throw ValidationException::withMessages([
-                    'payment_mode_name' => 'This payment mode already exists for this company.',
-                ]);
-            } else {
-                return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
-            }
+            // if ($e->getCode() == 23000) { // integrity constraint violation
+            //     throw ValidationException::withMessages([
+            //         'payment_mode_name' => 'This payment mode already exists for this company.',
+            //     ]);
+            // } else {
+            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
+            // }
         }
     }
 

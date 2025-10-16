@@ -19,7 +19,7 @@ class NationalityExport implements FromCollection, WithHeadings
 
     public function collection()
     {
-        $query = Nationality::with('company');
+        $query = Nationality::query(); //with('company')
 
         if ($this->search) {
             $search = $this->search;
@@ -27,23 +27,23 @@ class NationalityExport implements FromCollection, WithHeadings
                 $q->where('nationality_name', 'like', "%{$search}%")
                     ->orWhere('nationality_code', 'like', "%{$search}%")
                     ->orWhere('nationality_short_code', 'like', "%{$search}%")
-                    ->orWhereHas('company', function ($q2) use ($search) {
-                        $q2->where('company_name', 'like', "%{$search}%");
-                    })
+                    // ->orWhereHas('company', function ($q2) use ($search) {
+                    //     $q2->where('company_name', 'like', "%{$search}%");
+                    // })
                     ->orWhereRaw("CAST(nationalities.id AS CHAR) LIKE ?", ["%{$search}%"]);
             });
         }
 
-        if ($this->filter) {
-            $query->where('company_id', $this->filter);
-        }
+        // if ($this->filter) {
+        //     $query->where('company_id', $this->filter);
+        // }
 
         return $query->get()
             ->map(function ($nationality) {
                 return [
                     'ID' => $nationality->id,
                     'Nationality Code' => $nationality->nationality_code,
-                    'Company' => $nationality->company->company_name ?? '',
+                    // 'Company' => $nationality->company->company_name ?? '',
                     'Nationality Name' => $nationality->nationality_name,
                     'Nationality Short Code' => $nationality->nationality_short_code,
                 ];
@@ -55,7 +55,7 @@ class NationalityExport implements FromCollection, WithHeadings
         return [
             'ID',
             'Nationality Code',
-            'Company',
+            // 'Company',
             'Nationality Name',
             'Nationality Short Code'
         ];

@@ -12,18 +12,18 @@
                 <input type="hidden" name="id" id="bank_id">
                 <div class="modal-body">
                     <div class="card-body">
-                        <div class="form-group row">
-                            {{-- @if (auth()->user()->company_id)
+                        {{-- <div class="form-group row"> --}}
+                        {{-- @if (auth()->user()->company_id)
                                 <input type="hidden" name="company_id" id="company_id"
                                     value="{{ auth()->user()->company_id }}">
                             @else --}}
-                            <label class="col-sm-3 col-form-label">Company</label>
+                        {{-- <label class="col-sm-3 col-form-label">Company</label>
                             <select class="form-control select2 col-sm-9" name="company_id" id="company_id">
                                 <option value="">Select Company</option>
                                 {{ $company_dropdown }}
-                            </select>
-                            {{-- @endif --}}
-                        </div>
+                            </select> --}}
+                        {{-- @endif --}}
+                        {{-- </div> --}}
                         <div class="form-group row">
                             <label for="inputEmail3" class="col-sm-3 col-form-label">Bank Name</label>
                             <input type="text" name="bank_name" id="bank_name" class="col-sm-9 form-control"

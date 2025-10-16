@@ -53,7 +53,7 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Company Name</th>
+                                            {{-- <th>Company Name</th> --}}
                                             <th>Nationality Name</th>
                                             <th>Short Code</th>
                                             <th>Action</th>
@@ -158,10 +158,10 @@
                         orderable: true,
                         searchable: false
                     },
-                    {
-                        data: 'company_name',
-                        name: 'companies.company_name',
-                    },
+                    // {
+                    //     data: 'company_name',
+                    //     name: 'companies.company_name',
+                    // },
                     {
                         data: 'nationality_name',
                         name: 'nationalities.nationality_name',

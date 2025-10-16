@@ -19,7 +19,7 @@ class PaymentModeExport implements FromCollection, WithHeadings
 
     public function collection()
     {
-        $query = PaymentMode::with('company');
+        $query = PaymentMode::query(); // use query() to get a Builder (was PaymentMode::all())
 
         if ($this->search) {
             $search = $this->search;
@@ -27,23 +27,23 @@ class PaymentModeExport implements FromCollection, WithHeadings
                 $q->where('payment_mode_name', 'like', "%{$search}%")
                     ->orWhere('payment_mode_code', 'like', "%{$search}%")
                     ->orWhere('payment_mode_short_code', 'like', "%{$search}%")
-                    ->orWhereHas('company', function ($q2) use ($search) {
-                        $q2->where('company_name', 'like', "%{$search}%");
-                    })
+                    // ->orWhereHas('company', function ($q2) use ($search) {
+                    //     $q2->where('company_name', 'like', "%{$search}%");
+                    // })
                     ->orWhereRaw("CAST(payment_modes.id AS CHAR) LIKE ?", ["%{$search}%"]);
             });
         }
 
-        if ($this->filter) {
-            $query->where('company_id', $this->filter);
-        }
+        // if ($this->filter) {
+        //     $query->where('company_id', $this->filter);
+        // }
 
         return $query->get()
             ->map(function ($paymentMode) {
                 return [
                     'ID' => $paymentMode->id,
                     'Payment Mode Code' => $paymentMode->payment_mode_code,
-                    'Company' => $paymentMode->company->company_name ?? '',
+                    // 'Company' => $paymentMode->company->company_name ?? '',
                     'Payment Mode Name' => $paymentMode->payment_mode_name,
                     'Payment Mode Short Code' => $paymentMode->payment_mode_short_code,
                 ];
@@ -55,7 +55,7 @@ class PaymentModeExport implements FromCollection, WithHeadings
         return [
             'ID',
             'Payment Mode Code',
-            'Company',
+            // 'Company',
             'Payment Mode Name',
             'Payment Mode Short Code'
         ];

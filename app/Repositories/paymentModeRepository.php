@@ -49,7 +49,7 @@ class PaymentModeRepository
     public function checkIfExist($data)
     {
         $existing = PaymentMode::withTrashed()
-            ->where('company_id', $data['company_id'])
+            // ->where('company_id', $data['company_id'])
             ->where('payment_mode_name', $data['payment_mode_name'])
             ->first();
 
@@ -63,22 +63,22 @@ class PaymentModeRepository
     {
         // print_r($filters);
         $query = PaymentMode::query()
-            ->select('payment_modes.*', 'companies.company_name')
-            ->join('companies', 'companies.id', '=', 'payment_modes.company_id');
+            ->select('payment_modes.*'); //, 'companies.company_name'
+        // ->join('companies', 'companies.id', '=', 'payment_modes.company_id')
 
         if (!empty($filters['search'])) {
             $query->orwhere('payment_mode_name', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('payment_mode_code', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('payment_mode_short_code', 'like', '%' . $filters['search'] . '%')
-                ->orWhereHas('company', function ($q) use ($filters) {
-                    $q->where('company_name', 'like', '%' . $filters['search'] . '%');
-                })
+                // ->orWhereHas('company', function ($q) use ($filters) {
+                //     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
+                // })
                 ->orWhereRaw("CAST(payment_modes.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
 
-        if (!empty($filters['company_id'])) {
-            $query->Where('payment_modes.company_id', $filters['company_id']);
-        }
+        // if (!empty($filters['company_id'])) {
+        //     $query->Where('payment_modes.company_id', $filters['company_id']);
+        // }
 
         return $query;
     }
