@@ -72,11 +72,12 @@ class PaymentModeService
             'payment_mode_name' => [
                 'required',
                 Rule::unique('payment_modes')->ignore($id)
-                    ->where(fn($q) => $q->where('company_id', $data['company_id'])
+                    ->where(fn($q) => $q
+                        // ->where('company_id', $data['company_id'])
                         ->whereNull('deleted_at'))
             ],
             'payment_mode_short_code' => 'required',
-            'company_id' => 'required|exists:companies,id',
+            // 'company_id' => 'required|exists:companies,id',
         ]);
 
         if ($validator->fails()) {
@@ -90,7 +91,7 @@ class PaymentModeService
 
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
-            ['data' => 'company_name', 'name' => 'company_name'],
+            // ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'payment_mode_name', 'name' => 'payment_mode_name'],
             ['data' => 'payment_mode_short_code', 'name' => 'payment_mode_short_code'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
@@ -99,7 +100,7 @@ class PaymentModeService
         return datatables()
             ->of($query)
             ->addIndexColumn()
-            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            // ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('payment_mode_name', fn($row) => $row->payment_mode_name ?? '-')
             ->addColumn('payment_mode_short_code', fn($row) => $row->payment_mode_short_code ?? '-')
             ->addColumn('action', function ($row) {
@@ -128,28 +129,28 @@ class PaymentModeService
         $insertData = [];
         foreach ($rows as $key => $row) {
             // print_r($row);
-            $company_id = $this->companyService->getIdByCompanyname($row['company']);
+            // $company_id = $this->companyService->getIdByCompanyname($row['company']);
 
-            if ($company_id == null) {
-                $existing = $this->companyService->checkIfExist(array('company_name' => $row['company'], 'payment_mode_name' => $row['payment_mode_name']));
+            // if ($company_id == null) {
+            //     $existing = $this->companyService->checkIfExist(array('company_name' => $row['company'], 'payment_mode_name' => $row['payment_mode_name']));
 
-                if (!empty($existing)) {
-                    // echo "exist";
-                    $existing->restore();
+            //     if (!empty($existing)) {
+            //         // echo "exist";
+            //         $existing->restore();
 
-                    $company_id = $existing->id;
-                } else {
-                    $company_id = $this->companyService->createOrRestore([
-                        'company_name' => $row['company'],
-                    ], $user_id)->id;
-                }
-            }
+            //         $company_id = $existing->id;
+            //     } else {
+            //         $company_id = $this->companyService->createOrRestore([
+            //             'company_name' => $row['company'],
+            //         ], $user_id)->id;
+            //     }
+            // }
 
-            $paymentModeexist = $this->paymentModeRepository->checkIfExist(array('payment_mode_name' => $row['payment_mode_name'], 'company_id' => $company_id));
+            $paymentModeexist = $this->paymentModeRepository->checkIfExist(array('payment_mode_name' => $row['payment_mode_name'])); //, 'company_id' => $company_id
 
             if (empty($paymentModeexist)) {
                 $insertData[] = [
-                    'company_id' => $company_id,
+                    // 'company_id' => $company_id,
                     'payment_mode_code' => $this->setPaymentModeCode($key + 1),
                     'payment_mode_name' => $row['payment_mode_name'],
                     'payment_mode_short_code' => $row['payment_mode_short_code'],

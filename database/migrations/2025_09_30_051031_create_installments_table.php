@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('installments', function (Blueprint $table) {
             $table->id();
-            $table->Unsignedinteger('company_id');
+            $table->Unsignedinteger('company_id')->nullable();
             $table->string('installment_code');
             $table->string('installment_name');
             $table->unsignedInteger('interval');
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
 
-            $table->unique(['company_id', 'installment_name']);
+            // $table->unique(['company_id', 'installment_name']);
 
             $table->softDeletes();
         });

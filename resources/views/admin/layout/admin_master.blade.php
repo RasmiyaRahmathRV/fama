@@ -24,8 +24,9 @@
 
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('css/adminlte.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 
+    <!-- custom style -->
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 </head>
 <!--
 `body` tag options:
@@ -159,9 +160,9 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="index3.html" class="brand-link">
-                <img src="{{ asset('img/AdminLTELogo.png') }}" alt="AdminLTE Logo"
-                    class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">Fama Real Estate</span>
+                <img src="{{ asset('images/fg.png') }}" class="brand-image">
+                {{-- <img src="{{ asset('img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8"> --}}
+                <span class="brand-text font-weight-light">&nbsp</span>
             </a>
 
             <!-- Sidebar -->

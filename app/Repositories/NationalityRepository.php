@@ -49,7 +49,7 @@ class NationalityRepository
     public function checkIfExist($data)
     {
         $existing = Nationality::withTrashed()
-            ->where('company_id', $data['company_id'])
+            // ->where('company_id', $data['company_id'])
             ->where('nationality_name', $data['nationality_name'])
             ->first();
 
@@ -63,22 +63,22 @@ class NationalityRepository
     {
         // print_r($filters);
         $query = Nationality::query()
-            ->select('nationalities.*', 'companies.company_name')
-            ->join('companies', 'companies.id', '=', 'nationalities.company_id');
+            ->select('nationalities.*'); //, 'companies.company_name'
+        // ->join('companies', 'companies.id', '=', 'nationalities.company_id');
 
         if (!empty($filters['search'])) {
             $query->orwhere('nationality_name', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('nationality_code', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('nationality_short_code', 'like', '%' . $filters['search'] . '%')
-                ->orWhereHas('company', function ($q) use ($filters) {
-                    $q->where('company_name', 'like', '%' . $filters['search'] . '%');
-                })
+                // ->orWhereHas('company', function ($q) use ($filters) {
+                //     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
+                // })
                 ->orWhereRaw("CAST(nationalities.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
 
-        if (!empty($filters['company_id'])) {
-            $query->Where('nationalities.company_id', $filters['company_id']);
-        }
+        // if (!empty($filters['company_id'])) {
+        //     $query->Where('nationalities.company_id', $filters['company_id']);
+        // }
 
         return $query;
     }

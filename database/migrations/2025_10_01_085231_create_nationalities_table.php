@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('nationalities', function (Blueprint $table) {
             $table->id();
-            $table->Unsignedinteger('company_id');
+            $table->Unsignedinteger('company_id')->nullable();
             $table->string('nationality_code');
             $table->string('nationality_name');
             $table->string('nationality_short_code');
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
 
-            $table->unique(['company_id', 'nationality_name']);
+            // $table->unique(['company_id', 'nationality_name']);
 
             $table->softDeletes();
         });

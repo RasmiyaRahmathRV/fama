@@ -53,7 +53,7 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Company Name</th>
+                                            {{-- <th>Company Name</th> --}}
                                             <th>Payment Mode</th>
                                             <th>Code</th>
                                             <th>Action</th>
@@ -158,10 +158,10 @@
                         orderable: true,
                         searchable: false
                     },
-                    {
-                        data: 'company_name',
-                        name: 'companies.company_name',
-                    },
+                    // {
+                    //     data: 'company_name',
+                    //     name: 'companies.company_name',
+                    // },
                     {
                         data: 'payment_mode_name',
                         name: 'payment_modes.payment_mode_name',
