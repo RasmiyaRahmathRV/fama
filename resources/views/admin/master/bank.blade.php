@@ -130,12 +130,12 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
     @component('admin.modals.modal-bank')
-        @slot('company_dropdown')
-            {{-- @foreach ($companies as $company)
+        {{-- @slot('company_dropdown')
+            @foreach ($companies as $company)
                 <option value="{{ $company->id }}">{{ $company->company_name }}
                 </option>
-            @endforeach --}}
-        @endslot
+            @endforeach
+        @endslot --}}
     @endcomponent
     <script>
         $(function() {

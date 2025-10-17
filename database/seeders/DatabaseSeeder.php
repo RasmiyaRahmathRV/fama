@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             Industryseeder::class,
             CompanySeeder::class,
             LookupTablesSeeder::class,
+            PaymentModeSeeder::class,
 
         ]);
     }

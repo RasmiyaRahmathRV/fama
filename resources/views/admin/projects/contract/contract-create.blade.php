@@ -183,12 +183,12 @@
                                                         id="contact_no" placeholder="Contact No">
                                                 </div>
                                                 <!-- <div class="col-md-4">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="exampleInputEmail1">Agent</label>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <select class="form-control select2" name="agent" id="agent">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="">Select Agent</option>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="1">Agent 1</option>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </select>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="exampleInputEmail1">Agent</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <select class="form-control select2" name="agent" id="agent">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="">Select Agent</option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="1">Agent 1</option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </select>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
 
                                             </div>
                                             <button class="btn btn-info" onclick="stepper.next()">Next</button>
@@ -323,20 +323,20 @@
                                                 </div>
 
                                                 <!-- <div class="form-group">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-sm-6">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <button type="button" class=" btn btn-success" title="Add more" id="add-more"> Add more <i class="fa fa-plus"></i></button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-sm-6">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <button type="button" class=" btn btn-success" title="Add more" id="add-more"> Add more <i class="fa fa-plus"></i></button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
                                             </div>
                                             <div class="fullBuilding">
                                                 <div id="append-div-fullb">
 
                                                 </div>
                                                 <!-- <div class="form-group">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-sm-6">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <button type="button" class=" btn btn-success" title="Add more" id="add-more-fullBuilding"> Add more <i class="fa fa-plus"></i></button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-sm-6">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <button type="button" class=" btn btn-success" title="Add more" id="add-more-fullBuilding"> Add more <i class="fa fa-plus"></i></button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
                                             </div>
 
                                             <button class="btn btn-info" onclick="stepper.previous()">Previous</button>
@@ -516,93 +516,7 @@
                                                 </div>
                                             </div>
                                             <hr>
-                                            <div class="payment_details">
-                                                <div class="form-group row">
-                                                    <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Payment Mode</label>
-                                                        <select class="form-control select2" name="payment_mode[]"
-                                                            id="payment_mode0">
-                                                            <option value="">Select</option>
-                                                            <option value="1">Cash</option>
-                                                            <option value="2">Bank Transfer</option>
-                                                            <option value="3">Cheque</option>
-                                                            <option value="4">Credit card</option>
-                                                        </select>
-                                                        {{-- <div class="input-group">
-                                                            <select class="form-control select2" name="payment_mode[]"
-                                                                id="payment_mode0">
-
-                                                            </select>
-                                                            <span class="input-group-append">
-                                                                <button type="button" class="btn btn-info btn-flat"
-                                                                    id="addPaymentModeButton"><i
-                                                                        class="fa fa-plus"></i></button>
-                                                            </span>
-                                                        </div> --}}
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Payment Date</label>
-                                                        <div class="input-group date" id="firstpaymntdate"
-                                                            data-target-input="nearest">
-                                                            <input type="text"
-                                                                class="form-control datetimepicker-input"
-                                                                name="payment_date[]" data-target="#firstpaymntdate"
-                                                                placeholder="dd-mm-YYYY" />
-                                                            <div class="input-group-append" data-target="#firstpaymntdate"
-                                                                data-toggle="datetimepicker">
-                                                                <div class="input-group-text"><i
-                                                                        class="fa fa-calendar"></i></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Payment Amount</label>
-                                                        <input type="text" class="form-control" id="payment_amount0"
-                                                            name="payment_amount[]" placeholder="Payment Amount">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <div class="col-md-4 bank" id="bank0">
-                                                        <label for="exampleInputEmail1">Bank Name</label>
-                                                        <select class="form-control select2" name="bank_name[]"
-                                                            id="bank_name0">
-                                                            <option value="">Select bank</option>
-                                                            <option value="1">1</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="col-md-3 chq" id="chq0">
-                                                        <label for="exampleInputEmail1">Cheque No</label>
-                                                        <input type="text" class="form-control" id="cheque_no0"
-                                                            name="cheque_no[]" placeholder="Cheque No">
-                                                    </div>
-
-                                                    <div class="col-md-3 chq" id="chqiss0">
-                                                        <label for="exampleInputEmail1">Cheque Issuer</label>
-                                                        <select class="form-control select2" name="cheque_issuer[]"
-                                                            id="cheque_issuer0">
-                                                            <option value="">Select</option>
-                                                            <option value="self">Self</option>
-                                                            <option value="other">Other</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="col-md-3 chqot" id="chqotiss0">
-                                                        <label for="exampleInputEmail1">Cheque Issuer Name</label>
-                                                        <input type="text" class="form-control"
-                                                            id="cheque_issuer_name0" name="cheque_issuer_name[]"
-                                                            placeholder="Cheque Issuer Name">
-                                                    </div>
-
-                                                    <div class="col-md-3 chqot" id="chqot0">
-                                                        <label for="exampleInputEmail1">Issuer ID</label>
-                                                        <input type="text" class="form-control" id="issuer_id0"
-                                                            name="issuer_id[]" placeholder="Issuer ID">
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                            </div>
+                                            <div class="payment_details"></div>
                                             <hr>
                                             <button class="btn btn-info" onclick="stepper.previous()">Previous</button>
                                             <button class="btn btn-info" onclick="stepper.next()">Next</button>
@@ -612,13 +526,13 @@
                                             <div class=" p-3 mb-3">
                                                 <!-- title row -->
                                                 <!-- <div class="row">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-12">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <h4>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="fas fa-globe"></i> Fama Real Estate
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <small class="float-right">Date: 2/10/2014</small>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </h4>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <h4>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="fas fa-globe"></i> Fama Real Estate
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <small class="float-right">Date: 2/10/2014</small>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </h4>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
                                                 <!-- info row -->
                                                 <div class="row invoice-info">
                                                     <div class="col-sm-6 float-left">
@@ -648,8 +562,8 @@
                                                                 Total Rental - <span class="total_rental">0.00</span> <br>
                                                             </address>
                                                             <!-- <address>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <span class="project_id">P-11231</span></br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </address> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <span class="project_id">P-11231</span></br>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </address> -->
                                                         </span>
                                                     </div>
                                                     <!-- /.col -->
@@ -707,9 +621,9 @@
                                                         placeholder="Profit" readonly>
                                                 </div>
                                                 <!-- <div class="col-md-3">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="exampleInputEmail1">Rent per Room</label>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <input type="text" class="form-control" id="rent_per_room" placeholder="Rent per Room">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="exampleInputEmail1">Rent per Room</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <input type="text" class="form-control" id="rent_per_room" placeholder="Rent per Room">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
                                             </div>
 
                                             <button class="btn btn-info" onclick="stepper.previous()">Previous</button>
@@ -1289,7 +1203,7 @@
                 const prevFbBlocks = containerPayment.querySelectorAll('.payment_mode_div');
                 prevFbBlocks.forEach(block => block.remove());
 
-                for (let i = 1; i < installments; i++) {
+                for (let i = 0; i < installments; i++) {
 
                     const paymentBlock = document.createElement('div');
                     paymentBlock.classList.add('payment_mode_div');
@@ -1298,14 +1212,29 @@
                     <div class="form-group row">
                         <div class="col-md-4">
                             <label>Payment Mode</label>
-                            <select class="form-control select2" name="payment_mode[]" id="payment_mode${i}">
-                                <option value="">Select</option>
-                                <option value="1">Cash</option>
-                                <option value="bank">Bank Transfer</option>
-                                <option value="chq">Cheque</option>
-                                <option value="cc">Credit card</option>
-                            </select>
+                            <div class="input-group">
+                                <select class="form-control select2 payment_mode"
+                                    name="payment_mode[]" id="payment_mode${i}">
+                                    <option value="">Select</option>
+                                    @foreach ($paymentmodes as $paymentmode)
+                                        <option value="{{ $paymentmode->id }}">
+                                            {{ $paymentmode->payment_mode_name }} </option>
+                                    @endforeach
+
+
+                                </select>
+                                <span class="input-group-append">
+                                   
+                                    <button type="button" class="btn btn-info btn-flat addPaymentModeBtn"
+                                        data-toggle="modal" 
+                                        data-target="#modal-payment-mode" 
+                                        data-select-id="payment_mode${i}">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </span>
+                            </div>
                         </div>
+                         
                         <div class="col-md-4">
                             <label>Payment Date</label>
                             <div class="input-group date" id="otherPaymentDate${i}" data-target-input="nearest">
@@ -1325,10 +1254,27 @@
                     <div class="form-group row">
                             <div class="col-md-4 bank" id="bank${i}">
                                 <label for="exampleInputEmail1">Bank Name</label>
-                                <select class="form-control select2" name="bank_name[]" id="bank_name${i}">
-                                    <option value="">Select bank</option>
-                                    <option value="1">1</option>
+                               
+                                 <div class="input-group">
+                                <select class="form-control select2 bank_name" name="bank_name[]" id="bank_name${i}">
+                                    <option value="">Select Bank</option>
+                                    @foreach ($banks as $bank)
+                                        <option value="{{ $bank->id }}">
+                                            {{ $bank->bank_name }} </option>
+                                    @endforeach
+
+
                                 </select>
+                                <span class="input-group-append">
+                                   
+                                    <button type="button" class="btn btn-info btn-flat addBankBtn"
+                                        data-toggle="modal" 
+                                        data-target="#modal-bank" 
+                                        data-select-id="bank_name${i}">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </span>
+                            </div>
                             </div>
 
                             <div class="col-md-3 chq" id="chq${i}">
@@ -1394,6 +1340,19 @@
             });
 
 
+        });
+
+        let currentSelectModeId = null;
+
+        $(document).on('click', '.addPaymentModeBtn', function() {
+            currentSelectModeId = $(this).data('select-id');
+            $('#modal-payment-mode').modal('show');
+        });
+        let currentSelectBankId = null;
+
+        $(document).on('click', '.addBankBtn', function() {
+            currentSelectBankId = $(this).data('select-id');
+            $('#modal-bank').modal('show');
         });
     </script>
 
@@ -1467,9 +1426,9 @@
         }
 
 
-        $('#payment_mode0').change(function() {
-            paymentModeChange(0);
-        });
+        // $('#payment_mode0').change(function() {
+        //     paymentModeChange(0);
+        // });
 
 
         function paymentModeChange(i) {
@@ -1506,9 +1465,9 @@
             }
         }
 
-        $('#cheque_issuer0').change(function() {
-            checkIssView(0);
-        });
+        // $('#cheque_issuer0').change(function() {
+        //     checkIssView(0);
+        // });
 
         $('#contract_type').change(function() {
             calculateOtc();
@@ -1818,14 +1777,6 @@
         $('#addInstallmentButton').on('click', function() {
             $('#modal-installment').modal('show');
         });
-
-        $('#addPaymentModeButton').on('click', function() {
-            setupModal('#modal-payment-mode', [{
-                name: 'company_id',
-                windowId: 'lastAddedCompanyId',
-                windowName: 'lastAddedCompanyName'
-            }]);
-        });
     </script>
     @component('admin.modals.modal-vendor')
         @slot('company_dropdown')
@@ -1896,12 +1847,20 @@
     @endcomponent
 
     @component('admin.modals.modal-paymentMode')
-        @slot('company_dropdown')
+        {{-- @slot('company_dropdown')
             @foreach ($companies as $company)
                 <option value="{{ $company->id }}">{{ $company->company_name }}
                 </option>
             @endforeach
-        @endslot
+        @endslot --}}
+    @endcomponent
+    @component('admin.modals.modal-bank')
+        {{-- @slot('company_dropdown')
+            @foreach ($companies as $company)
+                <option value="{{ $company->id }}">{{ $company->company_name }}
+                </option>
+            @endforeach
+        @endslot --}}
     @endcomponent
 
     {{-- Companywise deopdown selection --}}
