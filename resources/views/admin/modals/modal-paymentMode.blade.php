@@ -55,7 +55,7 @@
          e.preventDefault();
          //  $('#company_id').prop('disabled', false);
          const pmform = $(this);
-         pmform.find('select[name="company_id"]').prop('disabled', false);
+         //  pmform.find('select[name="company_id"]').prop('disabled', false);
 
          var form = document.getElementById('PaymentModeForm');
          var fdata = new FormData(form);
@@ -74,19 +74,22 @@
                      window.location.reload();
                  @else
                      let newOption = new Option(response.data.payment_mode_name, response.data
-                         .id, true,
-                         true);
-                     //  console.log(newOption);
+                         .id, false,
+                         false);
+                     $('.payment_mode').each(function() {
+                         $(this).append(newOption.cloneNode(true));
+                     });
 
-                     $('#payment_mode0').prepend(newOption).val(response.data.id).trigger(
-                         'change');
-
+                     // Automatically select it in the select that opened the modal
+                     if (currentSelectModeId) {
+                         $(`#${currentSelectModeId}`).val(response.data.id).trigger(
+                         'change.select2');
+                     }
                      if (document.activeElement) {
                          document.activeElement.blur();
                      }
                      pmform[0].reset();
-                     pmform.find('select[name="company_id"]').prop('disabled', true);
-
+                     //  pmform.find('select[name="company_id"]').prop('disabled', true);
 
                      $('#modal-payment-mode').modal('hide');
                  @endif

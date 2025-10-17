@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ContractExport;
+use App\Models\Bank;
 use App\Models\Contract;
 use App\Models\Industry;
 use App\Models\Installment;
+use App\Models\PaymentMode;
 use App\Models\PropertySizeUnit;
 use App\Services\AreaService;
 use App\Services\CompanyService;
@@ -52,11 +54,13 @@ class ContractController extends Controller
         $vendors = $this->vendorService->getAll();
         $propertySizeUnits = PropertySizeUnit::all();
         $installments = Installment::all();
+        $paymentmodes = PaymentMode::all();
+        $banks = Bank::all();
 
 
         // dd($companies, $localities, $areas, $property_types, $properties);
 
-        return view("admin.projects.contract.contract-create", compact("title", "companies", "localities", "areas", "property_types", "properties", "installments", "vendors", "industries", "propertySizeUnits", "installments"));
+        return view("admin.projects.contract.contract-create", compact("title", "companies", "localities", "areas", "property_types", "properties", "installments", "vendors", "industries", "propertySizeUnits", "installments", "paymentmodes", "banks"));
     }
 
     public function store(Request $request)

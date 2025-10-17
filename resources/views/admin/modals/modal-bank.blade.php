@@ -71,11 +71,19 @@
                 @if (request()->is('bank'))
                     window.location.reload();
                 @else
-                    let newOption = new Option(response.data.bank_name, response.data.id, true,
-                        true);
+                    let newOption = new Option(response.data.bank_name, response.data.id, false,
+                        false);
                     //  console.log(newOption);
 
-                    $('#bank_id').prepend(newOption).val(response.data.id).trigger('change');
+                    $('.bank_name').each(function() {
+                        $(this).append(newOption.cloneNode(true));
+                    });
+
+                    // Automatically select it in the select that opened the modal
+                    if (currentSelectBankId) {
+                        $(`#${currentSelectBankId}`).val(response.data.id).trigger(
+                            'change.select2');
+                    }
 
                     if (document.activeElement) {
                         document.activeElement.blur();
