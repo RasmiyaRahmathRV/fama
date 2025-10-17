@@ -18,6 +18,7 @@ namespace App\Models{
  * @property string $module
  * @property int|null $record_id
  * @property string $action
+ * @property string|null $description
  * @property array|null $changes
  * @property string $created_at
  * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog newModelQuery()
@@ -26,6 +27,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog whereAction($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog whereChanges($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog whereModule($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog whereRecordId($value)
@@ -67,7 +69,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Area withoutTrashed()
  * @method static \Database\Factories\AreaFactory factory($count = null, $state = [])
  * @mixin \Eloquent
+ * @property int|null $deleted_by
  * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|Area whereDeletedBy($value)
  */
 	class Area extends \Eloquent {}
 }
@@ -81,6 +85,7 @@ namespace App\Models{
  * @property string $bank_short_code
  * @property int|null $added_by
  * @property int|null $updated_by
+ * @property int|null $deleted_by
  * @property int $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -99,6 +104,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Bank whereCompanyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bank whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bank whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bank whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bank whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bank whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bank whereUpdatedAt($value)
@@ -151,7 +157,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Company withoutTrashed()
  * @method static \Database\Factories\CompanyFactory factory($count = null, $state = [])
  * @mixin \Eloquent
+ * @property int $industry_id
+ * @property int|null $deleted_by
  * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereIndustryId($value)
  */
 	class Company extends \Eloquent {}
 }
@@ -181,6 +191,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Industry newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Industry newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Industry query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Industry whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Industry whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Industry whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Industry whereUpdatedAt($value)
  */
 	class Industry extends \Eloquent {}
 }
@@ -194,6 +208,7 @@ namespace App\Models{
  * @property int $interval
  * @property int|null $added_by
  * @property int|null $updated_by
+ * @property int|null $deleted_by
  * @property int $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -209,6 +224,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereCompanyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereInstallmentCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Installment whereInstallmentName($value)
@@ -257,7 +273,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Locality withoutTrashed()
  * @method static \Database\Factories\LocalityFactory factory($count = null, $state = [])
  * @mixin \Eloquent
+ * @property int|null $deleted_by
  * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|Locality whereDeletedBy($value)
  */
 	class Locality extends \Eloquent {}
 }
@@ -265,12 +283,13 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property int $company_id
+ * @property int|null $company_id
  * @property string $nationality_code
  * @property string $nationality_name
  * @property string $nationality_short_code
  * @property int|null $added_by
  * @property int|null $updated_by
+ * @property int|null $deleted_by
  * @property int $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -286,6 +305,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereCompanyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereNationalityCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Nationality whereNationalityName($value)
@@ -302,12 +322,13 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property int $company_id
+ * @property int|null $company_id
  * @property string $payment_mode_code
  * @property string $payment_mode_name
  * @property string $payment_mode_short_code
  * @property int|null $added_by
  * @property int|null $updated_by
+ * @property int|null $deleted_by
  * @property int $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -323,6 +344,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode whereCompanyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode wherePaymentModeCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode wherePaymentModeName($value)
@@ -407,7 +429,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Property withoutTrashed()
  * @method static \Database\Factories\PropertyFactory factory($count = null, $state = [])
  * @mixin \Eloquent
+ * @property int|null $deleted_by
  * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|Property whereDeletedBy($value)
  */
 	class Property extends \Eloquent {}
 }
@@ -463,7 +487,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|PropertyType withoutTrashed()
  * @method static \Database\Factories\PropertyTypeFactory factory($count = null, $state = [])
  * @mixin \Eloquent
+ * @property int|null $deleted_by
  * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|PropertyType whereDeletedBy($value)
  */
 	class PropertyType extends \Eloquent {}
 }
@@ -624,7 +650,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Vendor withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Vendor withoutTrashed()
  * @mixin \Eloquent
+ * @property int|null $deleted_by
  * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereDeletedBy($value)
  */
 	class Vendor extends \Eloquent {}
 }

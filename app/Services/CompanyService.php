@@ -88,6 +88,12 @@ class CompanyService
             'email' => 'required|email',
             'industry_id' => 'required|exists:industries,id',
             'phone'   => 'required',
+            'company_short_code' => [
+                'required',
+                Rule::unique('companies', 'company_short_code')
+                    ->ignore($id)
+                    ->where(fn($q) => $q->whereNull('deleted_at'))
+            ]
         ], [
 
             'industry_id.required' => 'Please select an industry.'
@@ -110,6 +116,8 @@ class CompanyService
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
             ['data' => 'company_name', 'name' => 'company_name'],
+            ['data' => 'company_code', 'name' => 'company_code'],
+            ['data' => 'company_short_code', 'name' => 'company_short_name'],
             ['data' => 'industry', 'name' => 'industry'],
             ['data' => 'address', 'name' => 'address'],
             ['data' => 'phone', 'name' => 'phone'],
@@ -122,6 +130,8 @@ class CompanyService
             ->of($query)
             ->addIndexColumn()
             ->addColumn('company_name', fn($row) => ucfirst($row->company_name) ?? '-')
+            ->addColumn('company_code', fn($row) => ucfirst($row->company_code) ?? '-')
+            ->addColumn('company_short_code', fn($row) => ucfirst($row->company_short_code) ?? '-')
             ->addColumn('industry', fn($row) => $row->industries_name ?? '-')
             ->addColumn('address', fn($row) => $row->address ?? '-')
             ->addColumn('phone', fn($row) => $row->phone ?? '-')

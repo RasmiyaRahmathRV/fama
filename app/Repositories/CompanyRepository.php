@@ -68,6 +68,7 @@ class CompanyRepository
         if (!empty($filters['search'])) {
             $query->orwhere('company_name', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('company_code', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('company_short_code', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('phone', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('email', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('address', 'like', '%' . $filters['search'] . '%')

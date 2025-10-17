@@ -52,6 +52,8 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Company Name</th>
+                                            <th>Company Code</th>
+                                            <th>Company Short Code</th>
                                             <th>Industry</th>
                                             <th>Address</th>
                                             <th>Phone</th>
@@ -127,6 +129,14 @@
                     {
                         data: 'company_name',
                         name: 'companies.company_name',
+                    },
+                    {
+                        data: 'company_code',
+                        name: 'companies.company_code',
+                    },
+                    {
+                        data: 'company_short_code',
+                        name: 'companies.company_short_code',
                     },
                     {
                         data: 'industry_name',

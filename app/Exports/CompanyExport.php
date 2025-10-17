@@ -29,6 +29,7 @@ class CompanyExport implements FromCollection, WithHeadings
             $query->where(function ($q) use ($search) {
                 $q->where('company_name', 'like', "%{$search}%")
                     ->orWhere('company_code', 'like', "%{$search}%")
+                    ->orWhere('company_short_code', 'like', "%{$search}%")
                     ->orWhere('phone', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('address', 'like', "%{$search}%")
@@ -50,6 +51,7 @@ class CompanyExport implements FromCollection, WithHeadings
                     'ID' => $company->id,
                     'Company Code' => $company->company_code,
                     'Company Name' => $company->company_name ?? '',
+                    'Company Short Code' => $company->company_short_code ?? '',
                     'Industry' => $company->industry->name ?? '',
                     'Company Phone' => $company->phone,
                     'Company Email' => $company->email,
@@ -66,7 +68,8 @@ class CompanyExport implements FromCollection, WithHeadings
         return [
             'ID',
             'Comapny Code',
-            'Company name',
+            'Company Name',
+            'company Short Code',
             'Industry',
             'Company Phone',
             'Company Email',

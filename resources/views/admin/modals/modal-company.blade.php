@@ -19,6 +19,15 @@
                                     id="inputEmail3" placeholder="Company Name">
                             </div>
                             <div class="col-sm-6">
+                                <label for="inputEmail3" class="col-form-label">Company Name</label>
+                                <input type="text" name="company_short_code" id="company_short_code"
+                                    class="form-control" id="inputEmail3" placeholder="Company Short Code">
+                            </div>
+
+
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-6">
                                 <label for="industry_id" class="col-form-label">Industry</label>
                                 <select name="industry_id" id="industry_id" class="form-control select2"
                                     style="width: 100%;">
@@ -26,26 +35,27 @@
                                     {{ $industry_dropdown }}
                                 </select>
                             </div>
-
-                        </div>
-                        <div class="form-group row">
                             <div class="col-sm-6">
                                 <label for="inputEmail3" class="col-form-label">Website</label>
                                 <input type="text" name="website" id="website" class="form-control"
                                     id="inputEmail3" placeholder="Website">
                             </div>
+
+                        </div>
+                        <div class="form-group row">
                             <div class="col-sm-6">
                                 <label for="inputEmail3" class="col-form-label">Phone</label>
                                 <input type="number" name="phone" id="phone" class="form-control"
                                     id="inputEmail3" placeholder="Phone">
                             </div>
-                        </div>
-                        <div class="form-group row">
                             <div class="col-sm-6">
                                 <label for="inputEmail3" class="col-form-label">Email</label>
                                 <input type="email" name="email" id="email" class="form-control"
                                     id="inputEmail3" placeholder="Email">
                             </div>
+
+                        </div>
+                        <div class="form-group row">
                             <div class="col-sm-6">
                                 <label for="inputEmail3" class="col-form-label">Address</label>
                                 <textarea name="address" class="form-control" id="address"></textarea>
