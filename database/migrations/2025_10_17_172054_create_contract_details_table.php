@@ -25,6 +25,8 @@ return new class extends Migration
             $table->Unsignedinteger('updated_by')->nullable();
             $table->Unsignedinteger('deleted_by')->nullable();
             $table->timestamps();
+
+            $table->softDeletes();
         });
     }
 

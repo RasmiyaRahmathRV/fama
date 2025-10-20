@@ -47,6 +47,8 @@ return new class extends Migration
             $table->integer('scope_generated_by')->nullable();
             $table->text('rejected_reason')->nullable();
             $table->timestamps();
+
+            $table->softDeletes();
         });
     }
 

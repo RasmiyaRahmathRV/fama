@@ -23,6 +23,8 @@ return new class extends Migration
             $table->integer('updated_by');
             $table->integer('deleted_by');
             $table->timestamps();
+
+            $table->softDeletes();
         });
     }
 

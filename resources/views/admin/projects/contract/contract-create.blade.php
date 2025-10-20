@@ -183,12 +183,12 @@
                                                         id="contact_no" placeholder="Contact No">
                                                 </div>
                                                 <!-- <div class="col-md-4">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <label for="exampleInputEmail1">Agent</label>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <select class="form-control select2" name="agent" id="agent">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <option value="">Select Agent</option>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <option value="1">Agent 1</option>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </select>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="exampleInputEmail1">Agent</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <select class="form-control select2" name="agent" id="agent">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="">Select Agent</option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="1">Agent 1</option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </select>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
 
                                             </div>
                                             <button class="btn btn-info" onclick="stepper.next()">Next</button>
@@ -323,20 +323,20 @@
                                                 </div>
 
                                                 <!-- <div class="form-group">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-sm-6">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <button type="button" class=" btn btn-success" title="Add more" id="add-more"> Add more <i class="fa fa-plus"></i></button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-sm-6">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <button type="button" class=" btn btn-success" title="Add more" id="add-more"> Add more <i class="fa fa-plus"></i></button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
                                             </div>
                                             <div class="fullBuilding">
                                                 <div id="append-div-fullb">
 
                                                 </div>
                                                 <!-- <div class="form-group">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-sm-6">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <button type="button" class=" btn btn-success" title="Add more" id="add-more-fullBuilding"> Add more <i class="fa fa-plus"></i></button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-sm-6">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <button type="button" class=" btn btn-success" title="Add more" id="add-more-fullBuilding"> Add more <i class="fa fa-plus"></i></button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
                                             </div>
 
                                             <button class="btn btn-info" onclick="stepper.previous()">Previous</button>
@@ -526,13 +526,13 @@
                                             <div class=" p-3 mb-3">
                                                 <!-- title row -->
                                                 <!-- <div class="row">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-12">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <h4>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="fas fa-globe"></i> Fama Real Estate
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <small class="float-right">Date: 2/10/2014</small>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </h4>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-12">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <h4>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="fas fa-globe"></i> Fama Real Estate
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <small class="float-right">Date: 2/10/2014</small>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </h4>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
                                                 <!-- info row -->
                                                 <div class="row invoice-info">
                                                     <div class="col-sm-6 float-left">
@@ -562,8 +562,8 @@
                                                                 Total Rental - <span class="total_rental">0.00</span> <br>
                                                             </address>
                                                             <!-- <address>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <span class="project_id">P-11231</span></br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </address> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <span class="project_id">P-11231</span></br>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </address> -->
                                                         </span>
                                                     </div>
                                                     <!-- /.col -->
@@ -621,9 +621,9 @@
                                                         placeholder="Profit" readonly>
                                                 </div>
                                                 <!-- <div class="col-md-3">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <label for="exampleInputEmail1">Rent per Room</label>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <input type="text" class="form-control" id="rent_per_room" placeholder="Rent per Room">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="exampleInputEmail1">Rent per Room</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <input type="text" class="form-control" id="rent_per_room" placeholder="Rent per Room">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
                                             </div>
 
                                             <button class="btn btn-info" onclick="stepper.previous()">Previous</button>
@@ -1651,219 +1651,12 @@
     </script>
     <!-- roi and profit calculations -->
 
-
-    <!-- Model components and add more modal js -->
-
-
-    @component('admin.modals.modal-company')
-        @slot('industry_dropdown')
-            @foreach ($industries as $industry)
-                <option value="{{ $industry->id }}">{{ $industry->name }}</option>
-            @endforeach
-        @endslot
-    @endcomponent
-    <script>
-        function setupModal(modalId, selectMappings, showModal = true) {
-            const $modal = $(modalId);
-            // Only show modal if requested
-            if (showModal) {
-                $modal.modal('show');
-            }
-
-
-            // Loop through each select mapping
-            selectMappings.forEach(map => {
-                const $select = $modal.find(`select[name="${map.name}"]`);
-                const windowId = map.windowId;
-                const windowName = map.windowName;
-
-                // If that window variable exists
-                if (window[windowId]) {
-
-
-                    let existingOption = $select.find(`option[value="${window[windowId]}"]`);
-                    if (existingOption.length > 0) {
-                        existingOption.text(window[windowName].trim());
-                    } else {
-                        $select.append(new Option(window[windowName].trim(), window[windowId], true, true));
-                    }
-
-                    $select.val(window[windowId]).trigger('change.select2');
-
-                    $select.prop('disabled', true);
-                    if ($select.data('select2')) {
-                        $select.next('.select2-container').addClass('select2-container--disabled');
-                    }
-                }
-            });
-        }
-
-        $('#addVendorButton').on('click', function() {
-            setupModal('#modal-vendor', [{
-                name: 'company_id',
-                windowId: 'lastAddedCompanyId',
-                windowName: 'lastAddedCompanyName'
-            }]);
-        });
-
-        $('#addAreaButton').on('click', function() {
-            setupModal('#modal-area', [{
-                name: 'company_id',
-                windowId: 'lastAddedCompanyId',
-                windowName: 'lastAddedCompanyName'
-            }]);
-        });
-
-        $('#addLocalityButton').on('click', function() {
-            setupModal('#modal-locality', [{
-                    name: 'company_id',
-                    windowId: 'lastAddedCompanyId',
-                    windowName: 'lastAddedCompanyName'
-                },
-                {
-                    name: 'area_id',
-                    windowId: 'lastAddedAreaId',
-                    windowName: 'lastAddedAreaName'
-                }
-            ]);
-        });
-
-        // $('#addPropertyTypeButton').on('click', function() {
-        //     setupModal('#modal-property-type', [{
-        //         name: 'company_id',
-        //         windowId: 'lastAddedCompanyId',
-        //         windowName: 'lastAddedCompanyName'
-        //     }]);
-        // });
-
-        $(document).on('click', '.addPropertyTypeButton', function(e) {
-            e.preventDefault();
-            setupModal('#modal-property-type', [{
-                name: 'company_id',
-                windowId: 'lastAddedCompanyId',
-                windowName: 'lastAddedCompanyName'
-            }]);
-        });
-
-        $('#addPropertyButton').on('click', function() {
-            setupModal('#modal-property', [{
-                    name: 'company_id',
-                    windowId: 'lastAddedCompanyId',
-                    windowName: 'lastAddedCompanyName'
-                },
-                {
-                    name: 'area_id',
-                    windowId: 'lastAddedAreaId',
-                    windowName: 'lastAddedAreaName'
-                },
-                {
-                    name: 'locality_id',
-                    windowId: 'lastAddedLocalityId',
-                    windowName: 'lastAddedLocalityName'
-                },
-                {
-                    name: 'property_type_id',
-                    windowId: 'lastAddedPropertyTypeId',
-                    windowName: 'lastAddedPropertyTypeName'
-                }
-            ]);
-        });
-
-
-        $('#addInstallmentButton').on('click', function() {
-            $('#modal-installment').modal('show');
-        });
-    </script>
-    @component('admin.modals.modal-vendor')
-        @slot('company_dropdown')
-            @foreach ($companies as $company)
-                <option value="{{ $company->id }}">{{ $company->company_name }}
-                </option>
-            @endforeach
-        @endslot
-    @endcomponent
-
-    @component('admin.modals.modal-area')
-        @slot('company_dropdown')
-            @foreach ($companies as $company)
-                <option value="{{ $company->id }}">{{ $company->company_name }}
-                </option>
-            @endforeach
-        @endslot
-    @endcomponent
-
-    @component('admin.modals.modal-locality', ['areas' => $areas])
-        @slot('company_dropdown')
-            @foreach ($companies as $company)
-                <option value="{{ $company->id }}">{{ $company->company_name }}
-                </option>
-            @endforeach
-        @endslot
-    @endcomponent
-
-    @component('admin.modals.modal-property', [
-        'areas' => $areas,
-        'localities' => $localities,
-        'property_types' => $property_types,
-    ])
-        @slot('company_dropdown')
-            @foreach ($companies as $company)
-                <option value="{{ $company->id }}">{{ $company->company_name }}
-                </option>
-            @endforeach
-        @endslot
-
-        @slot('propertySizeUnits_dropdown')
-            @foreach ($propertySizeUnits as $unit)
-                <option value="{{ $unit->id }}">{{ $unit->unit_name }}
-                </option>
-            @endforeach
-        @endslot
-    @endcomponent
-
-    @component('admin.modals.modal-propertyType')
-        @slot('company_dropdown')
-            @foreach ($companies as $company)
-                <option value="{{ $company->id }}">{{ $company->company_name }}
-                </option>
-            @endforeach
-        @endslot
-    @endcomponent
-
-    @component('admin.modals.modal-nationality')
-        @slot('company_dropdown')
-            @foreach ($companies as $company)
-                <option value="{{ $company->id }}">{{ $company->company_name }}
-                </option>
-            @endforeach
-        @endslot
-    @endcomponent
-
-    @component('admin.modals.modal-installment')
-    @endcomponent
-
-    @component('admin.modals.modal-paymentMode')
-        {{-- @slot('company_dropdown')
-            @foreach ($companies as $company)
-                <option value="{{ $company->id }}">{{ $company->company_name }}
-                </option>
-            @endforeach
-        @endslot --}}
-    @endcomponent
-    @component('admin.modals.modal-bank')
-        {{-- @slot('company_dropdown')
-            @foreach ($companies as $company)
-                <option value="{{ $company->id }}">{{ $company->company_name }}
-                </option>
-            @endforeach
-        @endslot --}}
-    @endcomponent
-
-    {{-- Companywise deopdown selection --}}
+    {{-- Companywise dropdown selection --}}
 
     <script>
         let allVendors = @json($vendors);
-        let allproperties = @json($properties);
+        let allProperties = @json($properties);
+        let allAreas = @json($areas);
 
 
         $(document).on('change', '#vc_company_id', function() {
@@ -1881,7 +1674,6 @@
         function contractCompanyChange(companyId, vendorVal, areaVal, propertytypeVal, localityVal) {
             let options = '<option value="">Select Vendor</option>';
             let option1 = '<option value="">Select Area</option>';
-            let option2 = '<option value="">Select PropertyType</option>';
 
             allVendors
                 .filter(v => v.company_id == companyId)
@@ -1948,7 +1740,7 @@
         function contractLocalityChange(localityId, propertyVal = null) {
             let option4 = '<option value="">Select Property</option>';
 
-            allproperties
+            allProperties
                 .filter(pt => pt.locality_id == localityId)
                 .forEach(pt => {
                     option4 +=
@@ -1957,7 +1749,4 @@
             $('#vc_property_id').html(option4).trigger('change');
         }
     </script>
-
-
-
 @endsection
