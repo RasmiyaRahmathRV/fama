@@ -11,20 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('property_types', function (Blueprint $table) {
+        Schema::create('contract_subunit_details', function (Blueprint $table) {
             $table->id();
-            $table->Unsignedinteger('company_id')->nullable();
-            $table->string('property_type_code');
-            $table->string('property_type');
+            $table->Unsignedinteger('contract_id');
+            $table->Unsignedinteger('contract_unit_id');
+            $table->Unsignedinteger('contract_unit_detail_id');
+            $table->string('subunit_no');
+            $table->string('subunit_code')->comment('proj. no / company code / unit no / subunit no');
             $table->integer('added_by');
             $table->integer('updated_by')->nullable();
-            $table->unsignedBigInteger('deleted_by')->nullable();
-            $table->tinyInteger('status')->default(1);
+            $table->integer('deleted_by')->nullable();
             $table->timestamps();
-
-            // $table->unique(['company_id', 'property_type']);
-
-            $table->softDeletes();
         });
     }
 
@@ -33,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('property_types');
+        Schema::dropIfExists('contract_subunit_details');
     }
 };

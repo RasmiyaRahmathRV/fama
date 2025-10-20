@@ -18,5 +18,30 @@ class LookupTablesSeeder extends Seeder
             ['unit_name' => 'Sq.ft', 'created_at' => now()],
             ['unit_name' => 'Sq.mt', 'created_at' => now()],
         ]);
+
+        DB::table('contract_types')->insert([
+            ['contract_type' => 'Direct Fama', 'created_at' => now()],
+            ['contract_type' => 'Fama Faateh', 'created_at' => now()],
+        ]);
+
+        DB::table('unit_types')->insert([
+            ['unit_type' => 'Studio', 'created_at' => now()],
+            ['unit_type' => '1BHK', 'created_at' => now()],
+            ['unit_type' => '2BHK', 'created_at' => now()],
+            ['unit_type' => '3BHK', 'created_at' => now()],
+            ['unit_type' => '4BHK', 'created_at' => now()],
+            ['unit_type' => '5BHK', 'created_at' => now()],
+            ['unit_type' => '6BHK', 'created_at' => now()],
+        ]);
+
+        DB::table('unit_status')->insert([
+            ['unit_status' => 'Furnished', 'created_at' => now()],
+            ['unit_status' => 'Un Furnished', 'created_at' => now()],
+        ]);
+
+        DB::table('unit_size_units')->insert([
+            ['unit_size_unit' => 'sq. ft', 'created_at' => now()],
+            ['unit_size_unit' => 'sq. m', 'created_at' => now()],
+        ]);
     }
 }

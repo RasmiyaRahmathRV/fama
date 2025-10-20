@@ -42,17 +42,17 @@ class ContractRepository
         return $contract->delete();
     }
 
-    public function checkIfExist($data)
-    {
-        $existing = Contract::withTrashed()
-            ->where('contract_name', $data['contract_name'])
-            ->first();
+    // public function checkIfExist($data)
+    // {
+    //     $existing = Contract::withTrashed()
+    //         ->where('contract_name', $data['contract_name'])
+    //         ->first();
 
-        if ($existing && $existing->trashed()) {
-            // $existing->restore();
-            return $existing;
-        }
-    }
+    //     if ($existing && $existing->trashed()) {
+    //         // $existing->restore();
+    //         return $existing;
+    //     }
+    // }
 
     public function getQuery(array $filters = []): Builder
     {

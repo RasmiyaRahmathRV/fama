@@ -18,7 +18,7 @@ namespace App\Models{
  * @property string $module
  * @property int|null $record_id
  * @property string $action
- * @property string|null $description
+ * @property string $description
  * @property array|null $changes
  * @property string $created_at
  * @method static \Illuminate\Database\Eloquent\Builder|ActivityLog newModelQuery()
@@ -158,8 +158,10 @@ namespace App\Models{
  * @method static \Database\Factories\CompanyFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  * @property int $industry_id
+ * @property string $company_short_code
  * @property int|null $deleted_by
  * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|Company whereCompanyShortCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereIndustryId($value)
  */
@@ -168,18 +170,481 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $project_code
+ * @property int $project_number
+ * @property int $company_id
+ * @property int $vendor_id
+ * @property int $contract_type_id
+ * @property string|null $contact_person
+ * @property string|null $contact_number
+ * @property int $area_id
+ * @property int $locality_id
+ * @property int $property_id
+ * @property int $is_vendor_contract_uploaded
+ * @property int $is_scope_generated
+ * @property int $contract_status 0-Pending, 1-Processing, 2-Approved, 3-Rejected
+ * @property int $is_aknowledgement_uploaded
+ * @property int $is_cheque_copy_uploaded
+ * @property int|null $parent_contract_id
+ * @property int $contract_renewal_status 0-new, 1-renewed
+ * @property int|null $renewal_count
+ * @property string|null $renewal_date
+ * @property int|null $renewed_by
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int|null $approved_by
+ * @property int|null $deleted_by
+ * @property int|null $scope_generated_by
+ * @property string|null $rejected_reason
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Area|null $area
  * @property-read \App\Models\Company|null $company
+ * @property-read \App\Models\ContractType|null $contract_type
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\Locality|null $locality
  * @property-read \App\Models\Property|null $property
  * @property-read \App\Models\Vendor|null $vendor
  * @method static \Illuminate\Database\Eloquent\Builder|Contract newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Contract newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Contract onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Contract query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereApprovedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereAreaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereContactNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereContactPerson($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereContractRenewalStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereContractStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereContractTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsAknowledgementUploaded($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsChequeCopyUploaded($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsScopeGenerated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsVendorContractUploaded($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereLocalityId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereParentContractId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereProjectCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereProjectNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract wherePropertyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRejectedReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRenewalCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRenewalDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRenewedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereScopeGeneratedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereVendorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Contract withoutTrashed()
  */
 	class Contract extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $contract_id
+ * @property string|null $contract_fee
+ * @property string $start_date
+ * @property string $end_date
+ * @property int $duration_in_months
+ * @property int|null $duration_in_days
+ * @property string $closing_date
+ * @property int $grace_period
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereClosingDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereContractFee($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereContractId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereDurationInDays($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereDurationInMonths($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereEndDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereGracePeriod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereStartDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail withoutTrashed()
+ */
+	class ContractDetail extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $contract_id
+ * @property string $original_document_path
+ * @property string $original_documant_name
+ * @property string $signed_document_path
+ * @property string $signed_document_name
+ * @property int $signed_status 0-unsinged, 1-mr.muneer signed,2- mr.muneer and vendor signed
+ * @property int $added_by
+ * @property int $updated_by
+ * @property int $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereContractId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereOriginalDocumantName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereOriginalDocumentPath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereSignedDocumentName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereSignedDocumentPath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereSignedStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument withoutTrashed()
+ */
+	class ContractDocument extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc withoutTrashed()
+ */
+	class ContractOtc extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $contract_id
+ * @property int $installment_id
+ * @property int $interval
+ * @property string|null $beneficiary
+ * @property int $added_by
+ * @property int $updated_by
+ * @property int $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\Installment|null $installment
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereBeneficiary($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereContractId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereInstallmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereInterval($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment withoutTrashed()
+ */
+	class ContractPayment extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $contract_id
+ * @property int $contract_payment_id
+ * @property int $payment_mode_id
+ * @property string $payment_date
+ * @property string $payment_amount
+ * @property int|null $bank_id
+ * @property string|null $cheque_no
+ * @property string|null $cheque_issuer
+ * @property string|null $cheque_issuer_name
+ * @property string|null $cheque_issuer_id
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Bank|null $bank
+ * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\ContractPayment|null $contract_payment
+ * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\PaymentMode|null $payment_mode
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereBankId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereChequeIssuer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereChequeIssuerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereChequeIssuerName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereChequeNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereContractId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereContractPaymentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaymentAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaymentDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaymentModeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail withoutTrashed()
+ */
+	class ContractPaymentDetail extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $contract_rental_code
+ * @property int $contract_id
+ * @property string $rent_per_annum_payable
+ * @property string|null $commission_percentage
+ * @property string|null $commission
+ * @property string|null $deposit_percentage
+ * @property string|null $deposit
+ * @property string $rent_receivable_per_month
+ * @property string $rent_receivable_per_annum
+ * @property string $roi_perc
+ * @property string $expected_profit
+ * @property string $profit_percentage
+ * @property string|null $receivable_start_date
+ * @property string $total_payment_to_vendor
+ * @property string|null $total_otc
+ * @property string $final_cost
+ * @property string $initial_investment
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereCommission($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereCommissionPercentage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereContractId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereContractRentalCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereDeposit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereDepositPercentage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereExpectedProfit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereFinalCost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereInitialInvestment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereProfitPercentage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereReceivableStartDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereRentPerAnnumPayable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereRentReceivablePerAnnum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereRentReceivablePerMonth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereRoiPerc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereTotalOtc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereTotalPaymentToVendor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental withoutTrashed()
+ */
+	class ContractRental extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $contract_id
+ * @property int $contract_unit_id
+ * @property int $contract_unitdetails_id
+ * @property string $subunit_no
+ * @property string $subunit_code proj. no / company code / unit no / subunit no
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\ContractUnit|null $contract_unit
+ * @property-read \App\Models\ContractUnitDetail|null $contract_unit_detail
+ * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereContractId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereContractUnitId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereContractUnitdetailsId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereSubunitCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereSubunitNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail withoutTrashed()
+ */
+	class ContractSubunitDetail extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $contract_type
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractType onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractType query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractType whereContractType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractType whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractType withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractType withoutTrashed()
+ */
+	class ContractType extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $contract_unit_code
+ * @property int $contract_id
+ * @property int $building_type 0-normal, 1-full building
+ * @property int $business_type 1-b2b, 2-b2c
+ * @property int $no_of_units
+ * @property string|null $unit_numbers
+ * @property string|null $unit_type_count
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereBuildingType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereBusinessType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereContractId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereContractUnitCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereNoOfUnits($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereUnitNumbers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereUnitTypeCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit withoutTrashed()
+ */
+	class ContractUnit extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $contract_id
+ * @property int $contract_unit_id
+ * @property string $unit_number
+ * @property int $unit_type_id
+ * @property string $floor_no
+ * @property int $unit_status_id
+ * @property string $unit_rent_per_annum
+ * @property int $fb_unit_count
+ * @property int|null $unit_size_unit_id
+ * @property int|null $unit_size
+ * @property int $property_type_id
+ * @property int $partition
+ * @property int $bedspace
+ * @property int $total_partition
+ * @property int $total_bedspace
+ * @property string|null $rent_per_partition
+ * @property string|null $rent_per_bedspace
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\ContractUnit|null $contract_unit
+ * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\PropertyType|null $property_type
+ * @property-read \App\Models\UnitSizeUnit|null $unit_size_unit
+ * @property-read \App\Models\UnitStatus|null $unit_status
+ * @property-read \App\Models\UnitType|null $unit_type
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereBedspace($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereContractId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereContractUnitId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereFbUnitCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereFloorNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail wherePartition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail wherePropertyTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRentPerBedspace($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRentPerPartition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalBedspace($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalPartition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitRentPerAnnum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitSizeUnitId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitStatusId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail withoutTrashed()
+ */
+	class ContractUnitDetail extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -492,6 +957,49 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|PropertyType whereDeletedBy($value)
  */
 	class PropertyType extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $unit_size_unit
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitSizeUnit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitSizeUnit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitSizeUnit query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitSizeUnit whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitSizeUnit whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitSizeUnit whereUnitSizeUnit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitSizeUnit whereUpdatedAt($value)
+ */
+	class UnitSizeUnit extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitStatus newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitStatus newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitStatus query()
+ */
+	class UnitStatus extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $unit_type
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitType query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitType whereUnitType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitType whereUpdatedAt($value)
+ */
+	class UnitType extends \Eloquent {}
 }
 
 namespace App\Models{

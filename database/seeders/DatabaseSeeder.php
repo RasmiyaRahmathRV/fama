@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             CompanySeeder::class,
             LookupTablesSeeder::class,
             PaymentModeSeeder::class,
+            PropertyTypeSeeder::class,
 
         ]);
     }

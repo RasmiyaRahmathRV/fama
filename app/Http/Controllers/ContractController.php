@@ -65,21 +65,20 @@ class ContractController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request);
-        try {
-            if ($request->id != 0) {
-                $contract = $this->contractService->update($request->id, $request->all());
+        // try {
+        //     if ($request->id != 0) {
+        //         $contract = $this->contractService->update($request->id, $request->all());
 
-                return response()->json(['success' => true, 'data' => $contract, 'message' => 'Contract updated successfully'], 200);
-            } else {
-                $contract = $this->contractService->createOrRestore($request->all());
+        //         return response()->json(['success' => true, 'data' => $contract, 'message' => 'Contract updated successfully'], 200);
+        //     } else {
+        //         $contract = $this->contractService->createOrRestore($request->all());
 
-                return response()->json(['success' => true, 'data' => $contract, 'message' => 'Contract created successfully'], 201);
-            }
-        } catch (\Exception $e) {
+        //         return response()->json(['success' => true, 'data' => $contract, 'message' => 'Contract created successfully'], 201);
+        //     }
+        // } catch (\Exception $e) {
 
-            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
-        }
+        //     return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
+        // }
     }
 
     public function show(Contract $contract)

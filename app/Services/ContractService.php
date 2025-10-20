@@ -17,6 +17,7 @@ class ContractService
     {
         $this->contractRepository = $contactRepository;
     }
+
     public function getAll()
     {
         return $this->contractRepository->all();
@@ -26,6 +27,7 @@ class ContractService
     {
         return $this->contractRepository->find($id);
     }
+
     public function createOrRestore(array $data, $user_id = null)
     {
         $this->validate($data);
@@ -33,16 +35,16 @@ class ContractService
         $data['project_code'] = $this->setProjectCode();
 
 
-        $existing = $this->contractRepository->checkIfExist($data);
+        // $existing = $this->contractRepository->checkIfExist($data);
 
-        if ($existing) {
-            if ($existing->trashed()) {
-                $existing->restore();
-            }
-            $existing->fill($data);
-            $existing->save();
-            return $existing;
-        }
+        // if ($existing) {
+        //     if ($existing->trashed()) {
+        //         $existing->restore();
+        //     }
+        //     $existing->fill($data);
+        //     $existing->save();
+        //     return $existing;
+        // }
 
         return $this->contractRepository->create($data);
     }
@@ -58,6 +60,7 @@ class ContractService
         $data['updated_by'] = auth()->user()->id;
         return $this->contractRepository->update($id, $data);
     }
+
     private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [], []);
@@ -67,14 +70,16 @@ class ContractService
         }
     }
 
-    public function checkIfExist($data)
-    {
-        return $this->contractRepository->checkIfExist($data);
-    }
+    // public function checkIfExist($data)
+    // {
+    //     return $this->contractRepository->checkIfExist($data);
+    // }
+
     public function delete($id)
     {
         return $this->contractRepository->delete($id);
     }
+
     public function getDataTable(array $filters = [])
     {
         $query = $this->contractRepository->getQuery($filters);
