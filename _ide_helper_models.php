@@ -203,9 +203,18 @@ namespace App\Models{
  * @property-read \App\Models\Area|null $area
  * @property-read \App\Models\Company|null $company
  * @property-read \App\Models\ContractDetail|null $contract_detail
+ * @property-read \App\Models\ContractDocument|null $contract_documents
+ * @property-read \App\Models\ContractOtc|null $contract_otc
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractPaymentDetail> $contract_payment_details
+ * @property-read int|null $contract_payment_details_count
+ * @property-read \App\Models\ContractPayment|null $contract_payments
  * @property-read \App\Models\ContractRental|null $contract_rentals
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractSubunitDetail> $contract_subunit_details
+ * @property-read int|null $contract_subunit_details_count
  * @property-read \App\Models\ContractType|null $contract_type
  * @property-read \App\Models\ContractUnit|null $contract_unit
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractUnitDetail> $contract_unit_details
+ * @property-read int|null $contract_unit_details_count
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\Locality|null $locality
  * @property-read \App\Models\Property|null $property
@@ -308,6 +317,7 @@ namespace App\Models{
  * @property int $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Contract|null $contract
  * @property-read \App\Models\User|null $deletedBy
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument newModelQuery()
@@ -317,6 +327,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereAddedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereContractId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereOriginalDocumantName($value)
@@ -334,12 +345,44 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property int $contract_id
+ * @property string $cost_of_development
+ * @property string $cost_of_bed
+ * @property string $cost_of_matress
+ * @property string $appliances
+ * @property string $decoration
+ * @property string $dewa_deposit
+ * @property string $ejari
+ * @property string $cost_of_cabinets
+ * @property string $added_by
+ * @property string $updated_by
+ * @property string $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Contract|null $contract
  * @property-read \App\Models\User|null $deletedBy
  * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereAppliances($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereContractId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereCostOfBed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereCostOfCabinets($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereCostOfDevelopment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereCostOfMatress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereDecoration($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereDewaDeposit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereEjari($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc withoutTrashed()
  */
@@ -358,6 +401,7 @@ namespace App\Models{
  * @property int $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Contract|null $contract
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\Installment|null $installment
@@ -369,6 +413,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereBeneficiary($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereContractId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereInstallmentId($value)
@@ -399,6 +444,7 @@ namespace App\Models{
  * @property int|null $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Bank|null $bank
  * @property-read \App\Models\Contract|null $contract
  * @property-read \App\Models\ContractPayment|null $contract_payment
@@ -417,6 +463,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereContractId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereContractPaymentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaymentAmount($value)
@@ -505,6 +552,7 @@ namespace App\Models{
  * @property int|null $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Contract|null $contract
  * @property-read \App\Models\ContractUnit|null $contract_unit
  * @property-read \App\Models\ContractUnitDetail|null $contract_unit_detail
@@ -518,6 +566,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereContractUnitDetailId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereContractUnitId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail whereSubunitCode($value)
@@ -614,6 +663,7 @@ namespace App\Models{
  * @property int|null $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Contract|null $contract
  * @property-read \App\Models\ContractUnit|null $contract_unit
  * @property-read \App\Models\User|null $deletedBy
@@ -630,6 +680,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereContractId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereContractUnitId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereFbUnitCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereFloorNo($value)

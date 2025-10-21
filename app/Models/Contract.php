@@ -86,6 +86,30 @@ class Contract extends Model
     {
         return $this->hasOne(ContractRental::class, 'contract_id', 'id');
     }
+    public function contract_documents()
+    {
+        return $this->hasOne(ContractDocument::class, 'contract_id', 'id');
+    }
+    public function contract_otc()
+    {
+        return $this->hasOne(ContractOtc::class, 'contract_id', 'id');
+    }
+    public function contract_payments()
+    {
+        return $this->hasOne(ContractPayment::class, 'contract_id', 'id');
+    }
+    public function contract_payment_details()
+    {
+        return $this->hasMany(ContractPaymentDetail::class, 'contract_id', 'id');
+    }
+    public function contract_subunit_details()
+    {
+        return $this->hasMany(ContractSubunitDetail::class, 'contract_id', 'id');
+    }
+    public function contract_unit_details()
+    {
+        return $this->hasMany(ContractUnitDetail::class, 'contract_id', 'id');
+    }
 
     public function user()
     {
@@ -97,5 +121,66 @@ class Contract extends Model
             [User::class, 'deleted_by', 'id'],
             [User::class, 'scope_generated_by', 'id'],
         );
+    }
+
+
+    protected static function booted()
+    {
+        static::deleting(function ($contract) {
+
+            $userId = auth()->id();
+
+            // hasOne relations
+            $hasOneRelations = [
+                'contract_detail',
+                'contract_unit',
+                'contract_rentals',
+                'contract_documents',
+                'contract_otc',
+                'contract_payments',
+            ];
+
+            // hasMany relations
+            $hasManyRelations = [
+                'contract_payment_details',
+                'contract_subunit_details',
+                'contract_unit_details',
+            ];
+
+            if (!$contract->isForceDeleting()) {
+                // Soft delete hasOne
+                foreach ($hasOneRelations as $relation) {
+                    $related = $contract->$relation;
+                    if ($related) {
+                        $related->update(['deleted_by' => $userId]);
+                        $related->delete();
+                    }
+                }
+
+                // Soft delete hasMany
+                foreach ($hasManyRelations as $relation) {
+                    foreach ($contract->$relation as $related) {
+                        $related->update(['deleted_by' => $userId]);
+                        $related->delete();
+                    }
+                }
+            } else {
+                // Force delete
+                foreach (array_merge($hasOneRelations, $hasManyRelations) as $relation) {
+                    $contract->$relation()->withTrashed()->forceDelete();
+                }
+            }
+        });
+
+        static::restoring(function ($contract) {
+            $relations = array_merge(
+                ['contract_detail', 'contract_unit', 'contract_rentals', 'contract_documents', 'contract_otc', 'contract_payments'],
+                ['contract_payment_details', 'contract_subunit_details', 'contract_unit_details']
+            );
+
+            foreach ($relations as $relation) {
+                $contract->$relation()->withTrashed()->restore();
+            }
+        });
     }
 }

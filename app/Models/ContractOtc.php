@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ContractOtc extends Model
 {
     use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
+    protected $table = 'contract_otc';
 
     protected $fillable = [
         'contract_id',
