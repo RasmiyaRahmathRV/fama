@@ -15,7 +15,7 @@ class ContractRepository
 
     public function find($id)
     {
-        return Contract::with('vendor', 'company', 'property', 'contractdetails', 'contractType', '',)->findOrFail($id);
+        return Contract::findOrFail($id);
     }
 
     public function findId($data)

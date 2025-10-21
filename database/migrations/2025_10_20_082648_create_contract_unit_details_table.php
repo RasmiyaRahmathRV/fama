@@ -17,7 +17,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('unit_status', function (Blueprint $table) {
+        Schema::create('unit_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('unit_status');
             $table->timestamps();
@@ -48,6 +48,7 @@ return new class extends Migration
             $table->integer('total_bedspace')->default(0);
             $table->decimal('rent_per_partition', 8, 2)->nullable();
             $table->decimal('rent_per_bedspace', 8, 2)->nullable();
+            $table->decimal('rent_per_room', 8, 2)->nullable();
             $table->integer('added_by');
             $table->integer('updated_by')->nullable();
             $table->integer('deleted_by')->nullable();
