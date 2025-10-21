@@ -22,7 +22,7 @@
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="../dashboard.php">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}">Home</a></li>
                             <li class="breadcrumb-item active">Contract</li>
                         </ol>
                     </div>
@@ -44,8 +44,8 @@
                                             Add Contract
                                         </a>
                                     @endcan
-                                    <button class="btn btn-secondary float-right m-1" data-toggle="modal"
-                                        data-target="#modal-import">Import</button>
+                                    {{-- <button class="btn btn-secondary float-right m-1" data-toggle="modal"
+                                        data-target="#modal-import">Import</button> --}}
                                 </span>
                             </div>
                             <!-- /.card-header -->
@@ -55,110 +55,17 @@
                                         <tr>
                                             <th style="width: 1%">#</th>
                                             <th>Project</th>
-                                            <th>Vendor</th>
-                                            <th>Tenant</th>
-                                            <th>Bldng</th>
-                                            <th>Start</th>
-                                            <th>Exp</th>
+                                            <th>Company Name</th>
+                                            <th>Vendor Name</th>
+                                            <th>Property</th>
+                                            <th>Start date</th>
+                                            <th>End date</th>
                                             <th>Status</th>
                                             <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>#</td>
-                                            <td>PRJ00001</td>
-                                            <td>Vendor</td>
-                                            <td>Tenant</td>
-                                            <td>Bldng</td>
-                                            <td>Start</td>
-                                            <td>Exp</td>
-                                            <td>
-                                                <span class="badge badge-warning">Pending</span>
-                                            </td>
-                                            <td>
-                                                <!-- <a href="#" class="btn btn-success btn-sm" title="Approve"><i class="fas fa-file-signature"></i></a> -->
-                                                <a class="btn btn-primary btn-sm" href="" title="view contract"><i
-                                                        class="fas fa-eye"></i></a>
-                                                <a class="btn btn-info  btn-sm" data-toggle="modal"
-                                                    data-target="#modal-Contract" title="edit contract"><i
-                                                        class="fas fa-pencil-alt"></i></a>
-                                                <a class="btn btn-danger  btn-sm" onclick="deleteConf()" title="delete"><i
-                                                        class="fas fa-trash"></i></a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#</td>
-                                            <td>PRJ00002</td>
-                                            <td>Vendor</td>
-                                            <td>Tenant</td>
-                                            <td>Bldng</td>
-                                            <td>Start</td>
-                                            <td>Exp</td>
-                                            <td>
-                                                <span class="badge badge-success">Approved</span>
-                                            </td>
-                                            <td>
-                                                <a href="contract_documents.php" class="btn btn-warning btn-sm"
-                                                    title="documents"><i class="fas fa-file"></i></a>
-                                                <!-- <a href="#" class="btn btn-danger btn-sm" title="Terminate"><i class="fas fa-user-slash"></i></a> -->
-                                                <a class="btn btn-primary btn-sm" href="view_contract.php?2"
-                                                    title="view contract"><i class="fas fa-eye"></i></a>
-                                                <a class="btn btn-info  btn-sm" data-toggle="modal"
-                                                    data-target="#modal-Contract" title="edit contract"><i
-                                                        class="fas fa-pencil-alt"></i></a>
-                                                <a class="btn btn-danger  btn-sm" onclick="deleteConf()" title="delete"><i
-                                                        class="fas fa-trash"></i></a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#</td>
-                                            <td>PRJ00003</td>
-                                            <td>Vendor</td>
-                                            <td>Tenant</td>
-                                            <td>Bldng</td>
-                                            <td>Start</td>
-                                            <td>Exp</td>
-                                            <td>
-                                                <span class="badge badge-info">Processing</span>
-                                            </td>
-                                            <td>
-                                                <a href="{{ route('contract.documents') }}" class="btn btn-warning btn-sm"
-                                                    title="documents"><i class="fas fa-file"></i></a>
-                                                <!-- <a href="#" class="btn btn-danger btn-sm" title="Terminate"><i class="fas fa-user-slash"></i></a> -->
-                                                <a class="btn btn-primary btn-sm" href="view_contract.php?3"
-                                                    title="view contract"><i class="fas fa-eye"></i></a>
-                                                <a class="btn btn-info  btn-sm" data-toggle="modal"
-                                                    data-target="#modal-Contract" title="edit contract"><i
-                                                        class="fas fa-pencil-alt"></i></a>
-                                                <a class="btn btn-danger  btn-sm" onclick="deleteConf()" title="delete"><i
-                                                        class="fas fa-trash"></i></a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#</td>
-                                            <td>PRJ00004</td>
-                                            <td>Vendor</td>
-                                            <td>Tenant</td>
-                                            <td>Bldng</td>
-                                            <td>Start</td>
-                                            <td>Exp</td>
-                                            <td>
-                                                <span class="badge badge-danger">Terminated</span>
-                                            </td>
-                                            <td>
-                                                <a href="contract_documents.php" class="btn btn-warning btn-sm"
-                                                    title="documents"><i class="fas fa-file"></i></a>
-                                                <!-- <a href="#" class="btn btn-danger btn-sm" title="Terminate"><i class="fas fa-user-slash"></i></a> -->
-                                                <a class="btn btn-primary btn-sm" href="view_contract.php?4"
-                                                    title="view contract"><i class="fas fa-eye"></i></a>
-                                                <a class="btn btn-info  btn-sm" data-toggle="modal"
-                                                    data-target="#modal-Contract" title="edit contract"><i
-                                                        class="fas fa-pencil-alt"></i></a>
-                                                <a class="btn btn-danger  btn-sm" onclick="deleteConf()"
-                                                    title="delete"><i class="fas fa-trash"></i></a>
-                                            </td>
-                                        </tr>
+
                                     </tbody>
                                 </table>
                             </div>
@@ -253,28 +160,29 @@
                         name: 'contracts.project_code',
                     },
                     {
-                        data: 'vendor',
-                        name: 'vendors.name',
+                        data: 'company_name',
+                        name: 'companies.company_name',
                     },
                     {
-                        data: 'tenant',
-                        name: 'contracts.tenant',
+                        data: 'vendor_name',
+                        name: 'vendors.vendor_name',
                     },
+
                     {
-                        data: 'building',
-                        name: 'contracts.building',
+                        data: 'property_name',
+                        name: 'properties.property_name',
                     },
                     {
                         data: 'start_date',
-                        name: 'contracts.start_date',
+                        name: 'contract_details.start_date',
                     },
                     {
-                        data: 'expiry_date',
-                        name: 'contracts.expiry_date',
+                        data: 'end_date',
+                        name: 'contract_details.end_date',
                     },
                     {
                         data: 'status',
-                        name: 'contracts.status',
+                        name: 'contracts.contract_status',
                         render: function(data, type, row) {
                             let badgeClass = '';
                             let text = '';
@@ -285,15 +193,15 @@
                                     text = 'Pending';
                                     break;
                                 case 1:
-                                    badgeClass = 'badge badge-success';
-                                    text = 'Approved';
-                                    break;
-                                case 2:
-                                    badgeClass = 'badge badge-info';
+                                    badgeClass = 'badge badge-info text-white';
                                     text = 'Processing';
                                     break;
+                                case 2:
+                                    badgeClass = 'badge badge-success text-white';
+                                    text = 'Approved';
+                                    break;
                                 case 3:
-                                    badgeClass = 'badge badge-danger';
+                                    badgeClass = 'badge badge-danger text-white';
                                     text = 'Terminated';
                                     break;
                             }
@@ -316,7 +224,7 @@
                 buttons: [{
                     extend: 'excelHtml5',
                     text: 'Export Excel',
-                    title: 'Vendor Data',
+                    title: 'Contract Data',
                     action: function(e, dt, node, config) {
                         // redirect to your Laravel export route
                         let searchValue = dt.search();
@@ -327,5 +235,34 @@
                 }]
             });
         });
+
+        function deleteConf(id) {
+            Swal.fire({
+                title: "Are you sure?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: '/contract/' + id,
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            toastr.success(response.message);
+                            $('#contractTable').DataTable().ajax.reload();
+                        }
+                    });
+
+                } else {
+                    toastr.error(errors.responseJSON.message);
+                }
+            });
+        }
     </script>
 @endsection

@@ -22,6 +22,10 @@ return new class extends Migration
             $table->integer('deleted_by');
             $table->timestamps();
 
+            $table->foreign('contract_id')
+                ->references('id')->on('contracts')
+                ->onDelete('cascade');
+
             $table->softDeletes();
         });
     }

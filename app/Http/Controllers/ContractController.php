@@ -83,6 +83,7 @@ class ContractController extends Controller
 
     public function show(Contract $contract)
     {
+        $this->contractService->getById($contract->id);
         return view('admin.project.contract.contract-view');
     }
 

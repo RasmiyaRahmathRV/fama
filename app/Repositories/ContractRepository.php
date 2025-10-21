@@ -15,7 +15,7 @@ class ContractRepository
 
     public function find($id)
     {
-        return Contract::findOrFail($id);
+        return Contract::with('vendor', 'company', 'property', 'contractdetails', 'contractType', '',)->findOrFail($id);
     }
 
     public function findId($data)
@@ -57,25 +57,46 @@ class ContractRepository
     public function getQuery(array $filters = []): Builder
     {
         $query = Contract::query()
-            ->select('contracts.*', 'industries.name as industry_name')
-            ->join('vendors', 'vendors.id', '=', 'contracts.vendor_id');
+            ->select([
+                'contracts.*',
+                'properties.property_name',
+                'vendors.vendor_name',
+                'contract_details.start_date',
+                'contract_details.end_date',
+                'companies.company_name'
+            ])
+            ->join('contract_details', 'contract_details.contract_id', '=', 'contracts.id')
+            ->join('properties', 'properties.id', '=', 'contracts.property_id')
+            ->join('vendors', 'vendors.id', '=', 'contracts.vendor_id')
+            ->join('companies', 'companies.id', '=', 'contracts.company_id')
+            ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id');
 
         if (!empty($filters['search'])) {
-            $query->orwhere('company_name', 'like', '%' . $filters['search'] . '%')
-                ->orWhere('company_code', 'like', '%' . $filters['search'] . '%')
-                ->orWhere('phone', 'like', '%' . $filters['search'] . '%')
-                ->orWhere('email', 'like', '%' . $filters['search'] . '%')
-                ->orWhere('address', 'like', '%' . $filters['search'] . '%')
-                ->orWhere('website', 'like', '%' . $filters['search'] . '%')
+            $query->orwhere('project_code', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('project_number', 'like', '%' . $filters['search'] . '%')
 
-                ->orWhereHas('industry', function ($q) use ($filters) {
-                    $q->where('name', 'like', '%' . $filters['search'] . '%');
+                ->orWhereHas('company', function ($q) use ($filters) {
+                    $q->where('company_name', 'like', '%' . $filters['search'] . '%');
                 })
-                ->orWhereRaw("CAST(companies.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
+                ->orWhereHas('vendor', function ($q) use ($filters) {
+                    $q->where('vendor_name', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('contract_type', function ($q) use ($filters) {
+                    $q->where('contract_type', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('locality', function ($q) use ($filters) {
+                    $q->where('locality_name',  'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('property', function ($q) use ($filters) {
+                    $q->where('property_name',  'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereRaw("CAST(contracts.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
 
+
+
         if (!empty($filters['company_id'])) {
-            $query->Where('companies.id', $filters['company_id']);
+            $query->Where('contracts.company_id', $filters['company_id']);
         }
 
         return $query;

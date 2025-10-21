@@ -53,6 +53,15 @@ return new class extends Migration
             $table->integer('deleted_by')->nullable();
             $table->timestamps();
 
+            $table->foreign('contract_id')
+                ->references('id')->on('contracts')
+                ->onDelete('cascade');
+
+            $table->foreign('contract_unit_id')
+                ->references('id')->on('contract_units')
+                ->onDelete('cascade');
+
+
             $table->softDeletes();
         });
     }

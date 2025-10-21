@@ -26,6 +26,11 @@ return new class extends Migration
             $table->Unsignedinteger('deleted_by')->nullable();
             $table->timestamps();
 
+            $table->foreign('contract_id')
+                ->references('id')->on('contracts')
+                ->onDelete('cascade');
+
+
             $table->softDeletes();
         });
     }

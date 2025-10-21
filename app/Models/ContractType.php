@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ContractType extends Model
 {
-    use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
+    use HasFactory;
 
     protected $fillable = [
         'contract_type'

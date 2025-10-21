@@ -15,6 +15,7 @@ class Contract extends Model
 
     use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
 
+
     protected $fillable = [
         'project_code',
         'project_number',
@@ -72,6 +73,18 @@ class Contract extends Model
     public function contract_type()
     {
         return $this->belongsTo(ContractType::class);
+    }
+    public function contract_detail()
+    {
+        return $this->hasOne(ContractDetail::class, 'contract_id', 'id');
+    }
+    public function contract_unit()
+    {
+        return $this->hasOne(ContractUnit::class, 'contract_id', 'id');
+    }
+    public function contract_rentals()
+    {
+        return $this->hasOne(ContractRental::class, 'contract_id', 'id');
     }
 
     public function user()
