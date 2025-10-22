@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('contract_rentals', function (Blueprint $table) {
             $table->id();
             $table->string('contract_rental_code');
-            $table->Unsignedinteger('contract_id');
+            $table->unsignedBigInteger('contract_id');
             $table->decimal('rent_per_annum_payable', 8, 2);
             $table->decimal('commission_percentage', 8, 2)->nullable();
             $table->decimal('commission', 8, 2)->nullable();

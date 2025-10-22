@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('contract_payment_details', function (Blueprint $table) {
             $table->id();
-            $table->Unsignedinteger('contract_id');
-            $table->Unsignedinteger('contract_payment_id');
-            $table->Unsignedinteger('payment_mode_id');
+            $table->unsignedBigInteger('contract_id');
+            $table->unsignedBigInteger('contract_payment_id');
+            $table->unsignedBigInteger('payment_mode_id');
             $table->date('payment_date');
             $table->decimal('payment_amount', 8, 2);
             $table->Unsignedinteger('bank_id')->nullable();

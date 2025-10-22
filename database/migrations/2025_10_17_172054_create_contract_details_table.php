@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('contract_details', function (Blueprint $table) {
             $table->id();
-            $table->Unsignedinteger('contract_id');
+            $table->unsignedBigInteger('contract_id');
             $table->decimal('contract_fee', 8, 2)->nullable();
             $table->date('start_date');
             $table->date('end_date');
@@ -27,9 +27,9 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('contract_id')
-                ->references('id')->on('contracts')
-                ->onDelete('cascade');
-
+              ->references('id')
+              ->on('contracts')
+              ->onDelete('cascade');
 
             $table->softDeletes();
         });

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('contract_units', function (Blueprint $table) {
             $table->id();
             $table->string('contract_unit_code');
-            $table->Unsignedinteger('contract_id');
+            $table->unsignedBigInteger('contract_id');
             $table->integer('building_type')->comment('0-normal, 1-full building');
             $table->integer('business_type')->comment('1-b2b, 2-b2c');
             $table->integer('no_of_units');

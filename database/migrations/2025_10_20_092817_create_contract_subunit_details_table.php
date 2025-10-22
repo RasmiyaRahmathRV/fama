@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('contract_subunit_details', function (Blueprint $table) {
             $table->id();
-            $table->Unsignedinteger('contract_id');
-            $table->Unsignedinteger('contract_unit_id');
-            $table->Unsignedinteger('contract_unit_detail_id');
+            $table->unsignedBigInteger('contract_id');
+            $table->unsignedBigInteger('contract_unit_id');
+            $table->unsignedBigInteger('contract_unit_detail_id');
             $table->string('subunit_no');
             $table->string('subunit_code')->comment('proj. no / company code / unit no / subunit no');
             $table->integer('added_by');

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('contract_documents', function (Blueprint $table) {
             $table->id();
-            $table->Unsignedinteger('contract_id');
+            $table->unsignedBigInteger('contract_id');
             $table->string('original_document_path');
             $table->string('original_documant_name');
             $table->string('signed_document_path');

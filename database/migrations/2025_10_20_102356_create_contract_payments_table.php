@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('contract_payments', function (Blueprint $table) {
             $table->id();
-            $table->Unsignedinteger('contract_id');
+            $table->unsignedBigInteger('contract_id');
             $table->integer('installment_id');
             $table->integer('interval');
             $table->string('beneficiary')->nullable();

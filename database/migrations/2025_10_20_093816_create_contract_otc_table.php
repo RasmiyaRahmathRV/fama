@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('contract_otc', function (Blueprint $table) {
             $table->id();
-            $table->Unsignedinteger('contract_id');
+            $table->unsignedBigInteger('contract_id');
             $table->decimal('cost_of_development', 8, 2);
             $table->decimal('cost_of_bed', 8, 2);
             $table->decimal('cost_of_matress', 8, 2);

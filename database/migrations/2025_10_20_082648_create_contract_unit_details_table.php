@@ -31,8 +31,8 @@ return new class extends Migration
 
         Schema::create('contract_unit_details', function (Blueprint $table) {
             $table->id();
-            $table->Unsignedinteger('contract_id');
-            $table->Unsignedinteger('contract_unit_id');
+            $table->unsignedBigInteger('contract_id');
+            $table->unsignedBigInteger('contract_unit_id');
             $table->string('unit_number');
             $table->integer('unit_type_id');
             $table->string('floor_no');
