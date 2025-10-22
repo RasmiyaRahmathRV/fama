@@ -73,4 +73,8 @@ class ContractUnitDetail extends Model
             [User::class, 'deleted_by', 'id'],
         );
     }
+    public function contractSubUnitDetails()
+    {
+        return $this->hasMany(ContractSubUnitDetail::class);
+    }
 }

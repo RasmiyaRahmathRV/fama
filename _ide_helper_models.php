@@ -613,6 +613,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Contract|null $contract
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractUnitDetail> $contractUnitDetails
+ * @property-read int|null $contract_unit_details_count
  * @property-read \App\Models\User|null $deletedBy
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit newQuery()
@@ -665,6 +667,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Contract|null $contract
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractSubunitDetail> $contractSubUnitDetails
+ * @property-read int|null $contract_sub_unit_details_count
  * @property-read \App\Models\ContractUnit|null $contract_unit
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\PropertyType|null $property_type
