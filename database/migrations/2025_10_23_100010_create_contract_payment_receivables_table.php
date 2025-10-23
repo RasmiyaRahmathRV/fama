@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contract_payments', function (Blueprint $table) {
+        Schema::create('contract_payment_receivables', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('contract_id');
-            $table->integer('installment_id');
-            $table->integer('interval');
-            $table->string('beneficiary')->nullable();
+            $table->date('receivable_date');
+            $table->decimal('receivable_amount', 8, 2);
             $table->integer('added_by');
             $table->integer('updated_by')->nullable();
             $table->integer('deleted_by')->nullable();
@@ -35,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contract_payments');
+        Schema::dropIfExists('contract_payment_receivables');
     }
 };
