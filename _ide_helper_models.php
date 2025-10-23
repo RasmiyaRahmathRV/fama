@@ -207,6 +207,8 @@ namespace App\Models{
  * @property-read \App\Models\ContractOtc|null $contract_otc
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractPaymentDetail> $contract_payment_details
  * @property-read int|null $contract_payment_details_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractPaymentReceivable> $contract_payment_receivables
+ * @property-read int|null $contract_payment_receivables_count
  * @property-read \App\Models\ContractPayment|null $contract_payments
  * @property-read \App\Models\ContractRental|null $contract_rentals
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractSubunitDetail> $contract_subunit_details
@@ -276,7 +278,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\Contract $contract
  * @property-read \App\Models\User|null $deletedBy
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail newQuery()
@@ -318,7 +320,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\Contract $contract
  * @property-read \App\Models\User|null $deletedBy
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument newQuery()
@@ -361,7 +363,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\Contract $contract
  * @property-read \App\Models\User|null $deletedBy
  * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc newQuery()
@@ -402,7 +404,9 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\Contract $contract
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractPaymentDetail> $contractPaymentDetails
+ * @property-read int|null $contract_payment_details_count
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\Installment|null $installment
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment newModelQuery()
@@ -445,9 +449,14 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property string|null $paid_amount
+ * @property string|null $paid_date
+ * @property string|null $pending_amount
+ * @property int|null $paid_by
+ * @property int $paid_status 0-not paid, 1-paid,  2-half paid
  * @property-read \App\Models\Bank|null $bank
- * @property-read \App\Models\Contract|null $contract
- * @property-read \App\Models\ContractPayment|null $contract_payment
+ * @property-read \App\Models\Contract $contract
+ * @property-read \App\Models\ContractPayment $contract_payment
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\PaymentMode|null $payment_mode
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail newModelQuery()
@@ -466,15 +475,54 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaidAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaidBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaidDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaidStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaymentAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaymentDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaymentModeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePendingAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail withoutTrashed()
  */
 	class ContractPaymentDetail extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $contract_id
+ * @property string $receivable_date
+ * @property string $receivable_amount
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Contract $contract
+ * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable whereContractId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable whereReceivableAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable whereReceivableDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentReceivable withoutTrashed()
+ */
+	class ContractPaymentReceivable extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -503,7 +551,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\Contract $contract
  * @property-read \App\Models\User|null $deletedBy
  * @method static \Illuminate\Database\Eloquent\Builder|ContractRental newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractRental newQuery()
@@ -553,9 +601,9 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\Contract|null $contract
- * @property-read \App\Models\ContractUnit|null $contract_unit
- * @property-read \App\Models\ContractUnitDetail|null $contract_unit_detail
+ * @property-read \App\Models\Contract $contract
+ * @property-read \App\Models\ContractUnit $contract_unit
+ * @property-read \App\Models\ContractUnitDetail $contract_unit_detail
  * @property-read \App\Models\User|null $deletedBy
  * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractSubunitDetail newQuery()
@@ -612,7 +660,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\Contract $contract
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractUnitDetail> $contractUnitDetails
  * @property-read int|null $contract_unit_details_count
  * @property-read \App\Models\User|null $deletedBy
@@ -660,16 +708,17 @@ namespace App\Models{
  * @property int $total_bedspace
  * @property string|null $rent_per_partition
  * @property string|null $rent_per_bedspace
+ * @property string|null $rent_per_room
  * @property int $added_by
  * @property int|null $updated_by
  * @property int|null $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\Contract $contract
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractSubunitDetail> $contractSubUnitDetails
  * @property-read int|null $contract_sub_unit_details_count
- * @property-read \App\Models\ContractUnit|null $contract_unit
+ * @property-read \App\Models\ContractUnit $contract_unit
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\PropertyType|null $property_type
  * @property-read \App\Models\UnitSizeUnit|null $unit_size_unit
@@ -693,6 +742,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail wherePropertyTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRentPerBedspace($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRentPerPartition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRentPerRoom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalBedspace($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalPartition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitNumber($value)
@@ -1040,9 +1090,17 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $unit_status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|UnitStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UnitStatus newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UnitStatus query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitStatus whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitStatus whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitStatus whereUnitStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UnitStatus whereUpdatedAt($value)
  */
 	class UnitStatus extends \Eloquent {}
 }

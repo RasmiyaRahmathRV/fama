@@ -110,6 +110,10 @@ class Contract extends Model
     {
         return $this->hasMany(ContractUnitDetail::class, 'contract_id', 'id');
     }
+    public function contract_payment_receivables()
+    {
+        return $this->hasMany(ContractPaymentReceivable::class, 'contract_id', 'id');
+    }
 
     public function user()
     {
@@ -138,6 +142,7 @@ class Contract extends Model
                 'contract_documents',
                 'contract_otc',
                 'contract_payments',
+                'contract_payment_receivables'
             ];
 
             // hasMany relations
@@ -173,10 +178,18 @@ class Contract extends Model
         });
 
         static::restoring(function ($contract) {
-            $relations = array_merge(
-                ['contract_detail', 'contract_unit', 'contract_rentals', 'contract_documents', 'contract_otc', 'contract_payments'],
-                ['contract_payment_details', 'contract_subunit_details', 'contract_unit_details']
-            );
+            $relations = [
+                'contract_detail',
+                'contract_unit',
+                'contract_rentals',
+                'contract_documents',
+                'contract_otc',
+                'contract_payments',
+                'contract_payment_receivables',
+                'contract_payment_details',
+                'contract_subunit_details',
+                'contract_unit_details'
+            ];
 
             foreach ($relations as $relation) {
                 $contract->$relation()->withTrashed()->restore();
