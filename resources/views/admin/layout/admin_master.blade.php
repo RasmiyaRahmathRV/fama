@@ -324,6 +324,13 @@
                                         <p>Contract</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('agreement.index') }}"
+                                        class="nav-link {{ request()->is('agreement') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Agreement</p>
+                                    </a>
+                                </li>
 
                             </ul>
                         </li>

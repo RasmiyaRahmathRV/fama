@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AgreementController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\CompanyController;
@@ -52,6 +53,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('user', UserController::class);
     Route::resource('company', CompanyController::class);
     Route::resource('contract', ContractController::class);
+    Route::resource('agreement', AgreementController::class);
+
 
 
 

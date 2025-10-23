@@ -38,6 +38,15 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @method static \Illuminate\Database\Eloquent\Builder|Agreement newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Agreement newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Agreement query()
+ */
+	class Agreement extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * @property int $id
  * @property int $company_id
  * @property string $area_code
