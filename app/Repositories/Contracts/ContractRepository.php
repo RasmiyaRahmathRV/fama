@@ -15,19 +15,25 @@ class ContractRepository
 
     public function find($id)
     {
+
         return Contract::with(
-            // 'contract_detail',
-            // 'contract_rentals',
-            // 'contract_documents',
-            // 'contract_otc',
-            // 'contract_payments',
-            // 'contract_payment_details',
-            // 'contract_unit.contractUnitDetails.contractSubUnitDetails',
-
-
+            'contract_detail',
+            'contract_rentals',
+            'contract_documents',
+            'contract_otc',
+            'contract_payments.contractPaymentDetails.payment_mode',
+            'contract_payments.contractPaymentDetails.bank',
+            'contract_payments.installment',
+            'contract_unit.contractUnitDetails.contractSubUnitDetails',
+            'contract_unit_details.property_type',
+            'contract_unit_details.unit_type',
+            'contract_unit_details.unit_status',
             'company',
             'area',
             'locality',
+            'vendor',
+            'property',
+            'contract_type'
         )->findOrFail($id);
     }
 

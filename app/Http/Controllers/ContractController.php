@@ -32,7 +32,8 @@ class ContractController extends Controller
         protected PropertyTypeService $propertyTypeService,
         protected InstallmentService $installmentService,
         protected VendorService $vendorService
-    ) {}
+    ) {
+    }
 
     public function index()
     {
@@ -83,12 +84,16 @@ class ContractController extends Controller
 
     public function show(Contract $contract)
     {
-        $this->contractService->getById($contract->id);
-        return view('admin.projects.contract.contract-view');
+        $contract = $this->contractService->getById($contract->id);
+        return view('admin.projects.contract.contract-view', compact('contract'));
     }
 
-    public function approveContract(Request $request) {}
-    public function rejectContract(Request $request) {}
+    public function approveContract(Request $request)
+    {
+    }
+    public function rejectContract(Request $request)
+    {
+    }
 
     public function getContracts(Request $request)
     {
@@ -112,7 +117,9 @@ class ContractController extends Controller
         $title = 'Contract Documents';
         return view("admin.projects.contract.contract-documents", compact("title"));
     }
-    public function document_upload(Request $request) {}
+    public function document_upload(Request $request)
+    {
+    }
 
     public function exportContract(Contract $contract)
     {

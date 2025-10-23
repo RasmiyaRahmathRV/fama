@@ -149,8 +149,8 @@
                  //  if ($('#vendor_id').val()) {
                  //      $('#company_id').prop('disabled', true);
                  //  }
-                 $('#company_id').prop('disabled', true);
-                 $(this).find('select[name="company_id"]').prop('disabled', false);
+                 // $('#company_id').prop('disabled', true);
+                 //  $(this).find('select[name="company_id"]').prop('disabled', false);
 
 
              }

@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Contract;
-use App\Repositories\ContractRepository;
+use App\Repositories\Contracts\ContractRepository;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
