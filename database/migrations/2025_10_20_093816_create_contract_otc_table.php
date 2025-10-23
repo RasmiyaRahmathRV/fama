@@ -14,17 +14,17 @@ return new class extends Migration
         Schema::create('contract_otc', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('contract_id');
-            $table->decimal('cost_of_development', 8, 2);
-            $table->decimal('cost_of_bed', 8, 2);
-            $table->decimal('cost_of_matress', 8, 2);
-            $table->decimal('appliances', 8, 2);
-            $table->decimal('decoration', 8, 2);
-            $table->decimal('dewa_deposit', 8, 2);
-            $table->decimal('ejari', 8, 2);
-            $table->decimal('cost_of_cabinets', 8, 2);
+            $table->decimal('cost_of_development', 8, 2)->nullable();
+            $table->decimal('cost_of_bed', 8, 2)->nullable();
+            $table->decimal('cost_of_matress', 8, 2)->nullable();
+            $table->decimal('appliances', 8, 2)->nullable();
+            $table->decimal('decoration', 8, 2)->nullable();
+            $table->decimal('dewa_deposit', 8, 2)->nullable();
+            $table->decimal('ejari', 8, 2)->nullable();
+            $table->decimal('cost_of_cabinets', 8, 2)->nullable();
             $table->string('added_by');
-            $table->string('updated_by');
-            $table->string('deleted_by');
+            $table->string('updated_by')->nullable();
+            $table->string('deleted_by')->nullable();
             $table->timestamps();
 
             $table->foreign('contract_id')

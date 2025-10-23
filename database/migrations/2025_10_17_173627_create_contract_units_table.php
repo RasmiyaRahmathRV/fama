@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('contract_unit_code');
             $table->unsignedBigInteger('contract_id');
-            $table->integer('building_type')->comment('0-normal, 1-full building');
+            $table->integer('building_type')->comment('0-normal, 1-full building')->default(0);
             $table->integer('business_type')->comment('1-b2b, 2-b2c');
             $table->integer('no_of_units');
             $table->text('unit_numbers')->nullable();
