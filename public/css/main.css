@@ -41,6 +41,40 @@
   float : none;
 }
 
+.select2-container.is-invalid .select2-selection {
+    border-color: #dc3545;
+}
+
+.select2-container.is-valid .select2-selection {
+    border-color: #28a745;
+}
+
+select.is-valid {
+    border-color: #28a745;
+}
+
+select.is-invalid {
+    border-color: #dc3545;
+}
+
+/* .icheckbox.is-invalid .iCheck-helper {
+    background-color: #ffe6e6; 
+    border: 1px solid red;   
+    border-radius: 50%;
+}
+
+.icheckbox.is-valid .iCheck-helper {
+    background-color: #e6ffe6; 
+    border: 1px solid green;
+    border-radius: 50%;
+} */
+
+.icheckbox.is-invalid > input:first-child:not(:checked):not(:disabled) + label::before, 
+.icheckbox.is-invalid > input:first-child:not(:checked):not(:disabled) + input[type="hidden"] + label::before {
+    border: 1px solid red;     /* red border */
+    border-radius: 50%;
+}
+
  
 /* Shrink circle and label on small devices */
 @media (max-width: 768px) {

@@ -7,6 +7,7 @@ use App\Models\Traits\HasDeletedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 class ContractRental extends Model
 {
@@ -47,5 +48,10 @@ class ContractRental extends Model
             [User::class, 'updated_by', 'id'],
             [User::class, 'deleted_by', 'id'],
         );
+    }
+
+    public function setReceivableStartDateAttribute($value)
+    {
+        $this->attributes['receivable_start_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 }

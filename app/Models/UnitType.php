@@ -12,4 +12,15 @@ class UnitType extends Model
     protected $fillable = [
         'unit_type'
     ];
+
+    public static function getNamesByIds(array $ids)
+    {
+        if (empty($ids)) {
+            return [];
+        }
+
+        return self::whereIn('id', $ids)
+            ->pluck('unit_type', 'id')
+            ->toArray();
+    }
 }

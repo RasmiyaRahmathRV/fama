@@ -7,6 +7,7 @@ use App\Models\Traits\HasDeletedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 class ContractPaymentDetail extends Model
 {
@@ -55,5 +56,10 @@ class ContractPaymentDetail extends Model
             [User::class, 'updated_by', 'id'],
             [User::class, 'deleted_by', 'id'],
         );
+    }
+
+    public function setPaymentDateAttribute($value)
+    {
+        $this->attributes['payment_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 }

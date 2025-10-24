@@ -5,14 +5,18 @@ namespace App\Http\Controllers;
 use App\Exports\ContractExport;
 use App\Models\Bank;
 use App\Models\Contract;
+use App\Models\ContractType;
 use App\Models\Industry;
 use App\Models\Installment;
 use App\Models\PaymentMode;
 use App\Models\PropertySizeUnit;
+use App\Models\UnitSizeUnit;
+use App\Models\UnitStatus;
+use App\Models\UnitType;
 use App\Services\AreaService;
 use App\Services\CompanyService;
+use App\Services\Contracts\ContractService;
 use Illuminate\Http\Request;
-use App\Services\ContractService;
 use App\Services\InstallmentService;
 use App\Services\LocalityService;
 use App\Services\PropertyService;
@@ -24,16 +28,15 @@ class ContractController extends Controller
 {
     //
     public function __construct(
-        protected ContractService $contractService,
         protected PropertyService $propertyService,
         protected CompanyService $companyService,
         protected LocalityService $localityService,
         protected AreaService $areaService,
         protected PropertyTypeService $propertyTypeService,
         protected InstallmentService $installmentService,
-        protected VendorService $vendorService
-    ) {
-    }
+        protected VendorService $vendorService,
+        protected ContractService $contractService
+    ) {}
 
     public function index()
     {
@@ -45,7 +48,8 @@ class ContractController extends Controller
     public function create()
     {
         $title = 'Create Contract';
-        $industries = Industry::all();
+
+        // dropdown values
         $companies = $this->companyService->getAll();
         $localities = $this->localityService->getAll();
         $areas = $this->areaService->getAll();
@@ -53,33 +57,52 @@ class ContractController extends Controller
         $properties = $this->propertyService->getAll();
         $installments = $this->installmentService->getAll();
         $vendors = $this->vendorService->getAll();
-        $propertySizeUnits = PropertySizeUnit::all();
         $installments = Installment::all();
         $paymentmodes = PaymentMode::all();
         $banks = Bank::all();
+        $contractTypes = ContractType::all();
+        $UnitTypes = UnitType::all();
+        $UnitStatus = UnitStatus::all();
+        $UnitSizeUnit = UnitSizeUnit::all();
 
 
-        // dd($companies, $localities, $areas, $property_types, $properties);
 
-        return view("admin.projects.contract.contract-create", compact("title", "companies", "localities", "areas", "property_types", "properties", "installments", "vendors", "industries", "propertySizeUnits", "installments", "paymentmodes", "banks"));
+
+        return view("admin.projects.contract.contract-create", compact(
+            "title",
+            "companies",
+            "localities",
+            "areas",
+            "property_types",
+            "properties",
+            "installments",
+            "vendors",
+            "installments",
+            "paymentmodes",
+            "banks",
+            "contractTypes",
+            "UnitTypes",
+            "UnitStatus",
+            "UnitSizeUnit",
+        ));
     }
 
     public function store(Request $request)
     {
-        // try {
-        //     if ($request->id != 0) {
-        //         $contract = $this->contractService->update($request->id, $request->all());
+        try {
+            // if ($request->id != 0) {
+            //     $contract = $this->contractService->update($request->id, $request->all());
 
-        //         return response()->json(['success' => true, 'data' => $contract, 'message' => 'Contract updated successfully'], 200);
-        //     } else {
-        //         $contract = $this->contractService->createOrRestore($request->all());
+            //     return response()->json(['success' => true, 'data' => $contract, 'message' => 'Contract updated successfully'], 200);
+            // } else {
+            $contract = $this->contractService->createOrRestore($request->all());
 
-        //         return response()->json(['success' => true, 'data' => $contract, 'message' => 'Contract created successfully'], 201);
-        //     }
-        // } catch (\Exception $e) {
+            return response()->json(['success' => true, 'data' => $contract, 'message' => 'Contract created successfully'], 201);
+            // }
+        } catch (\Exception $e) {
 
-        //     return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
-        // }
+            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
+        }
     }
 
     public function show(Contract $contract)

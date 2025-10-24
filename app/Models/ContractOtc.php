@@ -15,7 +15,7 @@ class ContractOtc extends Model
 
     protected $fillable = [
         'contract_id',
-        'cost_of_developement',
+        'cost_of_development',
         'cost_of_bed',
         'cost_of_matress',
         'appliances',

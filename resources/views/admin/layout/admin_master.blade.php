@@ -62,8 +62,8 @@
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="{{ asset('storage/' . auth()->user()->profile_path) }}" alt="User Avatar"
-                                    class="img-size-50 mr-3 img-circle">
+                                <img src="{{ auth()->user()->profile_path ? asset('storage/' . auth()->user()->profile_path) : '' }}"
+                                    alt="User Avatar" class="img-size-50 mr-3 img-circle">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         Brad Diesel
@@ -308,32 +308,37 @@
                                 </ul>
                             </li>
                         @endif
-                        <li class="nav-item {{ $project ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ $project ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>
-                                    Project
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('contract.index') }}"
-                                        class="nav-link {{ request()->is('contract') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Contract</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('agreement.index') }}"
-                                        class="nav-link {{ request()->is('agreement') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Agreement</p>
-                                    </a>
-                                </li>
 
-                            </ul>
-                        </li>
+                        @if (auth()->user()->hasPermissionInRange(56, 73))
+                            <li class="nav-item {{ $project ? 'menu-open' : '' }}">
+                                <a href="#" class="nav-link {{ $project ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-edit"></i>
+                                    <p>
+                                        Project
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    @if (auth()->user()->hasPermissionInRange(56, 64))
+                                        <li class="nav-item">
+                                            <a href="{{ route('contract.index') }}"
+                                                class="nav-link {{ request()->is('contract') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Contract</p>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    <li class="nav-item">
+                                        <a href="{{ route('agreement.index') }}"
+                                            class="nav-link {{ request()->is('agreement') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Agreement</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
+
                         @if (Gate::any(['User', 'user.add', 'user.view', 'user.edit', 'user.delete']))
                             <li class="nav-item {{ request()->is('user') ? 'menu-open' : '' }}">
                                 <a href="{{ route('user.index') }}"
