@@ -50,6 +50,14 @@
                                             </button>
                                         </div>
                                         <div class="line"></div>
+                                        <div class="step" data-target="#document-step">
+                                            <button type="button" class="step-trigger" role="tab"
+                                                aria-controls="document-step" id="documemnt-step-trigger">
+                                                <span class="bs-stepper-circle"><i class="fas fa-file-upload"></i></span>
+                                                <span class="bs-stepper-label">Documents</span>
+                                            </button>
+                                        </div>
+                                        <div class="line"></div>
                                         <div class="step" data-target="#contract-step">
                                             <button type="button" class="step-trigger" role="tab"
                                                 aria-controls="contract-step" id="contract-step-trigger">
@@ -66,20 +74,6 @@
                                             </button>
                                         </div>
                                         <div class="line"></div>
-                                        <!-- <div class="step" data-target="#rental-step">
-                                                                                                                                    <button type="button" class="step-trigger" role="tab" aria-controls="rental-step" id="rental-step-trigger">
-                                                                                                                                        <span class="bs-stepper-circle"><i class="fas fa-house-user"></i></span>
-                                                                                                                                        <span class="bs-stepper-label">Rental</span>
-                                                                                                                                    </button>
-                                                                                                                                </div> -->
-                                        <!-- <div class="line"></div>
-                                                                                                                                    <div class="step" data-target="#otc-step">
-                                                                                                                                        <button type="button" class="step-trigger" role="tab" aria-controls="otc-step" id="otc-step-trigger">
-                                                                                                                                            <span class="bs-stepper-circle"><i class="fas fa-file-invoice-dollar"></i></span>
-                                                                                                                                            <span class="bs-stepper-label">OTC</span>
-                                                                                                                                        </button>
-                                                                                                                                    </div> -->
-                                        <div class="line"></div>
                                         <div class="step" data-target="#payment-step">
                                             <button type="button" class="step-trigger" role="tab"
                                                 aria-controls="payment-step" id="payment-step-trigger">
@@ -88,36 +82,33 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="bs-stepper-content card">
+                                    <div class="bs-stepper-content card p-3">
                                         <!-- your steps content here -->
                                         <div id="lead-step" class="content" role="tabpanel"
                                             aria-labelledby="lead-step-trigger">
                                             <div class="form-group row">
                                                 <div class="col-md-4">
                                                     <label for="exampleInputEmail1">Company</label>
-                                                    <select class="form-control select2" name="company_id"
-                                                        id="company_id">
+                                                    <select class="form-control select2" name="company_id" id="company_id">
                                                         <option value="">Select Company</option>
-                                                        <option value="1">Fama real estate</option>
-                                                        <option value="1">W&B</option>
+                                                        @foreach ($companies as $company)
+                                                            <option value="{{ $company->id }}">
+                                                                {{ $company->company_name }}
+                                                            </option>
+                                                        @endforeach
                                                     </select>
 
                                                 </div>
-                                                <!-- <div class="col-md-4">
-                                                                                                                                            <label for="exampleInputEmail1">Agreement Type</label>
-                                                                                                                                            <select class="form-control select2" name="contract_type" id="contract_type">
-                                                                                                                                                <option value="df">DF</option>
-                                                                                                                                                <option value="ff">FF</option>
-                                                                                                                                            </select>
-                                                                                                                                        </div> -->
                                                 <div class="col-md-4">
                                                     <label>Contract</label>
-                                                    <select class="form-control select2" name="company_id"
-                                                        id="company_id">
+                                                    <select class="form-control select2" name="contract_id"
+                                                        id="contract_id">
                                                         <option value="">Select Project</option>
                                                         <option value="1">Project 1</option>
                                                     </select>
                                                 </div>
+
+
                                                 <div class="col-md-4">
                                                     <label for="exampleInputEmail1">Tenant Name</label>
                                                     <input type="text" class="form-control" id="client_name"
@@ -125,9 +116,20 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
+
                                                 <div class="col-md-4">
-                                                    <label for="exampleInputEmail1">Emirates ID/Passport/Trde
-                                                        license</label>
+                                                    <label>Tenant Id Type</label>
+                                                    <select class="form-control select2" name="identity_document_id"
+                                                        id="identity_document_id">
+                                                        <option value="">Select Id Type</option>
+                                                        <option value="1">Emirates ID</option>
+                                                        <option value="1">Passport</option>
+                                                        <option value="1">Trade license</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label for="exampleInputEmail1">ID Number</label>
                                                     <input type="text" class="form-control" id="client_phone"
                                                         placeholder="Emirates ID/Passport/Trde license">
                                                 </div>
@@ -136,21 +138,22 @@
                                                     <input type="text" class="form-control" id="client_email"
                                                         placeholder="Tenant mobile">
                                                 </div>
+
+                                            </div>
+                                            <div class="form-group row">
+
+                                                <!-- <div class="col-md-4">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="exampleInputEmail1">Agent</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <select class="form-control select2" name="agent" id="agent">
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="">Select Agent</option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="1">Agent 1</option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                    </select>
+                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
                                                 <div class="col-md-4">
                                                     <label for="exampleInputEmail1">Tenant email</label>
                                                     <input type="text" class="form-control" id="contact_person"
                                                         placeholder="Tenant email">
                                                 </div>
-                                            </div>
-                                            <div class="form-group row">
-
-                                                <!-- <div class="col-md-4">
-                                                                                                                                            <label for="exampleInputEmail1">Agent</label>
-                                                                                                                                            <select class="form-control select2" name="agent" id="agent">
-                                                                                                                                                <option value="">Select Agent</option>
-                                                                                                                                                <option value="1">Agent 1</option>
-                                                                                                                                            </select>
-                                                                                                                                        </div> -->
                                                 <div class="col-md-4">
                                                     <label for="exampleInputEmail1">Nationality</label>
                                                     <select class="form-control select2" name="agent" id="agent">
@@ -167,13 +170,45 @@
 
                                             <button class="btn btn-info" onclick="stepper.next()">Next</button>
                                         </div>
+                                        <div id="document-step" class="content" role="tabpanel"
+                                            aria-labelledby="document-step-trigger">
+                                            <div class="form-group row">
+                                                @foreach ($tenantIdentities as $identity)
+                                                    <div class="col-md-6 mb-3">
+                                                        <h6 class="font-weight-bold text-cyan">
+                                                            {{ $identity->identity_type }}</h6>
+
+                                                        {{-- First Field --}}
+                                                        <label
+                                                            for="{{ $identity->first_field_id }}">{{ $identity->first_field_label }}</label>
+                                                        <input type="{{ $identity->first_field_type }}"
+                                                            name="{{ $identity->first_field_name }}"
+                                                            id="{{ $identity->first_field_id }}" class="form-control"
+                                                            placeholder="{{ $identity->first_field_label }}">
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+
+                                                        {{-- Second Field --}}
+                                                        <label for="{{ $identity->second_field_id }}"
+                                                            class="mt-2">{{ $identity->second_field_label }}</label>
+                                                        <input type="{{ $identity->second_field_type }}"
+                                                            name="{{ $identity->second_field_name }}"
+                                                            id="{{ $identity->second_field_id }}" class="form-control"
+                                                            @if ($identity->second_field_type == 'file') accept="image/*,.pdf" @endif
+                                                            placeholder="{{ $identity->second_field_label }}">
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                            <button class="btn btn-info" onclick="stepper.previous()">Previous</button>
+                                            <button class="btn btn-info" onclick="stepper.next()">Next</button>
+                                        </div>
                                         <div id="contract-step" class="content" role="tabpanel"
                                             aria-labelledby="contract-step-trigger">
                                             <div class="form-group row">
                                                 <!-- <div class="col-md-4">
-                                                                                                                                                <label for="exampleInputEmail1">Contract fee</label>
-                                                                                                                                                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Contract fee">
-                                                                                                                                            </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <label for="exampleInputEmail1">Contract fee</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Contract fee">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    </div> -->
                                                 <div class="col-md-3">
                                                     <label for="exampleInputEmail1">Start Date</label>
                                                     <div class="input-group date" id="startdate"
@@ -220,12 +255,9 @@
                                             <div class="form-group row">
                                                 <div class="col-sm-3">
                                                     <label class="control-label">Unit Type</label>
-                                                    <select class="form-control select2" name="unit_type[]"
-                                                        id="unit_type0">
-                                                        <option value="">Unit Type</option>
-                                                        <option value="1">1BHK</option>
-                                                        <option value="2">2BHK</option>
-                                                        <option value="3">3BHK</option>
+                                                    <select class="form-control select2" name="unit_type_id"
+                                                        id="unit_type_id">
+
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-3">
@@ -238,15 +270,15 @@
                                                     </select>
                                                 </div>
                                                 <!-- <div class="col-sm-3 mt-23">
-                                                                                                                                            <div class="icheck-success d-inline">
-                                                                                                                                                <input type="checkbox" id="partition" class="partcheck" value="1">
-                                                                                                                                                <label class="labelpermission" for="partition"> Partition </label>
-                                                                                                                                            </div>
-                                                                                                                                            <div class="icheck-success d-inline">
-                                                                                                                                                <input type="checkbox" id="bedspace" class="bedcheck" value="1">
-                                                                                                                                                <label class="labelpermission" for="bedspace"> Bedspace </label>
-                                                                                                                                            </div>
-                                                                                                                                        </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="icheck-success d-inline">
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <input type="checkbox" id="partition" class="partcheck" value="1">
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <label class="labelpermission" for="partition"> Partition </label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="icheck-success d-inline">
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <input type="checkbox" id="bedspace" class="bedcheck" value="1">
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <label class="labelpermission" for="bedspace"> Bedspace </label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                </div> -->
                                                 <div class="col-sm-3">
                                                     <label class="control-label">Sub Unit</label>
                                                     <select class="form-control select2" name="unit_type[]"
@@ -268,67 +300,67 @@
                                         </div>
 
                                         <!-- <div id="rental-step" class="content" role="tabpanel" aria-labelledby="rental-step-trigger">
-                                                                                                                                    <div class="form-group row">
-                                                                                                                                        <div class="col-md-4">
-                                                                                                                                            <label for="exampleInputEmail1">Rent per annum</label>
-                                                                                                                                            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Rent per annum">
-                                                                                                                                        </div>
-                                                                                                                                        <div class="col-md-2">
-                                                                                                                                            <label for="exampleInputEmail1">Commission %</label>
-                                                                                                                                            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Commission %">
-                                                                                                                                        </div>
-                                                                                                                                        <div class="col-md-2">
-                                                                                                                                            <label for="exampleInputEmail1">Commission</label>
-                                                                                                                                            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Commission" readonly>
-                                                                                                                                        </div>
-                                                                                                                                        <div class="col-md-2">
-                                                                                                                                            <label for="exampleInputEmail1">Deposit %</label>
-                                                                                                                                            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Deposit %">
-                                                                                                                                        </div>
-                                                                                                                                        <div class="col-md-2">
-                                                                                                                                            <label for="exampleInputEmail1">Deposit</label>
-                                                                                                                                            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Deposit" readonly>
-                                                                                                                                        </div>
-                                                                                                                                    </div>
-                                                                                                                                    <button class="btn btn-info" onclick="stepper.previous()">Previous</button>
-                                                                                                                                    <button class="btn btn-info" onclick="stepper.next()">Next</button>
-                                                                                                                                </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="form-group row">
+                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-md-4">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="exampleInputEmail1">Rent per annum</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Rent per annum">
+                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-md-2">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="exampleInputEmail1">Commission %</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Commission %">
+                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-md-2">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="exampleInputEmail1">Commission</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Commission" readonly>
+                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-md-2">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="exampleInputEmail1">Deposit %</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Deposit %">
+                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="col-md-2">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="exampleInputEmail1">Deposit</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Deposit" readonly>
+                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                            <button class="btn btn-info" onclick="stepper.previous()">Previous</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                            <button class="btn btn-info" onclick="stepper.next()">Next</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                        </div> -->
                                         <!-- <div id="otc-step" class="content" role="tabpanel" aria-labelledby="otc-step-trigger">
-                                                                                                                                        <div class="form-group row">
-                                                                                                                                            <div class="col-md-3">
-                                                                                                                                                <label for="exampleInputEmail1">Cost of Development</label>
-                                                                                                                                                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Cost of Development">
-                                                                                                                                            </div>
-                                                                                                                                            <div class="col-md-3">
-                                                                                                                                                <label for="exampleInputEmail1">Cost of Beds</label>
-                                                                                                                                                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Cost of Beds">
-                                                                                                                                            </div>
-                                                                                                                                            <div class="col-md-3">
-                                                                                                                                                <label for="exampleInputEmail1">Cost of Mattress</label>
-                                                                                                                                                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Cost of Mattress">
-                                                                                                                                            </div>
-                                                                                                                                            <div class="col-md-3">
-                                                                                                                                                <label for="exampleInputEmail1">Appliances</label>
-                                                                                                                                                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Appliances">
-                                                                                                                                            </div>
-                                                                                                                                        </div>
-                                                                                                                                        <div class="form-group row">
-                                                                                                                                            <div class="col-md-2">
-                                                                                                                                                <label for="exampleInputEmail1">Decoration</label>
-                                                                                                                                                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Decoration">
-                                                                                                                                            </div>
-                                                                                                                                            <div class="col-md-2">
-                                                                                                                                                <label for="exampleInputEmail1">Dewa Deposit</label>
-                                                                                                                                                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Dewa Deposit">
-                                                                                                                                            </div>
-                                                                                                                                            <div class="col-md-2">
-                                                                                                                                                <label for="exampleInputEmail1">Ejari</label>
-                                                                                                                                                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Ejari">
-                                                                                                                                            </div>
-                                                                                                                                        </div>
-                                                                                                                                        <button class="btn btn-info" onclick="stepper.previous()">Previous</button>
-                                                                                                                                        <button class="btn btn-info" onclick="stepper.next()">Next</button>
-                                                                                                                                    </div> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="form-group row">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-md-3">
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <label for="exampleInputEmail1">Cost of Development</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Cost of Development">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-md-3">
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <label for="exampleInputEmail1">Cost of Beds</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Cost of Beds">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-md-3">
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <label for="exampleInputEmail1">Cost of Mattress</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Cost of Mattress">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-md-3">
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <label for="exampleInputEmail1">Appliances</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Appliances">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="form-group row">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-md-2">
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <label for="exampleInputEmail1">Decoration</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Decoration">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-md-2">
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <label for="exampleInputEmail1">Dewa Deposit</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Dewa Deposit">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="col-md-2">
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <label for="exampleInputEmail1">Ejari</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Ejari">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                <button class="btn btn-info" onclick="stepper.previous()">Previous</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                <button class="btn btn-info" onclick="stepper.next()">Next</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
                                         <div id="payment-step" class="content" role="tabpanel"
                                             aria-labelledby="payment-step-trigger">
                                             <div class="form-group row">
@@ -696,4 +728,61 @@
         }
     </script>
     <!-- payment mode scripts -->
+
+    <script>
+        let allContracts = @json($contracts);
+        let allunittypes = @json($unitTypes);
+
+
+
+        $(document).on('change', '#company_id', function() {
+            const companyId = $(this).val();
+            CompanyChange(companyId);
+
+        });
+
+        function CompanyChange(companyId, contractId = null) {
+            let options = '<option value="">Select Contract</option>';
+
+            allContracts
+                .filter(c => c.company_id == companyId)
+                .forEach(c => {
+                    options +=
+                        `<option value="${c.id}" }>${c.project_code} - ${c.project_number}</option>`;
+                });
+            $('#contract_id').html(options).trigger('change');
+            contractChange(contractId);
+
+        }
+
+        $(document).on('change', '#contract_id', function() {
+            const contractId = $(this).val();
+            contractChange(contractId);
+
+        });
+
+        function contractChange(contractId) {
+            let options = '<option value="">Select Unit Type</option>';
+
+            let contract = allContracts.find(c => c.id == contractId);
+            console.log(contract)
+
+            if (!contract || !contract.contract_unit || !contract.contract_unit.contract_unit_details) {
+                $('#unit_type_id').html(options).trigger('change');
+                return;
+            }
+
+            let unitTypeIds = contract.contract_unit.contract_unit_details.map(d => d.unit_type_id);
+
+            unitTypeIds = [...new Set(unitTypeIds)];
+
+            allunittypes
+                .filter(ut => unitTypeIds.includes(ut.id))
+                .forEach(ut => {
+                    options += `<option value="${ut.id}">${ut.unit_type}</option>`;
+                });
+
+            $('#unit_type_id').html(options).trigger('change');
+        }
+    </script>
 @endsection

@@ -185,4 +185,8 @@ class ContractService
             ->with(['columns' => $columns])
             ->toJson();
     }
+    public function getAllwithUnits()
+    {
+        return $this->contractRepository->allwithUnits();
+    }
 }

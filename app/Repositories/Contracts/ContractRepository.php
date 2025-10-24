@@ -104,10 +104,10 @@ class ContractRepository
                     $q->where('contract_type', 'like', '%' . $filters['search'] . '%');
                 })
                 ->orWhereHas('locality', function ($q) use ($filters) {
-                    $q->where('locality_name',  'like', '%' . $filters['search'] . '%');
+                    $q->where('locality_name', 'like', '%' . $filters['search'] . '%');
                 })
                 ->orWhereHas('property', function ($q) use ($filters) {
-                    $q->where('property_name',  'like', '%' . $filters['search'] . '%');
+                    $q->where('property_name', 'like', '%' . $filters['search'] . '%');
                 })
                 ->orWhereRaw("CAST(contracts.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
@@ -119,5 +119,9 @@ class ContractRepository
         }
 
         return $query;
+    }
+    public function allwithUnits()
+    {
+        return Contract::with('contract_unit.contractUnitDetails.contractSubUnitDetails')->get();
     }
 }

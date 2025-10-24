@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             LookupTablesSeeder::class,
             PaymentModeSeeder::class,
             PropertyTypeSeeder::class,
+            TenantIdentitySeeder::class,
 
         ]);
     }
