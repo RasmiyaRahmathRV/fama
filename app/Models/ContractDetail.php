@@ -7,6 +7,7 @@ use App\Models\Traits\HasDeletedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 class ContractDetail extends Model
 {
@@ -38,5 +39,20 @@ class ContractDetail extends Model
             [User::class, 'updated_by', 'id'],
             [User::class, 'deleted_by', 'id'],
         );
+    }
+
+    public function setClosingDateAttribute($value)
+    {
+        $this->attributes['closing_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+
+    public function setStartDateAttribute($value)
+    {
+        $this->attributes['start_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+
+    public function setEndDateAttribute($value)
+    {
+        $this->attributes['end_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 }

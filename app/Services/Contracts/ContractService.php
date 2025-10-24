@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Contracts;
 
-use App\Models\Contract;
-use App\Repositories\ContractRepository;
+use App\Repositories\Contracts\ContractRepository;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -11,31 +11,57 @@ use Illuminate\Validation\ValidationException;
 
 class ContractService
 {
-    protected $contractRepository;
-
-    public function __construct(ContractRepository $contactRepository)
-    {
-        $this->contractRepository = $contactRepository;
-    }
+    public function __construct(
+        protected ContractRepository $contractRepo,
+        protected ContractDetailService $detailServ,
+        protected OtcService $otcServ,
+        protected PaymentService $paymentServ,
+        protected PaymentDetailService $paymentdetServ,
+        protected UnitService $unitServ,
+        protected UnitDetailService $unitDetServ,
+        protected RentalService $rentalServ,
+    ) {}
 
     public function getAll()
     {
-        return $this->contractRepository->all();
+        return $this->contractRepo->all();
     }
 
     public function getById($id)
     {
-        return $this->contractRepository->find($id);
+        return $this->contractRepo->find($id);
     }
 
     public function createOrRestore(array $data, $user_id = null)
     {
         $this->validate($data);
-        $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
-        $data['project_code'] = $this->setProjectCode();
+        $data['contract']['added_by'] = $user_id ? $user_id : auth()->user()->id;
+        $data['contract']['project_code'] = $this->setProjectCode();
+
+        return DB::transaction(function () use ($data) {
+            $contract = $this->contractRepo->create($data['contract']);
+            // Store related details
+            // dd($contract);
+            $this->detailServ->create($contract->id, $data['detail'] ?? []);
+            $unitData = $this->unitServ->create($contract->id, $data['unit'] ?? [], $data['unit_detail'] ?? []);
+            $this->unitDetServ->create($contract, $data['unit_detail'] ?? [], $unitData->id);
+            $this->rentalServ->create($contract->id, $data['rentals'] ?? []);
+            $this->otcServ->create($contract->id, $data['otc'] ?? []);
+
+            $receivableArr = array(
+                'vc_start_date' => $data['detail']['start_date'],
+                'vc_end_date' => $data['detail']['end_date'],
+                'contract_type' => $data['contract']['contract_type_id'],
+                'receivableStartDate' => $data['rentals']['receivable_start_date'],
+                'rent_receivable_per_month' => $data['rentals']['rent_receivable_per_month']
+            );
+
+            $this->paymentServ->create($contract->id, $data['payment'] ?? [], $data['payment_detail'] ?? [], $receivableArr);
 
 
-        // $existing = $this->contractRepository->checkIfExist($data);
+            return $contract;
+        });
+        // $existing = $this->contractRepo->checkIfExist($data);
 
         // if ($existing) {
         //     if ($existing->trashed()) {
@@ -46,8 +72,9 @@ class ContractService
         //     return $existing;
         // }
 
-        return $this->contractRepository->create($data);
+        // return $this->contractRepo->create($data);
     }
+
     public function setProjectCode($addval = 1)
     {
         $codeService = new \App\Services\CodeGeneratorService();
@@ -58,7 +85,7 @@ class ContractService
     {
         $this->validate($data, $id);
         $data['updated_by'] = auth()->user()->id;
-        return $this->contractRepository->update($id, $data);
+        return $this->contractRepo->update($id, $data);
     }
 
     private function validate(array $data, $id = null)
@@ -72,17 +99,17 @@ class ContractService
 
     // public function checkIfExist($data)
     // {
-    //     return $this->contractRepository->checkIfExist($data);
+    //     return $this->contractRepo->checkIfExist($data);
     // }
 
     public function delete($id)
     {
-        return $this->contractRepository->delete($id);
+        return $this->contractRepo->delete($id);
     }
 
     public function getDataTable(array $filters = [])
     {
-        $query = $this->contractRepository->getQuery($filters);
+        $query = $this->contractRepo->getQuery($filters);
         // dd($query);
 
         $columns = [
