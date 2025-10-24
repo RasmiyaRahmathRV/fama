@@ -61,9 +61,16 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\AgreementUnit|null $agreemantUnit
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AgreementDocument> $agreement_documents
+ * @property-read int|null $agreement_documents_count
+ * @property-read \App\Models\AgreementPayment|null $agreement_payment
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AgreementPaymentDetail> $agreement_payment_details
+ * @property-read int|null $agreement_payment_details_count
  * @property-read \App\Models\Company|null $company
  * @property-read \App\Models\Contract|null $contract
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\AgreementTenant|null $tenant
  * @method static \Illuminate\Database\Eloquent\Builder|Agreement newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Agreement newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Agreement onlyTrashed()
@@ -99,7 +106,19 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @property-read \App\Models\Agreement|null $agreement
+ * @property int $id
+ * @property int $agreement_id
+ * @property int $document_type
+ * @property string $document_number
+ * @property string $original_document_path
+ * @property string $original_document_name
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Agreement $agreement
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\TenantIdentity|null $documentType
  * @property-read mixed $document_url
@@ -107,6 +126,18 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument whereAgreementId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument whereDocumentNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument whereDocumentType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument whereOriginalDocumentName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument whereOriginalDocumentPath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument withoutTrashed()
  */
@@ -115,15 +146,37 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @property-read \App\Models\Agreement|null $agreement
+ * @property int $id
+ * @property int $agreement_id
+ * @property int $installment_id
+ * @property int $interval
+ * @property string $beneficiary
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Agreement $agreement
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AgreementPaymentDetail> $agreementPaymentDetails
  * @property-read int|null $agreement_payment_details_count
  * @property-read \App\Models\User|null $deletedBy
- * @property-read \App\Models\Installment|null $installment
+ * @property-read \App\Models\Installment $installment
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereAgreementId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereBeneficiary($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereInstallmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereInterval($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment withoutTrashed()
  */
@@ -132,7 +185,28 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @property-read \App\Models\Agreement|null $agreement
+ * @property int $id
+ * @property int $agreement_id
+ * @property int $agreement_payment_id
+ * @property int $payment_mode_id
+ * @property int|null $bank_id
+ * @property string|null $cheque_number
+ * @property string|null $cheque_issuer
+ * @property string|null $cheque_issuer_name
+ * @property string|null $cheque_issuer_id
+ * @property string $payment_date
+ * @property string $payment_amount
+ * @property int $is_payment_received 0-Pending, 1-Received, 2-Half Received,3-Bounced
+ * @property string|null $paid_amount
+ * @property string|null $pending_amount
+ * @property string|null $paid_date
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Agreement $agreement
  * @property-read \App\Models\AgreementPayment|null $agreementPayment
  * @property-read \App\Models\Bank|null $bank
  * @property-read \App\Models\User|null $deletedBy
@@ -141,6 +215,27 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereAgreementId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereAgreementPaymentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereBankId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereChequeIssuer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereChequeIssuerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereChequeIssuerName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereChequeNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereIsPaymentReceived($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail wherePaidAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail wherePaidDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail wherePaymentAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail wherePaymentDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail wherePaymentModeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail wherePendingAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail withoutTrashed()
  */
@@ -149,12 +244,36 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @property-read \App\Models\Agreement|null $agreement
+ * @property int $id
+ * @property int $agreement_id
+ * @property string $tenant_name
+ * @property string $tenant_mobile
+ * @property string $tenant_email
+ * @property string $tenant_address
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Agreement $agreement
  * @property-read \App\Models\User|null $deletedBy
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereAgreementId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereTenantAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereTenantEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereTenantMobile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereTenantName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant withoutTrashed()
  */
@@ -163,7 +282,19 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @property-read \App\Models\Agreement|null $agreement
+ * @property int $id
+ * @property int $agreement_id
+ * @property int $unit_type_id
+ * @property int $contract_unit_details_id
+ * @property int|null $contract_subunit_details_id
+ * @property string $rent_per_annum
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Agreement $agreement
  * @property-read \App\Models\ContractSubunitDetail|null $contractSubunitDetail
  * @property-read \App\Models\ContractUnitDetail|null $contractUnitDetail
  * @property-read \App\Models\User|null $deletedBy
@@ -172,6 +303,18 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereAgreementId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereContractSubunitDetailsId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereContractUnitDetailsId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereRentPerAnnum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereUnitTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit withoutTrashed()
  */

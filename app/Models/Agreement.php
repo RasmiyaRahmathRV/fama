@@ -74,4 +74,83 @@ class Agreement extends Model
     {
         return $this->belongsTo(Company::class, 'company_id');
     }
+    public function tenant()
+    {
+        return $this->hasOne(AgreementTenant::class, 'agreement_id');
+    }
+    public function agreement_documents()
+    {
+        return $this->hasMany(AgreementDocument::class, 'agreement_id');
+    }
+    public function agreement_payment()
+    {
+        return $this->hasOne(AgreementPayment::class, 'agreement_id');
+    }
+    public function agreement_payment_details()
+    {
+       return $this->hasMany(AgreementPaymentDetail::class, 'agreement_id');
+    }
+    public function agreemantUnit()
+    {
+        return $this->hasOne(AgreementUnit::class, 'agreement_id');
+    }
+    protected static function booted()
+    {
+        static::deleting(function ($agreement) {
+
+            $userId = auth()->id();
+
+            // hasOne relations
+            $hasOneRelations = [
+                'tenant',
+                'agreement_documents',
+                'agreement_payment',
+                'agreemantUnit'
+
+            ];
+
+            // hasMany relations
+            $hasManyRelations = [
+                'agreement_payment_details',
+            ];
+
+            if (!$agreement->isForceDeleting()) {
+                // Soft delete hasOne
+                foreach ($hasOneRelations as $relation) {
+                    $related = $agreement->$relation;
+                    if ($related) {
+                        $related->update(['deleted_by' => $userId]);
+                        $related->delete();
+                    }
+                }
+
+                // Soft delete hasMany
+                foreach ($hasManyRelations as $relation) {
+                    foreach ($agreement->$relation as $related) {
+                        $related->update(['deleted_by' => $userId]);
+                        $related->delete();
+                    }
+                }
+            } else {
+                // Force delete
+                foreach (array_merge($hasOneRelations, $hasManyRelations) as $relation) {
+                    $agreement->$relation()->withTrashed()->forceDelete();
+                }
+            }
+        });
+
+        static::restoring(function ($agreement) {
+            $relations = [
+                'tenant',
+                'agreement_documents',
+                'agreement_payment',
+                'agreemantUnit',
+                'agreement_payment_details',
+            ];
+
+            foreach ($relations as $relation) {
+                $agreement->$relation()->withTrashed()->restore();
+            }
+        });
+    }
 }
