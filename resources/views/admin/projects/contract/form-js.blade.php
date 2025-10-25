@@ -18,6 +18,10 @@
     $('#receivable_start_date').datetimepicker({
         format: 'DD-MM-YYYY'
     });
+
+    $(document).ready(function() {
+        $('.error-text-installment').hide();
+    });
 </script>
 
 <!-- unit addmore  -->
@@ -117,7 +121,8 @@
                 </div>
                 <div class="col-sm-2 add-morecol2">
                     <label class="control-label"> Unit Type </label>
-                    <select class="form-control select2 unit_type" name="unit_detail[unit_type_id][]" id="unit_type' + i + '" required>
+                    <select class="form-control select2 unit_type" name="unit_detail[unit_type_id][]" id="unit_type` +
+                i + `" required>
                         ` + UnitTypeOptions + `
                     </select>
                 </div>
@@ -127,7 +132,7 @@
                 </div>
                 <div class="col-sm-2 add-morecol2">
                     <label class="control-label"> Unit Status </label>
-                    <select class="form-control select2" name="unit_detail[unit_status_id][]" id="unit_status' + i + '" required>
+                    <select class="form-control select2" name="unit_detail[unit_status_id][]" id="unit_status` + i + `" required>
                         ` + UnitStatusOptions + `
                     </select>
                 </div>
@@ -157,11 +162,11 @@
                     <div class="col-sm-3 m-4">
                         <div class="form-group clearfix">
                             <div class="icheckbox icheck-success d-inline">
-                                <input type="radio" name="unit_detail[partition][` + i + `]" id="partition` + i + `" class="partcheck" value="1" required>
+                                <input type="checkbox" name="unit_detail[partition][` + i + `]" id="partition` + i + `" class="partcheck" value="1" required>
                                 <label class="labelpermission" for="partition` + i + `"> Partition </label>
                             </div>
                             <div class="icheckbox icheck-success d-inline">
-                                <input type="radio" name="unit_detail[partition][` + i + `]" id="bedspace` + i + `" class="bedcheck" value="2" required>
+                                <input type="checkbox" name="unit_detail[partition][` + i + `]" id="bedspace` + i + `" class="bedcheck" value="2" required>
                                 <label class="labelpermission" for="bedspace` + i + `"> Bedspace </label>
                             </div>
                         </div>
@@ -177,8 +182,10 @@
                 </div>
                 <hr>
             </div>`;
+
             container.appendChild(newBlock);
             attachEvents(newBlock, i);
+
             $(container).find('select.select2').select2({
                 placeholder: 'Select an option',
                 allowClear: true
@@ -324,6 +331,20 @@
 
             $(check).trigger('change');
         });
+    }
+
+    $('.fullBuildCheck').on('change', function() {
+        unitNoReq();
+    });
+
+    function unitNoReq() {
+        let fullb = $('.fullBuildCheck').prop('checked');
+
+        if (fullb) {
+            $('.unit_no').attr('required', false);
+        } else {
+            $('.unit_no').attr('required', true);
+        }
     }
 
     // full building checkbox click
@@ -499,7 +520,6 @@
         let cod = 0;
         let totRoom = 0;
 
-        console.log($('#contract_type').val());
         if ($('#contract_type').val() == '1') {
             // Count filled inputs
             const countOfHouses = $('.unit_no').filter((_, el) => $(el).val()).length;
@@ -695,7 +715,10 @@
 
             }
 
-            rentPerUnitFamaFaateh();
+            if ($('#contract_type').val() == '2') {
+                rentPerUnitFamaFaateh();
+            }
+
 
             // containerPayment.querySelectorAll('.payment_mode_div').forEach(attachEventsPayment);
         });
@@ -834,6 +857,7 @@
         var contract_type = $(this).val();
         if (contract_type == '2') {
             $('#duration_months').val('12');
+            rentPerUnitFamaFaateh();
             //         $('#client_name').val('Faateh');
             //         $('#client_phone').val('0568856995');
             //         $('#client_email').val('adil@faateh.ae');
@@ -841,6 +865,7 @@
 
         } else {
             $('#duration_months').val('13');
+            $('.rentPerUnitFF').hide();
             //         $('#client_name').val('Faateh');
             //         $('#client_phone').val('0568856995');
             //         $('#client_email').val('adil@faateh.ae');
@@ -873,9 +898,9 @@
             (parseFloat($('#dewa_deposit').val()) || 0) +
             (parseFloat($('#ejari').val()) || 0);
 
-        let paymenttovendor = totRent + totcomm + totdepo;
-        let finalCost = paymenttovendor + totcontractfee + totalotc;
-        let initialInv = (totRent / 4) + totcomm + totdepo + totcontractfee + totalotc;
+        let paymenttovendor = parseFloat(totRent + totcomm + totdepo).toFixed(2);
+        let finalCost = (parseFloat(paymenttovendor) + parseFloat(totcontractfee) + parseFloat(totalotc)).toFixed(2);
+        let initialInv = parseFloat((totRent / 4) + totcomm + totdepo + totcontractfee + totalotc).toFixed(2);
 
         $('.total_contract_amount').val(totRent);
         $('.commssion_final').val(totcomm);
@@ -1006,7 +1031,7 @@
 
         if ($decimalPart >= 0.5) {
             // Round to 1 decimal first, then format 2 decimals
-            return number_format(round($value, 1), 2, '.', '');
+            return $value.toFixed(2);
         } else {
             // Round to nearest integer
             return Math.round($value);
@@ -1039,6 +1064,8 @@
     function rentPerUnitFamaFaateh() {
         let i = 0;
         $('.rentPerUnitFF').show();
+        $('.receivable_details').hide();
+        $('.rentPartition, .rentBedspace, .rentRoom').hide();
 
         const containerPayment = document.getElementsByClassName('rentPerUnitFF')[0];
         const prevffBlocks = containerPayment.querySelectorAll('.rentPerUnitFFaddmore');
@@ -1047,6 +1074,7 @@
         $('.unit_no').each(function() {
 
             let unit_rent = $(this).parent().siblings().find('.unit_rent_per_annum').val();
+            let unit_type = $(this).parent().siblings().find('.unit_type').find(':selected').text();
             let unit_comm = unit_rent * ($('#commission_perc').val() / 100);
             let unit_depo = unit_rent * ($('#deposit_perc').val() / 100);
             let unit_payable = parseFloat(unit_rent) + parseFloat(unit_comm) + parseFloat(unit_depo);
@@ -1055,7 +1083,7 @@
             ffblock.classList.add('form-group', 'row', 'rentPerUnitFFaddmore');
 
             ffblock.innerHTML = `
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label for="exampleInputEmail1">Unit No</label>
                                 <input type="number" class="form-control" id="unit_noFF${i}"
                                     readonly value="` + $(this).val() + `">
@@ -1066,21 +1094,26 @@
                                 <input type="hidden" value="` + unit_depo + `" id="unit_deposit${i}"
                                     name="unit_detail[unit_deposit][]">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
+                                <label for="exampleInputEmail1">Unit Type</label>
+                                <input type="text" class="form-control" id="unit_typeFF${i}"
+                                    readonly value="` + unit_type + `">
+                            </div>
+                            <div class="col-md-2">
                                 <label for="exampleInputEmail1">Profit %</label>
-                                <input type="number" class="form-control"
+                                <input type="number" class="form-control unit_profit_perc"
                                     name="unit_detail[unit_profit_perc][]"
                                     id="unit_profit_perc${i}" placeholder="Profit %" required>
                             </div>
                             <div class="col-md-3">
                                 <label for="exampleInputEmail1">Profit</label>
-                                <input type="number" class="form-control"
+                                <input type="number" class="form-control unit_profit"
                                     name="unit_detail[unit_profit][]" id="unit_profit${i}"
                                     placeholder="Profit" readonly>
                             </div>
                             <div class="col-md-3">
                                 <label for="exampleInputEmail1">Revenue</label>
-                                <input type="number" class="form-control"
+                                <input type="number" class="form-control unit_revenue"
                                     name="unit_detail[unit_revenue][]" id="unit_revenue${i}"
                                     placeholder="Revenue" readonly>
                             </div>`;
@@ -1096,12 +1129,202 @@
                 $(this).parent().siblings().find('input[name="unit_detail[unit_profit][]"]').val(
                     profit);
                 $(this).parent().siblings().find('input[name="unit_detail[unit_revenue][]"]').val(
-                    profit +
-                    unit_payable);
+                    (parseFloat(profit) + parseFloat(unit_payable)).toFixed(2));
+
+                calculateRoiFF();
             });
             i++;
         });
 
+    }
+
+
+    $('#rent_installments').on('input change', function() {
+        $('.receivable_details').show();
+
+        const containerPayment = document.getElementsByClassName('receivable_details')[0];
+        const prevffBlocks = containerPayment.querySelectorAll('.receivableaddmore');
+        prevffBlocks.forEach(block => block.remove());
+
+        let rec_inst = $(this).val();
+
+        for (let inst = 0; inst < rec_inst; inst++) {
+            const recpayblock = document.createElement('div');
+            recpayblock.classList.add('form-group', 'row', 'receivableaddmore');
+
+            recpayblock.innerHTML = `<div class="col-md-4">
+                                            <div class="input-group date" id="receivable_date${inst}"
+                                                data-target-input="nearest">
+                                                <input type="text"
+                                                    class="form-control datetimepicker-input receivable_date"
+                                                    name="receivables[payment_date][]"
+                                                    id="rec_payment_date${inst}"
+                                                    data-target="#receivable_date${inst}"
+                                                    placeholder="dd-mm-YYYY" required />
+                                                <div class="input-group-append"
+                                                    data-target="#receivable_date${inst}"
+                                                    data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i
+                                                            class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            
+                                            <input type="number" class="form-control rec_payment_amount"
+                                                id="rec_payment_amount${inst}"
+                                                name="receivables[payment_amount][]"
+                                                placeholder="Payment Amount" required>
+                                        </div>`;
+            containerPayment.appendChild(recpayblock);
+
+
+            $('#receivable_date' + inst).datetimepicker({
+                format: 'DD-MM-YYYY'
+            });
+
+            $('#receivable_date0').on('input change', function() {
+                calculatePaymentDatesRec();
+            });
+
+            $('.rec_payment_amount').on('input change', function() {
+                finalRecCal();
+            });
+
+        }
+    });
+
+    function calculateRoiFF() {
+        console.log('roiff');
+        let totalrev = 0;
+        $('.unit_revenue').each(function() {
+            totalrev += parseFloat($(this).val()) || 0;
+        });
+
+        let totalprof = 0;
+        $('.unit_profit').each(function() {
+            totalprof += parseFloat($(this).val()) || 0;
+        });
+
+
+        if (totalprof > 0 || totalrev > 0) {
+            var count = $('.unit_profit').length;
+
+            let tot_rent_per_month = totalrev / 12;
+            $('.rentRoom').show();
+            $('#rent_per_room').val(tot_rent_per_month.toFixed(2)).attr('readonly', 'true');
+
+            let total_rent_rec = tot_rent_per_month;
+
+            let total_rental = totalrev;
+
+            let expProfit = total_rental - parseFloat($('.final_cost').val());
+            let roi = expProfit / parseFloat($('.initial_inv').val());
+            let profit = expProfit / parseFloat($('.final_cost').val());
+            // parseFloat($('.').val());
+
+
+            $('.total_rent_receivable').val(total_rent_rec.toFixed(2));
+            $('.no_of_months_final').val($('#duration_months').val());
+            $('.total_rental').val(total_rental);
+
+
+            $('#roi').val(Math.round(roi * 100));
+            $('#expected_profit').val(Math.round(expProfit));
+            $('#profit').val(customRound(profit * 100));
+        }
+
+    }
+
+    function calculatePaymentDatesRec() {
+        let startDateVal = $('#receivable_date0').find("input").val();
+        let noOfInstallments = parseInt($('#rent_installments').val()) || 0;
+
+        let interval = 1;
+        console.log(noOfInstallments);
+
+        const startDate = parseDateCustom(startDateVal);
+
+        for (let i = 1; i < noOfInstallments; i++) {
+
+            if (!startDate || isNaN(startDate.getTime())) {
+                $('#rec_payment_date' + i).val('');
+                return;
+            }
+
+            // Add months
+            startDate.setMonth(startDate.getMonth() + interval);
+
+
+            // Add days
+            // startDate.setDate(startDate.getDate() + durationDays - 1);
+
+            // Format as YYYY-MM-DD
+            const year = startDate.getFullYear();
+            const month = String(startDate.getMonth() + 1).padStart(2, '0');
+            const day = String(startDate.getDate()).padStart(2, '0');
+
+            const formattedDate = `${day}-${month}-${year}`;
+
+            $('#receivable_date' + i).datetimepicker('date', moment(formattedDate, 'DD-MM-YYYY'));
+
+            valueTorentRec();
+            finalRecCal();
+
+
+
+        }
+    }
+
+    $('#rent_installments, #rent_per_part, #rent_per_bs, #rent_per_room').on('input change',
+        function() {
+            finalRecCal();
+            valueTorentRec();
+        });
+
+
+    function valueTorentRec() {
+        let rent_per_room = parseFloat($('#rent_per_room').val()) || 0;
+
+        let totRentperroom = 0;
+        if ($('#contract_type').val() == '2') {
+            totRentperroom = rent_per_room;
+        } else {
+            totRentperroom = $('.total_rent_receivable').val();
+        }
+        console.log('valueTorentRec');
+        $('.rec_payment_amount').each(function() {
+            $(this).val(totRentperroom);
+        });
+    }
+
+    function finalRecCal() {
+        console.log('finalreccal');
+
+
+
+        let totPaymentRec = 0;
+
+        $('.rec_payment_amount').each(function() {
+            totPaymentRec += parseFloat($(this).val()) || 0;
+        });
+
+
+
+        if ((totPaymentRec.toFixed(2) - $('.total_rental').val()) != 0) {
+            $('.total_rental_inst').val(totPaymentRec.toFixed(2));
+            $('.error-text-installment').show();
+            $('.contractFormSubmit').attr('disabled', 'true');
+        } else {
+            $('.error-text-installment').hide();
+            $('.contractFormSubmit').removeAttr('disabled');
+        }
+    }
+
+    function validateMax(el) {
+        if (el.value > 14) {
+            el.value = el.value.slice(0, -1); // remove last typed digit
+        }
     }
 </script>
 <!-- rent per unit FF -->

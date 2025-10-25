@@ -48,15 +48,7 @@ class ContractService
             $this->rentalServ->create($contract->id, $data['rentals'] ?? []);
             $this->otcServ->create($contract->id, $data['otc'] ?? []);
 
-            $receivableArr = array(
-                'vc_start_date' => $data['detail']['start_date'],
-                'vc_end_date' => $data['detail']['end_date'],
-                'contract_type' => $data['contract']['contract_type_id'],
-                'receivableStartDate' => $data['rentals']['receivable_start_date'],
-                'rent_receivable_per_month' => $data['rentals']['rent_receivable_per_month']
-            );
-
-            $this->paymentServ->create($contract->id, $data['payment'] ?? [], $data['payment_detail'] ?? [], $receivableArr);
+            $this->paymentServ->create($contract->id, $data['payment'] ?? [], $data['payment_detail'] ?? [], $data['receivables'] ?? []);
 
 
             return $contract;

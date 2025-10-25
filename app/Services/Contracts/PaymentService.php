@@ -25,17 +25,17 @@ class PaymentService
         return $this->paymentRepo->find($id);
     }
 
-    public function create($contract_id, array $data, array $detail, $durationInMonth, $user_id = null)
+    public function create($contract_id, array $data, array $detail, array $receivables, $user_id = null)
     {
         $this->validate($data);
         $data['contract_id'] = $contract_id;
         $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
 
-        return DB::transaction(function () use ($contract_id, $data, $detail, $durationInMonth) {
+        return DB::transaction(function () use ($contract_id, $data, $detail, $receivables) {
             $payment = $this->paymentRepo->create($data);
 
             $this->paymentdetServ->create($contract_id, $detail, $payment->id);
-            $this->paymentrecServ->create($contract_id, $durationInMonth, $payment->id);
+            $this->paymentrecServ->create($contract_id, $receivables);
 
             return $payment;
         });

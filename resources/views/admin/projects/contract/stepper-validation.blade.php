@@ -79,6 +79,7 @@
                 return; // skip hidden selects
             }
 
+
             if (!value || value.length === 0) {
                 container.addClass('is-invalid').removeClass('is-valid');
                 isValid = false;
@@ -128,5 +129,34 @@
         });
 
         return isValid;
+    }
+
+    $(document).on('input', '.unit_no', function() {
+        const stepContainer = $(this).closest('.step-content');
+        if (hasDuplicateUnitNumbers(stepContainer)) {
+            $('.nextBtn').prop('disabled', true);
+            alert('Unit numbers must be unique!');
+        } else {
+            $('.nextBtn').prop('disabled', false);
+        }
+    });
+
+    function hasDuplicateUnitNumbers(stepContainer) {
+        const unitNumbers = [];
+        let duplicateFound = false;
+
+        $(stepContainer).find('.unit_no').each(function() {
+            const val = $(this).val().trim();
+            if (val !== '') {
+                if (unitNumbers.includes(val)) {
+                    duplicateFound = true;
+                    return false; // stop loop early
+                } else {
+                    unitNumbers.push(val);
+                }
+            }
+        });
+
+        return duplicateFound;
     }
 </script>
