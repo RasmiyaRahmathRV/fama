@@ -30,6 +30,7 @@ class ContractUnitDetail extends Model
         'total_bedspace',
         'rent_per_partition',
         'rent_per_bedspace',
+        'rent_per_room',
         'added_by',
         'updated_by',
         'deleted_by',
@@ -76,5 +77,35 @@ class ContractUnitDetail extends Model
     public function contractSubUnitDetails()
     {
         return $this->hasMany(ContractSubUnitDetail::class);
+    }
+    private function formatNumber($value)
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        $value = (float) $value;
+
+        if (fmod($value, 1) !== 0.0) {
+            return rtrim(rtrim(number_format($value, 2, '.', ','), '0'), '.');
+        }
+
+        return number_format((int) $value);
+    }
+    public function getUnitRentPerAnnumAttribute($value)
+    {
+        return $this->formatNumber($value);
+    }
+    public function getRentPerRoomAttribute($value)
+    {
+        return $this->formatNumber($value);
+    }
+    public function getRentPerPartitionAttribute($value)
+    {
+        return $this->formatNumber($value);
+    }
+    public function getRentPerBedspaceAttribute($value)
+    {
+        return $this->formatNumber($value);
     }
 }

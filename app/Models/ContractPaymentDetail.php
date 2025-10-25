@@ -24,6 +24,11 @@ class ContractPaymentDetail extends Model
         'cheque_issuer',
         'cheque_issuer_name',
         'cheque_issuer_id',
+        'paid_amount',
+        'paid_date',
+        'pending_amount',
+        'paid_by',
+        'paid_status',
         'added_by',
         'updated_by',
         'deleted_by',
@@ -62,4 +67,38 @@ class ContractPaymentDetail extends Model
     {
         $this->attributes['payment_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
+    public function setpaidDateAttribute($value)
+    {
+        $this->attributes['paid_date'] = $value
+            ? Carbon::parse($value)->format('Y-m-d H:i:s')
+            : null;
+    }
+
+    private function formatNumber($value)
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        $value = (float) $value;
+
+        if (fmod($value, 1) !== 0.0) {
+            return rtrim(rtrim(number_format($value, 2, '.', ','), '0'), '.');
+        }
+
+        return number_format((int) $value);
+    }
+    public function getPaymentAmountAttribute($value)
+    {
+        return $this->formatNumber($value);
+    }
+    public function getpaymentateAttribute($value)
+    {
+        return Carbon::parse($value)->format('d/m/Y');
+    }
+    public function getPaidDateAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format('d/m/Y') : null;
+    }
+
 }
