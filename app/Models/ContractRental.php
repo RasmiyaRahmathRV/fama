@@ -54,4 +54,51 @@ class ContractRental extends Model
     {
         $this->attributes['receivable_start_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
+     private function formatNumber($value)
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        $value = (float) $value;
+
+        if (fmod($value, 1) !== 0.0) {
+            return rtrim(rtrim(number_format($value, 2, '.', ','), '0'), '.');
+        }
+
+        return number_format((int) $value);
+    }
+    public function getTotalPaymentToVendorAttribute($value)
+    {
+        return $this->formatNumber($value);
+    }
+
+    public function getTotalOtcAttribute($value)
+    {
+        return $this->formatNumber($value);
+    }
+
+    public function getExpectedProfitAttribute($value)
+    {
+        return $this->formatNumber($value);
+    }
+
+    public function getRoiPercAttribute($value)
+    {
+        return $this->formatNumber($value);
+    }
+
+    public function getRentReceivablePerAnnumAttribute($value)
+    {
+        return $this->formatNumber($value);
+    }
+
+    public function getRentPerAnnumPayableAttribute($value)
+    {
+        return $this->formatNumber($value);
+    }
+
+
+
+
 }

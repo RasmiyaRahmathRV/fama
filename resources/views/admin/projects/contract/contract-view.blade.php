@@ -39,9 +39,9 @@
                                         <span>{{ strtoupper($contract->property->property_name) }}</span></br>
                                         <span>{{ strtoupper($contract->area->area_name) }}</span>,
                                         <span>{{ strtoupper($contract->locality->locality_name) }}</span></br>
-                                        <span>{{ strtoupper(\Carbon\Carbon::parse($contract->contract_detail->start_date)->format('d/m/Y')) }}</span>
+                                        <span>{{ $contract->contract_detail->start_date }}</span>
                                         -
-                                        <span>{{ strtoupper(\Carbon\Carbon::parse($contract->contract_detail->end_date)->format('d/m/Y')) }}</span><br>
+                                        <span>{{ $contract->contract_detail->end_date }}</span><br>
 
                                         <span>{{ strtoupper($contract->contract_unit->unit_type_count) }}</span>
                                         </br>
@@ -53,18 +53,27 @@
                                         <h5 class="fw-bold text-success mb-2">Financial Overview</h5>
                                         <address>
                                             <strong>Total Payment to Vendor</strong> -
-                                            {{ number_format($contract->contract_rentals->total_payment_to_vendor) }} <br>
-                                            <strong>Total OTC</strong>
-                                            -{{ number_format($contract->contract_rentals->total_otc) }} <br>
-                                            <strong>Profit</strong> - {!! $contract->contract_rentals->profit_percentage . '%' !!} <br>
+                                            {{ $contract->contract_rentals->total_payment_to_vendor }} <br>
+
+                                            <strong>Total OTC</strong> -
+                                            {{ $contract->contract_rentals->total_otc }} <br>
+
+                                            <strong>Profit</strong> -
+                                            {!! $contract->contract_rentals->profit_percentage . '%' !!} <br>
+
                                             <strong>Expected Profit</strong> -
-                                            {{ number_format($contract->contract_rentals->expected_profit) }}<br>
-                                            <strong>ROI</strong> - {!! number_format($contract->contract_rentals->roi_perc) . '%' !!}<br>
+                                            {{ $contract->contract_rentals->expected_profit }} <br>
+
+                                            <strong>ROI</strong> -
+                                            {!! $contract->contract_rentals->roi_perc . '%' !!} <br>
+
                                             <strong>Total Rental</strong> -
-                                            {{ number_format($contract->contract_rentals->rent_receivable_per_annum) }}<br>
+                                            {{ $contract->contract_rentals->rent_receivable_per_annum }} <br>
+
                                             <strong>Total Contract Amount</strong> -
-                                            {{ number_format($contract->contract_rentals->rent_per_annum_payable) }}<br>
+                                            {{ $contract->contract_rentals->rent_per_annum_payable }} <br>
                                         </address>
+
                                     </span>
                                 </div>
                             </div>
@@ -112,7 +121,7 @@
                                                             -
                                                         @endif
                                                     </td>
-                                                    <td>{{ number_format($details->payment_amount) }}</td>
+                                                    <td>{{ $details->payment_amount }}</td>
                                                     <td>{{ strtoupper($contract->contract_payments->beneficiary) }}</td>
                                                     <td>{{ $details->paid_date ?? ' - ' }}</td>
                                                     <td>{!! 'RENT 1/' . $contract->contract_payments->installment->installment_name !!}</td>
@@ -158,7 +167,7 @@
                                                     <td>{{ strtoupper($unitDetails->property_type->property_type) }}
                                                     <td>{{ strtoupper($unitDetails->floor_no) }}</td>
                                                     <td>{{ strtoupper($unitDetails->unit_status->unit_status) }}</td>
-                                                    <td>{{ number_format($unitDetails->unit_rent_per_annum) }}</td>
+                                                    <td>{{ $unitDetails->unit_rent_per_annum }}</td>
                                                     </td>
                                                     <td>
                                                         @if ($unitDetails->partition)
@@ -181,14 +190,14 @@
                                                     </td>
                                                     <td>
                                                         @if ($unitDetails->partition)
-                                                            {{ number_format($unitDetails->rent_per_partition) }}
+                                                            {{ $unitDetails->rent_per_partition }}
                                                         @elseif($unitDetails->bedspace)
                                                             {{ $unitDetails->rent_per_bedspace }}
                                                         @else
                                                             -
                                                         @endif
                                                     </td>
-                                                    <td>{{ number_format($unitDetails->rent_per_room) ?? ' - ' }}</td>
+                                                    <td>{{ $unitDetails->rent_per_room ?? ' - ' }}</td>
                                                 </tr>
                                             @endforeach
 
@@ -203,10 +212,12 @@
                             @php
                                 $total_paid = 0;
                                 $total_to_pay = 0;
+
                                 foreach ($contract->contract_payments->contractPaymentDetails as $details) {
-                                    $total_to_pay += $details->payment_amount;
-                                    $total_paid += $details->paid_amount;
+                                    $total_to_pay += (float) ($details->payment_amount ?? 0);
+                                    $total_paid += (float) ($details->paid_amount ?? 0);
                                 }
+
                                 $remaining_amount = $total_to_pay - $total_paid;
                             @endphp
 
@@ -214,8 +225,8 @@
                                 <div class="col-6">
                                     {{-- <p class="lead text-danger"><strong>Amount Due 2/22/2014</strong></p> --}}
                                     <div class="py-3">
-                                        <span> <strong>Total Paid : </strong>{{ number_format($total_paid) }}</span><br>
-                                        <span> <strong>Remaining : </strong>{{ number_format($remaining_amount) }}</span>
+                                        <span> <strong>Total Paid : </strong>{{ $total_paid }}</span><br>
+                                        <span> <strong>Remaining : </strong>{{ $remaining_amount }}</span>
                                     </div>
                                 </div>
                                 <!-- /.col -->
