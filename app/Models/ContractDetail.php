@@ -57,10 +57,10 @@ class ContractDetail extends Model
     }
     public function getStartDateAttribute($value)
     {
-        return Carbon::parse($value)->format('d/m/Y');
+        return Carbon::parse($value)->format('d-m-Y');
     }
     public function getEndDateAttribute($value)
     {
-        return Carbon::parse($value)->format('d/m/Y');
+        return Carbon::parse($value)->format('d-m-Y');
     }
 }

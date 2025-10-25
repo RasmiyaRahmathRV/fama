@@ -92,13 +92,13 @@ class ContractPaymentDetail extends Model
     {
         return $this->formatNumber($value);
     }
-    public function getpaymentateAttribute($value)
+    public function getpaymentDateAttribute($value)
     {
-        return Carbon::parse($value)->format('d/m/Y');
+        return Carbon::parse($value)->format('d-m-Y');
     }
     public function getPaidDateAttribute($value)
     {
-        return $value ? Carbon::parse($value)->format('d/m/Y') : null;
+        return $value ? Carbon::parse($value)->format('d-m-Y') : null;
     }
 
 }
