@@ -26,12 +26,15 @@ class SubUnitDetailService
         // dd($detailId);
         // dd($subUnitData);
         $subunitArr = [];
-        foreach ($subUnitData['unit_no'] as $key => $value) {
+        foreach ($subUnitData['project_no'] as $key => $value) {
+            $subunit_type = '0';
             for ($i = 1; $i <= $subUnitData['partition'][$key]; $i++) {
                 if ($subUnitData['partition'][$key] > 0) {
                     $subunitno = 'P' . $i;
+                    $subunit_type = '1';
                 } else {
                     $subunitno = 'BS' . $i;
+                    $subunit_type = '2';
                 }
 
                 $subunitcode = 'P' . $subUnitData['project_no'] . '/' . $subUnitData['company_code'] . '/' . $value . '/' . $subunitno;
@@ -41,6 +44,7 @@ class SubUnitDetailService
                     'contract_id' => $subUnitData['contract_id'],
                     'contract_unit_id' => $subUnitData['contract_unit_id'],
                     'contract_unit_detail_id' => $detailId[$key]->id,
+                    'subunit_type' => $subunit_type,
                     'subunit_no' => $subunitno,
                     'subunit_code' => $subunitcode,
                     'added_by' => $user_id ? $user_id : auth()->user()->id,
