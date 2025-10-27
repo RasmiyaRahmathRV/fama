@@ -58,16 +58,10 @@ class PaymentReceivableService
 
     private function validate(array $data, $id = null)
     {
-        $validator = Validator::make($data, [
-            // 'nationality_name' => [
-            //     'required',
-            //     Rule::unique('nationalities')->ignore($id)
-            //         ->where(fn($q) => $q
-            //             // ->where('company_id', $data['company_id'])
-            //             ->whereNull('deleted_at'))
-            // ],
-            // 'nationality_short_code' => 'required',
-            // 'company_id' => 'required|exists:companies,id',
+        $validator = Validator::make(['detail' => $data], [
+            'detail' => 'required|array|min:1',
+            'detail.*.receivable_date' => 'required',
+            'detail.*.receivable_amount' => 'required',
         ]);
 
         if ($validator->fails()) {

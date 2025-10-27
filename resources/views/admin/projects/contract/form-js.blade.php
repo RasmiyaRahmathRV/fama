@@ -857,6 +857,8 @@
         var contract_type = $(this).val();
         if (contract_type == '2') {
             $('#duration_months').val('12');
+            $('#btob').prop('checked', true);
+            $('#btoc').prop('checked', false);
             rentPerUnitFamaFaateh();
             //         $('#client_name').val('Faateh');
             //         $('#client_phone').val('0568856995');
@@ -865,6 +867,8 @@
 
         } else {
             $('#duration_months').val('13');
+            $('#btob').prop('checked', false);
+            $('#btoc').prop('checked', true);
             $('.rentPerUnitFF').hide();
             //         $('#client_name').val('Faateh');
             //         $('#client_phone').val('0568856995');

@@ -44,6 +44,12 @@ class ContractDetailService
             // ],
             // 'nationality_short_code' => 'required',
             // 'company_id' => 'required|exists:companies,id',
+            'grace_period' => 'required',
+            'closing_date' => 'required',
+            'start_date' => 'required',
+            'duration_in_months' => 'required',
+            'end_date' => 'required',
+
         ]);
 
         if ($validator->fails()) {

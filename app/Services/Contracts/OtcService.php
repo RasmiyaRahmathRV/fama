@@ -34,15 +34,23 @@ class OtcService
     private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
-            // 'nationality_name' => [
-            //     'required',
-            //     Rule::unique('nationalities')->ignore($id)
-            //         ->where(fn($q) => $q
-            //             // ->where('company_id', $data['company_id'])
-            //             ->whereNull('deleted_at'))
+            // 'cost_of_bed'
+            // 'cost_of_matress'
+            // 'appliances'
+            // 'dewa_deposit'
+            // 'cost_of_cabinets'
+            // 'cost_of_development' => [
+            //     'nullable',
+            //     function ($attribute, $value, $fail) use ($data) {
+            //         // Example: fetch the unit from DB (replace 'id' with your logic)
+            //         $unitId = $data['contract_unit_id'] ?? null;
+            //         $unit = ContractUnit::find($unitId);
+
+            //         if ($unit && $unit->unit != 1 && empty($value)) {
+            //             $fail('The unit number is required'); // because contract is not full building.
+            //         }
+            //     },
             // ],
-            // 'nationality_short_code' => 'required',
-            // 'company_id' => 'required|exists:companies,id',
         ]);
 
         if ($validator->fails()) {

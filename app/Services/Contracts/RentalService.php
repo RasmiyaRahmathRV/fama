@@ -41,15 +41,16 @@ class RentalService
     private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
-            // 'nationality_name' => [
-            //     'required',
-            //     Rule::unique('nationalities')->ignore($id)
-            //         ->where(fn($q) => $q
-            //             // ->where('company_id', $data['company_id'])
-            //             ->whereNull('deleted_at'))
-            // ],
-            // 'nationality_short_code' => 'required',
-            // 'company_id' => 'required|exists:companies,id',
+            "rent_per_annum_payable" => 'required',
+            "total_payment_to_vendor" => 'required',
+            "final_cost" => 'required',
+            "initial_investment" => 'required',
+            "rent_receivable_per_month" => 'required',
+            "rent_receivable_per_annum" => 'required',
+            "roi_perc" => 'required',
+            "expected_profit" => 'required',
+            "profit_percentage" => 'required',
+            'receivable_installments' => 'required'
         ]);
 
         if ($validator->fails()) {

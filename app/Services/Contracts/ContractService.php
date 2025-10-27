@@ -91,6 +91,12 @@ class ContractService
                     ->where(fn($query) => $query->where('company_id', $data['company_id']))
                     ->whereNull('deleted_at'),
             ],
+            'company_id' => 'required',
+            'vendor_id' => 'required',
+            'contract_type_id' => 'required',
+            'area_id' => 'required',
+            'locality_id' => 'required',
+            'property_id' => 'required',
         ], [
             'project_number.unique' => 'This project number already exists. Please choose another.',
         ]);

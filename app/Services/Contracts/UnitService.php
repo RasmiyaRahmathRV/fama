@@ -66,15 +66,8 @@ class UnitService
     private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
-            // 'nationality_name' => [
-            //     'required',
-            //     Rule::unique('nationalities')->ignore($id)
-            //         ->where(fn($q) => $q
-            //             // ->where('company_id', $data['company_id'])
-            //             ->whereNull('deleted_at'))
-            // ],
-            // 'nationality_short_code' => 'required',
-            // 'company_id' => 'required|exists:companies,id',
+            'no_of_units' => 'required',
+            'business_type' => 'required',
         ]);
 
         if ($validator->fails()) {

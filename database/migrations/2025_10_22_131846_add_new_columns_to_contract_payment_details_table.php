@@ -17,9 +17,7 @@ return new class extends Migration {
             $table->decimal('pending_amount', 8, 2)->nullable();
             $table->integer('paid_by')->nullable();
             $table->integer('paid_status')->comment('0-not paid, 1-paid,  2-half paid')->default(0);
-
         });
-
     }
 
 
@@ -38,9 +36,6 @@ return new class extends Migration {
                 'paid_by',
                 'paid_status',
             ]);
-
         });
-
     }
-
 };

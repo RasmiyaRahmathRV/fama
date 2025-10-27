@@ -2,6 +2,7 @@
 
 namespace App\Services\Contracts;
 
+use App\Models\ContractUnit;
 use App\Repositories\Contracts\UnitDetailRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -86,22 +87,35 @@ class UnitDetailService
         return;
     }
 
-    private function validate(array $data, $id = null)
+    public function validate(array $data, $id = null)
     {
-        $validator = Validator::make($data, [
-            // 'nationality_name' => [
-            //     'required',
-            //     Rule::unique('nationalities')->ignore($id)
-            //         ->where(fn($q) => $q
-            //             // ->where('company_id', $data['company_id'])
-            //             ->whereNull('deleted_at'))
-            // ],
-            // 'nationality_short_code' => 'required',
-            // 'company_id' => 'required|exists:companies,id',
+        $validator = Validator::make(['unit_detail' => $data], [
+            'unit_detail' => 'required|array|min:1',
+            'unit_detail.*.unit_type_id' => 'required',
+            'unit_detail.*.floor_no' => 'required',
+            'unit_detail.*.unit_status_id' => 'required',
+            'unit_detail.*.unit_rent_per_annum' => 'required',
+            'unit_detail.*.unit_size_unit_id' => 'required',
+            'unit_detail.*.unit_size' => 'required',
+            'unit_detail.*.property_type_id' => 'required',
+            'unit_detail.*.unit_number' => [
+                'nullable',
+                function ($attribute, $value, $fail) use ($data) {
+                    // Example: fetch the unit from DB (replace 'id' with your logic)
+                    $unitId = $data['contract_unit_id'] ?? null;
+                    $unit = ContractUnit::find($unitId);
+
+                    if ($unit && $unit->unit != 1 && empty($value)) {
+                        $fail('The unit number is required'); // because contract is not full building.
+                    }
+                },
+            ],
         ]);
 
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
+
+        return $validator->validated()['unit_detail'];
     }
 }

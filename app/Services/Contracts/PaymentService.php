@@ -46,15 +46,8 @@ class PaymentService
     private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
-            // 'nationality_name' => [
-            //     'required',
-            //     Rule::unique('nationalities')->ignore($id)
-            //         ->where(fn($q) => $q
-            //             // ->where('company_id', $data['company_id'])
-            //             ->whereNull('deleted_at'))
-            // ],
-            // 'nationality_short_code' => 'required',
-            // 'company_id' => 'required|exists:companies,id',
+            'installment_id' => 'required',
+            'interval' => 'required'
         ]);
 
         if ($validator->fails()) {

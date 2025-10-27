@@ -51,17 +51,22 @@ class PaymentDetailService
 
     private function validate(array $data, $id = null)
     {
-        $validator = Validator::make($data, [
-            // 'cheque_no' => [
-            //     'required',
-            //     Rule::unique('contract_payment_details')->ignore($id)
-            //         ->where(fn($q) => $q
-            //             // ->where('company_id', $data['company_id'])
-            //             ->whereNull('deleted_at'))
-            // ],
-            // 'nationality_short_code' => 'required',
-            // 'company_id' => 'required|exists:companies,id',
+        $requireIfPaymentMode = function ($attribute, $value, $fail) use ($data) {
+            if (in_array($data['payment_mode_id'], [2, 3]) && empty($value)) {
+                $field = str_replace('payment_detail.*.', '', $attribute); // clean field name
+                $fail("The {$field} is required because payment mode is not full building.");
+            }
+        };
+
+        $validator = Validator::make(['payment_detail' => $data], [
+            'payment_detail' => 'required|array|min:1',
+            'payment_detail.*.payment_mode_id' => 'required',
+            'payment_detail.*.payment_date' => 'required',
+            'payment_detail.*.payment_amount' => 'required',
+            'payment_detail.*.bank_id' => ['nullable', $requireIfPaymentMode],
+            'payment_detail.*.cheque_no' => ['nullable', $requireIfPaymentMode],
         ]);
+
 
         if ($validator->fails()) {
             throw new ValidationException($validator);
