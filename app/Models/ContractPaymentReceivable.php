@@ -17,6 +17,7 @@ class ContractPaymentReceivable extends Model
         'contract_id',
         'receivable_date',
         'receivable_amount',
+        'receivable_installments',
         'added_by',
         'updated_by',
         'deleted_by',

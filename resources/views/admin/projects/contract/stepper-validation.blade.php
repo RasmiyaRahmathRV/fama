@@ -141,6 +141,16 @@
         }
     });
 
+    $(document).on('input', '.unit_no', function() {
+        const stepContainer = $(this).closest('.step-content');
+        if (hasDuplicateChequeNumbers(stepContainer)) {
+            $('.nextBtn').prop('disabled', true);
+            alert('Cheque numbers must be unique!');
+        } else {
+            $('.nextBtn').prop('disabled', false);
+        }
+    });
+
     function hasDuplicateUnitNumbers(stepContainer) {
         const unitNumbers = [];
         let duplicateFound = false;
@@ -153,6 +163,25 @@
                     return false; // stop loop early
                 } else {
                     unitNumbers.push(val);
+                }
+            }
+        });
+
+        return duplicateFound;
+    }
+
+    function hasDuplicateChequeNumbers(stepContainer) {
+        const chequeNumbers = [];
+        let duplicateFound = false;
+
+        $(stepContainer).find('.cheque_no').each(function() {
+            const val = $(this).val().trim();
+            if (val !== '') {
+                if (chequeNumbers.includes(val)) {
+                    duplicateFound = true;
+                    return false; // stop loop early
+                } else {
+                    chequeNumbers.push(val);
                 }
             }
         });

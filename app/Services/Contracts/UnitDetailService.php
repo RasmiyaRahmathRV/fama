@@ -27,14 +27,17 @@ class UnitDetailService
     public function create($contractData, array $dataArr, $unit_id, $user_id = null)
     {
         $data = [];
+        // dd($dataArr);
         foreach ($dataArr['unit_number'] as $key => $value) {
 
             $partition = 0;
             $bedspace = 0;
-            if (array_key_exists('partition', $dataArr) && $dataArr['partition'][$key] == 1) {
-                $partition = 1;
-            } elseif (array_key_exists('bedspace', $dataArr) && $dataArr['bedspace'][$key] == 1) {
-                $bedspace = 1;
+            if (array_key_exists('partition', $dataArr)) {
+                if ($dataArr['partition'][$key] == 1) {
+                    $partition = 1;
+                } else {
+                    $bedspace = 1;
+                }
             }
 
             $data[] = array(
@@ -55,9 +58,9 @@ class UnitDetailService
                 'total_bedspace' => $dataArr['total_bedspace'][$key] ?? 0,
                 'rent_per_partition' => ($partition > 0) ? $dataArr['rent_per_partition'] : 0,
                 'rent_per_bedspace' => ($bedspace > 0) ? $dataArr['rent_per_bedspace'] : 0,
-                'rent_per_room' => ($bedspace == null && $partition == null) ? $dataArr['rent_per_room'] : 0
+                'rent_per_room' => ($bedspace == 0 && $partition == 0) ? $dataArr['rent_per_room'] : 0
             );
-
+            // dd($data);
             $this->validate($data);
         }
 

@@ -4,6 +4,7 @@ namespace App\Services\Contracts;
 
 use App\Repositories\Contracts\PaymentDetailRepository;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class PaymentDetailService
@@ -51,9 +52,9 @@ class PaymentDetailService
     private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
-            // 'nationality_name' => [
+            // 'cheque_no' => [
             //     'required',
-            //     Rule::unique('nationalities')->ignore($id)
+            //     Rule::unique('contract_payment_details')->ignore($id)
             //         ->where(fn($q) => $q
             //             // ->where('company_id', $data['company_id'])
             //             ->whereNull('deleted_at'))

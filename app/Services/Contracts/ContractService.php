@@ -34,11 +34,12 @@ class ContractService
 
     public function createOrRestore(array $data, $user_id = null)
     {
-        $this->validate($data);
+
         $data['contract']['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['contract']['project_code'] = $this->setProjectCode();
 
         return DB::transaction(function () use ($data) {
+            $this->validate($data['contract']);
             $contract = $this->contractRepo->create($data['contract']);
             // Store related details
             // dd($contract);
@@ -82,7 +83,17 @@ class ContractService
 
     private function validate(array $data, $id = null)
     {
-        $validator = Validator::make($data, [], []);
+        $validator = Validator::make($data, [
+            'project_number' => [
+                'required',
+                'string',
+                Rule::unique('contracts')->ignore($id)
+                    ->where(fn($query) => $query->where('company_id', $data['company_id']))
+                    ->whereNull('deleted_at'),
+            ],
+        ], [
+            'project_number.unique' => 'This project number already exists. Please choose another.',
+        ]);
 
         if ($validator->fails()) {
             throw new ValidationException($validator);

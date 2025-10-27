@@ -19,7 +19,7 @@
                                     id="inputEmail3" placeholder="Company Name">
                             </div>
                             <div class="col-sm-6">
-                                <label for="inputEmail3" class="col-form-label">Company Name</label>
+                                <label for="inputEmail3" class="col-form-label">Company Short Code</label>
                                 <input type="text" name="company_short_code" id="company_short_code"
                                     class="form-control" id="inputEmail3" placeholder="Company Short Code">
                             </div>

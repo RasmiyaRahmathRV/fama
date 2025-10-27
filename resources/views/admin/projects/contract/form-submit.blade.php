@@ -17,7 +17,7 @@
             success: function(response) {
                 // console.log(response);
                 toastr.success(response.message);
-                window.location.href = "{{ route('contract.index') }}";
+                // window.location.href = "{{ route('contract.index') }}";
             },
             error: function(errors) {
                 toastr.error(errors.responseJSON.message);

@@ -14,6 +14,7 @@ class ContractDocument extends Model
 
     protected $fillable = [
         'contract_id',
+        'document_type',
         'original_document_path',
         'original_documant_name',
         'signed_document_path',

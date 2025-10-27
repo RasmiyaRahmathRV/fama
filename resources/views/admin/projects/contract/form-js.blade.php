@@ -647,7 +647,7 @@
 
                             <div class="col-md-3 chq" id="chq${i}">
                                 <label for="exampleInputEmail1">Cheque No</label>
-                                <input type="text" class="form-control" id="cheque_no${i}" name="payment_detail[cheque_no][]" placeholder="Cheque No" required>
+                                <input type="text" class="form-control cheque_no" id="cheque_no${i}" name="payment_detail[cheque_no][]" placeholder="Cheque No" required>
                             </div>
 
                            

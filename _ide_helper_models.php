@@ -634,17 +634,17 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $contract_id
- * @property string $cost_of_development
- * @property string $cost_of_bed
- * @property string $cost_of_matress
- * @property string $appliances
- * @property string $decoration
- * @property string $dewa_deposit
- * @property string $ejari
- * @property string $cost_of_cabinets
+ * @property string|null $cost_of_development
+ * @property string|null $cost_of_bed
+ * @property string|null $cost_of_matress
+ * @property string|null $appliances
+ * @property string|null $decoration
+ * @property string|null $dewa_deposit
+ * @property string|null $ejari
+ * @property string|null $cost_of_cabinets
  * @property string $added_by
- * @property string $updated_by
- * @property string $deleted_by
+ * @property string|null $updated_by
+ * @property string|null $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -684,8 +684,8 @@ namespace App\Models{
  * @property int $interval
  * @property string|null $beneficiary
  * @property int $added_by
- * @property int $updated_by
- * @property int $deleted_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -743,6 +743,7 @@ namespace App\Models{
  * @property-read \App\Models\Contract $contract
  * @property-read \App\Models\ContractPayment $contract_payment
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read mixed $paymentate
  * @property-read \App\Models\PaymentMode|null $payment_mode
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail newQuery()
@@ -826,6 +827,7 @@ namespace App\Models{
  * @property string $expected_profit
  * @property string $profit_percentage
  * @property string|null $receivable_start_date
+ * @property int|null $receivable_installments
  * @property string $total_payment_to_vendor
  * @property string|null $total_otc
  * @property string $final_cost
@@ -857,6 +859,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereInitialInvestment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereProfitPercentage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereReceivableInstallments($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereReceivableStartDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereRentPerAnnumPayable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractRental whereRentReceivablePerAnnum($value)
@@ -996,12 +999,19 @@ namespace App\Models{
  * @property string|null $rent_per_partition
  * @property string|null $rent_per_bedspace
  * @property string|null $rent_per_room
+ * @property string|null $unit_profit_perc
  * @property int $added_by
  * @property int|null $updated_by
  * @property int|null $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property int $is_vacant
+ * @property string|null $unit_profit
+ * @property string|null $unit_revenue
+ * @property string|null $unit_amount_payable
+ * @property string|null $unit_commission
+ * @property string|null $unit_deposit
  * @property-read \App\Models\Contract $contract
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractSubunitDetail> $contractSubUnitDetails
  * @property-read int|null $contract_sub_unit_details_count
@@ -1033,8 +1043,14 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRentPerRoom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalBedspace($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalPartition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitAmountPayable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitCommission($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitDeposit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitProfit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitProfitPerc($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitRentPerAnnum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitRevenue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitSize($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitSizeUnitId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitStatusId($value)
