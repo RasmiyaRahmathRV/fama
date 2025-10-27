@@ -208,25 +208,36 @@
                                 <!-- /.col -->
                             </div>
                             <!-- /.row -->
+                            {{-- {{ DD($contract->contract_payments->contractPaymentDetails) }} --}}
 
                             @php
                                 $total_paid = 0;
                                 $total_to_pay = 0;
 
                                 foreach ($contract->contract_payments->contractPaymentDetails as $details) {
-                                    $total_to_pay += (float) ($details->payment_amount ?? 0);
-                                    $total_paid += (float) ($details->paid_amount ?? 0);
+                                    // Clean the values to ensure they are numeric
+                                    // $payment_amount = (float) str_replace(',', '', $details->payment_amount ?? 0);
+                                    // $paid_amount = (float) str_replace(',', '', $details->paid_amount ?? 0);
+                                    $payment_amount = toNumeric($details->payment_amount);
+                                    $paid_amount = toNumeric($details->paid_amount);
+
+                                    $total_to_pay += $payment_amount;
+                                    $total_paid += $paid_amount;
+
+                                    // $total_to_pay += (float) ($details->payment_amount ?? 0);
+                                    // $total_paid += (float) ($details->paid_amount ?? 0);
                                 }
 
                                 $remaining_amount = $total_to_pay - $total_paid;
                             @endphp
 
+
                             <div class="row">
                                 <div class="col-6">
                                     {{-- <p class="lead text-danger"><strong>Amount Due 2/22/2014</strong></p> --}}
                                     <div class="py-3">
-                                        <span> <strong>Total Paid : </strong>{{ $total_paid }}</span><br>
-                                        <span> <strong>Remaining : </strong>{{ $remaining_amount }}</span>
+                                        <span> <strong>Total Paid : </strong>{{ number_format($total_paid) }}</span><br>
+                                        <span> <strong>Remaining : </strong>{{ number_format($remaining_amount) }}</span>
                                     </div>
                                 </div>
                                 <!-- /.col -->
