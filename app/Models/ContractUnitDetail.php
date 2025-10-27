@@ -98,20 +98,21 @@ class ContractUnitDetail extends Model
 
         return number_format((int) $value);
     }
-    public function getUnitRentPerAnnumAttribute($value)
+
+    public function getAttributeValue($key)
+
     {
-        return $this->formatNumber($value);
-    }
-    public function getRentPerRoomAttribute($value)
-    {
-        return $this->formatNumber($value);
-    }
-    public function getRentPerPartitionAttribute($value)
-    {
-        return $this->formatNumber($value);
-    }
-    public function getRentPerBedspaceAttribute($value)
-    {
-        return $this->formatNumber($value);
+        $value = parent::getAttributeValue($key);
+        $formatted = [
+            'unit_rent_per_annum',
+            'rent_per_room',
+            'rent_per_partition',
+            'rent_per_bedspace',
+        ];
+
+        if (in_array($key, $formatted, true)) {
+            return $this->formatNumber($value);
+        }
+        return $value;
     }
 }
