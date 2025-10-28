@@ -26,6 +26,7 @@ class PaymentDetailService
     public function create($contract_id, array $dataArr, $payment_id, $user_id = null)
     {
         $data = [];
+        // dd($dataArr);
         foreach ($dataArr['payment_mode_id'] as $key => $value) {
 
             $data[] = array(
@@ -44,7 +45,7 @@ class PaymentDetailService
 
             $this->validate($data);
         }
-
+        // dd($data);
 
         return $this->paymentdetRepo->createMany($data);
     }
@@ -52,7 +53,7 @@ class PaymentDetailService
     private function validate(array $data, $id = null)
     {
         $requireIfPaymentMode = function ($attribute, $value, $fail) use ($data) {
-            if (in_array($data['payment_mode_id'], [2, 3]) && empty($value)) {
+            if (in_array($data[0]['payment_mode_id'], [2, 3]) && empty($value)) {
                 $field = str_replace('payment_detail.*.', '', $attribute); // clean field name
                 $fail("The {$field} is required because payment mode is not full building.");
             }

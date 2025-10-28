@@ -27,6 +27,7 @@ class ContractRental extends Model
         'expected_profit',
         'profit_percentage',
         'receivable_start_date',
+        'receivable_installments',
         'total_payment_to_vendor',
         'total_otc',
         'final_cost',

@@ -29,7 +29,8 @@ class UnitDetailService
     {
         $data = [];
         // dd($dataArr);
-        foreach ($dataArr['unit_number'] as $key => $value) {
+        foreach ($dataArr['unit_type_id'] as $key => $value) {
+            // dd('test');
 
             $partition = 0;
             $bedspace = 0;
@@ -45,8 +46,8 @@ class UnitDetailService
                 'contract_id' => $contractData->id,
                 'contract_unit_id' => $unit_id,
                 'added_by' => $user_id ? $user_id : auth()->user()->id,
-                'unit_number' => $value,
-                'unit_type_id' => $dataArr['unit_type_id'][$key],
+                'unit_number' => $dataArr['unit_number'][$key],
+                'unit_type_id' => $value,
                 'floor_no' => $dataArr['floor_no'][$key],
                 'unit_status_id' => $dataArr['unit_status_id'][$key],
                 'unit_rent_per_annum' => $dataArr['unit_rent_per_annum'][$key],
@@ -65,6 +66,7 @@ class UnitDetailService
             $this->validate($data);
         }
 
+        // dd($data);
         return DB::transaction(function () use ($data, $dataArr, $contractData, $unit_id, $user_id) {
             $unitDetId = $this->unitdetRepo->createMany($data);
 
@@ -76,7 +78,9 @@ class UnitDetailService
                 'contract_unit_id' => $unit_id,
                 'company_code' => $contractData->company->company_short_code,
                 'unit_no' => $dataArr['unit_number'],
+                'unit_type' => $dataArr['unit_type_id'],
             );
+            // dd($subUnitData);
 
             $this->subUnitdetServ->create($unitDetId, $subUnitData, $user_id);
 
