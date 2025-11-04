@@ -81,41 +81,53 @@ class AgreementRepository
             ->select([
                 'agreements.*',
                 'contracts.project_number',
-                'companies.company_name'
+                'companies.company_name',
+                'agreement_tenants.tenant_name',
+                'agreement_tenants.tenant_email',
+                'agreement_tenants.tenant_mobile',
+                'contract_types.contract_type'
+
             ])
             ->join('contracts', 'contracts.id', '=', 'agreements.contract_id')
             ->join('properties', 'properties.id', '=', 'contracts.property_id')
             // ->join('vendors', 'vendors.id', '=', 'contracts.vendor_id')
-            ->join('companies', 'companies.id', '=', 'agreements.company_id');
-        // ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id');
+            ->join('companies', 'companies.id', '=', 'agreements.company_id')
+            ->join('agreement_tenants', 'agreement_tenants.agreement_id', '=', 'agreements.id')
+            ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id');
+        // $get = $query->get();
+        // dd($get);
 
         if (!empty($filters['search'])) {
-            $query->orwhere('project_code', 'like', '%' . $filters['search'] . '%')
+            $query->orwhere('agreement_code', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('project_number', 'like', '%' . $filters['search'] . '%')
 
                 ->orWhereHas('company', function ($q) use ($filters) {
                     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
                 })
-                ->orWhereHas('vendor', function ($q) use ($filters) {
-                    $q->where('vendor_name', 'like', '%' . $filters['search'] . '%');
-                })
-                ->orWhereHas('contract_type', function ($q) use ($filters) {
+                ->orWhereHas('contract.contract_type', function ($q) use ($filters) {
                     $q->where('contract_type', 'like', '%' . $filters['search'] . '%');
                 })
-                ->orWhereHas('locality', function ($q) use ($filters) {
-                    $q->where('locality_name', 'like', '%' . $filters['search'] . '%');
+                ->orWhereHas('tenant', function ($q) use ($filters) {
+                    $q->where('tenant_name', 'like', '%' . $filters['search'] . '%')
+                        ->orWhere('tenant_email', 'like', '%' . $filters['search'] . '%')
+                        ->orWhere('tenant_mobile', 'like', '%' . $filters['search'] . '%');
                 })
-                ->orWhereHas('property', function ($q) use ($filters) {
-                    $q->where('property_name', 'like', '%' . $filters['search'] . '%');
-                })
+                // ->orWhereHas('contract_type', function ($q) use ($filters) {
+                //     $q->where('contract_type', 'like', '%' . $filters['search'] . '%');
+                // })
+
                 ->orWhereRaw("CAST(contracts.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
+
+
 
 
 
         // if (!empty($filters['company_id'])) {
         //     $query->Where('contracts.company_id', $filters['company_id']);
         // }
+
+        $query->orderBy('agreements.id', 'desc');
 
         return $query;
     }

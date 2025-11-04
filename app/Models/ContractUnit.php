@@ -42,4 +42,8 @@ class ContractUnit extends Model
     {
         return $this->hasMany(ContractUnitDetail::class);
     }
+    public function business_type()
+    {
+        return $this->business_type == 1 ? 'B2B' : 'B2C';
+    }
 }

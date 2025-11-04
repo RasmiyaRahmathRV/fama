@@ -61,6 +61,7 @@ class AgreementController extends Controller
     }
     public function store(Request $request)
     {
+        // dd($request->all());
 
         try {
 
@@ -89,7 +90,7 @@ class AgreementController extends Controller
             return $this->agreementService->getDataTable($filters);
         }
     }
-    public function exportAgreemant(Agreement $agreement)
+    public function exportAgreement(Agreement $agreement)
     {
         $search = request('search');
         $filters = auth()->user()->company_id ? [

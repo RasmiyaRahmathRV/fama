@@ -42,8 +42,9 @@ class AgreementUnit extends Model
 
     public function contractUnitDetail()
     {
-        return $this->belongsTo(ContractUnitDetail::class);
+        return $this->belongsTo(ContractUnitDetail::class, 'contract_unit_details_id', 'id');
     }
+
 
     public function contractSubunitDetail()
     {

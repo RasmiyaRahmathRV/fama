@@ -82,10 +82,15 @@ class Agreement extends Model
     {
         return $this->hasMany(AgreementPaymentDetail::class, 'agreement_id');
     }
-    public function agreemantUnit()
+    public function agreementUnit()
     {
         return $this->hasOne(AgreementUnit::class, 'agreement_id');
     }
+    public function agreement_units()
+    {
+        return $this->hasMany(AgreementUnit::class, 'agreement_id', 'id');
+    }
+
     protected static function booted()
     {
         static::deleting(function ($agreement) {
@@ -154,5 +159,9 @@ class Agreement extends Model
     public function setEndDateAttribute($value)
     {
         $this->attributes['end_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y');
     }
 }

@@ -320,7 +320,7 @@
                                             <div id="payment-step" class="content step-content" role="tabpanel"
                                                 aria-labelledby="payment-step-trigger" data-step='4'>
                                                 <div class="form-group row">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <label for="exampleInputEmail1">No. of Installments</label>
                                                         <select class="form-control select2" name="installment_id"
                                                             id="no_of_installments">
@@ -335,15 +335,20 @@
                                                         {{-- <input type="text" name="installment_id" class="form-control"
                                                             id="no_of_installments"> --}}
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <label for="exampleInputEmail1">Interval</label>
                                                         <input type="text" class="form-control" id="interval"
                                                             name="interval" placeholder="Interval">
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <label for="exampleInputEmail1">Beneficiary</label>
                                                         <input type="text" class="form-control" id="beneficiary"
                                                             name="beneficiary" placeholder="Beneficiary">
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label for="exampleInputEmail1">Total Rent Per Annum</label>
+                                                        <input type="text" class="form-control" id="total_rent_annum"
+                                                            name="total_rent_per_annum" placeholder="" readonly>
                                                     </div>
                                                 </div>
                                                 <hr>
@@ -537,6 +542,7 @@
             }
             let total_rent_per_annum = rentmonth * payment_count;
             $('#total_rent_per_annum').text(total_rent_per_annum);
+            $('#total_rent_annum').val(total_rent_per_annum);
 
         }
 
@@ -933,8 +939,11 @@
 
                 $(containerPayment).find('.fama-table, #accordion').remove();
                 $('.header-row').removeClass('d-none').addClass('d-flex');
-                $('#total_rent_per_annum').text(selectedContract
-                    .contract_payment_receivables_sum_receivable_amount);
+                $('#total_rent_per_annum').text(selectedContract.contract_rentals
+                    .rent_receivable_per_annum);
+                $('#total_rent_annum').val(selectedContract.contract_rentals
+                    .rent_receivable_per_annum);
+                const total_units = selectedContract.contract_unit.no_of_units;
                 const famaTable = document.createElement('div');
                 famaTable.classList.add('fama-table', 'mt-3', 'd-flex', 'justify-content-center', 'mt-3',
                     'row');
@@ -987,14 +996,15 @@
                     const containerPayment = document.querySelector('.payment_details');
                     const accordion = document.createElement('div');
                     accordion.id = 'accordion';
-
+                    console.log('rent receivable per annum:' + selectedContract);
                     const installmentCount = $(this).find('option:selected').text().trim();
                     window.unit_details.forEach((unit, unitIndex) => {
 
                         const collapseId = `collapse_${unit.id}`;
                         const unitName = unit.unit_number || `Unit ${unitIndex + 1}`;
-                        const unitRev = parseFloat(unit.unit_revenue);
-                        const amount_per_month = (unitRev / installmentCount).toFixed(2);
+                        const unitRev = parseFloat(selectedContract.contract_rentals
+                            .rent_receivable_per_annum);
+                        const amount_per_month = (unitRev / (installmentCount * total_units)).toFixed(2);
 
                         let installmentBlocks = `
                                         <div class="row font-weight-bold mb-2">

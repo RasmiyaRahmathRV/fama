@@ -61,12 +61,14 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\AgreementUnit|null $agreemantUnit
+ * @property-read \App\Models\AgreementUnit|null $agreementUnit
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AgreementDocument> $agreement_documents
  * @property-read int|null $agreement_documents_count
  * @property-read \App\Models\AgreementPayment|null $agreement_payment
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AgreementPaymentDetail> $agreement_payment_details
  * @property-read int|null $agreement_payment_details_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AgreementUnit> $agreement_units
+ * @property-read int|null $agreement_units_count
  * @property-read \App\Models\Company|null $company
  * @property-read \App\Models\Contract|null $contract
  * @property-read \App\Models\User|null $deletedBy
@@ -151,6 +153,7 @@ namespace App\Models{
  * @property int $installment_id
  * @property int $interval
  * @property string $beneficiary
+ * @property string $total_rent_annum
  * @property int $added_by
  * @property int|null $updated_by
  * @property int|null $deleted_by
@@ -175,6 +178,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereInstallmentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereInterval($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereTotalRentAnnum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment withTrashed()
@@ -189,7 +193,8 @@ namespace App\Models{
  * @property int $agreement_id
  * @property int $agreement_payment_id
  * @property int $payment_mode_id
- * @property int|null $contract_unit_id
+ * @property int $contract_unit_id
+ * @property int $agreement_unit_id
  * @property int|null $bank_id
  * @property string|null $cheque_number
  * @property string|null $cheque_issuer
@@ -220,6 +225,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereAddedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereAgreementId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereAgreementPaymentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereAgreementUnitId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereBankId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereChequeIssuer($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereChequeIssuerId($value)
@@ -489,7 +495,7 @@ namespace App\Models{
  * @property int|null $deleted_by
  * @property int|null $scope_generated_by
  * @property string|null $rejected_reason
- * @property int $is_agreement_added 0 - not added, 1-added
+ * @property int|null $is_agreement_added 0 - not added, 1 - added
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at

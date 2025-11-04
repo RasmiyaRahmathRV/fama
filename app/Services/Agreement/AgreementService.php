@@ -104,6 +104,7 @@ class AgreementService
                 'interval' => $data['interval'] ?? null,
                 'beneficiary' => $data['beneficiary'] ?? null,
                 'added_by' => $data['added_by'],
+                'total_rent_annum' => $data['total_rent_per_annum']
 
             ];
             $payment = $this->agreementPaymentService->create($payment_data);
@@ -338,19 +339,39 @@ class AgreementService
             ['data' => 'agreemant_code', 'name' => 'agreemant_code'],
             ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'project_number', 'name' => 'project_number'],
+            ['data' => 'tenant_details', 'name' => 'tenant_details'],
             ['data' => 'start_date', 'name' => 'start_date'],
             ['data' => 'end_date', 'name' => 'end_date'],
+            ['data' => 'created_at', 'name' => 'created_at'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
         ];
 
         return datatables()
             ->of($query)
             ->addIndexColumn()
-            ->addColumn('agreement_code', fn($row) => ucfirst($row->agreement_code) ?? '-')
+            ->addColumn('agreement_code', fn($row) =>  ucfirst($row->agreement_code) ?? '-')
             ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
-            ->addColumn('project_number', fn($row) => $row->contract->project_number ?? '-')
+            // ->addColumn('project_number', fn($row) => 'P - ' . $row->contract->project_number ?? '-')
+            ->addColumn('project_number', function ($row) {
+                $number = 'P - ' . $row->contract->project_number ?? '-';
+                $type = $row->contract_type ?? '-';
+
+                return "<strong class=''>{$number}</strong><p class='mb-0'>{$type}</p>
+                </p>";
+            })
+            ->addColumn('tenant_details', function ($row) {
+                $name = $row->tenant_name ?? '-';
+                $email = $row->tenant_email ?? '-';
+                $phone = $row->tenant_mobile ?? '-';
+
+                return "<strong class='text-capitalize'>{$name}</strong><p class='mb-0 text-primary'>{$email}</p><p class='text-muted small'>
+                    <i class='fa fa-phone-alt text-danger'></i> <span class='font-weight-bold'>{$phone}</span>
+                </p>";
+            })
             ->addColumn('start_date', fn($row) => $row->start_date ?? '-')
             ->addColumn('end_date', fn($row) => $row->end_date ?? '-')
+            ->addColumn('created_at', fn($row) => $row->created_at ?? '-')
+
 
             ->addColumn('action', function ($row) {
                 $action = '
@@ -375,7 +396,8 @@ class AgreementService
                 return $action ?: '-';
             })
 
-            ->rawColumns(['action'])
+            ->rawColumns(['tenant_details', 'action', 'project_number'])
+            // ->rawColumns(['action'])
             ->with(['columns' => $columns])
             ->toJson();
     }

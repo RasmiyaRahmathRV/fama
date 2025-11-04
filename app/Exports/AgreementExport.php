@@ -21,100 +21,88 @@ class AgreementExport implements FromCollection, WithHeadings
 
     public function collection()
     {
-        $query = Agreement::with('company', 'vendor', 'contract_type',);
+        $query = Agreement::with(
+            'company',
+            'contract',
+            'tenant',
+            'agreement_units.contractUnitDetail',
+            'contract.contract_type'
+        );
 
         if ($this->search) {
             $search = $this->search;
             $query->where(function ($q) use ($search) {
 
-                $q->where('project_code', 'like', "%{$search}%")
-                    ->orWhere('project_number', 'like', "%{$search}%")
+                $q->orwhere('agreement_code', 'like', "%{$search}%")
+                    ->orWhereHas('contract', function ($q) use ($search) {
+                        $q->where('project_number', 'like', "%{$search}%");
+                    })
+
                     ->orWhereHas('company', function ($q) use ($search) {
                         $q->where('company_name', 'like', "%{$search}%");
                     })
-                    ->orWhereHas('vendor', function ($q) use ($search) {
-                        $q->where('vendor_name', 'like', "%{$search}%");
-                    })
-                    ->orWhereHas('contract_type', function ($q) use ($search) {
+                    ->orWhereHas('contract.contract_type', function ($q) use ($search) {
                         $q->where('contract_type', 'like', "%{$search}%");
                     })
-                    ->orWhereHas('locality', function ($q) use ($search) {
-                        $q->where('locality_name',  'like', "%{$search}%");
+                    ->orWhereHas('tenant', function ($q) use ($search) {
+                        $q->where('tenant_name', 'like', "%{$search}%")
+                            ->orWhere('tenant_email', 'like', "%{$search}%")
+                            ->orWhere('tenant_mobile', 'like', "%{$search}%");
                     })
-                    ->orWhereHas('property', function ($q) use ($search) {
-                        $q->where('property_name',  'like', "%{$search}%");
-                    })
-                    ->orWhereRaw("CAST(contracts.id AS CHAR) LIKE ?", ["%{$search}%"]);
+                    ->orWhereRaw("CAST(agreements.id AS CHAR) LIKE ?", ["%{$search}%"]);
             });
         }
 
         if ($this->filter) {
-            $query->where('contracts.id', $this->filter);
+            $query->where('agreements.id', $this->filter);
         }
+        // dd($query->get()->toArray());
         return $query->get()
-            ->map(function ($contract) {
+            ->map(function ($agreement) {
+                // $collection = $query->get()->map(function ($agreement) {
+                $unitNumbers = $agreement->agreement_units
+                    ->map(fn($au) => optional($au->contractUnitDetail)->unit_number)
+                    ->filter()
+                    ->implode(', ');
+                // $totalRevenue = $agreement->agreement_units
+                //     ->sum(fn($au) => optional($au->contractUnitDetail)->unit_revenue);
                 return [
-                    'Project ID' => "P - " . $contract->project_number,
-                    'Project CODE' => $contract->project_code,
-                    'Contract Type' => $contract->contract_type->contract_type,
-                    'Start Date'  => $contract->contract_detail->start_date,
-                    'End Date'  => $contract->contract_detail->end_date,
-                    'Company Name' => $contract->company->company_name,
-                    'Vendor Name' => $contract->vendor->vendor_name,
-                    'Buliding' => $contract->property->property_name,
-                    'Locality' => $contract->locality->locality_name ?? '',
-                    'Unit' => $contract->contract_unit->unit_numbers ?? '',
-                    'Commission' => $contract->contract_rentals->commission ?? '',
-                    'Deposit' => $contract->contract_rentals->deposit,
-                    'Rent Per Annum' => $contract->contract_rentals->rent_per_annum_payable,
-                    'Total Vendor Payment' => $contract->contract_rentals->total_payment_to_vendor,
-                    'Total OTC' => $contract->contract_rentals->total_otc,
-                    'Total Project Cost' => $contract->contract_rentals->final_cost ?? '',
-                    'Total Vendor Payment' => $contract->contract_rentals->total_payment_to_vendor,
-                    'Tenure' => $contract->contract_detail->duration_in_months . "M",
-                    'Rent Receivable per Annum' => $contract->contract_rentals->rent_receivable_per_annum,
-                    'Rent Receivable per Month' => $contract->contract_rentals->rent_receivable_per_month,
+                    'Project ID' => "P - " . $agreement->contract->project_number,
+                    'Agreemant CODE' => $agreement->agreement_code,
+                    'Contract Type' => $agreement->contract->contract_type->contract_type,
+                    'Business Type' => $agreement->contract->contract_unit->business_type(),
 
-                    'Status' => match ($contract->contract_renewal_status) {
-                        0 => 'New',
-                        1 => 'Renewal',
-                    },
-                    'Project Status' => match ($contract->contract_renewal_status) {
-                        0 => 'New',
-                        1 => 'Renewal (' . ($contract->renewal_count ?? 0) . ')',
-                    },
-
-                    'Created_at' => $contract->created_at->format('d/m/Y'),
+                    'Start Date'  => $agreement->start_date,
+                    'End Date'  => $agreement->end_date,
+                    'Company Name' => $agreement->company->company_name,
+                    'Tenant Name' => $agreement->tenant->tenant_name ?? '',
+                    'Tenant Email' => $agreement->tenant->tenant_email ?? '',
+                    'Tenant Phone' => $agreement->tenant->tenant_mobile ?? '',
+                    'Unit Numbers' => $unitNumbers ?: '-',
+                    'Total Rent Annum' => $agreement->agreement_payment->total_rent_annum ?? '',
+                    'Created_at' => $agreement->created_at,
 
 
                 ];
             });
+        // dd($collection);
     }
 
     public function headings(): array
     {
         return [
             'ID',
-            'Project CODE',
+            'Agreement CODE',
             'Contact Type',
+            'Business Type',
             'Start Date',
             'End Date',
             'Company Name',
-            'Vendor Name',
-            'Buliding',
-            'Locality',
-            'Unit',
-            'Commission',
-            'Deposit',
-            'Rent Per Annum',
-            'Total Vendor Payment',
-            'Total OTC',
-            'Total Project Cost',
-            'Tenure',
-            'Rent Receivable per Annum',
-            'Rent Receivable per Month',
-            'Status',
-            'Project Status',
+            'Tenant Name',
+            'Tenant Email',
+            'Tenant Phone',
+            'Unit Numbers',
+            'Total Rent Annum',
             'Created_at',
         ];
     }

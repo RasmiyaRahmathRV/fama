@@ -56,14 +56,16 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 1%">#</th>
-                                            <th>Project</th>
-                                            <th>Vendor</th>
-                                            <th>Tenant</th>
-                                            <th>Bldng</th>
-                                            <th>Start</th>
-                                            <th>Exp</th>
+                                            <th>Agreement Code</th>
+                                            <th>Company Name</th>
+                                            <th>Project Number</th>
+                                            <th>Tenant Details</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Created At</th>
+                                            <th>Actions</th>
                                             <!-- <th>Status</th> -->
-                                            <th></th>
+                                            {{-- <th></th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -178,17 +180,26 @@
                     },
                     {
                         data: 'agreement_code',
-                        name: 'agreemnts.agreement_code',
+                        name: 'agreements.agreement_code',
                     },
                     {
                         data: 'company_name',
                         name: 'companies.company_name',
+
                     },
                     {
                         data: 'project_number',
-                        name: 'contract.project)number',
+                        name: 'contracts.project_number',
                     },
-
+                    {
+                        data: 'tenant_details',
+                        name: 'agreement_tenants.tenant_name',
+                        render: function(data, type, row) {
+                            return data ? data : '';
+                        },
+                        orderable: false,
+                        searchable: true
+                    },
 
                     {
                         data: 'start_date',
@@ -197,6 +208,10 @@
                     {
                         data: 'end_date',
                         name: 'agreements.end_date',
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'agreements.created_at',
                     },
 
 
@@ -218,7 +233,7 @@
                     action: function(e, dt, node, config) {
                         // redirect to your Laravel export route
                         let searchValue = dt.search();
-                        let url = "{{ route('contract.export') }}" + "?search=" +
+                        let url = "{{ route('agreement.export') }}" + "?search=" +
                             encodeURIComponent(searchValue);
                         window.location.href = url;
                     }
