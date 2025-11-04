@@ -47,7 +47,7 @@ return new class extends Migration
             $table->decimal('total_otc', 12, 2)->change();
             $table->decimal('final_cost', 12, 2)->change();
             $table->decimal('initial_investment', 12, 2)->change();
-            $table->decimal('receivable_installments')->nullable(false)->change();
+            $table->integer('receivable_installments')->nullable(false)->change();
         });
 
         Schema::table('contract_payment_details', function (Blueprint $table) {
@@ -102,6 +102,7 @@ return new class extends Migration
             $table->decimal('total_otc', 8, 2)->change();
             $table->decimal('final_cost', 8, 2)->change();
             $table->decimal('initial_investment', 8, 2)->change();
+            $table->integer('receivable_installments')->nullable()->change();
         });
 
         Schema::table('contract_payment_details', function (Blueprint $table) {

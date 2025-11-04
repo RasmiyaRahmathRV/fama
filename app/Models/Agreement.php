@@ -7,6 +7,7 @@ use App\Models\Traits\HasDeletedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 class Agreement extends Model
 {
@@ -51,16 +52,7 @@ class Agreement extends Model
      *
      * @var array
      */
-    protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'terminated_date' => 'date',
-        'is_emirates_id_uploaded' => 'boolean',
-        'is_passport_uploaded' => 'boolean',
-        'is_visa_uploaded' => 'boolean',
-        'is_signed_agreement_uploaded' => 'boolean',
-        'is_trade_license_uploaded' => 'boolean',
-    ];
+
 
     /**
      * Define relationships (optional, based on foreign keys).
@@ -88,7 +80,7 @@ class Agreement extends Model
     }
     public function agreement_payment_details()
     {
-       return $this->hasMany(AgreementPaymentDetail::class, 'agreement_id');
+        return $this->hasMany(AgreementPaymentDetail::class, 'agreement_id');
     }
     public function agreemantUnit()
     {
@@ -152,5 +144,15 @@ class Agreement extends Model
                 $agreement->$relation()->withTrashed()->restore();
             }
         });
+    }
+
+    public function setStartDateAttribute($value)
+    {
+        $this->attributes['start_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+
+    public function setEndDateAttribute($value)
+    {
+        $this->attributes['end_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 }

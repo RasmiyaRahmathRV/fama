@@ -42,7 +42,8 @@ class Contract extends Model
         'approved_by',
         'deleted_by',
         'scope_generated_by',
-        'rejected_reason'
+        'rejected_reason',
+        'is_agreement_added'
     ];
 
     public function property()

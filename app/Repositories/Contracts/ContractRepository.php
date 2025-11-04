@@ -122,6 +122,52 @@ class ContractRepository
     }
     public function allwithUnits()
     {
-        return Contract::with('contract_unit.contractUnitDetails.contractSubUnitDetails')->get();
+        return Contract::with([
+            'contract_unit.contractUnitDetails' => function ($q) {
+                $q->where('is_vacant', 0)
+                    ->orWhereHas('contractSubUnitDetails', function ($subQ) {
+                        $subQ->where('is_vacant', 0);
+                    })
+                    ->with(['contractSubUnitDetails' => function ($subQ) {
+                        $subQ->where('is_vacant', 0);
+                    }]);
+            },
+            'contract_detail',
+            'contract_payment_receivables',
+        ])
+            ->withCount('contract_payment_receivables')
+            ->withSum('contract_payment_receivables', 'receivable_amount')
+            ->where('contract_status', 2)
+            ->where('is_agreement_added', 0)
+            ->get();
+        return Contract::with('contract_unit.contractUnitDetails.contractSubUnitDetails')->where('contract_status', 1)->get();
     }
+    // public function allwithUnits()
+    // {
+    //     return Contract::with([
+    //         'contract_unit.contractUnitDetails' => function ($q) {
+    //             $q->where(function ($query) {
+    //                 $query->where('is_vacant', 0)
+    //                     ->orWhereHas('contractSubUnitDetails', function ($subQ) {
+    //                         $subQ->where('is_vacant', 0);
+    //                     });
+    //             })
+    //                 ->where(function ($query) {
+    //                     // exclude those that are vacant and have no subunits
+    //                     $query->where('is_vacant', 0)
+    //                         ->orWhereHas('contractSubUnitDetails');
+    //                 })
+    //                 ->with(['contractSubUnitDetails' => function ($subQ) {
+    //                     $subQ->where('is_vacant', 0);
+    //                 }]);
+    //         },
+    //         'contract_detail',
+    //         'contract_payment_receivables'
+    //     ])
+    //         ->withCount('contract_payment_receivables')
+    //         ->withSum('contract_payment_receivables', 'receivable_amount')
+    //         ->where('contract_status', 2)
+    //         ->get();
+    // }
+
 }

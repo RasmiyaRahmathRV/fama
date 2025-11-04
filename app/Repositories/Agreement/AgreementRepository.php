@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Repositories\Contracts;
+namespace App\Repositories\Agreement;
 
+use App\Models\Agreement;
 use App\Models\Contract;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -44,7 +45,8 @@ class AgreementRepository
 
     public function create(array $data)
     {
-        return Contract::create($data);
+        // dd($data);
+        return Agreement::create($data);
     }
 
     public function update($id, array $data)
@@ -75,20 +77,17 @@ class AgreementRepository
 
     public function getQuery(array $filters = []): Builder
     {
-        $query = Contract::query()
+        $query = Agreement::query()
             ->select([
-                'contracts.*',
-                'properties.property_name',
-                'vendors.vendor_name',
-                'contract_details.start_date',
-                'contract_details.end_date',
+                'agreements.*',
+                'contracts.project_number',
                 'companies.company_name'
             ])
-            ->join('contract_details', 'contract_details.contract_id', '=', 'contracts.id')
+            ->join('contracts', 'contracts.id', '=', 'agreements.contract_id')
             ->join('properties', 'properties.id', '=', 'contracts.property_id')
-            ->join('vendors', 'vendors.id', '=', 'contracts.vendor_id')
-            ->join('companies', 'companies.id', '=', 'contracts.company_id')
-            ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id');
+            // ->join('vendors', 'vendors.id', '=', 'contracts.vendor_id')
+            ->join('companies', 'companies.id', '=', 'agreements.company_id');
+        // ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id');
 
         if (!empty($filters['search'])) {
             $query->orwhere('project_code', 'like', '%' . $filters['search'] . '%')
@@ -114,9 +113,9 @@ class AgreementRepository
 
 
 
-        if (!empty($filters['company_id'])) {
-            $query->Where('contracts.company_id', $filters['company_id']);
-        }
+        // if (!empty($filters['company_id'])) {
+        //     $query->Where('contracts.company_id', $filters['company_id']);
+        // }
 
         return $query;
     }
