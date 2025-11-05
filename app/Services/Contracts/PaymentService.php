@@ -43,6 +43,26 @@ class PaymentService
         return;
     }
 
+    public function update($contract_id, array $data, array $detail, array $receivables, $user_id = null)
+    {
+        $id = $data['id'];
+        $this->validate($data, $id);
+        $data['updated_by'] = $user_id ? $user_id : auth()->user()->id;
+        // return 
+
+        return DB::transaction(function () use ($id, $data, $detail, $receivables, $contract_id) {
+            $payment = $this->paymentRepo->update($id, $data);
+
+            $this->paymentdetServ->update($contract_id, $detail, $payment->id);
+
+            $this->paymentrecServ->update($contract_id, $receivables);
+
+            return $payment;
+        });
+
+        return;
+    }
+
     private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [

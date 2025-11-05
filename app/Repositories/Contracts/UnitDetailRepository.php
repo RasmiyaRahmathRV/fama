@@ -26,15 +26,31 @@ class UnitDetailRepository
         return ContractUnitDetail::create($data);
     }
 
+    public function update($id, array $data)
+    {
+        $contractUnitDet = $this->find($id);
+        $contractUnitDet->update($data);
+        return $contractUnitDet;
+    }
+
     public function createMany(array $dataArray)
     {
         $detId = [];
         foreach ($dataArray as $data) {
-            $detId[] = ContractUnitDetail::create($data);
+            $detId[] = ContractUnitDetail::create($data)->id;
         }
         return  $detId;
     }
 
+    public function updateMany(array $dataArray)
+    {
+        $detId = [];
+        foreach ($dataArray as $id => $data) {
+            ContractUnitDetail::where('id', $id)->update($data);
+            $detId[] = $id;
+        }
+        return  $detId;
+    }
 
     public function delete($id)
     {

@@ -35,6 +35,18 @@ class PaymentDetailRepository
         return  $detId;
     }
 
+    public function updateMany(array $data)
+    {
+        $detId = [];
+        foreach ($data as $key => $value) {
+            $paymentdet = $this->find($key);
+            $paymentdet->update($value);
+
+            $detId[] = $key;
+        }
+        return  $detId;
+    }
+
     public function delete($id)
     {
         $area = $this->find($id);

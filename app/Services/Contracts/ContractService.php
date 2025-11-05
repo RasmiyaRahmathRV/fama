@@ -8,6 +8,22 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use App\Models\{
+    Installment,
+    PaymentMode,
+    Bank,
+    ContractType,
+    UnitType,
+    UnitStatus,
+    UnitSizeUnit
+};
+use App\Services\AreaService;
+use App\Services\CompanyService;
+use App\Services\InstallmentService;
+use App\Services\LocalityService;
+use App\Services\PropertyService;
+use App\Services\PropertyTypeService;
+use App\Services\VendorService;
 
 class ContractService
 {
@@ -20,6 +36,14 @@ class ContractService
         protected UnitService $unitServ,
         protected UnitDetailService $unitDetServ,
         protected RentalService $rentalServ,
+
+        protected CompanyService $companyService,
+        protected LocalityService $localityService,
+        protected AreaService $areaService,
+        protected PropertyTypeService $propertyTypeServ,
+        protected PropertyService $propertyServ,
+        protected InstallmentService $installmentServ,
+        protected VendorService $vendorServ,
     ) {}
 
     public function getAll()
@@ -32,20 +56,50 @@ class ContractService
         return $this->contractRepo->find($id);
     }
 
+    public function getAllDataById($id)
+    {
+        return $this->contractRepo->getAllDataById($id);
+    }
+
+    public function getDropdownData(): array
+    {
+        return [
+            'companies' => $this->companyService->getAll(),
+            'localities' => $this->localityService->getAll(),
+            'areas' => $this->areaService->getAll(),
+            'property_types' => $this->propertyTypeServ->getAll(),
+            'properties' => $this->propertyServ->getAll(),
+            'installments' => $this->installmentServ->getAll(),
+            'vendors' => $this->vendorServ->getAll(),
+            'installments' => Installment::all(),
+            'paymentmodes' => PaymentMode::all(),
+            'banks' => Bank::all(),
+            'contractTypes' => ContractType::all(),
+            'UnitTypes' => UnitType::all(),
+            'UnitStatus' => UnitStatus::all(),
+            'UnitSizeUnit' => UnitSizeUnit::all(),
+        ];
+    }
+
     public function createOrRestore(array $data, $user_id = null)
     {
-
+        // print_r($data);
         $data['contract']['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['contract']['project_code'] = $this->setProjectCode();
 
         return DB::transaction(function () use ($data) {
-            $this->validate($data['contract']);
+            $this->validate($data['contract'], $data['contract']['id'] ?? null);
+
             $contract = $this->contractRepo->create($data['contract']);
             // Store related details
-            // dd($contract);
+
+
             $this->detailServ->create($contract->id, $data['detail'] ?? []);
+
             $unitData = $this->unitServ->create($contract->id, $data['unit'] ?? [], $data['unit_detail'] ?? []);
-            $this->unitDetServ->create($contract, $data['unit_detail'] ?? [], $unitData->id);
+
+            $this->unitDetServ->create($contract, $data['unit_detail'] ?? [], $data['rentals']['receivable_installments'], $unitData->id);
+            // dd($contract);
             $this->rentalServ->create($contract->id, $data['rentals'] ?? []);
             $this->otcServ->create($contract->id, $data['otc'] ?? []);
 
@@ -76,9 +130,30 @@ class ContractService
 
     public function update($id, array $data)
     {
-        $this->validate($data, $id);
-        $data['updated_by'] = auth()->user()->id;
-        return $this->contractRepo->update($id, $data);
+        // dd($data);
+        return DB::transaction(function () use ($id, $data) {
+            $data['contract']['updated_by'] = auth()->user()->id;
+            $this->validate($data['contract'], $data['contract']['id'] ?? null);
+
+            $contract = $this->contractRepo->update($id, $data['contract']);
+            // Store related details
+
+
+            $this->detailServ->update($data['detail'] ?? []);
+            $unitData = $this->unitServ->update($data['unit'] ?? [], $data['unit_detail'] ?? []);
+
+            $this->unitDetServ->update($contract, $data['unit_detail'] ?? [], $data['rentals']['receivable_installments'], $unitData->id);
+            // dd($unitData);
+            $this->rentalServ->update($data['rentals'] ?? []);
+            $this->otcServ->update($data['otc'] ?? []);
+
+            $this->paymentServ->update($id, $data['payment'] ?? [], $data['payment_detail'] ?? [], $data['receivables'] ?? []);
+
+
+            return $contract;
+        });
+
+        // return $this->contractRepo->update($id, $data);
     }
 
     private function validate(array $data, $id = null)

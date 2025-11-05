@@ -26,6 +26,13 @@ class RentalRepository
         return ContractRental::create($data);
     }
 
+    public function update($id, array $data)
+    {
+        $contractRent = $this->find($id);
+        $contractRent->update($data);
+        return $contractRent;
+    }
+
     public function delete($id)
     {
         $area = $this->find($id);

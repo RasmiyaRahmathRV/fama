@@ -26,6 +26,13 @@ class OtcRepository
         return ContractOtc::create($data);
     }
 
+    public function update($id, array $data)
+    {
+        $contractOtc = $this->find($id);
+        $contractOtc->update($data);
+        return $contractOtc;
+    }
+
     public function delete($id)
     {
         $area = $this->find($id);

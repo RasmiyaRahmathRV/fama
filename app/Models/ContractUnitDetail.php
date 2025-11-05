@@ -80,10 +80,12 @@ class ContractUnitDetail extends Model
             [User::class, 'deleted_by', 'id'],
         );
     }
+
     public function contractSubUnitDetails()
     {
         return $this->hasMany(ContractSubUnitDetail::class);
     }
+
     private function formatNumber($value)
     {
         if ($value === null || $value === '') {
@@ -100,7 +102,6 @@ class ContractUnitDetail extends Model
     }
 
     public function getAttributeValue($key)
-
     {
         $value = parent::getAttributeValue($key);
         $formatted = [

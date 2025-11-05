@@ -48,50 +48,29 @@ class ContractController extends Controller
     public function create()
     {
         $title = 'Create Contract';
-
+        $contract = null;
         // dropdown values
-        $companies = $this->companyService->getAll();
-        $localities = $this->localityService->getAll();
-        $areas = $this->areaService->getAll();
-        $property_types = $this->propertyTypeService->getAll();
-        $properties = $this->propertyService->getAll();
-        $installments = $this->installmentService->getAll();
-        $vendors = $this->vendorService->getAll();
-        $installments = Installment::all();
-        $paymentmodes = PaymentMode::all();
-        $banks = Bank::all();
-        $contractTypes = ContractType::all();
-        $UnitTypes = UnitType::all();
-        $UnitStatus = UnitStatus::all();
-        $UnitSizeUnit = UnitSizeUnit::all();
+        $dropdowns = $this->contractService->getDropdownData();
+        // dd($dropdowns);
 
+        return view("admin.projects.contract.contract-create", compact("title", 'contract') + $dropdowns);
+    }
 
+    public function edit($id)
+    {
+        $title = 'Edit Contract';
+        $contract = $this->contractService->getAllDataById($id);
+        // dd($contract->contract_detail);
+        $dropdowns = $this->contractService->getDropdownData();
 
-
-        return view("admin.projects.contract.contract-create", compact(
-            "title",
-            "companies",
-            "localities",
-            "areas",
-            "property_types",
-            "properties",
-            "installments",
-            "vendors",
-            "installments",
-            "paymentmodes",
-            "banks",
-            "contractTypes",
-            "UnitTypes",
-            "UnitStatus",
-            "UnitSizeUnit",
-        ));
+        return view('admin.projects.contract.contract-create', compact('title', 'contract') + $dropdowns);
     }
 
     public function store(Request $request)
     {
         try {
-            // if ($request->id != 0) {
-            //     $contract = $this->contractService->update($request->id, $request->all());
+            // if ($request->contract['id'] != 0) {
+            //     $contract = $this->contractService->update($request->contract['id'], $request->all());
 
             //     return response()->json(['success' => true, 'data' => $contract, 'message' => 'Contract updated successfully'], 200);
             // } else {
@@ -105,18 +84,26 @@ class ContractController extends Controller
         }
     }
 
+    public function update(Request $request, $id)
+    {
+        try {
+            $contract = $this->contractService->update($id, $request->all());
+
+            return response()->json(['success' => true, 'data' => $contract, 'message' => 'Contract updated successfully'], 200);
+        } catch (\Exception $e) {
+
+            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
+        }
+    }
+
     public function show(Contract $contract)
     {
         $contract = $this->contractService->getById($contract->id);
         return view('admin.projects.contract.contract-view', compact('contract'));
     }
 
-    public function approveContract(Request $request)
-    {
-    }
-    public function rejectContract(Request $request)
-    {
-    }
+    public function approveContract(Request $request) {}
+    public function rejectContract(Request $request) {}
 
     public function getContracts(Request $request)
     {
@@ -140,9 +127,7 @@ class ContractController extends Controller
         $title = 'Contract Documents';
         return view("admin.projects.contract.contract-documents", compact("title"));
     }
-    public function document_upload(Request $request)
-    {
-    }
+    public function document_upload(Request $request) {}
 
     public function exportContract(Contract $contract)
     {

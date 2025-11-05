@@ -26,6 +26,13 @@ class ContractDetailRepository
         return ContractDetail::create($data);
     }
 
+    public function update($id, array $data)
+    {
+        $contractDet = $this->find($id);
+        $contractDet->update($data);
+        return $contractDet;
+    }
+
     public function delete($id)
     {
         $area = $this->find($id);

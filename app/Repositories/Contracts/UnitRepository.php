@@ -26,6 +26,13 @@ class UnitRepository
         return ContractUnit::create($data);
     }
 
+    public function update($id, array $data)
+    {
+        $contractUnit = $this->find($id);
+        $contractUnit->update($data);
+        return $contractUnit;
+    }
+
     public function delete($id)
     {
         $area = $this->find($id);

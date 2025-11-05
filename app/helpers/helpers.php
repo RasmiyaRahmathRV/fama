@@ -16,3 +16,21 @@ if (!function_exists('toNumeric')) {
         return (float) $cleaned;
     }
 }
+
+
+function subunitNoGeneration($subUnitData, $key, $i)
+{
+    // print_r($subUnitData);
+    // print_r('increement room no - ' . $i);
+    if (isset($subUnitData['is_partition'][$key])) {
+        if ($subUnitData['is_partition'][$key] == '1') {
+            $subunitno = 'P' . $i;
+        } else if ($subUnitData['is_partition'][$key] == '2') {
+            $subunitno = 'BS' . $i;
+        }
+    } else {
+        $subunitno = 'R' . $i;
+    }
+
+    return $subunitno;
+}

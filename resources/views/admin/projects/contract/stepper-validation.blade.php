@@ -20,8 +20,26 @@
                     const stepIndex = window.stepper._currentIndex;
                     if (validateStep(stepIndex)) {
                         window.stepper.next();
+
+                        if (window.stepper._currentIndex === 6) { // adjust step index
+                            rentPerUnitFamaFaateh();
+                        }
+
                     } else {
                         alert('Please fill all required fields in this step.');
+                    }
+                }
+
+                if (e.target.matches('.contractFormSubmit')) {
+                    const stepIndex = window.stepper._currentIndex;
+                    if (validateStep(stepIndex)) {
+                        // If validation passes, submit the form
+                        // const form = document.querySelector('form'); // or a specific form id
+                        // if (form) {
+                        ContractFormSubmit(e);
+                        // }
+                    } else {
+                        alert('Please fill all required fields before submitting.');
                     }
                 }
             });
@@ -136,16 +154,18 @@
         if (hasDuplicateUnitNumbers(stepContainer)) {
             $('.nextBtn').prop('disabled', true);
             alert('Unit numbers must be unique!');
+            $(this).val('');
         } else {
             $('.nextBtn').prop('disabled', false);
         }
     });
 
-    $(document).on('input', '.unit_no', function() {
+    $(document).on('input', '.cheque_no', function() {
         const stepContainer = $(this).closest('.step-content');
         if (hasDuplicateChequeNumbers(stepContainer)) {
             $('.nextBtn').prop('disabled', true);
             alert('Cheque numbers must be unique!');
+            $(this).val('');
         } else {
             $('.nextBtn').prop('disabled', false);
         }

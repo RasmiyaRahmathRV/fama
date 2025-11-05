@@ -55,11 +55,18 @@ class ContractDetail extends Model
     {
         $this->attributes['end_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
+
     public function getStartDateAttribute($value)
     {
         return Carbon::parse($value)->format('d-m-Y');
     }
+
     public function getEndDateAttribute($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y');
+    }
+
+    public function getClosingDateAttribute($value)
     {
         return Carbon::parse($value)->format('d-m-Y');
     }

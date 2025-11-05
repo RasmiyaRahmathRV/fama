@@ -3,6 +3,7 @@
 namespace App\Services\Contracts;
 
 use App\Models\ContractUnit;
+use App\Models\Installment;
 use App\Repositories\Contracts\UnitDetailRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -25,7 +26,7 @@ class UnitDetailService
         return $this->unitdetRepo->find($id);
     }
 
-    public function create($contractData, array $dataArr, $unit_id, $user_id = null)
+    public function create($contractData, array $dataArr, $receivable_installments, $unit_id, $user_id = null)
     {
         $data = [];
         // dd($dataArr);
@@ -40,6 +41,12 @@ class UnitDetailService
                 } else {
                     $bedspace = 1;
                 }
+            }
+
+            $rent_per_room = $dataArr['rent_per_room'];
+            if (isset($dataArr['unit_profit'])) {
+                $installment = Installment::find($receivable_installments);
+                $rent_per_room = $dataArr['unit_revenue'][$key] / $installment->installment_name;
             }
 
             $data[] = array(
@@ -60,17 +67,43 @@ class UnitDetailService
                 'total_bedspace' => $dataArr['total_bedspace'][$key] ?? 0,
                 'rent_per_partition' => ($partition > 0) ? $dataArr['rent_per_partition'] : 0,
                 'rent_per_bedspace' => ($bedspace > 0) ? $dataArr['rent_per_bedspace'] : 0,
-                'rent_per_room' => ($bedspace == 0 && $partition == 0) ? $dataArr['rent_per_room'] : 0
+                'rent_per_room' => ($bedspace == 0 && $partition == 0) ? $rent_per_room : 0,
+                'unit_profit_perc' => isset($dataArr['unit_profit_perc']) ? $dataArr['unit_profit_perc'][$key] : 0,
+                'unit_profit' => isset($dataArr['unit_profit']) ? $dataArr['unit_profit'][$key] : 0,
+                'unit_revenue' => isset($dataArr['unit_revenue']) ? $dataArr['unit_revenue'][$key] : 0,
+                'unit_amount_payable' => isset($dataArr['unit_amount_payable']) ? $dataArr['unit_amount_payable'][$key] : 0,
+                'unit_commission' => isset($dataArr['unit_commission']) ? $dataArr['unit_commission'][$key] : 0,
+                'unit_deposit' => isset($dataArr['unit_deposit']) ? $dataArr['unit_deposit'][$key] : 0,
             );
             // dd($data);
             $this->validate($data);
         }
 
         // dd($data);
-        return DB::transaction(function () use ($data, $dataArr, $contractData, $unit_id, $user_id) {
+
+        $returnVal = $this->createManyData($data, $dataArr, $contractData, $unit_id, $user_id);
+
+        return $returnVal;
+    }
+
+    public function createManyData($data, $dataArr, $contractData, $unit_id, $user_id, $stage = 0)
+    {
+        return DB::transaction(function () use ($data, $dataArr, $contractData, $unit_id, $user_id, $stage) {
             $unitDetId = $this->unitdetRepo->createMany($data);
 
+            $is_partition = 0;
+            // $is_bedspace = 0;
+            if (array_key_exists('partition', $dataArr)) {
+                if ($dataArr['partition'] == 1) {
+                    $is_partition = 1;
+                } else {
+                    $is_partition = 2;
+                }
+            }
+
             $subUnitData = array(
+                'is_partition' => $is_partition,
+                // 'is_bedspace' => $is_bedspace,
                 'partition' => $dataArr['total_partition'],
                 'bedspace' => $dataArr['total_bedspace'],
                 'project_no' => $contractData->project_number,
@@ -82,13 +115,116 @@ class UnitDetailService
             );
             // dd($subUnitData);
 
-            $this->subUnitdetServ->create($unitDetId, $subUnitData, $user_id);
+            if ($stage == 0) {
+                $this->subUnitdetServ->create($unitDetId, $subUnitData, $user_id);
+            }
+
 
             return $unitDetId;
         });
 
 
         return;
+    }
+
+    public function update($contractData, array $dataArr, $receivable_installments, $unit_id, $user_id = null)
+    {
+        // dd($dataArr);
+        $data = [];
+        $insertData = [];
+        foreach ($dataArr['unit_type_id'] as $key => $value) {
+            $dataArray = [];
+
+            $partition = 0;
+            $bedspace = 0;
+            if (array_key_exists('partition', $dataArr) && isset($dataArr['partition'][$key])) {
+                if ($dataArr['partition'][$key] == 1) {
+                    $partition = 1;
+                } else {
+                    $bedspace = 1;
+                }
+            }
+
+            $rent_per_room = $dataArr['rent_per_room'];
+            if (isset($dataArr['unit_profit'])) {
+                $installment = Installment::find($receivable_installments);
+                $rent_per_room = $dataArr['unit_revenue'][$key] / $installment->installment_name;
+            }
+
+            $dataArray[] = array(
+                'contract_id' => $contractData->id,
+                'contract_unit_id' => $unit_id,
+                'updated_by' => $user_id ? $user_id : auth()->user()->id,
+                'unit_number' => $dataArr['unit_number'][$key],
+                'unit_type_id' => $value,
+                'floor_no' => $dataArr['floor_no'][$key],
+                'unit_status_id' => $dataArr['unit_status_id'][$key],
+                'unit_rent_per_annum' => $dataArr['unit_rent_per_annum'][$key],
+                'unit_size_unit_id' => $dataArr['unit_size_unit_id'][$key],
+                'unit_size' => $dataArr['unit_size'][$key],
+                'property_type_id' => $dataArr['property_type_id'][$key],
+                'partition' => $partition,
+                'bedspace' => $bedspace,
+                'total_partition' => $dataArr['total_partition'][$key] ?? 0,
+                'total_bedspace' => $dataArr['total_bedspace'][$key] ?? 0,
+                'rent_per_partition' => ($partition > 0) ? $dataArr['rent_per_partition'] : 0,
+                'rent_per_bedspace' => ($bedspace > 0) ? $dataArr['rent_per_bedspace'] : 0,
+                'rent_per_room' => ($bedspace == 0 && $partition == 0) ? $rent_per_room : 0,
+                'unit_profit_perc' => isset($dataArr['unit_profit_perc']) ? $dataArr['unit_profit_perc'][$key] : 0,
+                'unit_profit' => isset($dataArr['unit_profit']) ? $dataArr['unit_profit'][$key] : 0,
+                'unit_revenue' => isset($dataArr['unit_revenue']) ? $dataArr['unit_revenue'][$key] : 0,
+                'unit_amount_payable' => isset($dataArr['unit_amount_payable']) ? $dataArr['unit_amount_payable'][$key] : 0,
+                'unit_commission' => isset($dataArr['unit_commission']) ? $dataArr['unit_commission'][$key] : 0,
+                'unit_deposit' => isset($dataArr['unit_deposit']) ? $dataArr['unit_deposit'][$key] : 0,
+            );
+
+            // echo "</pre>";
+            // print_r($dataArr);
+
+            $this->validate($dataArray);
+
+            if (isset($dataArr['id'][$key])) {
+                $data[$dataArr['id'][$key]] = $dataArray[0];
+            } else {
+                $dataArray[0]['added_by'] = $user_id ? $user_id : auth()->user()->id;
+
+                $insertData[] = $dataArray[0];
+            }
+        }
+
+        // dd('after unit loop');
+        return DB::transaction(function () use ($data, $dataArr, $contractData, $unit_id, $user_id, $insertData) {
+            $unitDetId = array();
+            if ($insertData) {
+                $unitDetId = $this->createManyData($insertData, $dataArr, $contractData, $unit_id, $user_id, 1);
+            }
+
+            if ($data) {
+                $detailids = $this->unitdetRepo->updateMany($data);
+                $unitDetId = array_merge($unitDetId, $detailids);
+                $subUnitData = array(
+                    'is_partition' => (isset($dataArr['partition'])) ? $dataArr['partition'] : '',
+                    'partition' => $dataArr['total_partition'],
+                    'bedspace' => $dataArr['total_bedspace'],
+                    'project_no' => $contractData->project_number,
+                    'contract_id' => $contractData->id,
+                    'contract_unit_id' => $unit_id,
+                    'company_code' => $contractData->company->company_short_code,
+                    'unit_no' => $dataArr['unit_number'],
+                    'unit_type' => $dataArr['unit_type_id'],
+                );
+
+                $this->subUnitdetServ->update($unitDetId, $subUnitData, $user_id);
+            }
+
+
+            return $unitDetId;
+        });
+
+
+        $this->validate($dataArr, $id);
+        $dataArr['updated_by'] = auth()->user()->id;
+        return $this->unitdetRepo->update($id, $dataArr);
     }
 
     public function validate(array $data, $id = null)

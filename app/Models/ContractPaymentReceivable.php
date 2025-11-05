@@ -32,4 +32,9 @@ class ContractPaymentReceivable extends Model
     {
         $this->attributes['receivable_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
+
+    public function getReceivableDateAttribute($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y');
+    }
 }

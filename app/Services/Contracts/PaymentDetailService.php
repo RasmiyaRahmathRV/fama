@@ -26,9 +26,8 @@ class PaymentDetailService
     public function create($contract_id, array $dataArr, $payment_id, $user_id = null)
     {
         $data = [];
-        // dd($dataArr);
-        foreach ($dataArr['payment_mode_id'] as $key => $value) {
 
+        foreach ($dataArr['payment_mode_id'] as $key => $value) {
             $data[] = array(
                 'contract_id' => $contract_id,
                 'contract_payment_id' => $payment_id,
@@ -43,12 +42,64 @@ class PaymentDetailService
                 // 'cheque_issuer_id' => $dataArr['cheque_issuer_id'][$key]
             );
 
-            $this->validate($data);
+            $this->validate($data, $key);
         }
         // dd($data);
 
         return $this->paymentdetRepo->createMany($data);
     }
+
+    public function update($contract_id, array $dataArr, $payment_id, $user_id = null)
+    {
+        // dd($dataArr);
+        $data['updated_by'] = $user_id ? $user_id : auth()->user()->id;
+
+        $data = [];
+        $insertArr = [];
+        foreach ($dataArr['payment_mode_id'] as $key => $value) {
+            $dataArray = [];
+
+            $dataArray[] = array(
+                'contract_id' => $contract_id,
+                'contract_payment_id' => $payment_id,
+                'updated_by' => $user_id ? $user_id : auth()->user()->id,
+                'payment_mode_id' => $value,
+                'payment_date' => $dataArr['payment_date'][$key],
+                'payment_amount' => toNumeric($dataArr['payment_amount'][$key]),
+                'bank_id' => $dataArr['bank_id'][$key],
+                'cheque_no' => $dataArr['cheque_no'][$key],
+                // 'cheque_issuer' => $dataArr['cheque_issuer'][$key],
+                // 'cheque_issuer_name' => $dataArr['cheque_issuer_name'][$key],
+                // 'cheque_issuer_id' => $dataArr['cheque_issuer_id'][$key]
+            );
+
+            $this->validate($dataArray);
+
+            if (isset($dataArr['id'][$key])) {
+                $id = $dataArr['id'][$key];
+
+                $data[$id] = $dataArray[0];
+
+                $key = $id;
+            } else {
+                $dataArray[0]['added_by'] = $user_id ? $user_id : auth()->user()->id;
+
+                $insertArr[] = $dataArray[0];
+            }
+        }
+
+        $paymentDetId = $this->paymentdetRepo->updateMany($data);
+
+        if ($insertArr) {
+
+            $detailids = $this->paymentdetRepo->createMany($insertArr);
+            $paymentDetId = array_merge($paymentDetId, $detailids);
+        }
+
+
+        return $paymentDetId;
+    }
+
 
     private function validate(array $data, $id = null)
     {
@@ -67,7 +118,6 @@ class PaymentDetailService
             'payment_detail.*.bank_id' => ['nullable', $requireIfPaymentMode],
             'payment_detail.*.cheque_no' => ['nullable', $requireIfPaymentMode],
         ]);
-
 
         if ($validator->fails()) {
             throw new ValidationException($validator);

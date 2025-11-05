@@ -32,6 +32,15 @@ class RentalService
         return $this->rentalRepo->create($data);
     }
 
+    public function update(array $data, $user_id = null)
+    {
+        // dd($data);
+        $id = $data['id'];
+        $this->validate($data, $id);
+        $data['updated_by'] = $user_id ? $user_id : auth()->user()->id;
+        return $this->rentalRepo->update($id, $data);
+    }
+
     public function setRentalCode($addval = 1)
     {
         $codeService = new \App\Services\CodeGeneratorService();

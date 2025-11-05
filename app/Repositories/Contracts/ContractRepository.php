@@ -3,6 +3,7 @@
 namespace App\Repositories\Contracts;
 
 use App\Models\Contract;
+use App\Models\ContractUnitDetail;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
@@ -16,7 +17,7 @@ class ContractRepository
     public function find($id)
     {
 
-        return Contract::with(
+        $contract =  Contract::with(
             'contract_detail',
             'contract_rentals',
             'contract_documents',
@@ -35,6 +36,30 @@ class ContractRepository
             'property',
             'contract_type'
         )->findOrFail($id);
+
+        return $contract;
+    }
+
+    public function getAllDataById($id)
+    {
+        $contract = $this->find($id);
+        // Get unique values per column for this project
+        $totals = ContractUnitDetail::select(
+            DB::raw('MAX(rent_per_partition) as rent_per_partition'),
+            DB::raw('MAX(rent_per_bedspace) as rent_per_bedspace'),
+            DB::raw('MAX(rent_per_room) as rent_per_room')
+        )
+            ->where('contract_id', $id)
+            ->first();
+
+        // Merge totals into the contract object
+        $contract->totals = [
+            'prj_rent_per_partition' => $totals->rent_per_partition ?? 0,
+            'prj_rent_per_bedspace'  => $totals->rent_per_bedspace ?? 0,
+            'prj_rent_per_room'      => $totals->rent_per_room ?? 0,
+        ];
+
+        return $contract;
     }
 
     public function findId($data)

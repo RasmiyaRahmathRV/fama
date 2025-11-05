@@ -35,6 +35,15 @@ class UnitService
         return $this->unitRepo->create($data);
     }
 
+    public function update(array $data, array $unitdetails)
+    {
+        $id = $data['id'];
+        $this->validate($data, $id);
+        $data['updated_by'] = auth()->user()->id;
+        $data = array_merge($data, $this->getUnitSummary($unitdetails));
+        return $this->unitRepo->update($id, $data);
+    }
+
     public function setUnitCode($addval = 1)
     {
         $codeService = new \App\Services\CodeGeneratorService();

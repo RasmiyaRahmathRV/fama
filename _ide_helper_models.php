@@ -594,6 +594,7 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $contract_id
+ * @property int|null $document_type
  * @property string $original_document_path
  * @property string $original_documant_name
  * @property string $signed_document_path
@@ -616,6 +617,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDocumentType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereOriginalDocumantName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereOriginalDocumentPath($value)
@@ -743,7 +745,6 @@ namespace App\Models{
  * @property-read \App\Models\Contract $contract
  * @property-read \App\Models\ContractPayment $contract_payment
  * @property-read \App\Models\User|null $deletedBy
- * @property-read mixed $paymentate
  * @property-read \App\Models\PaymentMode|null $payment_mode
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail newQuery()
@@ -983,7 +984,7 @@ namespace App\Models{
  * @property int $id
  * @property int $contract_id
  * @property int $contract_unit_id
- * @property string $unit_number
+ * @property string|null $unit_number
  * @property int $unit_type_id
  * @property string $floor_no
  * @property int $unit_status_id

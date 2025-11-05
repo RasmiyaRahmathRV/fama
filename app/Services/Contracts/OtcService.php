@@ -31,6 +31,15 @@ class OtcService
         return $this->otcRepo->create($data);
     }
 
+    public function update(array $data, $user_id = null)
+    {
+        // dd($data);
+        $id = $data['id'];
+        $this->validate($data, $id);
+        $data['updated_by'] = $user_id ? $user_id : auth()->user()->id;
+        return $this->otcRepo->update($id, $data);
+    }
+
     private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [

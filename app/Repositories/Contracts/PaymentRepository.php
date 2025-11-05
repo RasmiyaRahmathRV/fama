@@ -26,6 +26,13 @@ class PaymentRepository
         return ContractPayment::create($data);
     }
 
+    public function update($id, array $data)
+    {
+        $payment = $this->find($id);
+        $payment->update($data);
+        return $payment;
+    }
+
     public function delete($id)
     {
         $area = $this->find($id);

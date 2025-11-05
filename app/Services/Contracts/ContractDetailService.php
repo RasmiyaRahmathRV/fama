@@ -32,6 +32,14 @@ class ContractDetailService
         return $this->detailRepo->create($data);
     }
 
+    public function update(array $data)
+    {
+        $id = $data['id'];
+        $this->validate($data, $id);
+        $data['updated_by'] = auth()->user()->id;
+        return $this->detailRepo->update($id, $data);
+    }
+
     private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
