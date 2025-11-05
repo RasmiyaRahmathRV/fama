@@ -3,6 +3,7 @@
 namespace App\Services\Contracts;
 
 use App\Models\ContractSubunitDetail;
+use App\Models\ContractUnitDetail;
 use App\Repositories\Contracts\SubUnitDetailRepository;
 use DB;
 
@@ -183,6 +184,30 @@ class SubUnitDetailService
             }
         } else {
             $this->subunitdetRepo->create($subunitArr);
+        }
+    }
+
+
+    public function markSubunitVacant($subunitId)
+    {
+        $subunit = ContractSubunitDetail::find($subunitId);
+
+        if (!$subunit) {
+            return;
+        }
+
+        $subunit->is_vacant = 1;
+        $subunit->save();
+
+        $unitId = $subunit->contract_unit_detail_id;
+
+        $allVacant = ContractSubunitDetail::where('contract_unit_detail_id', $unitId)
+            ->where('is_vacant', 0)
+            ->doesntExist();
+
+        if ($allVacant) {
+            ContractUnitDetail::where('id', $unitId)
+                ->update(['is_vacant' => 1]);
         }
     }
 }

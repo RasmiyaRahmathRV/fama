@@ -2,6 +2,8 @@
 
 namespace App\Services\Contracts;
 
+use App\Models\Contract;
+use App\Models\ContractUnitDetail;
 use App\Repositories\Contracts\ContractRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -299,5 +301,28 @@ class ContractService
     public function getAllwithUnits()
     {
         return $this->contractRepo->allwithUnits();
+    }
+
+    public function updateAgreementStatus($id)
+    {
+        $units = ContractUnitDetail::where('contract_id', $id)
+            ->with('contractSubUnitDetails')
+            ->get();
+
+        $allVacant = $units->every(function ($unit) {
+            $unitVacant = $unit->is_vacant == 1;
+
+            $subUnitsVacant = $unit->contractSubUnitDetails->every(function ($sub) {
+                return $sub->is_vacant == 1;
+            });
+
+            return $unitVacant && $subUnitsVacant;
+        });
+
+        if ($allVacant) {
+            return Contract::where('id', $id)->update(['is_agreement_added' => 1]);
+        }
+
+        return false;
     }
 }

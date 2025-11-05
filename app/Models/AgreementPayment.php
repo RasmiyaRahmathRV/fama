@@ -19,6 +19,7 @@ class AgreementPayment extends Model
         'installment_id',
         'interval',
         'beneficiary',
+        'total_rent_annum',
         'added_by',
         'updated_by',
         'deleted_by',

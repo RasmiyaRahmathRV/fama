@@ -19,7 +19,8 @@ class AgreementUnit extends Model
         'unit_type_id',
         'contract_unit_details_id',
         'contract_subunit_details_id',
-        'rent_per_annum',
+        'rent_per_month',
+        'rent_per_annum_agreement',
         'added_by',
         'updated_by',
         'deleted_by',
@@ -41,8 +42,9 @@ class AgreementUnit extends Model
 
     public function contractUnitDetail()
     {
-        return $this->belongsTo(ContractUnitDetail::class);
+        return $this->belongsTo(ContractUnitDetail::class, 'contract_unit_details_id', 'id');
     }
+
 
     public function contractSubunitDetail()
     {

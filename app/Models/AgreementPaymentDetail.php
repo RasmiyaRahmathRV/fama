@@ -7,6 +7,7 @@ use App\Models\Traits\HasDeletedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 class AgreementPaymentDetail extends Model
 {
@@ -18,6 +19,8 @@ class AgreementPaymentDetail extends Model
         'agreement_id',
         'agreement_payment_id',
         'payment_mode_id',
+        'contract_unit_id',
+        'agreement_unit_id',
         'bank_id',
         'cheque_number',
         'cheque_issuer',
@@ -56,5 +59,9 @@ class AgreementPaymentDetail extends Model
     public function bank()
     {
         return $this->belongsTo(Bank::class);
+    }
+    public function setpaymentdateAttribute($value)
+    {
+        $this->attributes['payment_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 }

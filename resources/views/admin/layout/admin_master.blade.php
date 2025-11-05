@@ -328,13 +328,15 @@
                                             </a>
                                         </li>
                                     @endif
-                                    <li class="nav-item">
-                                        <a href="{{ route('agreement.index') }}"
-                                            class="nav-link {{ request()->is('agreement') ? 'active' : '' }}">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Agreement</p>
-                                        </a>
-                                    </li>
+                                    @if (auth()->user()->hasPermissionInRange(65, 73))
+                                        <li class="nav-item">
+                                            <a href="{{ route('agreement.index') }}"
+                                                class="nav-link {{ request()->is('agreement') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Agreement</p>
+                                            </a>
+                                        </li>
+                                    @endif
                                 </ul>
                             </li>
                         @endif

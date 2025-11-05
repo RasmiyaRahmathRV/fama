@@ -29,6 +29,7 @@ class AgreementTenant extends Model
         'tenant_name',
         'tenant_mobile',
         'tenant_email',
+        'nationality_id',
         'tenant_address',
         'added_by',
         'updated_by',
@@ -40,11 +41,7 @@ class AgreementTenant extends Model
      *
      * @var array
      */
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
-    ];
+
 
     /**
      * Relationship: belongs to Agreement

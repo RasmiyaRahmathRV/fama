@@ -147,6 +147,24 @@ class ContractRepository
     }
     public function allwithUnits()
     {
-        return Contract::with('contract_unit.contractUnitDetails.contractSubUnitDetails')->get();
+        return Contract::with([
+            'contract_unit.contractUnitDetails' => function ($q) {
+                $q->where('is_vacant', 0)
+                    ->orWhereHas('contractSubUnitDetails', function ($subQ) {
+                        $subQ->where('is_vacant', 0);
+                    })
+                    ->with(['contractSubUnitDetails' => function ($subQ) {
+                        $subQ->where('is_vacant', 0);
+                    }]);
+            },
+            'contract_detail',
+            'contract_payment_receivables',
+            'contract_rentals'
+        ])
+            ->withCount('contract_payment_receivables')
+            ->withSum('contract_payment_receivables', 'receivable_amount')
+            ->where('contract_status', 2)
+            ->where('is_agreement_added', 0)
+            ->get();
     }
 }
