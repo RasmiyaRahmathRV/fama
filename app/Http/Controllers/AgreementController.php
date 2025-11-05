@@ -28,13 +28,10 @@ class AgreementController extends Controller
         protected ContractService $contractService,
         protected CompanyService $companyService,
         protected InstallmentService $installmentService,
-<<<<<<< HEAD
-=======
         protected NationalityService $nationalityService,
         protected PaymentModeService $paymentModeService,
         protected BankService $bankService,
         protected AgreementService $agreementService
->>>>>>> geethu
     ) {}
     public function index()
     {
@@ -50,9 +47,6 @@ class AgreementController extends Controller
         $installments = $this->installmentService->getAll();
         $tenantIdentities = TenantIdentity::where('show_status', true)->get();
         $unitTypes = UnitType::all();
-<<<<<<< HEAD
-        return view('admin.projects.agreement.create-agreement', compact('companies', 'contracts', 'installments', 'unitTypes', 'tenantIdentities'));
-=======
         $paymentmodes = $this->paymentModeService->getAll();
         $installments = $this->installmentService->getAll();
         $banks = $this->bankService->getAll();
@@ -104,6 +98,5 @@ class AgreementController extends Controller
         ] : null;
 
         return Excel::download(new AgreementExport($search, $filters), 'agreements.xlsx');
->>>>>>> geethu
     }
 }
