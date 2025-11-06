@@ -16,6 +16,9 @@ use App\Models\UnitType;
 use App\Services\AreaService;
 use App\Services\CompanyService;
 use App\Services\Contracts\ContractService;
+use App\Services\Contracts\PaymentDetailService;
+use App\Services\Contracts\PaymentReceivableService;
+use App\Services\Contracts\UnitDetailService;
 use Illuminate\Http\Request;
 use App\Services\InstallmentService;
 use App\Services\LocalityService;
@@ -35,7 +38,10 @@ class ContractController extends Controller
         protected PropertyTypeService $propertyTypeService,
         protected InstallmentService $installmentService,
         protected VendorService $vendorService,
-        protected ContractService $contractService
+        protected ContractService $contractService,
+        protected UnitDetailService $udetSev,
+        protected PaymentDetailService $paymentSev,
+        protected PaymentReceivableService $paymentRecSev
     ) {}
 
     public function index()
@@ -137,5 +143,58 @@ class ContractController extends Controller
         ] : null;
 
         return Excel::download(new ContractExport($search, $filters), 'contracts.xlsx');
+    }
+
+    public function deleteUnitDetail($id)
+    {
+        // print($id);
+        try {
+            $this->udetSev->delete($id);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Unit detail deleted successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deletePaymentDetail($id)
+    {
+        // print($id);
+        try {
+            $this->paymentSev->delete($id);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment Payable deleted successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deletePaymentReceivable($id)
+    {
+        try {
+            $this->paymentRecSev->delete($id);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment Payable deleted successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

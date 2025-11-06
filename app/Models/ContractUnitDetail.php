@@ -82,9 +82,14 @@ class ContractUnitDetail extends Model
         );
     }
 
-    public function contractSubUnitDetails()
+    // public function contractSubUnitDetails()
+    // {
+    //     return $this->hasMany(ContractSubUnitDetail::class);
+    // }
+
+    public function contractSubUnitDetails()  // <-- this name must match what you call
     {
-        return $this->hasMany(ContractSubUnitDetail::class);
+        return $this->hasMany(ContractSubunitDetail::class, 'contract_unit_detail_id');
     }
 
     private function formatNumber($value)
@@ -116,5 +121,50 @@ class ContractUnitDetail extends Model
             return $this->formatNumber($value);
         }
         return $value;
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($contractUnitDetail) {
+
+            $userId = auth()->id();
+            // dd($contractUnitDetail->contract_subunit_details);
+            // hasMany relations
+            $hasManyRelations = [
+                'contractSubUnitDetails',
+            ];
+
+            if (!$contractUnitDetail->isForceDeleting()) {
+                // Soft delete hasMany
+                foreach ($hasManyRelations as $relation) {
+                    // print($contractUnitDetail->$relation);
+                    foreach ($contractUnitDetail->$relation as $related) {
+                        $relatedModels = $contractUnitDetail->$relation ?? collect(); // avoid null
+
+                        foreach ($relatedModels as $related) {
+                            if ($userId) {
+                                $related->update(['deleted_by' => $userId]);
+                            }
+                            $related->delete();
+                        }
+                    }
+                }
+            } else {
+                // Force delete
+                foreach (array_merge($hasManyRelations) as $relation) {
+                    $contractUnitDetail->$relation()->withTrashed()->forceDelete();
+                }
+            }
+        });
+
+        static::restoring(function ($contractUnitDetail) {
+            $relations = [
+                'contract_subunit_details',
+            ];
+
+            foreach ($relations as $relation) {
+                $contractUnitDetail->$relation()->withTrashed()->restore();
+            }
+        });
     }
 }

@@ -258,4 +258,9 @@ class UnitDetailService
 
         return $validator->validated()['unit_detail'];
     }
+
+    public function delete($id)
+    {
+        return $this->unitdetRepo->delete($id);
+    }
 }

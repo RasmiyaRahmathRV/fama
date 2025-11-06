@@ -49,7 +49,9 @@ class PaymentDetailRepository
 
     public function delete($id)
     {
-        $area = $this->find($id);
-        return $area->delete();
+        $pDet = $this->find($id);
+        $pDet->deleted_by = auth()->user()->id;
+        $pDet->save();
+        return $pDet->delete();
     }
 }

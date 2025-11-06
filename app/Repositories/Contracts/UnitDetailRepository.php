@@ -54,7 +54,9 @@ class UnitDetailRepository
 
     public function delete($id)
     {
-        $area = $this->find($id);
-        return $area->delete();
+        $uDet = $this->find($id);
+        $uDet->deleted_by = auth()->user()->id;
+        $uDet->save();
+        return $uDet->delete();
     }
 }

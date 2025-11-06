@@ -158,15 +158,20 @@ class Contract extends Model
                 foreach ($hasOneRelations as $relation) {
                     $related = $contract->$relation;
                     if ($related) {
-                        $related->update(['deleted_by' => $userId]);
+                        if ($userId) {
+                            $related->update(['deleted_by' => $userId]);
+                        }
                         $related->delete();
                     }
                 }
 
                 // Soft delete hasMany
                 foreach ($hasManyRelations as $relation) {
-                    foreach ($contract->$relation as $related) {
-                        $related->update(['deleted_by' => $userId]);
+                    $relatedCollection = $contract->$relation ?? collect();
+                    foreach ($relatedCollection as $related) {
+                        if ($userId) {
+                            $related->update(['deleted_by' => $userId]);
+                        }
                         $related->delete();
                     }
                 }

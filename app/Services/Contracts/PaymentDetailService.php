@@ -123,4 +123,9 @@ class PaymentDetailService
             throw new ValidationException($validator);
         }
     }
+
+    public function delete($id)
+    {
+        return $this->paymentdetRepo->delete($id);
+    }
 }

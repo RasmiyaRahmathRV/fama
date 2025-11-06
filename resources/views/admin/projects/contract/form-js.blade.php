@@ -105,25 +105,119 @@
                             if (removeBtn) {
                                 removeBtn.addEventListener('click', () => {
                                     if (prevBlocks.length > unitCount) {
+                                        Swal.fire({
+                                            title: "Are you sure?",
+                                            icon: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonColor: "#3085d6",
+                                            cancelButtonColor: "#d33",
+                                            confirmButtonText: "Yes, delete it!"
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                const detailId = $(block.querySelector(
+                                                    'input[name="unit_detail[id][]"]'
+                                                )).val();
 
-                                        const sameClassName = Array.from(block.classList).find(
-                                            cls => cls.startsWith('profitDeletecls'));
-                                        console.log(sameClassName);
-                                        $('.' + sameClassName).remove();
-                                        // block.remove();
-                                        calculateTotalRent();
-                                        CalculatePayables();
-                                        calculateRoiFF();
+                                                // var fdataUnit = new FormData();
 
-                                        // After removal, check if we reached the minimum count
-                                        const remainingDeletes = container.querySelectorAll(
-                                            '.btndelete');
-                                        if (remainingDeletes.length <= 0 || container
-                                            .querySelectorAll('.apdi').length <= unitCount) {
-                                            remainingDeletes.forEach(div => div.remove());
+                                                // fdataUnit.append('_token', $('meta[name="csrf-token"]')
+                                                //     .attr('content'));
+                                                Swal.fire({
+                                                    // title: "Deleting...",
+                                                    html: "Please wait a moment",
+                                                    allowOutsideClick: false, // Prevents closing by clicking outside
+                                                    allowEscapeKey: false, // Prevents closing by pressing Escape key
+                                                    didOpen: () => {
+                                                        Swal
+                                                            .showLoading(); // Shows the built-in loader
+                                                    }
+                                                });
+                                                $.ajaxSetup({
+                                                    headers: {
+                                                        'X-CSRF-TOKEN': $(
+                                                            'meta[name="csrf-token"]'
+                                                        ).attr(
+                                                            'content')
+                                                    }
+                                                });
+                                                $.ajax({
+                                                    url: `/contracts/unit-detail/${detailId}`,
+                                                    type: 'DELETE',
+                                                    // data: fdataUnit,
+                                                    // processData: false,
+                                                    // contentType: false,
+                                                    success: function(
+                                                        response) {
+                                                        toastr.success(
+                                                            response
+                                                            .message);
+                                                        // window.location.reload();
+                                                        Swal.close();
+                                                        const
+                                                            sameClassName =
+                                                            Array.from(
+                                                                block
+                                                                .classList)
+                                                            .find(
+                                                                cls => cls
+                                                                .startsWith(
+                                                                    'profitDeletecls'
+                                                                ));
 
-                                            $('.nextBtn').prop('disabled', false);
-                                        }
+                                                        $('.' +
+                                                                sameClassName
+                                                            )
+                                                            .remove();
+                                                        // block.remove();
+                                                        calculateTotalRent
+                                                            ();
+                                                        CalculatePayables();
+                                                        calculateRoiFF();
+                                                        valueTorentRec(
+                                                            'change');
+                                                        finalRecCal();
+
+                                                        // After removal, check if we reached the minimum count
+                                                        const
+                                                            remainingDeletes =
+                                                            container
+                                                            .querySelectorAll(
+                                                                '.btndelete'
+                                                            );
+                                                        if (remainingDeletes
+                                                            .length <= 0 ||
+                                                            container
+                                                            .querySelectorAll(
+                                                                '.apdi')
+                                                            .length <=
+                                                            unitCount) {
+                                                            remainingDeletes
+                                                                .forEach(
+                                                                    div =>
+                                                                    div
+                                                                    .remove()
+                                                                );
+
+                                                            $('.nextBtn')
+                                                                .prop(
+                                                                    'disabled',
+                                                                    false);
+                                                        }
+                                                    },
+                                                    error: function(err) {
+                                                        toastr.error(err
+                                                            .responseJSON
+                                                            .message);
+                                                        Swal.close();
+                                                    }
+                                                });
+                                            } else {
+                                                toastr.error(errors.responseJSON
+                                                    .message);
+                                            }
+                                        });
+
+
                                     } else {
                                         // $('.btndelete').remove();
                                         $toastr.error(
@@ -809,22 +903,114 @@
                             if (removeBtn) {
                                 removeBtn.addEventListener('click', () => {
                                     if (prevFbBlocks.length > noofinstallments) {
-                                        block.remove();
-                                        paymentSplit();
 
-                                        // After removal, check if we reached the minimum count
-                                        const remainingDeletes = containerPayment
-                                            .querySelectorAll(
-                                                '.btndelete');
-                                        if (remainingDeletes.length <= 0 ||
-                                            containerPayment
-                                            .querySelectorAll('.payment_mode_div')
-                                            .length <=
-                                            noofinstallments) {
-                                            remainingDeletes.forEach(div => div
-                                                .remove());
-                                            $('.nextBtn').prop('disabled', false);
-                                        }
+                                        Swal.fire({
+                                            title: "Are you sure?",
+                                            icon: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonColor: "#3085d6",
+                                            cancelButtonColor: "#d33",
+                                            confirmButtonText: "Yes, delete it!"
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                const detailId = $(block
+                                                    .querySelector(
+                                                        'input[name="payment_detail[id][]"]'
+                                                    )).val();
+
+                                                // var fdataUnit = new FormData();
+
+                                                // fdataUnit.append('_token', $('meta[name="csrf-token"]')
+                                                //     .attr('content'));
+                                                Swal.fire({
+                                                    // title: "Deleting...",
+                                                    html: "Please wait a moment",
+                                                    allowOutsideClick: false, // Prevents closing by clicking outside
+                                                    allowEscapeKey: false, // Prevents closing by pressing Escape key
+                                                    didOpen: () => {
+                                                        Swal
+                                                            .showLoading(); // Shows the built-in loader
+                                                    }
+                                                });
+                                                $.ajaxSetup({
+                                                    headers: {
+                                                        'X-CSRF-TOKEN': $(
+                                                            'meta[name="csrf-token"]'
+                                                        ).attr(
+                                                            'content'
+                                                        )
+                                                    }
+                                                });
+                                                $.ajax({
+                                                    url: `/contracts/payment-detail/${detailId}`,
+                                                    type: 'DELETE',
+                                                    // data: fdataUnit,
+                                                    // processData: false,
+                                                    // contentType: false,
+                                                    success: function(
+                                                        response) {
+                                                        block
+                                                            .remove();
+                                                        toastr
+                                                            .success(
+                                                                response
+                                                                .message
+                                                            );
+
+                                                        // window.location.reload();
+                                                        Swal
+                                                            .close();
+                                                        paymentSplit
+                                                            ();
+
+                                                        // After removal, check if we reached the minimum count
+                                                        const
+                                                            remainingDeletes =
+                                                            containerPayment
+                                                            .querySelectorAll(
+                                                                '.btndelete'
+                                                            );
+                                                        if (remainingDeletes
+                                                            .length <=
+                                                            0 ||
+                                                            containerPayment
+                                                            .querySelectorAll(
+                                                                '.payment_mode_div'
+                                                            )
+                                                            .length <=
+                                                            noofinstallments
+                                                        ) {
+                                                            remainingDeletes
+                                                                .forEach(
+                                                                    div =>
+                                                                    div
+                                                                    .remove()
+                                                                );
+                                                            $('.nextBtn')
+                                                                .prop(
+                                                                    'disabled',
+                                                                    false
+                                                                );
+                                                        }
+                                                    },
+                                                    error: function(
+                                                        err) {
+                                                        toastr
+                                                            .error(
+                                                                err
+                                                                .responseJSON
+                                                                .message
+                                                            );
+                                                        Swal
+                                                            .close();
+                                                    }
+                                                });
+                                            } else {
+                                                toastr.error(errors.responseJSON
+                                                    .message);
+                                            }
+                                        });
+
                                     } else {
                                         // $('.btndelete').remove();
                                         $toastr.error(
@@ -1558,8 +1744,8 @@
 
             let unit_rent = $(this).parent().siblings().find('.unit_rent_per_annum').val();
             let unit_type = $(this).parent().siblings().find('.unit_type').find(':selected').text();
-            let unit_comm = unit_rent * ($('#commission_perc').val() / 100);
-            let unit_depo = unit_rent * ($('#deposit_perc').val() / 100);
+            let unit_comm = parseFloat(unit_rent * ($('#commission_perc').val() / 100));
+            let unit_depo = parseFloat(unit_rent * ($('#deposit_perc').val() / 100));
             let unit_payable = parseFloat(unit_rent) + parseFloat(unit_comm) + parseFloat(unit_depo);
 
 
@@ -1647,22 +1833,103 @@
                         removeBtn.addEventListener('click', () => {
                             // Only allow remove if still above min count
                             if (prevffBlocks.length > rec_inst) {
-                                block.remove();
-                                valueTorentRec('change');
-                                finalRecCal();
+                                Swal.fire({
+                                    title: "Are you sure?",
+                                    icon: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#3085d6",
+                                    cancelButtonColor: "#d33",
+                                    confirmButtonText: "Yes, delete it!"
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        const detailId = $(block
+                                            .querySelector(
+                                                'input[name="receivables[id][]"]'
+                                            )).val();
 
-                                // ✅ Recheck after removal
-                                const remainingDeletes = containerPayment.querySelectorAll(
-                                    '.btndelete');
-                                const remainingPayments = containerPayment.querySelectorAll(
-                                    '.receivableaddmore');
+                                        // var fdataUnit = new FormData();
 
-                                if (remainingDeletes.length <= 0 || remainingPayments
-                                    .length <=
-                                    rec_inst) {
-                                    remainingDeletes.forEach(div => div.remove());
-                                    $('.contractFormSubmit').prop('disabled', false);
-                                }
+                                        // fdataUnit.append('_token', $('meta[name="csrf-token"]')
+                                        //     .attr('content'));
+                                        Swal.fire({
+                                            // title: "Deleting...",
+                                            html: "Please wait a moment",
+                                            allowOutsideClick: false, // Prevents closing by clicking outside
+                                            allowEscapeKey: false, // Prevents closing by pressing Escape key
+                                            didOpen: () => {
+                                                Swal
+                                                    .showLoading(); // Shows the built-in loader
+                                            }
+                                        });
+                                        $.ajaxSetup({
+                                            headers: {
+                                                'X-CSRF-TOKEN': $(
+                                                    'meta[name="csrf-token"]'
+                                                ).attr(
+                                                    'content'
+                                                )
+                                            }
+                                        });
+                                        $.ajax({
+                                            url: `/contracts/payment-receivable/${detailId}`,
+                                            type: 'DELETE',
+                                            // data: fdataUnit,
+                                            // processData: false,
+                                            // contentType: false,
+                                            success: function(
+                                                response) {
+                                                block
+                                                    .remove();
+                                                toastr
+                                                    .success(
+                                                        response
+                                                        .message
+                                                    );
+
+                                                // window.location.reload();
+                                                Swal
+                                                    .close();
+                                                valueTorentRec('change');
+                                                finalRecCal();
+
+                                                // ✅ Recheck after removal
+                                                const remainingDeletes =
+                                                    containerPayment
+                                                    .querySelectorAll(
+                                                        '.btndelete');
+                                                const remainingPayments =
+                                                    containerPayment
+                                                    .querySelectorAll(
+                                                        '.receivableaddmore');
+
+                                                if (remainingDeletes.length <= 0 ||
+                                                    remainingPayments
+                                                    .length <=
+                                                    rec_inst) {
+                                                    remainingDeletes.forEach(div =>
+                                                        div.remove());
+                                                    $('.contractFormSubmit').prop(
+                                                        'disabled', false);
+                                                }
+                                            },
+                                            error: function(
+                                                err) {
+                                                toastr
+                                                    .error(
+                                                        err
+                                                        .responseJSON
+                                                        .message
+                                                    );
+                                                Swal
+                                                    .close();
+                                            }
+                                        });
+                                    } else {
+                                        toastr.error(errors.responseJSON
+                                            .message);
+                                    }
+                                });
+
                             } else {
                                 $toastr.error(
                                     'Cannot remove Payment. Minimum Payments reached.');

@@ -109,6 +109,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('contract-document-upload', [ContractController::class, 'document_upload'])->name('contract.document_upload');
     Route::get('export-contract', [ContractController::class, 'exportContract'])->name('contract.export');
 
+    Route::delete('contracts/unit-detail/{id}', [ContractController::class, 'deleteUnitDetail'])
+        ->name('contracts.unit-detail.delete');
+    Route::delete('contracts/payment-detail/{id}', [ContractController::class, 'deletePaymentDetail'])
+        ->name('contracts.payment-detail.delete');
+    Route::delete('contracts/payment-receivable/{id}', [ContractController::class, 'deletePaymentReceivable'])
+        ->name('contracts.payment-receivable.delete');
+
 
     Route::get('agreemant-list', [AgreementController::class, 'getAgreements'])->name('agreement.list');
     Route::get('export-agreement', [AgreementController::class, 'exportAgreement'])->name('agreement.export');

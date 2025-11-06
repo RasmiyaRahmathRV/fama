@@ -49,7 +49,9 @@ class PaymentReceivableRepository
 
     public function delete($id)
     {
-        $area = $this->find($id);
-        return $area->delete();
+        $pRecDet = $this->find($id);
+        $pRecDet->deleted_by = auth()->user()->id;
+        $pRecDet->save();
+        return $pRecDet->delete();
     }
 }

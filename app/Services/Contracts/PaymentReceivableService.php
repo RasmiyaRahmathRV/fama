@@ -105,4 +105,9 @@ class PaymentReceivableService
             throw new ValidationException($validator);
         }
     }
+
+    public function delete($id)
+    {
+        return $this->paymentreceRepo->delete($id);
+    }
 }
