@@ -149,7 +149,7 @@
         return isValid;
     }
 
-    $(document).on('input', '.unit_no', function() {
+    $(document).on('blur', '.unit_no', function() {
         const stepContainer = $(this).closest('.step-content');
         if (hasDuplicateUnitNumbers(stepContainer)) {
             $('.nextBtn').prop('disabled', true);
@@ -160,7 +160,7 @@
         }
     });
 
-    $(document).on('input', '.cheque_no', function() {
+    $(document).on('blur', '.cheque_no', function() {
         const stepContainer = $(this).closest('.step-content');
         if (hasDuplicateChequeNumbers(stepContainer)) {
             $('.nextBtn').prop('disabled', true);

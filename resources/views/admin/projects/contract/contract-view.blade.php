@@ -32,7 +32,7 @@
                                 <div class="col-sm-6">
                                     <h5 class="fw-bold text-primary mb-2">Vendor Details</h5>
                                     <address>
-                                        <span>{{ 'P -' . $contract->project_number }}</span></br>
+                                        <span>{{ 'P - ' . $contract->project_number }}</span></br>
                                         <span>{{ strtoupper($contract->vendor->vendor_name) }}</span></br>
                                         <span>{{ strtoupper($contract->company->company_name) }}</span></br>
                                         <span>{!! strtoupper($contract->contact_person) . ' - ' . $contract->contact_number ?? ' - ' !!}</span><br>
@@ -132,6 +132,44 @@
 
                                         </tbody>
                                     </table>
+
+
+                                    @php
+                                        $total_paid = 0;
+                                        $total_to_pay = 0;
+
+                                        foreach ($contract->contract_payments->contractPaymentDetails as $details) {
+                                            // Clean the values to ensure they are numeric
+                                            // $payment_amount = (float) str_replace(',', '', $details->payment_amount ?? 0);
+                                            // $paid_amount = (float) str_replace(',', '', $details->paid_amount ?? 0);
+                                            $payment_amount = toNumeric($details->payment_amount);
+                                            $paid_amount = toNumeric($details->paid_amount);
+
+                                            $total_to_pay += $payment_amount;
+                                            $total_paid += $paid_amount;
+
+                                            // $total_to_pay += (float) ($details->payment_amount ?? 0);
+                                            // $total_paid += (float) ($details->paid_amount ?? 0);
+                                        }
+
+                                        $remaining_amount = $total_to_pay - $total_paid;
+                                    @endphp
+
+
+                                    {{-- <div class="row"> --}}
+                                    {{-- <div class="col-6"> --}}
+                                    {{-- <p class="lead text-danger"><strong>Amount Due 2/22/2014</strong></p> --}}
+                                    <div class="float-xl-right mt-1">
+                                        <span> <strong>Total Paid :
+                                            </strong>{{ number_format($total_paid) }}</span><br>
+                                        <span> <strong>Remaining :
+                                            </strong>{{ number_format($remaining_amount) }}</span>
+                                    </div>
+                                    {{-- </div> --}}
+                                    <!-- /.col -->
+                                    {{-- </div> --}}
+                                    <!-- /.row -->
+
                                 </div>
                                 <!-- /.col -->
                             </div>
@@ -152,11 +190,13 @@
                                                 <th>Floor Number</th>
                                                 <th>Unit Status</th>
                                                 <th>Unit Rent Per Annum</th>
-                                                <th>Partition / Bedspace</th>
-                                                <th>No of partition / No of Bedspace</th>
-                                                <th>Rent per partition / Rent per Bedspace</th>
-                                                <th>Rent per room</th>
-
+                                                <th>Partition / Bedspace / Room</th>
+                                                <th>No of partition / Bedspace / Room</th>
+                                                <th>Rent per partition / Bedspace / Room</th>
+                                                <th>Rent per Flat</th>
+                                                <th>Unit Profit %</th>
+                                                <th>Unit Profit</th>
+                                                <th>Unit Revenue</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -174,6 +214,8 @@
                                                             PARTITION
                                                         @elseif($unitDetails->bedspace)
                                                             BEDSPACE
+                                                        @elseif($unitDetails->room)
+                                                            ROOM
                                                         @else
                                                             -
                                                         @endif
@@ -184,6 +226,8 @@
                                                             {{ $unitDetails->total_partition }}
                                                         @elseif($unitDetails->bedspace)
                                                             {{ $unitDetails->total_bedspace }}
+                                                        @elseif($unitDetails->room)
+                                                            {{ $unitDetails->total_room }}
                                                         @else
                                                             -
                                                         @endif
@@ -193,11 +237,16 @@
                                                             {{ $unitDetails->rent_per_partition }}
                                                         @elseif($unitDetails->bedspace)
                                                             {{ $unitDetails->rent_per_bedspace }}
+                                                        @elseif($unitDetails->room)
+                                                            {{ $unitDetails->rent_per_room }}
                                                         @else
                                                             -
                                                         @endif
                                                     </td>
-                                                    <td>{{ $unitDetails->rent_per_room ?? ' - ' }}</td>
+                                                    <td>{{ $unitDetails->rent_per_flat ?? ' - ' }}</td>
+                                                    <td>{{ $unitDetails->unit_profit_perc ?? ' - ' }}</td>
+                                                    <td>{{ $unitDetails->unit_profit ?? ' - ' }}</td>
+                                                    <td>{{ $unitDetails->unit_revenue ?? ' - ' }}</td>
                                                 </tr>
                                             @endforeach
 
@@ -210,54 +259,92 @@
                             <!-- /.row -->
                             {{-- {{ DD($contract->contract_payments->contractPaymentDetails) }} --}}
 
-                            @php
-                                $total_paid = 0;
-                                $total_to_pay = 0;
 
-                                foreach ($contract->contract_payments->contractPaymentDetails as $details) {
-                                    // Clean the values to ensure they are numeric
-                                    // $payment_amount = (float) str_replace(',', '', $details->payment_amount ?? 0);
-                                    // $paid_amount = (float) str_replace(',', '', $details->paid_amount ?? 0);
-                                    $payment_amount = toNumeric($details->payment_amount);
-                                    $paid_amount = toNumeric($details->paid_amount);
-
-                                    $total_to_pay += $payment_amount;
-                                    $total_paid += $paid_amount;
-
-                                    // $total_to_pay += (float) ($details->payment_amount ?? 0);
-                                    // $total_paid += (float) ($details->paid_amount ?? 0);
-                                }
-
-                                $remaining_amount = $total_to_pay - $total_paid;
-                            @endphp
-
-
-                            <div class="row">
-                                <div class="col-6">
-                                    {{-- <p class="lead text-danger"><strong>Amount Due 2/22/2014</strong></p> --}}
-                                    <div class="py-3">
-                                        <span> <strong>Total Paid : </strong>{{ number_format($total_paid) }}</span><br>
-                                        <span> <strong>Remaining : </strong>{{ number_format($remaining_amount) }}</span>
+                            @if ($allChildren->count() > 0)
+                                <div class="row card">
+                                    <div class="card-header text-center py-3 shadow-sm rounded-top">
+                                        <h4 class="mb-0 text-uppercase">Contract Renewal Details</h4>
                                     </div>
+                                    {{-- <div class="col-12 table-responsive card-body">
+                                        <div class="d-flex justify-content-center row">
+                                            @foreach ($contract->children as $renewal)
+                                                <div class="col-3">
+                                                    <div class="bg-gradient-olive bg-info info-box">
+                                                        <span class="info-box-icon"><i
+                                                                class="fas fa-file-contract"></i></span>
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text">Project Number</span>
+                                                            <span class="info-box-number">P -
+                                                                {{ $renewal->project_number }}</span>
+                                                        </div>
+                                                        <!-- /.info-box-content -->
+                                                    </div>
+                                                </div>
+                                            @endforeach
+
+                                        </div>
+                                    </div> --}}
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Project Number</th>
+                                                <th>Renewal Count</th>
+                                                <th>Total Rent Payable</th>
+                                                <th>Profit %</th>
+                                                <th>Deposit</th>
+                                                <th>Commission</th>
+                                                <th>Profit Earned</th>
+                                                <th>Installments Received</th>
+                                                <th>Rental Received</th>
+                                                <th>Old Monthly Rental</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($allChildren as $renewal)
+                                                @php
+                                                    if ($renewal->renewal_count > 0) {
+                                                        $renewal_count = 'Renewal - ' . $renewal->renewal_count;
+                                                    } else {
+                                                        $renewal_count = 'New';
+                                                    }
+                                                @endphp
+                                                <tr>
+                                                    <td><a href="{{ route('contract.show', $renewal->id) }}"
+                                                            style="text-decoration: none; color: #17a2b8;">P -
+                                                            {{ $renewal->project_number }}</a></td>
+                                                    <td>{{ $renewal_count }}</td>
+                                                    <td>{{ $renewal->contract_rentals->rent_per_annum_payable }}</td>
+                                                    <td>{{ $renewal->contract_rentals->profit_percentage }}</td>
+                                                    <td>{{ $renewal->contract_rentals->deposit }}</td>
+                                                    <td>{{ $renewal->contract_rentals->commission }}</td>
+                                                    <td>{{ $renewal->contract_rentals->expected_profit }}</td>
+                                                    <td>{{ $renewal->contract_rentals->installment->installment_name }}
+                                                    </td>
+                                                    <td>{{ $renewal->contract_rentals->rent_receivable_per_annum }}</td>
+                                                    <td>{{ $renewal->contract_rentals->rent_receivable_per_month }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+
                                 </div>
-                                <!-- /.col -->
-                            </div>
-                            <!-- /.row -->
+                            @endif
+
 
                             <!-- this row will not appear when printing -->
                             <div class="row no-print">
                                 <div class="col-12 d-xl-flex justify-content-between">
                                     <a href="{{ route('contract.index') }}" class="btn btn-default">Back</a>
 
-                                    @if ($contract->contract_status == 0)
-                                        <div class="mt-2 mt-xl-0">
-                                            <button type="button" class="btn btn-success "><i class="fas fa-upload"></i>
+                                    <div class="mt-2 mt-xl-0">
+                                        <a class="btn btn-secondary"
+                                            href="{{ route('contract.edit', $contract->id) }}">Edit</a>
+                                        @if ($contract->contract_status == 0)
+                                            <button type="button" class="btn btn-warning "><i class="fas fa-upload"></i>
                                                 Upload Contract </button>
                                             <button type="button" class="btn btn-primary">
                                                 <i class="fas fa-envelope-open-text"></i> Generate Scope</button>
-                                        </div>
-                                    @elseif($contract->contract_status == 2)
-                                        <div class="mt-2 mt-xl-0">
+                                        @elseif($contract->contract_status == 2)
                                             <button type="button" class="btn btn-success "><i class="far fa-eye"></i> View
                                                 Contract </button>
                                             <button type="button" class="btn btn-primary ">
@@ -266,9 +353,8 @@
                                             <button type="button" class="btn btn-info mt-1 mt-xl-0">
                                                 <i class="fas fa-envelope-open-text"></i> Generate Acknoledgement
                                             </button>
-                                        </div>
-                                    @endif
-
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>

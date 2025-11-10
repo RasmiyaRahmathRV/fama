@@ -39,18 +39,11 @@
                             <div class="card-header">
                                 <!-- <h3 class="card-title">Contract Details</h3> -->
                                 <span class="float-right">
-                                    @can('contract.add')
-                                        <a href="{{ route('contract.create') }}" class="btn btn-info float-right m-1">
-                                            Add Contract
+                                    @if (auth()->user()->hasPermissionInRange(56, 64))
+                                        <a href="{{ route('contract.index') }}" class="btn btn-info float-right m-1">
+                                            Contract list
                                         </a>
-                                    @endcan
-
-                                    @can('contract.renew')
-                                        <a href="{{ route('contract.renewal_pending_list') }}"
-                                            class="btn btn-secondary float-right m-1">
-                                            Renew Contract
-                                        </a>
-                                    @endcan
+                                    @endif
                                     {{-- <button class="btn btn-secondary float-right m-1" data-toggle="modal"
                                         data-target="#modal-import">Import</button> --}}
                                 </span>
@@ -61,16 +54,14 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 1%">#</th>
-                                            <th>Project</th>
-                                            <th>Contract type</th>
+                                            <th>Project No</th>
+                                            <th>Contract Type</th>
                                             <th>Company Name</th>
-                                            <th>no_of_units</th>
-                                            <th>roi_perc</th>
-                                            <th>expected_profit</th>
-                                            <th>Start date</th>
-                                            <th>End date</th>
-                                            <th>Status</th>
-                                            <th style="width:112px;"></th>
+                                            <th>Total No of units</th>
+                                            <th>ROI</th>
+                                            <th>Profit</th>
+                                            <th>Expiry date</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -91,28 +82,31 @@
 
 
 
-            <div class="modal fade" id="modal-import">
+            <div class="modal fade" id="modal-reject">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">Import</h4>
+                            <h4 class="modal-title">Reject Renewal</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form action="" id="ContractImportForm" method="POST" enctype="multipart/form-data">
+                        <form action="" id="RenewalrejectionForm" method="POST" enctype="multipart/form-data">
                             <div class="modal-body">
                                 <div class="card-body">
+                                    <input type="hidden" id="contract_id" name="contract_id">
+                                    <input type="hidden" id="reject_url" name="reject_url">
                                     <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Import excel</label>
-                                        <input type="file" name="file" class="col-sm-9 form-control">
+                                        <label for="inputEmail3" class="form-label">Rejection Reason</label>
+                                        <textarea name="renew_reject_reason" class="form-control" id="renew_reject_reason" cols="20" rows="5"
+                                            required></textarea>
                                     </div>
                                 </div>
                                 <!-- /.card-body -->
                             </div>
                             <div class="modal-footer justify-content-between">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" id="importBtn" class="btn btn-info">Import</button>
+                                <button type="button" id="rejectSubmitBtn" class="btn btn-info">Submit</button>
                             </div>
                         </form>
                     </div>
@@ -153,7 +147,7 @@
                 serverSide: true,
 
                 ajax: {
-                    url: "{{ route('contract.list') }}",
+                    url: "{{ route('contract.renewal_list') }}",
                     data: function(d) {
                         // d.company_id = $('#companyFilter').val();
                     },
@@ -189,42 +183,38 @@
                         name: 'contract_rentals.expected_profit',
                     },
                     {
-                        data: 'start_date',
-                        name: 'contract_details.start_date',
-                    },
-                    {
                         data: 'end_date',
                         name: 'contract_details.end_date',
                     },
-                    {
-                        data: 'status',
-                        name: 'contracts.contract_status',
-                        render: function(data, type, row) {
-                            let badgeClass = '';
-                            let text = '';
+                    // {
+                    //     data: 'status',
+                    //     name: 'contracts.contract_status',
+                    //     render: function(data, type, row) {
+                    //         let badgeClass = '';
+                    //         let text = '';
 
-                            switch (data) {
-                                case 0:
-                                    badgeClass = 'badge badge-warning';
-                                    text = 'Pending';
-                                    break;
-                                case 1:
-                                    badgeClass = 'badge badge-info text-white';
-                                    text = 'Processing';
-                                    break;
-                                case 2:
-                                    badgeClass = 'badge badge-success text-white';
-                                    text = 'Approved';
-                                    break;
-                                case 3:
-                                    badgeClass = 'badge badge-danger text-white';
-                                    text = 'Terminated';
-                                    break;
-                            }
+                    //         switch (data) {
+                    //             case 0:
+                    //                 badgeClass = 'badge badge-warning';
+                    //                 text = 'Pending';
+                    //                 break;
+                    //             case 1:
+                    //                 badgeClass = 'badge badge-info text-white';
+                    //                 text = 'Processing';
+                    //                 break;
+                    //             case 2:
+                    //                 badgeClass = 'badge badge-success text-white';
+                    //                 text = 'Approved';
+                    //                 break;
+                    //             case 3:
+                    //                 badgeClass = 'badge badge-danger text-white';
+                    //                 text = 'Terminated';
+                    //                 break;
+                    //         }
 
-                            return '<span class="' + badgeClass + '">' + text + '</span>';
-                        },
-                    },
+                    //         return '<span class="' + badgeClass + '">' + text + '</span>';
+                    //     },
+                    // },
 
                     {
                         data: 'action',
@@ -252,33 +242,80 @@
             });
         });
 
-        function deleteConf(id) {
-            Swal.fire({
-                title: "Are you sure?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        type: "DELETE",
-                        url: '/contract/' + id,
-                        data: {
-                            _token: $('meta[name="csrf-token"]').attr('content')
-                        },
-                        dataType: "json",
-                        success: function(response) {
-                            toastr.success(response.message);
-                            $('#contractTable').DataTable().ajax.reload();
-                        }
-                    });
+        $(document).on('click', '.openRejectModalBtn', function(e) {
+            e.preventDefault();
 
-                } else {
+            // Get data from button
+            const id = $(this).data('id');
+
+            // (Optional) Load modal content dynamically
+            $('#contract_id').val(id);
+            $('#reject_url').val($(this).data('url'));
+
+            // Manually show the modal
+            const myModal = new bootstrap.Modal(document.getElementById('modal-reject'));
+            myModal.show();
+        });
+
+
+        $('#rejectSubmitBtn').click(function(e) {
+            e.preventDefault();
+
+            if ($('#renew_reject_reason').val() == '') {
+                toastr.error('Please provide reason for Renewal');
+                return;
+            }
+
+            const url = $('#reject_url').val();
+            var form = document.getElementById('RenewalrejectionForm');
+            var fdata = new FormData(form);
+            fdata.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: fdata,
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    // console.log(response);
+                    toastr.success(response.message);
+                    window.location.href = "{{ route('contract.renewal_pending_list') }}";
+                },
+                error: function(errors) {
                     toastr.error(errors.responseJSON.message);
                 }
             });
-        }
+        });
+
+        // function deleteConf(id) {
+        //     Swal.fire({
+        //         title: "Are you sure?",
+        //         icon: "warning",
+        //         showCancelButton: true,
+        //         confirmButtonColor: "#3085d6",
+        //         cancelButtonColor: "#d33",
+        //         confirmButtonText: "Yes, delete it!"
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             $.ajax({
+        //                 type: "DELETE",
+        //                 url: '/contract/' + id,
+        //                 data: {
+        //                     _token: $('meta[name="csrf-token"]').attr('content')
+        //                 },
+        //                 dataType: "json",
+        //                 success: function(response) {
+        //                     toastr.success(response.message);
+        //                     $('#contractTable').DataTable().ajax.reload();
+        //                 }
+        //             });
+
+        //         } else {
+        //             toastr.error(errors.responseJSON.message);
+        //         }
+        //     });
+        // }
     </script>
 @endsection

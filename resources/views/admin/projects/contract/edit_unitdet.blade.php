@@ -83,7 +83,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-sm-3 m-4">
+                <div class="col-sm-4 m-4">
                     <div class="form-group clearfix">
                         <div class="icheckbox icheck-success d-inline">
                             <input type="checkbox" name="unit_detail[partition][{{ $unitkey }}]"
@@ -101,6 +101,19 @@
                             <label class="labelpermission" for="bedspace{{ $unitkey }}">
                                 Bedspace </label>
                         </div>
+                        <div class="icheckbox icheck-success d-inline">
+                            <input type="checkbox" name="unit_detail[partition][{{ $unitkey }}]"
+                                id="room{{ $unitkey }}" class="roomcheck" value="3"
+                                {{ old('unit_detail.room', $unitDetail->room ?? '') == 1 ? 'checked' : '' }} required>
+                            <label class="labelpermission" for="room{{ $unitkey }}"> Room </label>
+                        </div>
+                        <div class="icheckbox icheck-success d-inline">
+                            <input type="checkbox" name="unit_detail[maid_room][{{ $unitkey }}]"
+                                id="maidroom{{ $unitkey }}" class="maidroomcheck" value="1"
+                                {{ old('unit_detail.maid_room', $unitDetail->maid_room ?? '') == 1 ? 'checked' : '' }}
+                                required>
+                            <label class="labelpermission" for="maidroom{{ $unitkey }}"> Maid Room </label>
+                        </div>
                     </div>
                 </div>
                 <div class="col-sm-2 part" id="part{{ $unitkey }}">
@@ -117,6 +130,12 @@
                         placeholder="Total Bed Spaces"
                         data-original-value="{{ old('unit_detail.total_bedspace', $unitDetail->total_bedspace ?? '') }}"
                         value="{{ old('unit_detail.total_bedspace', $unitDetail->total_bedspace ?? '') }}" required>
+                </div>
+                <div class="col-sm-2 rm" id="rm{{ $unitkey }}">
+                    <label class="control-label">Total Room</label>
+                    <input type="number" name="unit_detail[total_room][]" class="form-control total_room"
+                        placeholder="Total Room"
+                        value="{{ old('unit_detail.total_room', $unitDetail->total_room ?? '') }}" required>
                 </div>
             </div>
             <hr>

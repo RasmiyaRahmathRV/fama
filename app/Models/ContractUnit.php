@@ -17,6 +17,7 @@ class ContractUnit extends Model
         'contract_id',
         'building_type',
         'business_type',
+        'watchman_room',
         'no_of_units',
         'unit_numbers',
         'unit_type_count',

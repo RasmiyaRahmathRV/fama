@@ -42,6 +42,11 @@ class ContractRental extends Model
         return $this->belongsTo(Contract::class);
     }
 
+    public function installment()
+    {
+        return $this->belongsTo(Installment::class, 'receivable_installments', 'id');
+    }
+
     public function user()
     {
         return $this->belongsTo(

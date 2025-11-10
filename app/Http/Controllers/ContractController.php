@@ -55,21 +55,25 @@ class ContractController extends Controller
     {
         $title = 'Create Contract';
         $contract = null;
+        $renew = 0;
+        $edit = 0;
         // dropdown values
         $dropdowns = $this->contractService->getDropdownData();
         // dd($dropdowns);
 
-        return view("admin.projects.contract.contract-create", compact("title", 'contract') + $dropdowns);
+        return view("admin.projects.contract.contract-create", compact("title", 'contract', 'renew', 'edit') + $dropdowns);
     }
 
     public function edit($id)
     {
         $title = 'Edit Contract';
         $contract = $this->contractService->getAllDataById($id);
+        $renew = 0;
+        $edit = 1;
         // dd($contract->contract_detail);
         $dropdowns = $this->contractService->getDropdownData();
 
-        return view('admin.projects.contract.contract-create', compact('title', 'contract') + $dropdowns);
+        return view('admin.projects.contract.contract-create', compact('title', 'contract', 'renew', 'edit') + $dropdowns);
     }
 
     public function store(Request $request)
@@ -105,7 +109,9 @@ class ContractController extends Controller
     public function show(Contract $contract)
     {
         $contract = $this->contractService->getById($contract->id);
-        return view('admin.projects.contract.contract-view', compact('contract'));
+        $allChildren = $this->contractService->getAllChildren($contract->id);
+        // dd($allChildren);
+        return view('admin.projects.contract.contract-view', compact('contract', 'allChildren'));
     }
 
     public function approveContract(Request $request) {}
@@ -189,6 +195,53 @@ class ContractController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Payment Payable deleted successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function getRenewalPendingContracts()
+    {
+        $title = 'Renewal Pendings';
+
+        return view("admin.projects.contract.contract-renewal-list", compact("title"));
+    }
+
+    public function getRenewalContractsList(Request $request)
+    {
+        if ($request->ajax()) {
+            $filters = [
+                'company_id' => auth()->user()->company_id,
+                'search' => $request->search['value'] ?? null
+            ];
+            return $this->contractService->getRenewalDataTable($filters);
+        }
+    }
+
+    public function renewContracts($contract_id)
+    {
+        $renew = 1;
+        $edit = 0;
+        $contract = $this->contractService->getAllDataById($contract_id);
+        $title = 'Renew Contract P-' . $contract->project_number;
+        $dropdowns = $this->contractService->getDropdownData();
+
+        return view('admin.projects.contract.contract-create', compact('contract', 'renew', 'title', 'edit') + $dropdowns);
+    }
+
+    public function rejectRenewal(Request $request, $contract_id)
+    {
+        try {
+            $this->contractService->rejectRenew($request, $contract_id);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Renew rejected successfully.'
             ]);
         } catch (\Exception $e) {
             return response()->json([

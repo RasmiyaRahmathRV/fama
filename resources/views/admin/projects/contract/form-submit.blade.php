@@ -29,11 +29,11 @@
 
         // If you're updating (PUT/PATCH/DELETE)
 
-        let isEdit = @json($contract && $contract->exists);
+        // let isEdit = @json($contract && $contract->exists);
 
         let url =
-            "{{ $contract?->exists ? route('contract.update', $contract->id) : route('contract.store') }}";
-        fdata.append('_method', "{{ $contract?->exists ? 'PUT' : 'POST' }}");
+            "{{ $edit ? route('contract.update', $contract->id) : route('contract.store') }}";
+        fdata.append('_method', "{{ $edit ? 'PUT' : 'POST' }}");
 
 
         $.ajax({

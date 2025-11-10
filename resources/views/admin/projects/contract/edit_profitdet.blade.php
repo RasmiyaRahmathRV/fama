@@ -1,10 +1,17 @@
 @foreach ($contract_units_details as $unitkey => $unitDetail)
     @php
         $unit_rent = toNumeric($unitDetail->unit_rent_per_annum) ?? 0;
-        $unitComm =
-            $unitDetail->unit_commission ?? toNumeric($unit_rent * toNumeric($unitDetail->unit_commission ?? 0)) / 100;
-        $unitDepo =
-            $unitDetail->unit_deposit ?? toNumeric($unit_rent * toNumeric($unitDetail->unit_deposit ?? 0)) / 100;
+
+        if (!$renew) {
+            $unitComm =
+                $unitDetail->unit_commission ??
+                toNumeric($unit_rent * toNumeric($unitDetail->unit_commission ?? 0)) / 100;
+            $unitDepo =
+                $unitDetail->unit_deposit ?? toNumeric($unit_rent * toNumeric($unitDetail->unit_deposit ?? 0)) / 100;
+        } else {
+            $unitComm = 0;
+            $unitDepo = 0;
+        }
 
         $unit_payable = $unitDetail->unit_amount_payable ?? toNumeric($unit_rent + $unitComm + $unitDepo);
     @endphp

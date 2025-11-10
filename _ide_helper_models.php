@@ -497,10 +497,13 @@ namespace App\Models{
  * @property int|null $scope_generated_by
  * @property string|null $rejected_reason
  * @property int|null $is_agreement_added 0 - not added, 1 - added
+ * @property int $has_agreement
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Area|null $area
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Contract> $children
+ * @property-read int|null $children_count
  * @property-read \App\Models\Company|null $company
  * @property-read \App\Models\ContractDetail|null $contract_detail
  * @property-read \App\Models\ContractDocument|null $contract_documents
@@ -519,6 +522,7 @@ namespace App\Models{
  * @property-read int|null $contract_unit_details_count
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\Locality|null $locality
+ * @property-read Contract|null $parent
  * @property-read \App\Models\Property|null $property
  * @property-read \App\Models\Vendor|null $vendor
  * @method static \Illuminate\Database\Eloquent\Builder|Contract newModelQuery()
@@ -537,6 +541,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereHasAgreement($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsAgreementAdded($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsAknowledgementUploaded($value)
@@ -857,6 +862,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Contract $contract
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\Installment|null $installment
  * @method static \Illuminate\Database\Eloquent\Builder|ContractRental newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractRental newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractRental onlyTrashed()

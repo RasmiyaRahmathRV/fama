@@ -44,7 +44,11 @@ class Contract extends Model
         'scope_generated_by',
         'rejected_reason',
         'is_agreement_added',
-        'has_agreement'
+        'has_agreement',
+        'renew_reject_status',
+        'renew_reject_reason',
+        'renew_rejected_by',
+        'contract_rejected_by',
     ];
 
     public function property()
@@ -115,6 +119,28 @@ class Contract extends Model
     public function contract_payment_receivables()
     {
         return $this->hasMany(ContractPaymentReceivable::class, 'contract_id', 'id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Contract::class, 'parent_contract_id', 'id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Contract::class, 'parent_contract_id', 'id');
+    }
+
+    public function getAllRenewals()
+    {
+        $renewals = collect();
+
+        foreach ($this->children as $child) {
+            $renewals->push($child);
+            $renewals = $renewals->merge($child->getAllRenewals());
+        }
+
+        return $renewals;
     }
 
     public function user()
