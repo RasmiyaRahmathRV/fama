@@ -892,6 +892,10 @@
         let cod = 0;
         let totRoom = 0;
 
+        if ({{ $edit }}) {
+            return;
+        }
+
         if ($('#contract_type').val() == '1') {
             // Count filled inputs
             const countOfHouses = $('.unit_no').filter((_, el) => $(el).val()).length;
@@ -1306,7 +1310,7 @@
 
             }
 
-
+            CalculatePayables();
 
             // containerPayment.querySelectorAll('.payment_mode_div').forEach(attachEventsPayment);
         });
@@ -1515,7 +1519,14 @@
 
         let paymenttovendor = parseFloat(totRent + totcomm + totdepo).toFixed(2);
         let finalCost = (parseFloat(paymenttovendor) + parseFloat(totcontractfee) + parseFloat(totalotc)).toFixed(2);
-        let initialInv = parseFloat((totRent / 4) + totcomm + totdepo + totcontractfee + totalotc).toFixed(2);
+        const installment = $('#no_of_installments').find(':selected').text();
+        console.log('installment - ' + installment);
+        console.log('totcomm - ' + totcomm);
+        console.log('totdepo -' + totdepo);
+        console.log('totcontractfee -' + totcontractfee);
+        console.log('totdepo -' + totdepo);
+        let initialInv = parseFloat((totRent / parseFloat(installment)) + totcomm + totdepo + totcontractfee + totalotc)
+            .toFixed(2);
 
         $('.total_contract_amount').val(totRent);
         $('.commssion_final').val(totcomm);
