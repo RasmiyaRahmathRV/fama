@@ -143,4 +143,9 @@ class AgreementController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
         }
     }
+
+    public function print_view(Agreement $agreement)
+    {
+        return view("admin.projects.agreement.printview-agreement");
+    }
 }

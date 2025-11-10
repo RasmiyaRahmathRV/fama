@@ -551,12 +551,13 @@ class AgreementService
 
             ->addColumn('action', function ($row) {
                 $editUrl = route('agreement.edit', $row->id);
+                $printUrl = route('agreement.printview', $row->id);
                 $action = '
                 <a href="view_installments.php" class="btn btn-primary btn-sm"
                     title="View Installments"><i class="fas fa-eye"></i></a>
                 <a href="agreement_documents.php" class="btn btn-warning btn-sm"
                     title="documents"><i class="fas fa-file"></i></a>
-                <a href="view_agreement.php?1" class="btn btn-primary btn-sm"
+                <a href="' . $printUrl . '" class="btn btn-primary btn-sm"
                     title="Agreement"><i class="fas fa-handshake"></i></a>
                 <a href="' . $editUrl . '" class="btn btn-info  btn-sm" title="Edit agreement"><i
                         class="fas fa-pencil-alt"></i></a>
