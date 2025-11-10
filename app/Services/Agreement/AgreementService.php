@@ -410,19 +410,19 @@ class AgreementService
                 $updatedUnit = $this->agreementUnitService->update($unitdata);
                 $agreementUnitId = $updatedUnit->id ?? null;
 
-                //🧠 STEP 1: Get existing payment detail IDs from DB
+                // STEP 1: Get existing payment detail IDs from DB
                 $existingPaymentIds = $this->agreementPaymentDetailService
                     ->getByAgreementId($agreement->id)
                     ->pluck('id')
                     ->toArray();
 
-                // 🧠 STEP 2: Collect new IDs from the request
+                //  STEP 2: Collect new IDs from the request
                 $newPaymentIds = collect($data['payment_detail'] ?? [])
                     ->pluck('id')
                     ->filter()
                     ->toArray();
 
-                // 🧠 STEP 3: Find which ones to delete
+                //  STEP 3: Find which ones to delete
                 $toDelete = array_diff($existingPaymentIds, $newPaymentIds);
 
                 // dd($toDelete);
