@@ -14,14 +14,6 @@ return new class extends Migration
         Schema::table('contract_types', function (Blueprint $table) {
             $table->string('shortcode')->nullable();
         });
-
-        DB::table('contract_types')->update([
-            'shortcode' => 'DF', // set default integer value
-        ]);
-
-        DB::table('contract_types')->update([
-            'shortcode' => 'FF'
-        ]);
     }
 
     /**

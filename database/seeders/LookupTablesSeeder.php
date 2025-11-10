@@ -20,8 +20,8 @@ class LookupTablesSeeder extends Seeder
         ]);
 
         DB::table('contract_types')->insert([
-            ['contract_type' => 'Direct Fama', 'created_at' => now()],
-            ['contract_type' => 'Fama Faateh', 'created_at' => now()],
+            ['contract_type' => 'Direct Fama', 'created_at' => now(), 'shortcode' => 'DF'],
+            ['contract_type' => 'Fama Faateh', 'created_at' => now(), 'shortcode' => 'FF'],
         ]);
 
         DB::table('unit_types')->insert([
