@@ -29,21 +29,40 @@ class SubUnitDetailService
         // dd($subUnitData);
         $subunitArr = [];
         foreach ($subUnitData['unit_type'] as $key => $value) {
-            // print_r($detailId);
-            for ($i = 1; $i <= $subUnitData['partition'][$key]; $i++) {
-                $subunit_type = '0';
-                if (isset($subUnitData['is_partition'][$key])) {
-                    if ($subUnitData['is_partition'][$key] == '1') {
-                        $subunitno = 'P' . $i;
-                        $subunit_type = '1';
-                    } else if ($subUnitData['is_partition'][$key] == '2') {
-                        $subunitno = 'BS' . $i;
-                        $subunit_type = '2';
-                    }
-                } else {
-                    $subunitno = 'R' . $i;
-                    $subunit_type = '3';
-                }
+            // dd($subUnitData);
+            $subunitcount = subUnitCount($subUnitData, $key);
+            // if (isset($subUnitData['is_partition'][$key])) {
+            //     if ($subUnitData['is_partition'][$key] == '1') {
+            //         $subunitcount = $subUnitData['partition'][$key];
+            //     } else if ($subUnitData['is_partition'][$key] == '2') {
+            //         $subunitcount = $subUnitData['bedspace'][$key];
+            //     } else {
+            //         $subunitcount = $subUnitData['room'][$key];
+            //     }
+            // } else {
+            //     $subunitcount++;
+            // }
+
+            for ($i = 1; $i <= $subunitcount; $i++) {
+                // print_r($detailId);
+                // $subunit_type = '0';
+                $subunit_type = subUnitType($subUnitData, $key);
+                $subunitno = subunitNoGeneration($subUnitData, $key, $i);
+                // if (isset($subUnitData['is_partition'][$key])) {
+                //     if ($subUnitData['is_partition'][$key] == '1') {
+                //         $subunitno = 'P' . $i;
+                //         $subunit_type = '1';
+                //     } else if ($subUnitData['is_partition'][$key] == '2') {
+                //         $subunitno = 'BS' . $i;
+                //         $subunit_type = '2';
+                //     } else {
+                //         $subunitno = 'R' . $i;
+                //         $subunit_type = '3';
+                //     }
+                // } else {
+                //     $subunitno = 'FL' . $i;
+                //     $subunit_type = '4';
+                // }
 
                 $subunitcode = 'P' . $subUnitData['project_no'] . '/' . $subUnitData['company_code'] . '/' .  $subUnitData['unit_no'][$key] . '/' . $subunitno;
                 // dd('aftercode');
@@ -57,6 +76,7 @@ class SubUnitDetailService
                     'subunit_code' => $subunitcode,
                     'added_by' => $user_id ? $user_id : auth()->user()->id,
                 );
+                // dd($subunitArr);
 
                 $this->subunitdetRepo->create($subunitArr);
             }
@@ -78,15 +98,19 @@ class SubUnitDetailService
         DB::transaction(function () use ($detailId, $subUnitData, $key, $user_id) {
             // dd('before');
 
-            if (isset($subUnitData['is_partition'][$key])) {
-                if ($subUnitData['is_partition'][$key] == '1') {
-                    $subunit_type = '1';
-                } else if ($subUnitData['is_partition'][$key] == '2') {
-                    $subunit_type = '2';
-                }
-            } else {
-                $subunit_type = '3';
-            }
+            // if (isset($subUnitData['is_partition'][$key])) {
+            //     if ($subUnitData['is_partition'][$key] == '1') {
+            //         $subunit_type = '1';
+            //     } else if ($subUnitData['is_partition'][$key] == '2') {
+            //         $subunit_type = '2';
+            //     } else {
+            //         $subunit_type = '3';
+            //     }
+            // } else {
+            //     $subunit_type = '4';
+            // }
+
+            $subunit_type = subUnitType($subUnitData, $key);
 
             // 🔹 Get existing subunits for this detail
             $existing = ContractSubunitDetail::where('contract_unit_detail_id', $detailId)
@@ -98,16 +122,18 @@ class SubUnitDetailService
 
             // echo "</pre>";
             // print_r($subUnitData);
-            $subunitcount = 0;
-            if (isset($subUnitData['is_partition'][$key])) {
-                if ($subUnitData['is_partition'][$key] == '1') {
-                    $subunitcount = $subUnitData['partition'][$key];
-                } else if ($subUnitData['is_partition'][$key] == '2') {
-                    $subunitcount = $subUnitData['bedspace'][$key];
-                }
-            } else {
-                $subunitcount++;
-            }
+            $subunitcount = subUnitCount($subUnitData, $key);
+            // if (isset($subUnitData['is_partition'][$key])) {
+            //     if ($subUnitData['is_partition'][$key] == '1') {
+            //         $subunitcount = $subUnitData['partition'][$key];
+            //     } else if ($subUnitData['is_partition'][$key] == '2') {
+            //         $subunitcount = $subUnitData['bedspace'][$key];
+            //     } else {
+            //         $subunitcount = $subUnitData['room'][$key];
+            //     }
+            // } else {
+            //     $subunitcount++;
+            // }
             // dd('before');
             $existPrevTypeId = $this->subunitdetRepo->existPrevSubType($detailId, $subUnitData['is_partition'][$key] ?? 0);
             // dd($existPrevTypeId);
@@ -169,7 +195,7 @@ class SubUnitDetailService
             'subunit_code' => $subunitcode,
             'added_by' => $user_id ? $user_id : auth()->user()->id,
         );
-
+        // dd($subunitArr);
         if ($oldValue || $existing) {
             if ($existing) {
                 // dd('exist');

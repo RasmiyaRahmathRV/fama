@@ -46,7 +46,7 @@ class UserController extends Controller
             'approve',
             'reject',
             'document_upload',
-            'manage_installments'
+            'renew'
         ];
 
         if ($id) {

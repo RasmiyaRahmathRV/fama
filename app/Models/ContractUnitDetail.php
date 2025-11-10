@@ -26,6 +26,11 @@ class ContractUnitDetail extends Model
         'property_type_id',
         'partition',
         'bedspace',
+        'room',
+        'maid_room',
+        'rent_per_flat',
+        'rent_per_unit_per_month',
+        'rent_per_unit_per_annum',
         'total_partition',
         'total_bedspace',
         'rent_per_partition',
@@ -40,7 +45,8 @@ class ContractUnitDetail extends Model
         'added_by',
         'updated_by',
         'deleted_by',
-        'is_vacant'
+        'is_vacant',
+        'unit_rent_per_month'
     ];
 
     public function contract()

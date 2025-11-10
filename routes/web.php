@@ -119,4 +119,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('agreemant-list', [AgreementController::class, 'getAgreements'])->name('agreement.list');
     Route::get('export-agreement', [AgreementController::class, 'exportAgreement'])->name('agreement.export');
+
+
+    Route::get('renewal-pending-list', [ContractController::class, 'getRenewalPendingContracts'])->name('contract.renewal_pending_list');
+    Route::get('renewal-list', [ContractController::class, 'getRenewalContractsList'])->name('contract.renewal_list');
+    Route::get('contract/{id}/renew', [ContractController::class, 'renewContracts'])->name('contract.renew');
+    Route::post('contract/{id}/reject-renewal', [ContractController::class, 'rejectRenewal'])->name('contract.reject_renew');
 });

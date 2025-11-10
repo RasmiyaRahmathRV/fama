@@ -26,6 +26,7 @@ use App\Services\LocalityService;
 use App\Services\PropertyService;
 use App\Services\PropertyTypeService;
 use App\Services\VendorService;
+use Carbon\Carbon;
 
 class ContractService
 {
@@ -85,16 +86,31 @@ class ContractService
 
     public function createOrRestore(array $data, $user_id = null)
     {
-        // print_r($data);
+        // dd($data);
         $data['contract']['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['contract']['project_code'] = $this->setProjectCode();
 
-        return DB::transaction(function () use ($data) {
-            $this->validate($data['contract'], $data['contract']['id'] ?? null);
+        $contract_renewal_status = 0;
+        if (isset($data['contract']['renewal'])) {
+            $data['contract']['renewal_date'] = Carbon::today()->format('Y-m-d');
+            $data['contract']['renewed_by'] = $user_id ? $user_id : auth()->user()->id;
+            $data['contract']['parent_contract_id'] = $data['contract']['id'];
+
+
+            $contract_renewal_status = 1;
+        }
+
+        return DB::transaction(function () use ($data, $contract_renewal_status) {
+            $this->validate($data['contract'], (!isset($data['contract']['renewal'])) ? $data['contract']['id'] ?? null : 0);
 
             $contract = $this->contractRepo->create($data['contract']);
             // Store related details
 
+            if ($contract_renewal_status == 1) {
+                $this->contractRepo->update($data['contract']['id'], array(
+                    'contract_renewal_status' => $contract_renewal_status,
+                ));
+            }
 
             $this->detailServ->create($contract->id, $data['detail'] ?? []);
 
@@ -143,7 +159,7 @@ class ContractService
 
             $this->detailServ->update($data['detail'] ?? []);
             $unitData = $this->unitServ->update($data['unit'] ?? [], $data['unit_detail'] ?? []);
-
+            // dd($unitData);
             $this->unitDetServ->update($contract, $data['unit_detail'] ?? [], $data['rentals']['receivable_installments'], $unitData->id);
             // dd($unitData);
             $this->rentalServ->update($data['rentals'] ?? []);
@@ -200,11 +216,12 @@ class ContractService
 
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
-            ['data' => 'project_code', 'name' => 'project_code'],
+            ['data' => 'project_number', 'name' => 'project_number'],
+            ['data' => 'contract_type', 'name' => 'contract_type'],
             ['data' => 'company_name', 'name' => 'company_name'],
-            ['data' => 'vendor_name', 'name' => 'vendor_name'],
-            ['data' => 'property_name', 'name' => 'property_name'],
-            ['data' => 'start_date', 'name' => 'start_date'],
+            ['data' => 'no_of_units', 'name' => 'no_of_units'],
+            ['data' => 'roi_perc', 'name' => 'roi_perc'],
+            ['data' => 'expected_profit', 'name' => 'expected_profit'],
             ['data' => 'end_date', 'name' => 'end_date'],
             ['data' => 'contract_status', 'name' => 'contract_status'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
@@ -213,15 +230,14 @@ class ContractService
         return datatables()
             ->of($query)
             ->addIndexColumn()
-            ->addColumn('project_code', fn($row) => ucfirst($row->project_code) ?? '-')
+            ->addColumn('project_number', fn($row) => 'P - ' . ucfirst($row->project_number) ?? '-')
             ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
-
-            ->addColumn('vendor_name', fn($row) => $row->vendor->vendor_name ?? '-')
-            ->addColumn('property_name', fn($row) => $row->property->property_name ?? '-')
-            ->addColumn('start_date', fn($row) => $row->contract_detail->start_date ?? '-')
+            ->addColumn('contract_type', fn($row) => $row->contract_type->shortcode ?? '-')
+            ->addColumn('no_of_units', fn($row) => $row->contract_unit->no_of_units ?? '-')
+            ->addColumn('roi_perc', fn($row) => $row->contract_rentals->roi_perc ?? '-')
+            ->addColumn('expected_profit', fn($row) => $row->contract_rentals->expected_profit ?? '-')
             ->addColumn('end_date', fn($row) => $row->contract_detail->end_date ?? '-')
             ->addColumn('status', fn($row) => $row->contract_status ?? '-')
-
             ->addColumn('action', function ($row) {
                 $action = '';
 
@@ -298,6 +314,7 @@ class ContractService
             ->with(['columns' => $columns])
             ->toJson();
     }
+
     public function getAllwithUnits()
     {
         return $this->contractRepo->allwithUnits();
@@ -324,5 +341,73 @@ class ContractService
         }
 
         return false;
+    }
+
+    public function getRenewalDataTable(array $filters = [])
+    {
+        $query = $this->contractRepo->getRenewalQuery($filters);
+        // dd($query);
+
+        $columns = [
+            ['data' => 'DT_RowIndex', 'name' => 'id'],
+            ['data' => 'project_number', 'name' => 'project_number'],
+            ['data' => 'contract_type', 'name' => 'contract_type'],
+            ['data' => 'company_name', 'name' => 'company_name'],
+            ['data' => 'no_of_units', 'name' => 'no_of_units'],
+            ['data' => 'roi_perc', 'name' => 'roi_perc'],
+            ['data' => 'expected_profit', 'name' => 'expected_profit'],
+            ['data' => 'end_date', 'name' => 'end_date'],
+            ['data' => 'contract_status', 'name' => 'contract_status'],
+            ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
+        ];
+
+        return datatables()
+            ->of($query)
+            ->addIndexColumn()
+            ->addColumn('project_number', fn($row) => 'P - ' . ucfirst($row->project_number) ?? '-')
+            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            ->addColumn('contract_type', fn($row) => $row->contract_type ?? '-')
+            ->addColumn('no_of_units', fn($row) => $row->contract_unit->no_of_units ?? '-')
+            ->addColumn('roi_perc', fn($row) => $row->contract_rentals->roi_perc ?? '-')
+            ->addColumn('expected_profit', fn($row) => $row->contract_rentals->expected_profit ?? '-')
+            ->addColumn('end_date', fn($row) => $row->contract_detail->end_date ?? '-')
+            // ->addColumn('status', fn($row) => $row->contract_status ?? '-')
+
+            ->addColumn('action', function ($row) {
+                $action = '';
+
+                if (Gate::allows('contract.renew')) {
+                    $action .= '<a class="btn btn-primary btn-sm" href="' . route('contract.renew', $row->id) . '" title="Renew COntract">
+                            <i class="fas fa-sync-alt"></i>
+                        </a> ';
+
+                    $action .= '<a class="btn btn-danger btn-sm openRejectModalBtn" href="#" data-url="' . route('contract.reject_renew', $row->id) . '" data-id="' . $row->id . '" title="Reject Renewal">
+                            <i class="fas fa-times"></i>
+                        </a> ';
+                }
+
+                return $action ?: '-';
+            })
+
+            ->rawColumns(['action'])
+            ->with(['columns' => $columns])
+            ->toJson();
+    }
+
+
+    public function rejectRenew($data, $contract_id)
+    {
+        $dataArr = [
+            'renew_reject_reason' => $data->renew_reject_reason,
+            'renew_reject_status' => 1,
+            'renew_rejected_by'   => auth()->user()->id,
+        ];
+
+        return $this->contractRepo->updateRejectRenew($contract_id, $dataArr);
+    }
+
+    public function getAllChildren($contract_id)
+    {
+        return $this->contractRepo->getAllRelatedContracts($contract_id);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Repositories\Contracts;
 
 use App\Models\Contract;
 use App\Models\ContractUnitDetail;
+use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
@@ -19,7 +20,7 @@ class ContractRepository
 
         $contract =  Contract::with(
             'contract_detail',
-            'contract_rentals',
+            'contract_rentals.installment',
             'contract_documents',
             'contract_otc',
             'contract_payments.contractPaymentDetails.payment_mode',
@@ -34,7 +35,9 @@ class ContractRepository
             'locality',
             'vendor',
             'property',
-            'contract_type'
+            'contract_type',
+            'children',
+            'parent'
         )->findOrFail($id);
 
         return $contract;
@@ -47,7 +50,8 @@ class ContractRepository
         $totals = ContractUnitDetail::select(
             DB::raw('MAX(rent_per_partition) as rent_per_partition'),
             DB::raw('MAX(rent_per_bedspace) as rent_per_bedspace'),
-            DB::raw('MAX(rent_per_room) as rent_per_room')
+            DB::raw('MAX(rent_per_room) as rent_per_room'),
+            DB::raw('MAX(rent_per_flat) as rent_per_flat')
         )
             ->where('contract_id', $id)
             ->first();
@@ -57,6 +61,7 @@ class ContractRepository
             'prj_rent_per_partition' => $totals->rent_per_partition ?? 0,
             'prj_rent_per_bedspace'  => $totals->rent_per_bedspace ?? 0,
             'prj_rent_per_room'      => $totals->rent_per_room ?? 0,
+            'prj_rent_per_flat'      => $totals->rent_per_flat ?? 0,
         ];
 
         return $contract;
@@ -69,6 +74,7 @@ class ContractRepository
 
     public function create(array $data)
     {
+        // dd($data);
         return Contract::create($data);
     }
 
@@ -145,6 +151,7 @@ class ContractRepository
 
         return $query;
     }
+
     public function allwithUnits()
     {
         return Contract::with([
@@ -166,5 +173,121 @@ class ContractRepository
             ->where('contract_status', 2)
             ->where('is_agreement_added', 0)
             ->get();
+    }
+
+    public function getRenewalQuery(array $filters = []): Builder
+    {
+        $twoMonthsLater = Carbon::today()->addMonths(2)->format('Y-m-d');
+
+
+        $query = Contract::query()
+            ->select([
+                'contracts.*',
+                'contract_types.contract_type',
+                'contract_details.end_date',
+                'companies.company_name',
+                'vendors.vendor_name'
+            ])
+            ->join('contract_details', 'contract_details.contract_id', '=', 'contracts.id')
+            ->join('vendors', 'vendors.id', '=', 'contracts.vendor_id')
+            ->join('companies', 'companies.id', '=', 'contracts.company_id')
+            ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id')
+            ->where('contracts.contract_renewal_status', '!=', '1')
+            ->where('contracts.renew_reject_status', '==', '0')
+            ->whereHas('contract_detail', function ($q) use ($twoMonthsLater) {
+                $q->where('end_date', '<=', $twoMonthsLater);
+            });
+
+
+
+        if (!empty($filters['search'])) {
+            $query->orwhere('project_code', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('project_number', 'like', '%' . $filters['search'] . '%')
+
+                ->orWhereHas('company', function ($q) use ($filters) {
+                    $q->where('company_name', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('contract_rentals', function ($q) use ($filters) {
+                    $q->where('roi_perc', 'like', '%' . $filters['search'] . '%')
+                        ->orWhere('expected_profit', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('contract_unit', function ($q) use ($filters) {
+                    $q->where('no_of_units', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('contract_type', function ($q) use ($filters) {
+                    $q->where('contract_type', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('locality', function ($q) use ($filters) {
+                    $q->where('locality_name', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('property', function ($q) use ($filters) {
+                    $q->where('property_name', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereRaw("CAST(contracts.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
+        }
+
+
+        if (!empty($filters['company_id'])) {
+            $query->Where('contracts.company_id', $filters['company_id']);
+        }
+
+        // dd($query);
+
+        return $query;
+    }
+
+    public function updateRejectRenew($contract_id, $data)
+    {
+        DB::enableQueryLog();
+
+        $contract = $this->find($contract_id);
+        $contract->update($data);
+
+        return $contract;
+    }
+
+    public function getAllRelatedContracts($contract_id, $visited = [])
+    {
+        // Prevent infinite recursion by tracking visited IDs
+        if (in_array($contract_id, $visited)) {
+            return collect();
+        }
+
+        $visited[] = $contract_id;
+
+        $contract = $this->find($contract_id);
+        if (!$contract) {
+
+            return collect();
+        }
+
+        $renewals = collect();
+
+        // Load relations only once
+        $contract->loadMissing([
+            'contract_detail',
+            'contract_rentals',
+        ]);
+
+        if ($contract->parent_contract_id != NULL || $contract->contract_renewal_status != '0') {
+            // Add current contract
+            $renewals->push($contract);
+        }
+
+        // Recursively include parent
+        if ($contract->parent) {
+            $renewals = $renewals->merge(
+                $this->getAllRelatedContracts($contract->parent->id, $visited)
+            );
+        }
+
+        // Recursively include children
+        foreach ($contract->children as $child) {
+            $renewals = $renewals->merge(
+                $this->getAllRelatedContracts($child->id, $visited)
+            );
+        }
+
+        return $renewals->unique('id')->values();
     }
 }

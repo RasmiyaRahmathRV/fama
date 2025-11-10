@@ -56,8 +56,7 @@
             $(function() {
                 const map = {
                     ['#partition' + i]: '#part' + i,
-                    ['#bedspace' + i]: '#bs' + i,
-                    ['#room' + i]: '#rm' + i
+                    ['#bedspace' + i]: '#bs' + i
                     // '.partcheck': '.part',
                     // '.bedcheck': '.bs',
                 };
@@ -425,7 +424,7 @@
                     ` + propertyTypeOptions + `
                 </select>
             </div>
-            <div class="col-sm-4 m-4">
+            <div class="col-sm-3 m-4">
                 <div class="form-group clearfix">
                     <div class="icheckbox icheck-success d-inline">
                         <input type="checkbox" name="unit_detail[partition][` + i + `]" id="partition` + i + `" class="partcheck" value="1" required>
@@ -434,14 +433,6 @@
                     <div class="icheckbox icheck-success d-inline">
                         <input type="checkbox" name="unit_detail[partition][` + i + `]" id="bedspace` + i + `" class="bedcheck" value="2" required>
                         <label class="labelpermission" for="bedspace` + i + `"> Bedspace </label>
-                    </div>
-                    <div class="icheckbox icheck-success d-inline">
-                        <input type="checkbox" name="unit_detail[partition][` + i + `]" id="room` + i + `" class="roomcheck" value="3" required>
-                        <label class="labelpermission" for="room` + i + `"> Room </label>
-                    </div>
-                     <div class="icheckbox icheck-success d-inline">
-                        <input type="checkbox" name="unit_detail[maid_room][` + i + `]" id="maidroom` + i + `" class="maidroomcheck" value="1" required>
-                        <label class="labelpermission" for="maidroom` + i + `"> Maid Room </label>
                     </div>
                 </div>
             </div>
@@ -452,10 +443,6 @@
             <div class="col-sm-2 bs" id="bs` + i + `">
                 <label class="control-label">Total Bed Spaces</label>
                 <input type="number" name="unit_detail[total_bedspace][]" class="form-control total_bedspaces" placeholder="Total Bed Spaces" required>
-            </div>
-            <div class="col-sm-2 rm" id="rm` + i + `">
-                <label class="control-label">Total Room</label>
-                <input type="number" name="unit_detail[total_room][]" class="form-control total_room" placeholder="Total Room" required>
             </div>
         </div>
         <hr>
@@ -1493,7 +1480,7 @@
 
 <!-- roi and profit calculations -->
 <script>
-    $('#rent_per_part, #rent_per_bs, #rent_per_room, #rent_per_flat').on('input change', function() {
+    $('#rent_per_part, #rent_per_bs, #rent_per_room').on('input change', function() {
         calculateRoi();
         CalculatePayables();
     });
@@ -1528,8 +1515,8 @@
     }
 
 
-    $('.rentPartition, .rentBedspace, .rentRoom, .rentFlat').hide();
-    let totalflatcount = 0;
+    $('.rentPartition, .rentBedspace, .rentRoom').hide();
+    let totalroomcount = 0;
 
     $(document).on('change', '.unit_type, .partcheck, .bedcheck, .partcheck_fb, .bedcheck_fb, .fullBuildCheck',
         function() {
@@ -1540,7 +1527,7 @@
 
         if (!@json($contract && $contract->exists)) {
             // hide all first
-            $('.rentPartition, .rentBedspace, .rentRoom, .rentFlat').hide().find('input, select').val('');
+            $('.rentPartition, .rentBedspace, .rentRoom').hide().find('input, select').val('');
         }
 
 
@@ -1551,7 +1538,7 @@
         $('.total_rental').val('0.00');
 
         let hasMissingPartitionOrBedspace = false;
-        let flatcount = 0;
+        let roomcount = 0;
 
         // if ($('.fullBuildCheck:checked').length > 0) {
 
@@ -1593,23 +1580,22 @@
             let unitType = $(this).find('.unit_type').val();
             let partitionChecked = $(this).find('.partcheck').is(':checked');
             let bedspaceChecked = $(this).find('.bedcheck').is(':checked');
-            let roomChecked = $(this).find('.roomcheck').is(':checked');
 
 
             // If unit type is selected but neither checkbox is checked
-            if (unitType && !partitionChecked && !bedspaceChecked && !roomChecked) {
+            if (unitType && !partitionChecked && !bedspaceChecked) {
                 hasMissingPartitionOrBedspace = true;
-                flatcount++;
-                totalflatcount = flatcount;
+                roomcount++;
+                totalroomcount = roomcount;
                 return false; // break loop early
             }
         });
         // }
 
         if (hasMissingPartitionOrBedspace) {
-            $('.rentFlat').show();
+            $('.rentRoom').show();
         } else {
-            $('.rentFlat').hide();
+            $('.rentRoom').hide();
         }
 
         calculateOtc();
@@ -1622,15 +1608,13 @@
         let rentPerPartition = parseFloat($('#rent_per_part').val()) || 0;
         let rentPerBedspace = parseFloat($('#rent_per_bs').val()) || 0;
         let rentPerRoom = parseFloat($('#rent_per_room').val()) || 0;
-        let rentPerFlat = parseFloat($('#rent_per_flat').val()) || 0;
 
-        if (rentPerPartition > 0 || rentPerBedspace > 0 || rentPerRoom > 0 || rentPerFlat > 0) {
+        if (rentPerPartition > 0 || rentPerBedspace > 0 || rentPerRoom > 0) {
             let total_part = totalPartition() * rentPerPartition;
             let total_bs = totalBedspace() * rentPerBedspace;
-            let total_room = totalRoom() * rentPerRoom;
-            let total_flats = totalflatcount * rentPerFlat;
+            let total_room = totalroomcount * rentPerRoom;
 
-            let total_rent_rec = total_part + total_bs + total_room + total_flats;
+            let total_rent_rec = total_part + total_bs + total_room;
             let duration = $('#duration_months').val();
 
             // if($('#'))
@@ -1684,15 +1668,6 @@
 
         return total_bedspaces;
     }
-
-    function totalRoom() {
-        let total_room = 0;
-        $('.total_room').each(function() {
-            total_room += parseFloat($(this).val()) || 0;
-        });
-
-        return total_room;
-    }
 </script>
 <!-- roi and profit calculations -->
 
@@ -1705,7 +1680,7 @@
 
         // $('.rentPerUnitFF').show();
         // $('.receivable_maindiv').hide();
-        // $('.rentPartition, .rentBedspace, .rentRoom, .rentFlat').hide();
+        // $('.rentPartition, .rentBedspace, .rentRoom').hide();
 
         let no_of_units = 0;
 
@@ -2006,66 +1981,65 @@
                                                     )
                                                 }
                                             });
-                                            $.ajax({
-                                                url: `/contracts/payment-receivable/${detailId}`,
-                                                type: 'DELETE',
-                                                // data: fdataUnit,
-                                                // processData: false,
-                                                // contentType: false,
-                                                success: function(
-                                                    response) {
-                                                    block
-                                                        .remove();
-                                                    toastr
-                                                        .success(
-                                                            response
-                                                            .message
-                                                        );
+                                            // $.ajax({
+                                            //     url: `/contracts/payment-receivable/${detailId}`,
+                                            //     type: 'DELETE',
+                                            //     // data: fdataUnit,
+                                            //     // processData: false,
+                                            //     // contentType: false,
+                                            //     success: function(
+                                            //         response) {
+                                            //         block
+                                            //             .remove();
+                                            //         toastr
+                                            //             .success(
+                                            //                 response
+                                            //                 .message
+                                            //             );
 
-                                                    // window.location.reload();
-                                                    Swal
-                                                        .close();
-                                                    valueTorentRec('change');
-                                                    finalRecCal();
+                                            //         // window.location.reload();
+                                            //         Swal
+                                            //             .close();
+                                            //         valueTorentRec('change');
+                                            //         finalRecCal();
 
-                                                    // ✅ Recheck after removal
-                                                    const remainingDeletes =
-                                                        containerPayment
-                                                        .querySelectorAll(
-                                                            '.btndelete');
-                                                    const remainingPayments =
-                                                        containerPayment
-                                                        .querySelectorAll(
-                                                            '.receivableaddmore');
+                                            //         // ✅ Recheck after removal
+                                            //         const remainingDeletes =
+                                            //             containerPayment
+                                            //             .querySelectorAll(
+                                            //                 '.btndelete');
+                                            //         const remainingPayments =
+                                            //             containerPayment
+                                            //             .querySelectorAll(
+                                            //                 '.receivableaddmore');
 
-                                                    if (remainingDeletes.length <=
-                                                        0 ||
-                                                        remainingPayments
-                                                        .length <=
-                                                        rec_inst) {
-                                                        remainingDeletes.forEach(
-                                                            div =>
-                                                            div.remove());
-                                                        $('.contractFormSubmit')
-                                                            .prop(
-                                                                'disabled', false);
-                                                    }
-                                                },
-                                                error: function(
-                                                    err) {
-                                                    toastr
-                                                        .error(
-                                                            err
-                                                            .responseJSON
-                                                            .message
-                                                        );
-                                                    Swal
-                                                        .close();
-                                                }
-                                            });
+                                            //         if (remainingDeletes.length <=
+                                            //             0 ||
+                                            //             remainingPayments
+                                            //             .length <=
+                                            //             rec_inst) {
+                                            //             remainingDeletes.forEach(
+                                            //                 div =>
+                                            //                 div.remove());
+                                            //             $('.contractFormSubmit')
+                                            //                 .prop(
+                                            //                     'disabled', false);
+                                            //         }
+                                            //     },
+                                            //     error: function(
+                                            //         err) {
+                                            //         toastr
+                                            //             .error(
+                                            //                 err
+                                            //                 .responseJSON
+                                            //                 .message
+                                            //             );
+                                            //         Swal
+                                            //             .close();
+                                            //     }
+                                            // });
                                         } else {
                                             block.remove();
-                                            Swal.close();
                                             valueTorentRec('change');
                                             finalRecCal();
                                             // ✅ Recheck after removal
@@ -2197,8 +2171,8 @@
             var count = $('.unit_profit').length;
 
             let tot_rent_per_month = totalrev / 12;
-            $('.rentFlat').show();
-            $('#rent_per_flat').val(tot_rent_per_month.toFixed(2)).attr('readonly', 'true');
+            $('.rentRoom').show();
+            $('#rent_per_room').val(tot_rent_per_month.toFixed(2)).attr('readonly', 'true');
 
             let total_rent_rec = tot_rent_per_month;
 
@@ -2260,7 +2234,7 @@
         }
     }
 
-    $('#rent_installments, #rent_per_part, #rent_per_bs, #rent_per_room, #rent_per_flat').on('input change',
+    $('#rent_installments, #rent_per_part, #rent_per_bs, #rent_per_room').on('input change',
         function() {
             finalRecCal();
             valueTorentRec('change');
@@ -2268,19 +2242,20 @@
 
 
     function valueTorentRec(action) {
-        let rent_per_flat = parseFloat($('#rent_per_flat').val()) || 0;
+        let rent_per_room = parseFloat($('#rent_per_room').val()) || 0;
 
-        let totRentperflat = 0;
+        let totRentperroom = 0;
         if ($('#contract_type').val() == '2') {
-            totRentperflat = rent_per_flat;
+            totRentperroom = rent_per_room;
         } else {
-            totRentperflat = $('.total_rent_receivable').val();
+            totRentperroom = $('.total_rent_receivable').val();
         }
+        console.log('valueTorentRec');
 
         let isEdit = {{ $edit }};
         if (!isEdit || action == 'change') {
             $('.rec_payment_amount').each(function() {
-                $(this).val(totRentperflat);
+                $(this).val(totRentperroom);
             });
         }
     }
