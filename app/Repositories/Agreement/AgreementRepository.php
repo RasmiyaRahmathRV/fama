@@ -17,24 +17,16 @@ class AgreementRepository
     public function find($id)
     {
 
-        return Contract::with(
-            'contract_detail',
-            'contract_rentals',
-            'contract_documents',
-            'contract_otc',
-            'contract_payments.contractPaymentDetails.payment_mode',
-            'contract_payments.contractPaymentDetails.bank',
-            'contract_payments.installment',
-            'contract_unit.contractUnitDetails.contractSubUnitDetails',
-            'contract_unit_details.property_type',
-            'contract_unit_details.unit_type',
-            'contract_unit_details.unit_status',
+        return Agreement::with(
+            'contract',
             'company',
-            'area',
-            'locality',
-            'vendor',
-            'property',
-            'contract_type'
+            'tenant.nationality',
+            'agreement_payment.agreementPaymentDetails',
+            'agreement_documents',
+            'agreement_units.contractSubunitDetail',
+            'agreement_units.contractUnitDetail'
+
+
         )->findOrFail($id);
     }
 
@@ -51,9 +43,9 @@ class AgreementRepository
 
     public function update($id, array $data)
     {
-        $contract = $this->find($id);
-        $contract->update($data);
-        return $contract;
+        $agreement = $this->find($id);
+        $agreement->update($data);
+        return $agreement;
     }
     public function delete($id)
     {
@@ -63,17 +55,7 @@ class AgreementRepository
         return $contract->delete();
     }
 
-    // public function checkIfExist($data)
-    // {
-    //     $existing = Contract::withTrashed()
-    //         ->where('contract_name', $data['contract_name'])
-    //         ->first();
 
-    //     if ($existing && $existing->trashed()) {
-    //         // $existing->restore();
-    //         return $existing;
-    //     }
-    // }
 
     public function getQuery(array $filters = []): Builder
     {
@@ -130,5 +112,12 @@ class AgreementRepository
         $query->orderBy('agreements.id', 'desc');
 
         return $query;
+    }
+    public function findunits($id)
+    {
+        return Agreement::find($id)
+            ->agreement_units()
+            ->pluck('id')
+            ->toArray();
     }
 }

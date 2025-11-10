@@ -43,7 +43,8 @@ class Contract extends Model
         'deleted_by',
         'scope_generated_by',
         'rejected_reason',
-        'is_agreement_added'
+        'is_agreement_added',
+        'has_agreement'
     ];
 
     public function property()
@@ -157,6 +158,7 @@ class Contract extends Model
                 // Soft delete hasOne
                 foreach ($hasOneRelations as $relation) {
                     $related = $contract->$relation;
+
                     if ($related) {
                         if ($userId) {
                             $related->update(['deleted_by' => $userId]);
@@ -165,15 +167,21 @@ class Contract extends Model
                     }
                 }
 
-                // Soft delete hasMany
+                // // Soft delete hasMany
+                // foreach ($hasManyRelations as $relation) {
+                //     foreach ($contract->$relation as $related) {
+                //         $related->update(['deleted_by' => $userId]);
+                //         $related->delete();
+                //     }
+                // }
                 foreach ($hasManyRelations as $relation) {
-                    $relatedCollection = $contract->$relation ?? collect();
-                    foreach ($relatedCollection as $related) {
-                        if ($userId) {
-                            $related->update(['deleted_by' => $userId]);
-                        }
+                    $relatedCollection = $contract->$relation; // always a Collection
+
+                    // Update all related records' deleted_by safely
+                    $relatedCollection->each(function ($related) use ($userId) {
+                        $related->update(['deleted_by' => $userId]);
                         $related->delete();
-                    }
+                    });
                 }
             } else {
                 // Force delete

@@ -2,6 +2,7 @@
 
 namespace App\Services\Agreement;
 
+use App\Models\AgreementPaymentDetail;
 use App\Models\Contract;
 use App\Repositories\Agreement\AgreementDocRepository;
 use App\Repositories\Agreement\AgreementPaymentDetailRepository;
@@ -65,5 +66,41 @@ class AgreementPaymentDetailService
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
+    }
+    public function update(array $data, $user_id = null)
+    {
+        // dd($data);
+        $id = $data['id'];
+        // dd($id);
+        $this->validate($data, $id);
+        $data['updated_by'] = $user_id ? $user_id : auth()->user()->id;
+        return $this->agreementPaymentDetailRepository->update($id, $data);
+    }
+    public function updateOrCreate(array $data, $user_id = null)
+    {
+        $id = $data['id'] ?? null;
+        $data['updated_by'] = $user_id ?? auth()->user()->id;
+
+        if ($id) {
+            // Update existing
+            return $this->update($data, $user_id);
+        } else {
+            // Create new
+            $data['added_by'] = $user_id ?? auth()->user()->id;
+            $this->validate($data);
+            return $this->agreementPaymentDetailRepository->create($data);
+        }
+    }
+
+    public function deleteByIds(array $ids)
+    {
+        if (!empty($ids)) {
+            return $this->agreementPaymentDetailRepository->deleteWhereIn('id', $ids);
+        }
+    }
+
+    public function getByAgreementId($agreementId)
+    {
+        return $this->agreementPaymentDetailRepository->getWhere(['agreement_id' => $agreementId]);
     }
 }

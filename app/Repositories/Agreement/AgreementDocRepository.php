@@ -17,4 +17,8 @@ class AgreementDocRepository
     {
         return AgreementDocument::create($data);
     }
+    public function update(array $data)
+    {
+        return AgreementDocument::update($data);
+    }
 }

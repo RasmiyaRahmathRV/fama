@@ -44,4 +44,12 @@ class AgreementTenantService
             throw new ValidationException($validator);
         }
     }
+    public function update(array $data, $user_id = null)
+    {
+        // dd($data);
+        $id = $data['id'];
+        $this->validate($data, $id);
+        $data['updated_by'] = $user_id ? $user_id : auth()->user()->id;
+        return $this->agreementTenantRepository->update($id, $data);
+    }
 }

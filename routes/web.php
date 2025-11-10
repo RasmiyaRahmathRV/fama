@@ -117,6 +117,6 @@ Route::middleware(['auth'])->group(function () {
         ->name('contracts.payment-receivable.delete');
 
 
-    Route::get('agreemant-list', [AgreementController::class, 'getAgreements'])->name('agreement.list');
+    Route::get('agreement-list', [AgreementController::class, 'getAgreements'])->name('agreement.list');
     Route::get('export-agreement', [AgreementController::class, 'exportAgreement'])->name('agreement.export');
 });

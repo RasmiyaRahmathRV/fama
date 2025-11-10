@@ -17,4 +17,23 @@ class AgreementPaymentDetailRepository
     {
         return AgreementPaymentDetail::create($data);
     }
+    public function update($id, array $data)
+    {
+        $detail = $this->find($id);
+        $detail->update($data);
+        return $detail;
+    }
+    public function find($id)
+    {
+        return AgreementPaymentDetail::findOrFail($id);
+    }
+    public function deleteWhereIn($column, array $values)
+    {
+        return AgreementPaymentDetail::whereIn($column, $values)->delete();
+    }
+
+    public function getWhere(array $conditions)
+    {
+        return AgreementPaymentDetail::where($conditions)->get();
+    }
 }

@@ -50,4 +50,8 @@ class AgreementTenant extends Model
     {
         return $this->belongsTo(Agreement::class, 'agreement_id');
     }
+    public function nationality()
+    {
+        return $this->belongsTo((Nationality::class));
+    }
 }

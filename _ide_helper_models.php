@@ -153,6 +153,7 @@ namespace App\Models{
  * @property int $installment_id
  * @property int $interval
  * @property string $beneficiary
+ * @property string $total_rent_annum
  * @property int $added_by
  * @property int|null $updated_by
  * @property int|null $deleted_by
@@ -177,6 +178,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereInstallmentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereInterval($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereTotalRentAnnum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment withTrashed()
@@ -191,6 +193,8 @@ namespace App\Models{
  * @property int $agreement_id
  * @property int $agreement_payment_id
  * @property int $payment_mode_id
+ * @property int|null $contract_unit_id
+ * @property int $agreement_unit_id
  * @property int|null $bank_id
  * @property string|null $cheque_number
  * @property string|null $cheque_issuer
@@ -221,11 +225,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereAddedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereAgreementId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereAgreementPaymentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereAgreementUnitId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereBankId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereChequeIssuer($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereChequeIssuerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereChequeIssuerName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereChequeNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereContractUnitId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereDeletedBy($value)
@@ -252,6 +258,7 @@ namespace App\Models{
  * @property string $tenant_name
  * @property string $tenant_mobile
  * @property string $tenant_email
+ * @property int|null $nationality_id
  * @property string $tenant_address
  * @property int $added_by
  * @property int|null $updated_by
@@ -261,6 +268,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Agreement $agreement
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\Nationality|null $nationality
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant onlyTrashed()
@@ -271,6 +279,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereNationalityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereTenantAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereTenantEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereTenantMobile($value)
@@ -290,7 +299,8 @@ namespace App\Models{
  * @property int $unit_type_id
  * @property int $contract_unit_details_id
  * @property int|null $contract_subunit_details_id
- * @property string $rent_per_annum
+ * @property string $rent_per_month
+ * @property string $rent_per_annum_agreement
  * @property int $added_by
  * @property int|null $updated_by
  * @property int|null $deleted_by
@@ -314,7 +324,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereRentPerAnnum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereRentPerAnnumAgreement($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereRentPerMonth($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereUnitTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereUpdatedBy($value)
@@ -485,6 +496,7 @@ namespace App\Models{
  * @property int|null $deleted_by
  * @property int|null $scope_generated_by
  * @property string|null $rejected_reason
+ * @property int|null $is_agreement_added 0 - not added, 1 - added
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -526,6 +538,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsAgreementAdded($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsAknowledgementUploaded($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsChequeCopyUploaded($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsScopeGenerated($value)
@@ -639,14 +652,14 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $contract_id
- * @property string|null $cost_of_development
- * @property string|null $cost_of_bed
- * @property string|null $cost_of_matress
- * @property string|null $appliances
- * @property string|null $decoration
- * @property string|null $dewa_deposit
- * @property string|null $ejari
- * @property string|null $cost_of_cabinets
+ * @property string $cost_of_development
+ * @property string $cost_of_bed
+ * @property string $cost_of_matress
+ * @property string $appliances
+ * @property string $decoration
+ * @property string $dewa_deposit
+ * @property string $ejari
+ * @property string $cost_of_cabinets
  * @property string $added_by
  * @property string|null $updated_by
  * @property string|null $deleted_by
@@ -886,7 +899,7 @@ namespace App\Models{
  * @property int $contract_unit_id
  * @property int $contract_unit_detail_id
  * @property string $subunit_no
- * @property int $subunit_type 1-partition, 2-bedspace, 3-room, 4-full flat
+ * @property int $subunit_type 1-partition, 2-bedspace
  * @property string $subunit_code proj. no / company code / unit no / subunit no
  * @property int $added_by
  * @property int|null $updated_by

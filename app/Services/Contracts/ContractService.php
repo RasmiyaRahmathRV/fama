@@ -308,6 +308,8 @@ class ContractService
         $units = ContractUnitDetail::where('contract_id', $id)
             ->with('contractSubUnitDetails')
             ->get();
+        Contract::where('id', $id)
+            ->update(['has_agreement' =>  1]);
 
         $allVacant = $units->every(function ($unit) {
             $unitVacant = $unit->is_vacant == 1;
@@ -324,5 +326,10 @@ class ContractService
         }
 
         return false;
+    }
+
+    public function fullContracts()
+    {
+        return $this->contractRepo->fullContracts();
     }
 }

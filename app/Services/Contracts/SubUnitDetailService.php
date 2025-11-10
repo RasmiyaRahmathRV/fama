@@ -188,26 +188,64 @@ class SubUnitDetailService
     }
 
 
-    public function markSubunitVacant($subunitId)
-    {
-        $subunit = ContractSubunitDetail::find($subunitId);
+    // public function markSubunitVacant($subunitId)
+    // {
+    //     $subunit = ContractSubunitDetail::find($subunitId);
 
-        if (!$subunit) {
-            return;
+    //     if (!$subunit) {
+    //         return;
+    //     }
+
+    //     $subunit->is_vacant = 1;
+    //     $subunit->save();
+
+    //     $unitId = $subunit->contract_unit_detail_id;
+
+    //     $allVacant = ContractSubunitDetail::where('contract_unit_detail_id', $unitId)
+    //         ->where('is_vacant', 0)
+    //         ->doesntExist();
+
+    //     if ($allVacant) {
+    //         ContractUnitDetail::where('id', $unitId)
+    //             ->update(['is_vacant' => 1]);
+    //     }
+    // }
+
+    public function markSubunitVacant($unitId, $subunitId = null)
+    {
+        // Step 1: Mark subunit vacant if exists
+        if ($subunitId) {
+            $subunit = ContractSubunitDetail::find($subunitId);
+            if ($subunit) {
+                $subunit->is_vacant = 1;
+                $subunit->save();
+                $unitId = $subunit->contract_unit_detail_id;
+            }
         }
 
-        $subunit->is_vacant = 1;
-        $subunit->save();
+        // Step 2: Mark unit vacant if all subunits are vacant (or no subunits exist)
+        $hasSubunits = ContractSubunitDetail::where('contract_unit_detail_id', $unitId)->exists();
 
-        $unitId = $subunit->contract_unit_detail_id;
-
-        $allVacant = ContractSubunitDetail::where('contract_unit_detail_id', $unitId)
+        if (
+            !$hasSubunits || ContractSubunitDetail::where('contract_unit_detail_id', $unitId)
             ->where('is_vacant', 0)
-            ->doesntExist();
+            ->doesntExist()
+        ) {
+            $unit = ContractUnitDetail::find($unitId);
+            if ($unit) {
+                $unit->is_vacant = 1;
+                $unit->save();
+                // $contractId = $unit->contract_id;
 
-        if ($allVacant) {
-            ContractUnitDetail::where('id', $unitId)
-                ->update(['is_vacant' => 1]);
+                // // Step 3: Mark contract vacant if all units are vacant
+                // $allUnitsVacant = ContractUnitDetail::where('contract_id', $contractId)
+                //     ->where('is_vacant', 0)
+                //     ->doesntExist();
+
+                // if ($allUnitsVacant) {
+                //     Contract::where('id', $contractId)->update(['is_vacant' => 1]);
+                // }
+            }
         }
     }
 }

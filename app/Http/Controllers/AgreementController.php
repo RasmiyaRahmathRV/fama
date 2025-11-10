@@ -99,4 +99,48 @@ class AgreementController extends Controller
 
         return Excel::download(new AgreementExport($search, $filters), 'agreements.xlsx');
     }
+    public function edit(Agreement $agreement)
+    {
+        $agreement = $this->agreementService->getById($agreement->id);
+        // dd($agreement);
+
+        $companies = $this->companyService->getAll();
+        $contracts = $this->contractService->getAllwithUnits();
+        $fullContracts = $this->contractService->fullContracts();
+        // dd($fullContracts);
+        $installments = $this->installmentService->getAll();
+        $tenantIdentities = TenantIdentity::where('show_status', true)->get();
+        $unitTypes = UnitType::all();
+        $paymentmodes = $this->paymentModeService->getAll();
+        $banks = $this->bankService->getAll();
+        $nationalities = $this->nationalityService->getAll();
+        $contractTypes = ContractType::all();
+
+        return view('admin.projects.agreement.create-agreement', compact(
+            'agreement',
+            'companies',
+            'contracts',
+            'installments',
+            'unitTypes',
+            'tenantIdentities',
+            'paymentmodes',
+            'banks',
+            'nationalities',
+            'contractTypes',
+            'fullContracts'
+        ));
+    }
+    public function update(Request $request, $id)
+    {
+        // dd($id);
+        // dd($request->all());
+        try {
+            $agreement = $this->agreementService->update($id, $request->all());
+
+            return response()->json(['success' => true, 'data' => $agreement, 'message' => 'Agreemant updated successfully'], 200);
+        } catch (\Exception $e) {
+
+            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
+        }
+    }
 }
