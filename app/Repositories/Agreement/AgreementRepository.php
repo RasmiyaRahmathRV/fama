@@ -125,7 +125,7 @@ class AgreementRepository
 
         return Agreement::with([
             'contract' => function ($query) {
-                $query->with(['vendor', 'area', 'property', 'locality', 'contract_rentals']);
+                $query->with(['vendor', 'area', 'property', 'locality', 'contract_rentals', 'contract_type']);
             },
             'company',
             'tenant.nationality',
