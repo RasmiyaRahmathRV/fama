@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
+
 class AgreementService
 {
     public function __construct(
@@ -176,9 +177,12 @@ class AgreementService
                             // dd("testr");
                         }
                     }
-                    $this->subUnitDetailserv->markSubunitVacant(
-                        $unit['contract_unit_details_id'],
-                        $unit['contract_subunit_details_id'] ?? null
+                    // $this->subUnitDetailserv->markSubunitVacant(
+                    //     $unit['contract_unit_details_id'],
+                    //     $unit['contract_subunit_details_id'] ?? null
+                    // );
+                    $this->subUnitDetailserv->allVacant(
+                        $agreement->contract_id
                     );
                 }
             } else {
@@ -577,5 +581,9 @@ class AgreementService
             // ->rawColumns(['action'])
             ->with(['columns' => $columns])
             ->toJson();
+    }
+    public function getDetails($id)
+    {
+        return $this->agreementRepository->getDetails($id);
     }
 }
