@@ -52,7 +52,7 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="agreementTable" class="table table-striped projects ">
+                                <table id="agreementTable" class="table table-striped projects display nowrap">
                                     <thead>
                                         <tr>
                                             <th style="width: 1%">#</th>
@@ -167,6 +167,7 @@
             let table = $('#agreementTable').DataTable({
                 processing: true,
                 serverSide: true,
+                responsive: true,
 
                 ajax: {
                     url: "{{ route('agreement.list') }}",
@@ -237,7 +238,13 @@
                             encodeURIComponent(searchValue);
                         window.location.href = url;
                     }
-                }]
+                }],
+                // <-- ADD THESE OPTIONS
+                // scrollY: '400px',
+                scrollX: true, // height of the table container
+                scrollCollapse: true,
+                paging: true, // keep pagination
+                fixedHeader: true // optional: fixes header while scrolling
             });
         });
 
