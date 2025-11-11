@@ -100,7 +100,7 @@
                           </td>
                           <td bgcolor="#FFFFFF">
                               <div align="center" class="text-sm text-sm">
-                                  <strong>{{ $agreement->contract->property->plot_no }}</strong>
+                                  <strong>{{ $agreement->contract->property->plot_no ?? ' - ' }}</strong>
                               </div>
                           </td>
                           <td>
@@ -153,7 +153,7 @@
                           <td bgcolor="#FFFFFF" colspan="2" width="30.9%">
                               <div align="center" class="text-sm text-sm">
                                   {{-- <strong>{{ $agreement->tenant->tenant_mobile }}</strong> --}}
-                                  <strong>{{ $contact_number }}</strong>
+                                  <strong>{{ $contact_number ?? ' - ' }}</strong>
 
                               </div>
                           </td>
@@ -169,7 +169,7 @@
                                   {{-- <strong>
                                 {{ $agreement->tenant->tenant_email }}</strong> --}}
                                   <strong>
-                                      {{ $email }}</strong>
+                                      {{ $email ?? ' - ' }}</strong>
                               </div>
                           </td>
                       </tr>
@@ -198,7 +198,7 @@
                                   <strong>
                                       @foreach ($agreement->agreement_documents as $document)
                                           @if ($document->document_type == 3)
-                                              {{ $document->document_number }}
+                                              {{ $document->document_number ?? ' - ' }}
                                           @endif
                                       @endforeach
                                   </strong>
