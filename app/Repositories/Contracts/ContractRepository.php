@@ -174,6 +174,20 @@ class ContractRepository
             ->where('is_agreement_added', 0)
             ->get();
     }
+    public function fullContracts()
+    {
+        return Contract::with([
+            'contract_unit.contractUnitDetails.contractSubunitDetails',
+            'contract_detail',
+            'contract_payment_receivables',
+            'contract_rentals'
+        ])
+            ->withCount('contract_payment_receivables')
+            ->withSum('contract_payment_receivables', 'receivable_amount')
+            ->where('contract_status', 2)
+            // ->where('is_agreement_added', 0)
+            ->get();
+    }
 
     public function getRenewalQuery(array $filters = []): Builder
     {

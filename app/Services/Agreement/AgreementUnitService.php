@@ -26,7 +26,9 @@ class AgreementUnitService
     ) {}
     public function create($data)
     {
+        // dd($data);
         $this->validate($data);
+        // dd("test");
         return  $this->agreementUnitRepository->create($data);
     }
     private function validate(array $data, $id = null)
@@ -45,5 +47,17 @@ class AgreementUnitService
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
+    }
+    public function update(array $data, $user_id = null)
+    {
+        // dd($data);
+        $id = $data['id'];
+        $this->validate($data, $id);
+        $data['updated_by'] = $user_id ? $user_id : auth()->user()->id;
+        return $this->agreementUnitRepository->update($id, $data);
+    }
+    public function getById($id)
+    {
+        return $this->agreementUnitRepository->find($id);
     }
 }

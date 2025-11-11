@@ -16,6 +16,17 @@ class AgreementUnitRepository
 
     public function create(array $data)
     {
+        // dd($data);
         return AgreementUnit::create($data);
+    }
+    public function update($id, array $data)
+    {
+        $unit = $this->find($id);
+        $unit->update($data);
+        return $unit;
+    }
+    public function find($id)
+    {
+        return AgreementUnit::findOrFail($id);
     }
 }

@@ -93,6 +93,32 @@
             }
         });
 
+        // ✅ Custom conditional validation for documents
+        $(stepContainer).find('.form-row').each(function() {
+            const firstField = $(this).find('input[name*="[document_number]"]');
+            const secondField = $(this).find('input[name*="[document_path]"]');
+            const hiddenIdField = $(this).find('input[name*="[id]"]')
+
+            const firstVal = firstField.val().trim();
+            const secondVal = secondField.val().trim();
+            const hasExistingFile = hiddenIdField.length > 0;
+
+            // Reset validation first
+            firstField.removeClass('is-invalid').addClass('is-valid');
+            secondField.removeClass('is-invalid').addClass('is-valid');
+
+            // Validation logic
+            if (firstVal && !secondVal && !hasExistingFile) {
+                // Number filled but no file (and no existing one)
+                secondField.addClass('is-invalid').removeClass('is-valid');
+                isValid = false;
+            } else if (!firstVal && (secondVal || hasExistingFile)) {
+                // File present (new or existing), but number missing
+                firstField.addClass('is-invalid').removeClass('is-valid');
+                isValid = false;
+            }
+        });
+
         return isValid;
     }
 </script>

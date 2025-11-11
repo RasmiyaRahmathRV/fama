@@ -12,6 +12,7 @@ use App\Repositories\Agreement\AgreementUnitRepository;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -99,6 +100,75 @@ class AgreementDocumentService
         if (isset($flagMap[$type])) {
             $agreement->{$flagMap[$type]} = 1;
             $agreement->save();
+        }
+    }
+    public function update($agreement, array $documents, $updatedBy)
+    {
+        // dd($documents);
+        if (empty($documents)) {
+            return;
+        }
+
+        // // Fetch existing document IDs from the form, if present
+        // $existingIds = array_filter(array_column($documents, 'id') ?? []);
+
+        // // Delete documents that were removed in the form
+        // $agreement->documents()
+        //     ->whereNotIn('id', $existingIds)
+        //     ->get()
+        //     ->each(function ($doc) {
+        //         Storage::disk('public')->delete($doc->original_document_path);
+        //         $doc->delete();
+        //     });
+
+        foreach ($documents as $doc) {
+            // If document is existing, update it
+            if (!empty($doc['id'])) {
+                $existingDoc = $agreement->agreement_documents()->find($doc['id']);
+                // dd($existingDoc);
+                if ($existingDoc) {
+                    $existingDoc->document_number = $doc['document_number'] ?? $existingDoc->document_number;
+
+                    if (!empty($doc['document_path']) && $doc['document_path'] instanceof UploadedFile) {
+                        // Delete old file
+                        Storage::disk('public')->delete($existingDoc->original_document_path);
+
+                        // Store new file
+                        $path = $doc['document_path']->store('agreements/documents', 'public');
+                        $existingDoc->original_document_path = $path;
+                        $existingDoc->original_document_name = $doc['document_path']->getClientOriginalName();
+                    }
+
+                    $existingDoc->save();
+                    $this->updateAgreementFlags($agreement, $existingDoc->document_type);
+                }
+                continue;
+            }
+
+            // If document is new, create it
+            if (
+                empty($doc['document_number']) ||
+                empty($doc['document_path']) ||
+                !($doc['document_path'] instanceof UploadedFile)
+            ) {
+                continue;
+            }
+
+            // Store file
+            $path = $doc['document_path']->store('agreements/documents', 'public');
+
+            $doc_data = [
+                'agreement_id' => $agreement->id,
+                'document_type' => $doc['document_type'] ?? null,
+                'document_number' => $doc['document_number'] ?? null,
+                'original_document_path' => $path,
+                'original_document_name' => $doc['document_path']->getClientOriginalName(),
+                'updated_by' => $updatedBy,
+                'added_by' => $updatedBy
+            ];
+
+            $createdDoc = $this->agreementDocRepository->create($doc_data);
+            $this->updateAgreementFlags($agreement, $createdDoc->document_type);
         }
     }
 }

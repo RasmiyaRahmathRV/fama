@@ -17,4 +17,16 @@ class AgreementTenantRepository
     {
         return AgreementTenant::create($data);
     }
+    public function update($id, array $data)
+    {
+        $tenant = $this->find($id);
+        // dd($tenant);
+        $tenant->update($data);
+        return $tenant;
+    }
+    public function find($id)
+    {
+        // dd($id);
+        return AgreementTenant::findOrFail($id);
+    }
 }

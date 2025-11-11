@@ -1,9 +1,7 @@
 <script>
     $('.agreementFormSubmit').click(function(e) {
         e.preventDefault();
-        // $('#company_id').prop('disabled', false);
         const contractForm = $(this);
-
         const stepIndex = window.stepper._currentIndex;
         if (!validateStep(stepIndex)) {
             Swal.fire({
@@ -17,42 +15,38 @@
             });
             return;
         }
-
-
+        const agreementId = $('input[name="agreement_id"]').val();
+        let url = "{{ route('agreement.store') }}";
+        let method = 'POST';
         var form = document.getElementById('agreementForm');
         var fdata = new FormData(form);
+        // Update
+        if (agreementId) {
+            url = "{{ url('agreement') }}/" + agreementId;
+            method = 'POST';
+            fdata.append('_method', 'PUT');
+        }
+
+        // Add CSRF
+        fdata.append('_token', $('meta[name="csrf-token"]').attr('content'));
 
         $.ajax({
-            url: "{{ route('agreement.store') }}",
-            type: 'POST',
+            url: url,
+            type: method,
             data: fdata,
             processData: false,
             contentType: false,
             success: function(response) {
                 toastr.success(response.message);
-                location.reload();
-                // Swal.fire({
-                //     title: 'Success!',
-                //     text: 'Form submitted successfully',
-                //     icon: 'success',
-                //     confirmButtonText: 'OK'
-                // }).then(() => {
-                //     location.reload();
-                // });
+                window.location = "{{ route('agreement.index') }}"
             },
             error: function(xhr) {
-                // console.log('Error:', xhr.responseText);
-                // toastr.error(errors.responseJSON.message);
                 const response = xhr.responseJSON;
-
-                // Laravel validation errors (422)
                 if (xhr.status === 422 && response?.errors) {
                     $.each(response.errors, function(key, messages) {
                         toastr.error(messages[0]);
                     });
-                }
-                // Custom JSON error messages
-                else if (response.message) {
+                } else if (response.message) {
                     toastr.error(response.message);
                 }
             }
