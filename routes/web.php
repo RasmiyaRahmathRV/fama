@@ -119,7 +119,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('agreement-list', [AgreementController::class, 'getAgreements'])->name('agreement.list');
     Route::get('export-agreement', [AgreementController::class, 'exportAgreement'])->name('agreement.export');
-    Route::get('print-view', [AgreementController::class, 'print_view'])->name('agreement.printview');
+    Route::get('/print-view/{id}', [AgreementController::class, 'print_view'])->name('agreement.printview');
+    // routes/web.php
+    Route::get('/agreement/{id}/print', [AgreementController::class, 'print'])->name('agreement.print');
+
 
 
 

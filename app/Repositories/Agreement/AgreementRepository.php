@@ -120,4 +120,20 @@ class AgreementRepository
             ->pluck('id')
             ->toArray();
     }
+    public function getDetails($id)
+    {
+
+        return Agreement::with([
+            'contract' => function ($query) {
+                $query->with(['vendor', 'area', 'property', 'locality', 'contract_rentals']);
+            },
+            'company',
+            'tenant.nationality',
+            'agreement_payment.agreementPaymentDetails',
+            'agreement_payment.installment',
+            'agreement_documents',
+            'agreement_units.contractSubunitDetail',
+            'agreement_units.contractUnitDetail.unit_type'
+        ])->findOrFail($id);
+    }
 }

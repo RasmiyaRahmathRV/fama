@@ -17,6 +17,7 @@ use App\Services\Contracts\ContractService;
 use App\Services\InstallmentService;
 use App\Services\NationalityService;
 use App\Services\PaymentModeService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use SebastianBergmann\CodeCoverage\Report\Xml\Unit;
@@ -144,8 +145,27 @@ class AgreementController extends Controller
         }
     }
 
-    public function print_view(Agreement $agreement)
+    public function print_view($id)
     {
-        return view("admin.projects.agreement.printview-agreement");
+        $agreement = $this->agreementService->getDetails($id);
+        $page = 1;
+        // dd($agreement);
+
+        // View with admin layout (for on-screen preview)
+        return view('admin.projects.agreement.printview-agreement', compact('agreement', 'page'));
+    }
+
+
+    public function print($id)
+    {
+        // dd($id);
+        $agreement = $this->agreementService->getDetails($id);
+        $page = 0;
+
+        // Generate PDF (clean, print-friendly)
+        $pdf = Pdf::loadView('admin.projects.agreement.pdf-agreement', compact('agreement', 'page'))
+            ->setPaper([0, 0, 842, 1350]);
+
+        return $pdf->stream('agreement-' . $agreement->id . '.pdf');
     }
 }

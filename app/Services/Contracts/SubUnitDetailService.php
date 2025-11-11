@@ -2,6 +2,7 @@
 
 namespace App\Services\Contracts;
 
+use App\Models\Contract;
 use App\Models\ContractSubunitDetail;
 use App\Models\ContractUnitDetail;
 use App\Repositories\Contracts\SubUnitDetailRepository;
@@ -239,6 +240,7 @@ class SubUnitDetailService
 
     public function markSubunitVacant($unitId, $subunitId = null)
     {
+
         // Step 1: Mark subunit vacant if exists
         if ($subunitId) {
             $subunit = ContractSubunitDetail::find($subunitId);
@@ -273,5 +275,24 @@ class SubUnitDetailService
                 // }
             }
         }
+    }
+    public function allVacant($contractId)
+    {
+        $units = ContractUnitDetail::where('contract_id', $contractId)->get();
+
+        foreach ($units as $unit) {
+            $unit->contractSubUnitDetails()->update(['is_vacant' => 1]);
+
+            $unit->is_vacant = 1;
+            $unit->save();
+        }
+
+        // $allUnitsVacant = ContractUnitDetail::where('contract_id', $contractId)
+        //     ->where('is_vacant', 0)
+        //     ->doesntExist();
+
+        // if ($allUnitsVacant) {
+        //     Contract::where('id', $contractId)->update(['is_vacant' => 1]);
+        // }
     }
 }
