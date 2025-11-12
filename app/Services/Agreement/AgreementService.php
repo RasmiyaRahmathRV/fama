@@ -123,8 +123,11 @@ class AgreementService
                 // Multiple unit insert
                 foreach ($data['unit_detail'] as $unit) {
                     // $rent_annum_agreement = $unit['rent_per_month'] * $count;
-                    $rent_annum_agreement = $rent_annum;
+                    // $rent_annum_agreement = $rent_annum;
                     // dd($rent_annum_agreement);
+                    // dd($unit);
+                    $contractUnitDetail = ContractUnitDetail::find($unit['contract_unit_details_id']);
+                    $rent_annum_agreement = $contractUnitDetail->rent_per_unit_per_annum;
 
                     $unitdata = [
                         'agreement_id' => $agreement->id,
@@ -335,7 +338,9 @@ class AgreementService
                 unset($unit);
                 foreach ($data['unit_detail'] as $unit) {
                     // $rent_annum_agreement = $unit['rent_per_month'] * $count;
-                    $rent_annum_agreement = $rent_annum;
+                    // $rent_annum_agreement = $rent_annum;
+                    $contractUnitDetail = ContractUnitDetail::find($unit['contract_unit_details_id']);
+                    $rent_annum_agreement = $contractUnitDetail->rent_per_unit_per_annum;
                     $unitData = [
                         'agreement_id' => $agreement->id,
                         'updated_by' => $data['updated_by'],
@@ -556,8 +561,9 @@ class AgreementService
             ->addColumn('action', function ($row) {
                 $editUrl = route('agreement.edit', $row->id);
                 $printUrl = route('agreement.printview', $row->id);
+                $viewUrl = route('agreement.show', $row->id);
                 $action = '
-                <a href="view_installments.php" class="btn btn-primary btn-sm"
+                <a href="' . $viewUrl . '" class="btn btn-primary btn-sm"
                     title="View Installments"><i class="fas fa-eye"></i></a>
                 <a href="agreement_documents.php" class="btn btn-warning btn-sm"
                     title="documents"><i class="fas fa-file"></i></a>
