@@ -4,8 +4,9 @@
       if ($contractType == 2) {
           $contact_person = $agreement->contract->contact_person;
           $contact_number = $agreement->contract->contact_number;
-          $email = 'Adil@faateh.ae';
-          $tenant_name = 'FAATEH REAL ESTATE';
+          //   $email = 'Adil@faateh.ae';
+          $email = $agreement->tenant->tenant_email;
+          $tenant_name = $agreement->tenant->tenant_name;
       } else {
           $contact_person = $agreement->tenant->tenant_name;
           $contact_number = $agreement->tenant->tenant_mobile;
@@ -269,7 +270,7 @@
                           @endphp
                           <td bgcolor="#FFFFFF">
                               <div class="text-sm text-sm ml-1">
-                                  <strong>{{ $rpa }}</strong>
+                                  <strong>{{ number_format($rpa, 2) }}</strong>
                               </div>
                           </td>
                           <td bgcolor="#FFFFFF">
@@ -299,7 +300,7 @@
                           </td>
                           <td bgcolor="#FFFFFF" colspan="3" width="41.9%">
                               <div class="text-sm text-sm ml-1">
-                                  <strong>{{ $rpa }}</strong>
+                                  <strong>{{ number_format($rpa, 2) }}</strong>
                               </div>
                           </td>
                           <td bgcolor="#FFFFFF">
@@ -558,7 +559,7 @@
                           </td>
                           <td bgcolor="#FFFFFF" colspan="3" width="41.9%">
                               <div class="text-sm text-sm ml-1">
-                                  <strong>{{ $rev }}</strong>
+                                  <strong>{{ number_format($rev, 2) }}</strong>
                               </div>
                           </td>
                           <td bgcolor="#FFFFFF" colspan="2">
@@ -613,19 +614,19 @@
                               <td width="11%" bgcolor="#FFFFFF">
                                   <div align="center" class="text-sm text-sm">
                                       <strong> <span
-                                              class="text-sm text-sm style14"></span>{{ $detail->payment_amount }}</strong>
+                                              class="text-sm text-sm style14"></span>{{ number_format($detail->payment_amount, 2) }}</strong>
                                   </div>
                               </td>
                               <td width="15%" bgcolor="#FFFFFF">
                                   <div align="center" class="text-sm text-sm"><strong>Bank Transfer
-                                          #{{ $index + 1 }}:
+                                          #{{ $loop->iteration }}:
                                       </strong>
                                   </div>
                               </td>
                               <td width="15%" bgcolor="#FFFFFF">
                                   <div align="center" class="text-sm text-sm"><strong>| Rent
-                                          {{ $index + 1 }}/{{ $agreement->agreement_payment->installment->installment_name }}
-                                          - {{ $detail->payment_amount }}</strong>
+                                          {{ $loop->iteration }}/{{ $agreement->agreement_payment->installment->installment_name }}
+                                          - {{ number_format($detail->payment_amount, 2) }}</strong>
                                   </div>
                               </td>
                           </tr>

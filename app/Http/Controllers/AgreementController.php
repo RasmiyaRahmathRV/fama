@@ -76,10 +76,10 @@ class AgreementController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
         }
     }
-    public function show(Agreement $agreemant)
+    public function show(Agreement $agreement)
     {
-        $contract = $this->agreementService->getById($agreemant->id);
-        return view('admin.projects.contract.contract-view', compact('contract'));
+        $agreement = $this->agreementService->getDetails($agreement->id);
+        return view('admin.projects.agreement.agreement-view', compact('agreement'));
     }
     public function getAgreements(Request $request)
     {
@@ -164,7 +164,7 @@ class AgreementController extends Controller
 
         // Generate PDF (clean, print-friendly)
         $pdf = Pdf::loadView('admin.projects.agreement.pdf-agreement', compact('agreement', 'page'))
-            ->setPaper([0, 0, 800, 1350]);
+            ->setPaper([0, 0, 800, 1400]);
 
         return $pdf->stream('agreement-' . $agreement->id . '.pdf');
     }
