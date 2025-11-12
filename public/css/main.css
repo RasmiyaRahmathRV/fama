@@ -94,6 +94,8 @@ select.is-invalid {
     max-height: 72px;
      border: 1px solid #ddd;
      border-radius: 4px;
+     width: 70px;
+     height: auto;
 }
 
 

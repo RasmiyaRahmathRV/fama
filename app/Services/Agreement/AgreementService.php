@@ -562,10 +562,12 @@ class AgreementService
                 $editUrl = route('agreement.edit', $row->id);
                 $printUrl = route('agreement.printview', $row->id);
                 $viewUrl = route('agreement.show', $row->id);
+                $docUrl = route('agreement.documents', $row->id);
+
                 $action = '
                 <a href="' . $viewUrl . '" class="btn btn-primary btn-sm"
                     title="View Installments"><i class="fas fa-eye"></i></a>
-                <a href="agreement_documents.php" class="btn btn-warning btn-sm"
+                <a href="' . $docUrl . '" class="btn btn-warning btn-sm"
                     title="documents"><i class="fas fa-file"></i></a>
                 <a href="' . $printUrl . '" class="btn btn-primary btn-sm"
                     title="Agreement"><i class="fas fa-handshake"></i></a>

@@ -10,6 +10,7 @@ use App\Models\Installment;
 use App\Models\PaymentMode;
 use App\Models\TenantIdentity;
 use App\Models\UnitType;
+use App\Services\Agreement\AgreementDocumentService;
 use App\Services\Agreement\AgreementService;
 use App\Services\BankService;
 use App\Services\CompanyService;
@@ -32,7 +33,8 @@ class AgreementController extends Controller
         protected NationalityService $nationalityService,
         protected PaymentModeService $paymentModeService,
         protected BankService $bankService,
-        protected AgreementService $agreementService
+        protected AgreementService $agreementService,
+        protected AgreementDocumentService $agreementDocumentService
     ) {}
     public function index()
     {
@@ -167,5 +169,12 @@ class AgreementController extends Controller
             ->setPaper([0, 0, 830, 1400]);
 
         return $pdf->stream('agreement-' . $agreement->id . '.pdf');
+    }
+    public function agreementDocuments($id)
+    {
+        $documents = $this->agreementDocumentService->getDocuments($id);
+        $tenantIdentities = TenantIdentity::get();
+        // dd($documents);
+        return view('admin.projects.agreement.agreement_documents', compact('documents', 'tenantIdentities'));
     }
 }
