@@ -340,7 +340,9 @@
                             <!-- this row will not appear when printing -->
                             <div class="row no-print">
                                 <div class="col-12 d-xl-flex justify-content-between">
-                                    <a href="{{ route('contract.index') }}" class="btn btn-default">Back</a>
+                                    {{-- <a href="{{ route('contract.index') }}" class="btn btn-default">Back</a> --}}
+                                    <a href="{{ route('contract.index') }}" class="btn btn-info"><i
+                                            class="fas mr-2 fa-arrow-left"></i>Back</a>
 
                                     <div class="mt-2 mt-xl-0">
                                         <a class="btn btn-secondary"

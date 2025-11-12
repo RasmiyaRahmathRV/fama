@@ -164,7 +164,7 @@ class AgreementController extends Controller
 
         // Generate PDF (clean, print-friendly)
         $pdf = Pdf::loadView('admin.projects.agreement.pdf-agreement', compact('agreement', 'page'))
-            ->setPaper([0, 0, 800, 1400]);
+            ->setPaper([0, 0, 830, 1400]);
 
         return $pdf->stream('agreement-' . $agreement->id . '.pdf');
     }

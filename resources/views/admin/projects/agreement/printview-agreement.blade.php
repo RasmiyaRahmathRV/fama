@@ -26,7 +26,7 @@
                 {{-- {{ dd($agreement) }} --}}
 
                 <div class="mt-5" align="center">
-                    <a href="agreement.php" class="btn btn-default">back</a>
+                    <a href="{{ route('agreement.index') }}" class="btn btn-default">back</a>
                     <a href="{{ route('agreement.print', $agreement->id) }}" rel="noopener" target="_blank"
                         class="btn btn-info">Print</a>
                 </div>
