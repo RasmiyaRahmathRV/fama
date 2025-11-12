@@ -26,6 +26,9 @@
 
                         <!-- Main content -->
                         <div class="invoice p-3 mb-3">
+                            <div class="text-uppercase text-bold text-info">
+                                {{ $contract->contract_type->contract_type }} Project
+                            </div>
                             <!-- title row -->
                             <!-- info row -->
                             <div class="row invoice-info p-2">
@@ -124,7 +127,10 @@
                                                     <td>{{ $details->payment_amount }}</td>
                                                     <td>{{ strtoupper($contract->contract_payments->beneficiary) }}</td>
                                                     <td>{{ $details->paid_date ?? ' - ' }}</td>
-                                                    <td>{!! 'RENT 1/' . $contract->contract_payments->installment->installment_name !!}</td>
+                                                    <td>
+                                                        {{ 'RENT ' . $loop->iteration . '/' . $contract->contract_payments->installment->installment_name }}
+                                                    </td>
+
 
                                                 </tr>
                                             @endforeach
