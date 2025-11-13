@@ -177,4 +177,8 @@ class AgreementController extends Controller
         // dd($documents);
         return view('admin.projects.agreement.agreement_documents', compact('documents', 'tenantIdentities'));
     }
+    public function documentUpload(Request $request, $id)
+    {
+        dd($request->all());
+    }
 }

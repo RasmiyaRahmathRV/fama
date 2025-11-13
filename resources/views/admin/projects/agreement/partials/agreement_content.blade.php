@@ -15,6 +15,7 @@
           //   $total_receivable = $agreement->$contact->
       }
   @endphp
+  {{-- {{ dd($agreement->agreement_units) }} --}}
   @foreach ($agreement->agreement_units as $unit)
       <table width="1025" border="2" align="center" class="mt-5" cellpadding="0" cellspacing="0"
           style="box-shadow:-4px 4px 20px #666" ;>
@@ -84,7 +85,7 @@
                           </td>
                           <td width="15%">
                               <div align="center" class="text-sm text-sm">
-                                  <strong>{{ $agreement->agreement_units->first()?->contractUnitDetail->unit_type->unit_type }}</strong>
+                                  <strong>{{ $unit->contractUnitDetail->unit_type->unit_type }}</strong>
                               </div>
                           </td>
                       </tr>
@@ -231,7 +232,7 @@
                           <td>
                               <div align="center" class="text-sm text-sm">
                                   <strong>
-                                      {{ $agreement->duration_in_months }} M
+                                      {{ $agreement->duration_in_months }} M-0D
                                   </strong>
                               </div>
                           </td>
