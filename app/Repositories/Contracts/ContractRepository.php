@@ -206,8 +206,12 @@ class ContractRepository
             ->join('vendors', 'vendors.id', '=', 'contracts.vendor_id')
             ->join('companies', 'companies.id', '=', 'contracts.company_id')
             ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id')
-            ->where('contracts.contract_renewal_status', '!=', '1')
-            ->where('contracts.renew_reject_status', '==', '0')
+            ->where('contract', function ($q) {
+                $q->where('contract_renewal_status', '!=', '1')
+                    ->where('renew_reject_status', '==', '0')
+                    ->where('contract_status', '==', '2');
+            })
+
             ->whereHas('contract_detail', function ($q) use ($twoMonthsLater) {
                 $q->where('end_date', '<=', $twoMonthsLater);
             });
