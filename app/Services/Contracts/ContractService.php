@@ -115,7 +115,7 @@ class ContractService
             $this->detailServ->create($contract->id, $data['detail'] ?? []);
 
             $unitData = $this->unitServ->create($contract->id, $data['unit'] ?? [], $data['unit_detail'] ?? []);
-
+            // dd($unitData);
             $this->unitDetServ->create($contract, $data['unit_detail'] ?? [], $data['rentals']['receivable_installments'], $unitData->id);
             // dd($contract);
             $this->rentalServ->create($contract->id, $data['rentals'] ?? []);

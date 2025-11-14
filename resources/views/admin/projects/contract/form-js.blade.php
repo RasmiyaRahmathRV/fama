@@ -463,7 +463,7 @@
 
             container.appendChild(newBlock);
             attachEvents(newBlock, i, 'addmore');
-            console.log('Added unit block: ' + i);
+            // console.log('Added unit block: ' + i);
 
             $(container).find('select.select2').select2({
                 placeholder: 'Select an option',
@@ -761,7 +761,7 @@
         var durationDays = parseInt($('#duration_days').val()) || 0;
 
         const startDate = parseDateCustom(startDateVal);
-        console.log(startDate);
+        // console.log(startDate);
         if (!startDate || isNaN(startDate.getTime())) {
             $('.enddate').val('');
             return;
@@ -882,20 +882,15 @@
 
 <!-- otc cost calculations -->
 <script>
-    function calculateOtc() {
-        // console.log('otc');
+    function calculateSubAccommodations() {
         let totalPartition = 0;
         let totalBedSpace = 0;
+        let totalRoom = 0;
         let totalPartitionFb = 0;
         let totalBedSpaceFb = 0;
         let totSubValue = 0;
         let cod = 0;
-        let totRoom = 0;
-
-        if ({{ $edit }}) {
-            return;
-        }
-
+        let totFlat = 0;
         if ($('#contract_type').val() == '1') {
             // Count filled inputs
             const countOfHouses = $('.unit_no').filter((_, el) => $(el).val()).length;
@@ -911,6 +906,7 @@
             if (countOfHouses > 0) {
                 totalPartition = sumValues('total_partitions');
                 totalBedSpace = sumValues('total_bedspaces');
+                totalRoom = sumValues('total_room');
             }
 
             if (totalUnitCount > 0) {
@@ -921,24 +917,49 @@
 
             if (totalPartition > 0) cod = totSubValue = totalPartition;
             if (totalBedSpace > 0) totSubValue += totalBedSpace;
+            if (totalRoom > 0) totSubValue += totalRoom;
 
             if (totSubValue === 0) totSubValue = totalUnitCount || countOfHouses;
 
-            totRoom = totalUnitCount || countOfHouses;
+            totFlat = totalUnitCount || countOfHouses;
 
             if (totalPartitionFb > 0) cod = totSubValue = totalPartitionFb;
             if (totalBedSpaceFb > 0) totSubValue += totalBedSpaceFb;
         }
 
+        return {
+            totalPartition,
+            totalBedSpace,
+            totalRoom,
+            totalPartitionFb,
+            totalBedSpaceFb,
+            totSubValue,
+            cod,
+            totFlat,
+        };
+    }
+
+
+    function calculateOtc() {
+        // console.log('otc');
+
+
+        if ({{ $edit }}) {
+            return;
+        }
+
+        let subvalues = calculateSubAccommodations();
 
         // Set output values
-        $('#cost_of_development').val(1200 * cod);
-        $('#cost_of_beds').val(240 * totSubValue);
-        $('#cost_of_mattress').val(55 * totSubValue);
-        $('#cost_of_cabinets').val(100 * totSubValue);
-        $('#appliances').val(2500 * totRoom);
+        $('#cost_of_development').val(1200 * subvalues.cod);
+        $('#cost_of_beds').val(240 * subvalues.totSubValue);
+        $('#cost_of_mattress').val(55 * subvalues.totSubValue);
+        $('#cost_of_cabinets').val(100 * subvalues.totSubValue);
+        $('#cost_of_cabinets').val(100 * subvalues.totSubValue);
+        $('#appliances').val(2500 * subvalues.totFlat);
         $('#decoration').val(0);
-        $('#dewa_deposit').val(2130 * totRoom);
+        $('#cost_of_cabinets').val(100 * subvalues.totSubValue);
+        $('#dewa_deposit').val(2130 * subvalues.totFlat);
         $('#ejari').val(0);
 
         CalculatePayables();
@@ -1007,7 +1028,7 @@
                                                     .querySelector(
                                                         'input[name="payment_detail[id][]"]'
                                                     )).val();
-                                                console.log(detailId);
+                                                // console.log(detailId);
                                                 // var fdataUnit = new FormData();
 
                                                 // fdataUnit.append('_token', $('meta[name="csrf-token"]')
@@ -1261,7 +1282,7 @@
 
                     // Append first
                     containerPayment.appendChild(paymentBlock);
-                    console.log('type change inside payment addnmore');
+                    // console.log('type change inside payment addnmore');
                     rentPerUnitFamaFaateh();
 
                     $(containerPayment).find('select.select2').select2({
@@ -1300,7 +1321,7 @@
                 }
 
                 if ($('#contract_type').val() == '2') {
-                    console.log('type change inside installment change');
+                    // console.log('type change inside installment change');
                     rentPerUnitFamaFaateh();
                 }
 
@@ -1465,15 +1486,15 @@
     // });
 
     $('#contract_type').change(function() {
-        console.log('contract type changed');
+        // console.log('contract type changed');
         calculateOtc();
         var contract_type = $(this).val();
         if (contract_type == '2') {
-            console.log('Faateh contract type');
+            // console.log('Faateh contract type');
             $('#duration_months').val('12');
             $('#btob').prop('checked', true);
             $('#btoc').prop('checked', false);
-            console.log('contract change');
+            // console.log('contract change');
             rentPerUnitFamaFaateh();
             //         $('#client_name').val('Faateh');
             //         $('#client_phone').val('0568856995');
@@ -1520,11 +1541,11 @@
         let paymenttovendor = parseFloat(totRent + totcomm + totdepo).toFixed(2);
         let finalCost = (parseFloat(paymenttovendor) + parseFloat(totcontractfee) + parseFloat(totalotc)).toFixed(2);
         const installment = $('#no_of_installments').find(':selected').text();
-        console.log('installment - ' + installment);
-        console.log('totcomm - ' + totcomm);
-        console.log('totdepo -' + totdepo);
-        console.log('totcontractfee -' + totcontractfee);
-        console.log('totdepo -' + totdepo);
+        // console.log('installment - ' + installment);
+        // console.log('totcomm - ' + totcomm);
+        // console.log('totdepo -' + totdepo);
+        // console.log('totcontractfee -' + totcontractfee);
+        // console.log('totdepo -' + totdepo);
         let initialInv = parseFloat((totRent / parseFloat(installment)) + totcomm + totdepo + totcontractfee + totalotc)
             .toFixed(2);
 
@@ -1554,15 +1575,11 @@
             $('.rentPartition, .rentBedspace, .rentRoom, .rentFlat').hide().find('input, select').val('');
         }
 
-
-        console.log('subunitcheck');
-
         $('.total_rent_receivable').val('0.00');
         $('.no_of_months_final').val('0');
         $('.total_rental').val('0.00');
 
-        let hasMissingPartitionOrBedspace = false;
-        let flatcount = 0;
+
 
         // if ($('.fullBuildCheck:checked').length > 0) {
 
@@ -1599,7 +1616,22 @@
             $('.rentBedspace').show();
         }
 
-        $('.normalBuilding .apdi').each(function() {
+
+        // }
+
+
+        calculateOtc();
+        calculateFlatcount();
+
+    }
+
+
+
+    function calculateFlatcount() {
+        let hasMissingPartitionOrBedspace = false;
+        let flatcount = 0;
+
+        $('.apdi').each(function() {
             // Get current row context
             let unitType = $(this).find('.unit_type').val();
             let partitionChecked = $(this).find('.partcheck').is(':checked');
@@ -1611,11 +1643,11 @@
             if (unitType && !partitionChecked && !bedspaceChecked && !roomChecked) {
                 hasMissingPartitionOrBedspace = true;
                 flatcount++;
-                totalflatcount = flatcount;
-                return false; // break loop early
+                // return false; // break loop early
             }
         });
-        // }
+
+        totalflatcount = flatcount;
 
         if (hasMissingPartitionOrBedspace) {
             $('.rentFlat').show();
@@ -1623,10 +1655,7 @@
             $('.rentFlat').hide();
         }
 
-        calculateOtc();
-
     }
-
 
 
     function calculateRoi() {
@@ -1639,13 +1668,16 @@
             let total_part = totalPartition() * rentPerPartition;
             let total_bs = totalBedspace() * rentPerBedspace;
             let total_room = totalRoom() * rentPerRoom;
+            calculateFlatcount();
+            $('#subunit_count_per_contract').val(calculateSubAccommodations().totSubValue);
+
             let total_flats = totalflatcount * rentPerFlat;
 
-            let total_rent_rec = total_part + total_bs + total_room + total_flats;
+            let total_rent_rec = customRound(total_part + total_bs + total_room + total_flats);
             let duration = $('#duration_months').val();
 
             // if($('#'))
-            let total_rental = total_rent_rec * duration;
+            let total_rental = customRound(total_rent_rec * duration);
 
 
             let expProfit = total_rental - parseFloat($('.final_cost').val());
@@ -1727,7 +1759,7 @@
         let unit_no = $('.unit_noFF').map(function() {
             return $(this).val();
         }).get();
-        console.log(unit_no);
+        // console.log(unit_no);
 
         const containerPayment = document.getElementsByClassName('rentPerUnitFF')[0];
         const prevffBlocks = containerPayment.querySelectorAll('.rentPerUnitFFaddmore');
@@ -1869,7 +1901,7 @@
 
 
                     $('#unit_profit_perc' + i).on('input change', function() {
-                        console.log('unit profit change inside');
+                        // console.log('unit profit change inside');
                         calculateRevenueUnit($(this), unit_payable);
                         valueTorentRec('change');
                         finalRecCal();
@@ -1909,7 +1941,7 @@
 
     $('.unit_profit_perc').on('input change', function() {
         profitHiddenValues();
-        console.log('unit profit perc');
+        // console.log('unit profit perc');
 
         let unit_payable = $(this).parent().siblings().find('input[name="unit_detail[unit_amount_payable][]"]')
             .val();
@@ -1923,9 +1955,9 @@
     function calculateRevenueUnit(ele, unit_payable) {
         if (!$(ele).val()) return;
         let profit = (unit_payable * ($(ele).val() / 100)).toFixed(2);
-        console.log($(ele).val());
-        console.log('unit_payable' + unit_payable);
-        console.log('profit' + profit);
+        // console.log($(ele).val());
+        // console.log('unit_payable' + unit_payable);
+        // console.log('profit' + profit);
 
 
         $(ele).parent().siblings().find('input[name="unit_detail[unit_profit][]"]')
@@ -2192,12 +2224,11 @@
     }
 
     function calculateRoiFF() {
-        console.log('roiff');
         let totalrev = 0;
         $('.unit_revenue').each(function() {
             totalrev += parseFloat($(this).val()) || 0;
         });
-
+        // console.log(totalrev);
         let totalprof = 0;
         $('.unit_profit').each(function() {
             totalprof += parseFloat($(this).val()) || 0;
@@ -2208,6 +2239,7 @@
             var count = $('.unit_profit').length;
 
             let tot_rent_per_month = totalrev / 12;
+            // console.log(tot_rent_per_month);
             $('.rentFlat').show();
             $('#rent_per_flat').val(tot_rent_per_month.toFixed(2)).attr('readonly', 'true');
 
@@ -2236,7 +2268,7 @@
         let noOfInstallments = parseInt($('#rent_installments').find(':selected').text()) || 0;
 
         let interval = 1;
-        console.log(noOfInstallments);
+        // console.log(noOfInstallments);
 
         const startDate = parseDateCustom(startDateVal);
 
@@ -2342,7 +2374,7 @@
     }
 
     if (isEdit || isRenew) {
-        console.log('Editing mode');
+        // console.log('Editing mode');
         //     $('#contract_type').trigger('change');
         CalculatePayables();
 
@@ -2358,7 +2390,7 @@
 
         let contract_type = '{{ $contract ? $contract->contract_type_id : '' }}';
         if (contract_type == '2') {
-            console.log('Faateh contract type on edit');
+            // console.log('Faateh contract type on edit');
             calculateRoiFF();
         }
     }

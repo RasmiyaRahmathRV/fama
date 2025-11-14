@@ -131,18 +131,6 @@ class Contract extends Model
         return $this->hasMany(Contract::class, 'parent_contract_id', 'id');
     }
 
-    public function getAllRenewals()
-    {
-        $renewals = collect();
-
-        foreach ($this->children as $child) {
-            $renewals->push($child);
-            $renewals = $renewals->merge($child->getAllRenewals());
-        }
-
-        return $renewals;
-    }
-
     public function user()
     {
         return $this->belongsTo(

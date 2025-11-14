@@ -490,12 +490,16 @@ namespace App\Models{
  * @property int|null $renewal_count
  * @property string|null $renewal_date
  * @property int|null $renewed_by
+ * @property int $renew_reject_status 1-rejected
+ * @property string|null $renew_reject_reason
+ * @property int|null $renew_rejected_by
  * @property int $added_by
  * @property int|null $updated_by
  * @property int|null $approved_by
  * @property int|null $deleted_by
  * @property int|null $scope_generated_by
  * @property string|null $rejected_reason
+ * @property int|null $contract_rejected_by
  * @property int|null $is_agreement_added 0 - not added, 1 - added
  * @property int $has_agreement
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -535,6 +539,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereCompanyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereContactNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereContactPerson($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereContractRejectedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereContractRenewalStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereContractStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereContractTypeId($value)
@@ -554,6 +559,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereProjectNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract wherePropertyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRejectedReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRenewRejectReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRenewRejectStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRenewRejectedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRenewalCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRenewalDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRenewedBy($value)
@@ -657,14 +665,14 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $contract_id
- * @property string $cost_of_development
- * @property string $cost_of_bed
- * @property string $cost_of_matress
- * @property string $appliances
- * @property string $decoration
- * @property string $dewa_deposit
- * @property string $ejari
- * @property string $cost_of_cabinets
+ * @property string|null $cost_of_development
+ * @property string|null $cost_of_bed
+ * @property string|null $cost_of_matress
+ * @property string|null $appliances
+ * @property string|null $decoration
+ * @property string|null $dewa_deposit
+ * @property string|null $ejari
+ * @property string|null $cost_of_cabinets
  * @property string $added_by
  * @property string|null $updated_by
  * @property string|null $deleted_by
@@ -849,7 +857,7 @@ namespace App\Models{
  * @property string $expected_profit
  * @property string $profit_percentage
  * @property string|null $receivable_start_date
- * @property int|null $receivable_installments
+ * @property int $receivable_installments
  * @property string $total_payment_to_vendor
  * @property string|null $total_otc
  * @property string $final_cost
@@ -905,7 +913,7 @@ namespace App\Models{
  * @property int $contract_unit_id
  * @property int $contract_unit_detail_id
  * @property string $subunit_no
- * @property int $subunit_type 1-partition, 2-bedspace
+ * @property int $subunit_type 1-partition, 2-bedspace, 3-room, 4-full flat
  * @property string $subunit_code proj. no / company code / unit no / subunit no
  * @property int $added_by
  * @property int|null $updated_by
@@ -948,12 +956,14 @@ namespace App\Models{
  * @property string $contract_type
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $shortcode
  * @method static \Illuminate\Database\Eloquent\Builder|ContractType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractType query()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractType whereContractType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractType whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractType whereShortcode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractType whereUpdatedAt($value)
  */
 	class ContractType extends \Eloquent {}
@@ -966,9 +976,11 @@ namespace App\Models{
  * @property int $contract_id
  * @property int $building_type 0-normal, 1-full building
  * @property int $business_type 1-b2b, 2-b2c
+ * @property int $watchman_room
  * @property int $no_of_units
  * @property string|null $unit_numbers
  * @property string|null $unit_type_count
+ * @property int $total_subunit_count_per_contract
  * @property int $added_by
  * @property int|null $updated_by
  * @property int|null $deleted_by
@@ -993,10 +1005,12 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereNoOfUnits($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereTotalSubunitCountPerContract($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereUnitNumbers($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereUnitTypeCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereWatchmanRoom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit withoutTrashed()
  */
@@ -1019,11 +1033,21 @@ namespace App\Models{
  * @property int $property_type_id
  * @property int $partition
  * @property int $bedspace
+ * @property int $room
+ * @property int $maid_room
  * @property int $total_partition
  * @property int $total_bedspace
+ * @property int $total_room
  * @property string|null $rent_per_partition
  * @property string|null $rent_per_bedspace
  * @property string|null $rent_per_room
+ * @property string $rent_per_flat
+ * @property string $rent_per_unit_per_month
+ * @property string $rent_per_unit_per_annum
+ * @property string $total_rent_per_unit_per_month
+ * @property int $subunittype
+ * @property int $subunitcount_per_unit
+ * @property string $subunit_rent_per_unit
  * @property string|null $unit_profit_perc
  * @property int $added_by
  * @property int|null $updated_by
@@ -1037,6 +1061,7 @@ namespace App\Models{
  * @property string|null $unit_amount_payable
  * @property string|null $unit_commission
  * @property string|null $unit_deposit
+ * @property string $unit_rent_per_month
  * @property-read \App\Models\Contract $contract
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractSubunitDetail> $contractSubUnitDetails
  * @property-read int|null $contract_sub_unit_details_count
@@ -1061,13 +1086,23 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereFloorNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereIsVacant($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereMaidRoom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail wherePartition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail wherePropertyTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRentPerBedspace($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRentPerFlat($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRentPerPartition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRentPerRoom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRentPerUnitPerAnnum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRentPerUnitPerMonth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRoom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereSubunitRentPerUnit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereSubunitcountPerUnit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereSubunittype($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalBedspace($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalPartition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalRentPerUnitPerMonth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalRoom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitAmountPayable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitCommission($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitDeposit($value)
@@ -1075,6 +1110,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitProfit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitProfitPerc($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitRentPerAnnum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitRentPerMonth($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitRevenue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitSize($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitSizeUnitId($value)
