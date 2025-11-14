@@ -44,10 +44,12 @@
                             <div class="card-header">
                                 <!-- <h3 class="card-title">Agreement Details</h3> -->
                                 <span class="float-right">
-                                    <a href="{{ route('agreement.create') }}" class="btn btn-info float-right m-1">Add
-                                        Agreement</a>
-                                    <button class="btn btn-secondary float-right m-1" data-toggle="modal"
-                                        data-target="#modal-import">Import</button>
+                                    @can('agreement.add')
+                                        <a href="{{ route('agreement.create') }}" class="btn btn-info float-right m-1">Add
+                                            Agreement</a>
+                                    @endcan
+                                    {{-- <button class="btn btn-secondary float-right m-1" data-toggle="modal"
+                                        data-target="#modal-import">Import</button> --}}
                                 </span>
                             </div>
                             <!-- /.card-header -->

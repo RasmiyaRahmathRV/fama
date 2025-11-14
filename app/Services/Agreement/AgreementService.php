@@ -563,19 +563,31 @@ class AgreementService
                 $printUrl = route('agreement.printview', $row->id);
                 $viewUrl = route('agreement.show', $row->id);
                 $docUrl = route('agreement.documents', $row->id);
+                $action = '';
 
-                $action = '
-                <a href="' . $viewUrl . '" class="btn btn-primary btn-sm"
-                    title="View Installments"><i class="fas fa-eye"></i></a>
-                <a href="' . $docUrl . '" class="btn btn-warning btn-sm"
-                    title="documents"><i class="fas fa-file"></i></a>
-                <a href="' . $printUrl . '" class="btn btn-primary btn-sm"
-                    title="Agreement"><i class="fas fa-handshake"></i></a>
-                <a href="' . $editUrl . '" class="btn btn-info  btn-sm" title="Edit agreement"><i
-                        class="fas fa-pencil-alt"></i></a>
-                <a class="btn btn-danger  btn-sm" onclick="deleteConf()" title="delete"><i
-                        class="fas fa-trash"></i></a>
-                <a href="#" class="btn btn-danger btn-sm" title="Terminate"
+
+                if (Gate::allows('agreement.view')) {
+                    $action .= '<a href="' . $viewUrl . '" class="btn btn-primary btn-sm"
+                    title="View Installments"><i class="fas fa-eye"></i></a>';
+                }
+
+                $action .= '<a href="' . $docUrl . '" class="btn btn-warning btn-sm"
+                    title="documents"><i class="fas fa-file"></i></a>';
+
+
+                $action .= '<a href="' . $printUrl . '" class="btn btn-primary btn-sm"
+                    title="Agreement"><i class="fas fa-handshake"></i></a>';
+
+                if (Gate::allows('agreement.edit')) {
+
+                    $action .= '<a href="' . $editUrl . '" class="btn btn-info  btn-sm" title="Edit agreement"><i
+                        class="fas fa-pencil-alt"></i></a>';
+                }
+
+                $action .= '<a class="btn btn-danger  btn-sm" onclick="deleteConf()" title="delete"><i
+                        class="fas fa-trash"></i></a>';
+
+                $action .= '<a href="#" class="btn btn-danger btn-sm" title="Terminate"
                     data-toggle="modal" data-target="#modal-terminate"><i
                         class="fas fa-file-signature"></i></a>
                 ';
