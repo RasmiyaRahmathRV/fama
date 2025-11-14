@@ -171,4 +171,8 @@ class AgreementDocumentService
             $this->updateAgreementFlags($agreement, $createdDoc->document_type);
         }
     }
+    public function getDocuments($id)
+    {
+        return $this->agreementDocRepository->getDocuments($id);
+    }
 }

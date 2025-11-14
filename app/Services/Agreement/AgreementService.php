@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
+
 class AgreementService
 {
     public function __construct(
@@ -122,8 +123,11 @@ class AgreementService
                 // Multiple unit insert
                 foreach ($data['unit_detail'] as $unit) {
                     // $rent_annum_agreement = $unit['rent_per_month'] * $count;
-                    $rent_annum_agreement = $rent_annum;
+                    // $rent_annum_agreement = $rent_annum;
                     // dd($rent_annum_agreement);
+                    // dd($unit);
+                    $contractUnitDetail = ContractUnitDetail::find($unit['contract_unit_details_id']);
+                    $rent_annum_agreement = $contractUnitDetail->rent_per_unit_per_annum;
 
                     $unitdata = [
                         'agreement_id' => $agreement->id,
@@ -176,9 +180,12 @@ class AgreementService
                             // dd("testr");
                         }
                     }
-                    $this->subUnitDetailserv->markSubunitVacant(
-                        $unit['contract_unit_details_id'],
-                        $unit['contract_subunit_details_id'] ?? null
+                    // $this->subUnitDetailserv->markSubunitVacant(
+                    //     $unit['contract_unit_details_id'],
+                    //     $unit['contract_subunit_details_id'] ?? null
+                    // );
+                    $this->subUnitDetailserv->allVacant(
+                        $agreement->contract_id
                     );
                 }
             } else {
@@ -331,7 +338,9 @@ class AgreementService
                 unset($unit);
                 foreach ($data['unit_detail'] as $unit) {
                     // $rent_annum_agreement = $unit['rent_per_month'] * $count;
-                    $rent_annum_agreement = $rent_annum;
+                    // $rent_annum_agreement = $rent_annum;
+                    $contractUnitDetail = ContractUnitDetail::find($unit['contract_unit_details_id']);
+                    $rent_annum_agreement = $contractUnitDetail->rent_per_unit_per_annum;
                     $unitData = [
                         'agreement_id' => $agreement->id,
                         'updated_by' => $data['updated_by'],
@@ -552,10 +561,13 @@ class AgreementService
             ->addColumn('action', function ($row) {
                 $editUrl = route('agreement.edit', $row->id);
                 $printUrl = route('agreement.printview', $row->id);
+                $viewUrl = route('agreement.show', $row->id);
+                $docUrl = route('agreement.documents', $row->id);
+
                 $action = '
-                <a href="view_installments.php" class="btn btn-primary btn-sm"
+                <a href="' . $viewUrl . '" class="btn btn-primary btn-sm"
                     title="View Installments"><i class="fas fa-eye"></i></a>
-                <a href="agreement_documents.php" class="btn btn-warning btn-sm"
+                <a href="' . $docUrl . '" class="btn btn-warning btn-sm"
                     title="documents"><i class="fas fa-file"></i></a>
                 <a href="' . $printUrl . '" class="btn btn-primary btn-sm"
                     title="Agreement"><i class="fas fa-handshake"></i></a>
@@ -577,5 +589,9 @@ class AgreementService
             // ->rawColumns(['action'])
             ->with(['columns' => $columns])
             ->toJson();
+    }
+    public function getDetails($id)
+    {
+        return $this->agreementRepository->getDetails($id);
     }
 }

@@ -37,6 +37,15 @@
             processData: false,
             contentType: false,
             success: function(response) {
+                // Swal.fire({
+                //     title: 'Success!',
+                //     text: response.message,
+                //     icon: 'success',
+                //     showConfirmButton: false,
+                //     timer: 1500
+                // }).then(() => {
+                //     window.location = "{{ route('agreement.index') }}"
+                // })
                 toastr.success(response.message);
                 window.location = "{{ route('agreement.index') }}"
             },

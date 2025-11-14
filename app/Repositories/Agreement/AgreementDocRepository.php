@@ -21,4 +21,8 @@ class AgreementDocRepository
     {
         return AgreementDocument::update($data);
     }
+    public function getDocuments($id)
+    {
+        return AgreementDocument::with('documentType')->where("agreement_id", $id)->get();
+    }
 }

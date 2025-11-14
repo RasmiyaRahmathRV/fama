@@ -1417,6 +1417,7 @@
                 if (selectedContract.contract_payment_receivables && selectedContract
                     .contract_payment_receivables
                     .length > 0) {
+                    console.log("selected contract receivables", selectedContract);
                     selectedContract.contract_payment_receivables.forEach((r, index) => {
                         tableHTML += `
                     <tr>
@@ -1624,6 +1625,9 @@
 
                     initPaymentValidation(selectedContract.contract_type_id, selectedContract.contract_unit
                         .business_type);
+                    $('input[name^="payment_detail"][name$="[payment_amount]"]').each(function() {
+                        $(this).trigger('input.paymentValidation');
+                    });
                 } else {
                     if (window.unit_details && window.unit_details.length > 0) {
                         const containerPayment = document.querySelector('.payment_details');
@@ -1653,14 +1657,17 @@
                             } else if (selectedContract.contract_type_id === 1 && selectedContract
                                 ?.contract_unit
                                 ?.business_type == 1) {
+                                // alert("dfb2b");
                                 if (unit.partition) {
                                     monthlyrent = parseFloat(unit.total_partition * unit.rent_per_partition)
                                         .toFixed(2);
                                 } else if (unit.bedspace) {
                                     monthlyrent = parseFloat(unit.total_bedspace * unit.rent_per_bedspace)
                                         .toFixed(2);
+                                } else if (unit.room) {
+                                    monthlyrent = parseFloat(unit.total_room * unit.rent_per_room)
                                 } else {
-                                    monthlyrent = unit.rent_per_room;
+                                    monthlyrent = parseFloat(unit.rent_per_flat)
                                 }
 
 
@@ -1809,12 +1816,18 @@
 
                         initPaymentValidation(selectedContract.contract_type_id, selectedContract.contract_unit
                             .business_type);
+                        // After populating amounts dynamically, trigger validation for all inputs
+                        $('input[name^="payment_detail"][name$="[payment_amount]"]').each(function() {
+                            $(this).trigger('input.paymentValidation');
+                        });
+
+
 
                     }
                 }
 
 
-                $('#submitBtn').prop('disabled', false);
+                // $('#submitBtn').prop('disabled', false);
                 return;
             } else {
 
@@ -2215,11 +2228,86 @@
         }
 
 
-        function validateTotalPaymentFF(changedIndex = null) {
-            // alert(changedIndex);
-            const totalsByInstallment = {};
+        // function validateTotalPaymentFF(changedIndex = null) {
+        //     // alert(changedIndex);
+        //     const totalsByInstallment = {};
 
-            // Sum all
+        //     // Sum all
+        //     $('input[name^="payment_detail"][name$="[payment_amount]"]').each(function() {
+        //         const name = $(this).attr('name');
+        //         const match = name.match(/payment_detail\[\d+\]\[(\d+)\]/);
+        //         if (!match) return;
+
+        //         const installmentIndex = parseInt(match[1]);
+        //         const val = parseFloat($(this).val()) || 0;
+
+        //         if (!totalsByInstallment[installmentIndex]) {
+        //             totalsByInstallment[installmentIndex] = 0;
+        //         }
+        //         totalsByInstallment[installmentIndex] += val;
+        //     });
+        //     // //console.log(totalsByInstallment);
+
+        //     // Validate only changed installment (if specified)
+        //     const keysToCheck = changedIndex !== null ? [changedIndex] : Object.keys(totalsByInstallment);
+        //     //console.log(keysToCheck);
+
+        //     keysToCheck.forEach(index => {
+        //         const total = totalsByInstallment[index]?.toFixed(2) || 0;
+        //         // //console.log('index' + index);
+        //         const $amountCell = $(`.amountchange[data-installment="${index}"]`);
+        //         const receivable = parseFloat($(`.receivable_amount${index}`).text()) || 0;
+        //         // //console.log('receivable' + receivable)
+
+        //         // Update cell
+        //         $amountCell.text(total);
+        //         // //console.log("gy" + receivable + total);
+        //         const errorDiv = $('#paymentError');
+        //         errorDiv.attr('tabindex', '-1');
+
+        //         if (receivable == total) {
+        //             $amountCell.css({
+        //                 backgroundColor: '#d4edda',
+        //                 color: '#155724'
+        //             });
+        //             $('#submitBtn').prop('disabled', false);
+        //             errorDiv.addClass('d-none').removeClass('d-flex');
+        //         } else {
+        //             $amountCell.css({
+        //                 backgroundColor: '#f8d7da',
+        //                 color: '#721c24'
+        //             });
+        //             $('#submitBtn').prop('disabled', true);
+        //             // errorDiv.html(
+        //             //     // `Total payment amount <span class="mx-1 text-dark">${totalPayment}</span> does not match total rent per annum <span class="mx-1 text-dark">${totalRent}</span>.`
+        //             //     `Installment <span class="mx-1 text-dark">${parseInt(index) + 1}</span>: Total <span class="mx-1 text-dark">(${total})</span> is not equal to Receivable <span class="mx-1 text-dark">(${receivable})</span>`
+        //             // );
+        //             // errorDiv.removeClass('d-none').addClass('d-flex'); // show error
+        //             // // errorDiv.focus();
+        //             // errorDiv[0].scrollIntoView({
+        //             //     behavior: 'smooth',
+        //             //     block: 'center'
+        //             // });
+        //             toastr.options = {
+        //                 "closeButton": true,
+        //                 "progressBar": true,
+        //                 timeOut: 5000,
+        //                 extendedTimeOut: 2000
+        //             };
+        //             toastr.error(
+        //                 `Installment ${parseInt(index) + 1}: Total (${total}) is not equal to Receivable (${receivable})`
+        //             );
+        //             console.warn(`Installment ${index}: mismatch → total=${total}, receivable=${receivable}`);
+
+
+        //         }
+        //     });
+        // }
+        function validateTotalPaymentFF(changedIndex = null) {
+            const totalsByInstallment = {};
+            const errorDiv = $('#paymentError');
+            let errorMessages = []; // collect all errors
+
             $('input[name^="payment_detail"][name$="[payment_amount]"]').each(function() {
                 const name = $(this).attr('name');
                 const match = name.match(/payment_detail\[\d+\]\[(\d+)\]/);
@@ -2233,50 +2321,106 @@
                 }
                 totalsByInstallment[installmentIndex] += val;
             });
-            // //console.log(totalsByInstallment);
 
-            // Validate only changed installment (if specified)
-            const keysToCheck = changedIndex !== null ? [changedIndex] : Object.keys(totalsByInstallment);
-            //console.log(keysToCheck);
+            // const keysToCheck = changedIndex !== null ? [changedIndex] : Object.keys(totalsByInstallment);
+            const keysToCheck = Object.keys(totalsByInstallment);
 
             keysToCheck.forEach(index => {
                 const total = totalsByInstallment[index]?.toFixed(2) || 0;
-                // //console.log('index' + index);
                 const $amountCell = $(`.amountchange[data-installment="${index}"]`);
                 const receivable = parseFloat($(`.receivable_amount${index}`).text()) || 0;
-                // //console.log('receivable' + receivable)
 
-                // Update cell
                 $amountCell.text(total);
-                // //console.log("gy" + receivable + total);
 
                 if (receivable == total) {
                     $amountCell.css({
                         backgroundColor: '#d4edda',
                         color: '#155724'
                     });
-                    $('#submitBtn').prop('disabled', false);
                 } else {
                     $amountCell.css({
                         backgroundColor: '#f8d7da',
                         color: '#721c24'
                     });
-                    $('#submitBtn').prop('disabled', true);
-                    toastr.options = {
-                        "closeButton": true,
-                        "progressBar": true,
-                        timeOut: 5000,
-                        extendedTimeOut: 2000
-                    };
-                    toastr.error(
-                        `Installment ${parseInt(index) + 1}: Total (${total}) is not equal to Receivable (${receivable})`
+
+                    // Add to error list
+                    // errorMessages.push(
+                    //     `Installment ${parseInt(index) + 1}: Total (${total}) is not equal to Receivable (${receivable})`
+                    // );
+                    errorMessages.push(
+                        `Installment <span class="text-dark">${parseInt(index) + 1}</span>: Total <span class="text-dark">(${total})</span> is not equal to Receivable <span class="text-dark">(${receivable})</span>`
                     );
-                    console.warn(`Installment ${index}: mismatch → total=${total}, receivable=${receivable}`);
-
-
                 }
             });
+
+            if (errorMessages.length > 0) {
+                $('#submitBtn').prop('disabled', true);
+                errorDiv.html(errorMessages.join('<br>')) // show all errors
+                    .removeClass('d-none')
+                    .addClass('d-block');
+            } else {
+                $('#submitBtn').prop('disabled', false);
+                errorDiv.addClass('d-none').removeClass('d-block').empty();
+            }
         }
+
+        // function validateTotalPaymentFF() {
+        //     const totalsByInstallment = {};
+
+        //     // Loop through all inputs
+        //     $('input[name^="payment_detail"][name$="[payment_amount]"]').each(function() {
+        //         const name = $(this).attr('name');
+        //         const match = name.match(/payment_detail\[\d+\]\[(\d+)\]\[payment_amount\]/);
+        //         if (!match) return;
+
+        //         const installmentIndex = parseInt(match[1]);
+        //         const val = parseFloat($(this).val()) || 0;
+
+        //         if (!totalsByInstallment[installmentIndex]) {
+        //             totalsByInstallment[installmentIndex] = 0;
+        //         }
+        //         totalsByInstallment[installmentIndex] += val;
+        //     });
+
+        //     // Validate all installments
+        //     Object.keys(totalsByInstallment).forEach(index => {
+        //         const total = totalsByInstallment[index].toFixed(2);
+
+        //         // Select all cells for this installment
+        //         const $amountCell = $(`.amountchange[data-installment="${index}"]`);
+        //         const receivable = parseFloat($(`.receivable_amount${index}`).text()) || 0;
+
+        //         if (Math.abs(receivable - total) < 0.01) { // small tolerance for float
+        //             $amountCell.css({
+        //                 backgroundColor: '#d4edda',
+        //                 color: '#155724'
+        //             });
+        //         } else {
+        //             $amountCell.css({
+        //                 backgroundColor: '#f8d7da',
+        //                 color: '#721c24'
+        //             });
+        //         }
+        //     });
+
+        //     // Update error div separately for summary
+        //     const errors = Object.keys(totalsByInstallment).filter(index => {
+        //         const total = totalsByInstallment[index].toFixed(2);
+        //         const receivable = parseFloat($(`.receivable_amount${index}`).text()) || 0;
+        //         return Math.abs(receivable - total) >= 0.01;
+        //     });
+
+        //     if (errors.length) {
+        //         $('#submitBtn').prop('disabled', true);
+        //         $('#paymentError').html(`Mismatch in Installments: ${errors.map(i => parseInt(i)+1).join(', ')}`)
+        //             .removeClass('d-none').addClass('d-flex');
+        //     } else {
+        //         $('#submitBtn').prop('disabled', false);
+        //         $('#paymentError').addClass('d-none').removeClass('d-flex');
+        //     }
+
+        // }
+
 
         function paymentModeChangeFF(unitId, i) {
             const uniqueId = `${unitId}_${i}`;

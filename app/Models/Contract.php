@@ -157,12 +157,12 @@ class Contract extends Model
                 'contract_rentals',
                 'contract_documents',
                 'contract_otc',
-                'contract_payments',
-                'contract_payment_receivables'
+                'contract_payments'
             ];
 
             // hasMany relations
             $hasManyRelations = [
+                'contract_payment_receivables',
                 'contract_payment_details',
                 'contract_subunit_details',
                 'contract_unit_details',
@@ -189,7 +189,7 @@ class Contract extends Model
                 //     }
                 // }
                 foreach ($hasManyRelations as $relation) {
-                    $relatedCollection = $contract->$relation; // always a Collection
+                    $relatedCollection = $contract->$relation;
 
                     // Update all related records' deleted_by safely
                     $relatedCollection->each(function ($related) use ($userId) {

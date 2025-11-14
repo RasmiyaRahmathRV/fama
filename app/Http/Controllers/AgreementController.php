@@ -10,6 +10,7 @@ use App\Models\Installment;
 use App\Models\PaymentMode;
 use App\Models\TenantIdentity;
 use App\Models\UnitType;
+use App\Services\Agreement\AgreementDocumentService;
 use App\Services\Agreement\AgreementService;
 use App\Services\BankService;
 use App\Services\CompanyService;
@@ -17,6 +18,7 @@ use App\Services\Contracts\ContractService;
 use App\Services\InstallmentService;
 use App\Services\NationalityService;
 use App\Services\PaymentModeService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use SebastianBergmann\CodeCoverage\Report\Xml\Unit;
@@ -31,7 +33,8 @@ class AgreementController extends Controller
         protected NationalityService $nationalityService,
         protected PaymentModeService $paymentModeService,
         protected BankService $bankService,
-        protected AgreementService $agreementService
+        protected AgreementService $agreementService,
+        protected AgreementDocumentService $agreementDocumentService
     ) {}
     public function index()
     {
@@ -75,10 +78,10 @@ class AgreementController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
         }
     }
-    public function show(Agreement $agreemant)
+    public function show(Agreement $agreement)
     {
-        $contract = $this->agreementService->getById($agreemant->id);
-        return view('admin.projects.contract.contract-view', compact('contract'));
+        $agreement = $this->agreementService->getDetails($agreement->id);
+        return view('admin.projects.agreement.agreement-view', compact('agreement'));
     }
     public function getAgreements(Request $request)
     {
@@ -144,8 +147,38 @@ class AgreementController extends Controller
         }
     }
 
-    public function print_view(Agreement $agreement)
+    public function print_view($id)
     {
-        return view("admin.projects.agreement.printview-agreement");
+        $agreement = $this->agreementService->getDetails($id);
+        $page = 1;
+        // dd($agreement);
+
+        // View with admin layout (for on-screen preview)
+        return view('admin.projects.agreement.printview-agreement', compact('agreement', 'page'));
+    }
+
+
+    public function print($id)
+    {
+        // dd($id);
+        $agreement = $this->agreementService->getDetails($id);
+        $page = 0;
+
+        // Generate PDF (clean, print-friendly)
+        $pdf = Pdf::loadView('admin.projects.agreement.pdf-agreement', compact('agreement', 'page'))
+            ->setPaper([0, 0, 830, 1400]);
+
+        return $pdf->stream('agreement-' . $agreement->id . '.pdf');
+    }
+    public function agreementDocuments($id)
+    {
+        $documents = $this->agreementDocumentService->getDocuments($id);
+        $tenantIdentities = TenantIdentity::get();
+        // dd($documents);
+        return view('admin.projects.agreement.agreement_documents', compact('documents', 'tenantIdentities'));
+    }
+    public function documentUpload(Request $request, $id)
+    {
+        dd($request->all());
     }
 }
