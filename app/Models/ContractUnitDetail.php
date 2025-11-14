@@ -31,6 +31,10 @@ class ContractUnitDetail extends Model
         'rent_per_flat',
         'rent_per_unit_per_month',
         'rent_per_unit_per_annum',
+        'total_rent_per_unit_per_month',
+        'subunittype',
+        'subunitcount_per_unit',
+        'subunit_rent_per_unit',
         'total_partition',
         'total_bedspace',
         'rent_per_partition',
@@ -46,7 +50,7 @@ class ContractUnitDetail extends Model
         'updated_by',
         'deleted_by',
         'is_vacant',
-        'unit_rent_per_month'
+        'unit_rent_per_month',
     ];
 
     public function contract()
@@ -98,35 +102,61 @@ class ContractUnitDetail extends Model
         return $this->hasMany(ContractSubunitDetail::class, 'contract_unit_detail_id');
     }
 
-    private function formatNumber($value)
+    // private function formatNumber($value)
+    // {
+    //     if ($value === null || $value === '') {
+    //         return null;
+    //     }
+
+    //     $value = (float) $value;
+
+    //     if (fmod($value, 1) !== 0.0) {
+    //         return rtrim(rtrim(number_format($value, 2, '.', ','), '0'), '.');
+    //     }
+
+    //     return number_format((int) $value);
+    // }
+
+    // public function getAttributeValue($key)
+    // {
+    //     $keyVal = $key;
+    //     // $value = parent::getAttributeValue($key);
+    //     $formatted = [
+    //         'unit_rent_per_annum',
+    //         'rent_per_room',
+    //         'rent_per_partition',
+    //         'rent_per_bedspace',
+    //     ];
+
+    //     // ✅ Safely get value only if attribute exists
+    //     $value = array_key_exists($keyVal, $this->attributes)
+    //         ? parent::getAttributeValue($keyVal)
+    //         : null;
+
+    //     // ✅ Only format if the key is one of your formatted fields
+    //     //    and the value is numeric
+    //     if (in_array($keyVal, $formatted, true) && is_numeric($value)) {
+    //         return $this->formatNumber($value);
+    //     }
+
+    //     return $value ?? parent::getAttributeValue($keyVal);
+    // }
+
+    public function getUnitRentPerAnnumAttribute($value)
     {
-        if ($value === null || $value === '') {
-            return null;
-        }
-
-        $value = (float) $value;
-
-        if (fmod($value, 1) !== 0.0) {
-            return rtrim(rtrim(number_format($value, 2, '.', ','), '0'), '.');
-        }
-
-        return number_format((int) $value);
+        return formatNumber($value);
     }
-
-    public function getAttributeValue($key)
+    public function getRentPerRoomAttribute($value)
     {
-        $value = parent::getAttributeValue($key);
-        $formatted = [
-            'unit_rent_per_annum',
-            'rent_per_room',
-            'rent_per_partition',
-            'rent_per_bedspace',
-        ];
-
-        if (in_array($key, $formatted, true)) {
-            return $this->formatNumber($value);
-        }
-        return $value;
+        return formatNumber($value);
+    }
+    public function getRentPerPartitionAttribute($value)
+    {
+        return formatNumber($value);
+    }
+    public function getRentPerBedspaceAttribute($value)
+    {
+        return formatNumber($value);
     }
 
     protected static function booted()

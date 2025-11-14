@@ -350,8 +350,9 @@
                                         @if ($contract->contract_status == 0)
                                             <button type="button" class="btn btn-warning "><i class="fas fa-upload"></i>
                                                 Upload Contract </button>
-                                            <button type="button" class="btn btn-primary">
-                                                <i class="fas fa-envelope-open-text"></i> Generate Scope</button>
+                                            <a href="{{ url('/export-building-summary', $contract->id) }}"
+                                                class="btn btn-primary">
+                                                <i class="fas fa-envelope-open-text"></i> Generate Scope</a>
                                         @elseif($contract->contract_status == 2)
                                             <button type="button" class="btn btn-success "><i class="far fa-eye"></i> View
                                                 Contract </button>

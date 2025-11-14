@@ -232,6 +232,10 @@ class UnitDetailService
         $rent_per_flat = $partitionValue['rent_per_flat'];
         $rent_per_unit_per_month = $partitionValue['rent_per_unit_per_month'];
         $rent_per_unit_per_annum = $partitionValue['rent_per_unit_per_annum'];
+        $subunittype = $partitionValue['subunittype'];
+        $subunitcount_per_unit = $partitionValue['subunitcount_per_unit'];
+        $subunit_rent_per_unit = $partitionValue['subunit_rent_per_unit'];
+        $total_rent_per_unit_per_month = $partitionValue['total_rent_per_unit_per_month'];
 
 
 
@@ -259,6 +263,10 @@ class UnitDetailService
             'rent_per_flat' => ($bedspace == 0 && $partition == 0 && $room == 0) ? $rent_per_flat : 0,
             'rent_per_unit_per_month' => $rent_per_unit_per_month,
             'rent_per_unit_per_annum' => $rent_per_unit_per_annum,
+            'total_rent_per_unit_per_month' => $total_rent_per_unit_per_month,
+            'subunittype' => $subunittype,
+            'subunitcount_per_unit' => $subunitcount_per_unit,
+            'subunit_rent_per_unit' => $subunit_rent_per_unit,
             'unit_profit_perc' => isset($dataArr['unit_profit_perc']) ? $dataArr['unit_profit_perc'][$key] : 0,
             'unit_profit' => isset($dataArr['unit_profit']) ? $dataArr['unit_profit'][$key] : 0,
             'unit_revenue' => isset($dataArr['unit_revenue']) ? $dataArr['unit_revenue'][$key] : 0,
@@ -278,6 +286,8 @@ class UnitDetailService
 
     public function validate(array $data, $id = null)
     {
+        if (empty($data)) return;
+
         $validator = Validator::make(['unit_detail' => $data], [
             'unit_detail' => 'required|array|min:1',
             'unit_detail.*.unit_type_id' => 'required',
@@ -308,8 +318,8 @@ class UnitDetailService
         return $validator->validated()['unit_detail'];
     }
 
-    public function delete($id)
+    public function delete($unitId = null)
     {
-        return $this->unitdetRepo->delete($id);
+        return $this->unitdetRepo->delete($unitId);
     }
 }

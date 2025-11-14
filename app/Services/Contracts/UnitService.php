@@ -25,13 +25,14 @@ class UnitService
 
     public function create($contract_id, array $data, array $unitdetails, $user_id = null)
     {
+
         $this->validate($data);
         $data['contract_id'] = $contract_id;
         $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['contract_unit_code'] = $this->setUnitCode();
 
         $data = array_merge($data, $this->getUnitSummary($unitdetails));
-
+        // dd($data);
         return $this->unitRepo->create($data);
     }
 

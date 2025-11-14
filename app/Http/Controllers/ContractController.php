@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ContractExport;
+use App\Exports\ProjectScopeExport;
 use App\Models\Bank;
 use App\Models\Contract;
 use App\Models\ContractType;
@@ -249,5 +250,12 @@ class ContractController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function exportBuildingSummary($id)
+    {
+        $contract = $this->contractService->getAllDataById($id);
+        $file_name = "Project " . $contract->project_number . (($contract->contract_type_id == 1) ? '_Direct' : '') . (($contract->parent_contract_id) ? '_Renewal' : '') . '_' . $contract->property->property_name . ' Building Summary';
+        return Excel::download(new ProjectScopeExport($id), $file_name . '.xlsx');
     }
 }

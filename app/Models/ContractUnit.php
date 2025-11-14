@@ -23,7 +23,8 @@ class ContractUnit extends Model
         'unit_type_count',
         'added_by',
         'updated_by',
-        'deleted_by'
+        'deleted_by',
+        'total_subunit_count_per_contract'
     ];
 
     public function contract()
