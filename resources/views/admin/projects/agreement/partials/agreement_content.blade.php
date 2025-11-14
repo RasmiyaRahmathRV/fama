@@ -283,6 +283,7 @@
                               <div align="center" class="text-sm text-sm">
                                   <strong>
                                       {{ $agreement->agreement_payment->installment->installment_name }}
+                                      <br> Cheques
                                   </strong>
                               </div>
                           </td>

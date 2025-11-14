@@ -653,16 +653,16 @@
             var payment_mode = $('#payment_mode' + i).val();
 
             if (payment_mode == '3') { // Cheque
-                alert('hicheque');
-                $('#chq' + i).show().find('input, select').prop('disabled', false);
-                $('#bank' + i).show().find('input, select').prop('disabled', false);
+                // alert('hicheque');
+                $('#chq' + i).show().find('input, select').prop('disabled', false).prop('required', true);
+                $('#bank' + i).show().find('input, select').prop('disabled', false).prop('required', true);
                 $('#chqot' + i).hide().find('input, select').prop('disabled', true);
                 $('#chqot' + i + ', #chqotiss' + i + ', #chqiss' + i)
                     .hide()
                     .find('input, select')
                     .prop('disabled', true);
             } else if (payment_mode == '2') { // Bank Transfer
-                $('#bank' + i).show().find('input, select').prop('disabled', false);
+                $('#bank' + i).show().find('input, select').prop('disabled', false).prop('required', true);
                 $('#chq' + i).hide().find('input, select').prop('disabled', true);
                 $('#chqot' + i).hide().find('input, select').prop('disabled', true);
                 $('#chqot' + i + ', #chqotiss' + i + ', #chqiss' + i)
@@ -670,8 +670,8 @@
                     .find('input, select')
                     .prop('disabled', true);
             } else { // Cash or others
-                $('#bank' + i).hide().find('input, select').prop('disabled', true);
-                $('#chq' + i).hide().find('input, select').prop('disabled', true);
+                $('#bank' + i).hide().find('input, select').prop('disabled', true).prop('required', false);
+                $('#chq' + i).hide().find('input, select').prop('disabled', true).prop('required', false);
                 $('#chqot' + i).hide().find('input, select').prop('disabled', true);
                 $('#chqot' + i + ', #chqotiss' + i + ', #chqiss' + i)
                     .hide()
@@ -777,6 +777,13 @@
 
         function contractChange(contractId, editedUnit = null) {
             //console.log("full Contracts :", fullContracts);
+
+            // clearing the div
+            const errorDiv = $('#paymentError');
+            errorDiv.html('');
+            errorDiv.addClass('d-none').removeClass('d-flex');
+            $('#submitBtn').prop('disabled', false);
+
             let options = '<option value="">Select Unit Type</option>';
             let contract = null;
             if (editedUnit) {
@@ -1550,10 +1557,17 @@
 
                                         <div class="col-md-3 chq" id="chq_${uniqueId}">
                                             <label>Cheque No</label>
-                                            <input type="text" class="form-control" id="cheque_no_${uniqueId}"
+                                            <input type="number" min="0" pattern="\d{6,10}"
+                                            maxlength="10"
+                                            title="Cheque number must be 6–10 digits" class="form-control" id="cheque_no_${uniqueId}"
                                                 name="payment_detail[${unit.id}][${payIndex}][cheque_number]"
                                                 value="${pay.cheque_number ?? ''}"
                                                 placeholder="Cheque No">
+                                                @error('cheque_number')
+                                                    <span class="invalid-feedback d-block">
+                                                        {{ $message }}
+                                                    </span>
+                                                @enderror
                                         </div>
                                     </div>
                                 `;
@@ -1743,7 +1757,14 @@
 
                                     <div class="col-md-3 chq" id="chq_${uniqueId}">
                                         <label>Cheque No</label>
-                                        <input type="text" class="form-control" id="cheque_no_${uniqueId}" name="payment_detail[${unit.id}][${i}][cheque_number]" placeholder="Cheque No">
+                                        <input type="number" pattern="\d{6,10}" min="0"
+                                                maxlength="10"
+                                                title="Cheque number must be 6–10 digits" class="form-control" id="cheque_no_${uniqueId}" name="payment_detail[${unit.id}][${i}][cheque_number]" placeholder="Cheque No">
+                                                @error('cheque_number')
+                                                    <span class="invalid-feedback d-block">
+                                                        {{ $message }}
+                                                    </span>
+                                                @enderror
                                     </div>
                                 </div>
                             `;
@@ -1996,7 +2017,7 @@
                             <input type="text" class="form-control" id="payment_amount_${i}" name="payment_detail[${i}][payment_amount]" value="${pay.payment_amount || ''}" placeholder="Payment Amount" />
                         </div>
                     </div>
-                     <div class="form-group row">
+                     <div class="form-group row" id="extra_fields_${i}">
                         <div class="col-md-4 bank" id="bank${i}">
                         <label>Bank Name</label>
                         <select class="form-control select2" name="payment_detail[${i}][bank_id]" id="bank_name${i}">
@@ -2009,7 +2030,14 @@
 
                         <div class="col-md-3 chq" id="chq${i}">
                             <label>Cheque No</label>
-                            <input type="text" class="form-control" value="${pay.cheque_number || ''}" name="payment_detail[${i}][cheque_number]" id="cheque_no${i}" placeholder="Cheque No">
+                            <input type="number" pattern="\d{6,10}" min="0"
+                                maxlength="10"
+                                title="Cheque number must be 6–10 digits" class="form-control" value="${pay.cheque_number || ''}" name="payment_detail[${i}][cheque_number]" id="cheque_no${i}" placeholder="Cheque No">
+                                @error('cheque_number')
+                                    <span class="invalid-feedback d-block">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
                         </div>
 
 
@@ -2095,7 +2123,7 @@
                                         <input type="text" class="form-control" id="payment_amount${i}" name="payment_detail[${i}][payment_amount]" value="${existingValue}" placeholder="Payment Amount">
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row" id="extra_fields_${i}">
                                         <div class="col-md-4 bank" id="bank${i}">
                                             <label for="exampleInputEmail1">Bank Name</label>
                                             <select class="form-control select2" name="payment_detail[${i}][bank_id]" id="bank_name${i}">
@@ -2109,8 +2137,15 @@
 
                                         <div class="col-md-3 chq" id="chq${i}">
                                             <label for="exampleInputEmail1">Cheque No</label>
-                                            <input type="text" class="form-control" id="cheque_no${i}" name="payment_detail[${i}][cheque_number]" placeholder="Cheque No">
-                                        </div>
+                                            <input type="number" class="form-control" pattern="\d{6,10}" min="0"
+                                                maxlength="10"
+                                                title="Cheque number must be 6–10 digits" id="cheque_no${i}" name="payment_detail[${i}][cheque_number]" placeholder="Cheque No">
+                                                @error('cheque_number')
+                                                        <span class="invalid-feedback d-block">
+                                                            {{ $message }}
+                                                        </span>
+                                                    @enderror
+                                                                                    </div>
 
                                         <div class="col-md-3 chq" id="chqiss${i}">
                                             <label for="exampleInputEmail1">Cheque Issuer</label>
@@ -2207,6 +2242,7 @@
             //         `Check Payments`);
             // }
             const errorDiv = $('#paymentError');
+            // errorDiv.html('');
             errorDiv.attr('tabindex', '-1');
 
             // Enable or disable submit button
@@ -2433,8 +2469,8 @@
                 $(`#bank_${uniqueId}`).show().find('input, select').prop('disabled', false).prop('required', true);
                 $(`#chq_${uniqueId}`).hide().find('input, select').prop('disabled', true);
             } else { // Cash or others
-                $(`#bank_${uniqueId}`).hide().find('input, select').prop('disabled', true);
-                $(`#chq_${uniqueId}`).hide().find('input, select').prop('disabled', true);
+                $(`#bank_${uniqueId}`).hide().find('input, select').prop('disabled', true).prop('required', false);
+                $(`#chq_${uniqueId}`).hide().find('input, select').prop('disabled', true).prop('required', false);
             }
         }
 
