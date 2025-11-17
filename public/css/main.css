@@ -124,6 +124,18 @@ select.is-invalid {
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
     border-left: 10px solid #dc3545;
+
+}
+.agreement-accordion{
+background-color: rgb(207, 226, 255);
+}
+.badge-df{
+  background-color: #baa360;
+  color: white;
+}
+.badge-ff{
+background-color: #dc6a20;
+color: white;
 }
 
 

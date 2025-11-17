@@ -40,7 +40,7 @@
 @endsection
 @section('custom_js')
     <!-- jQuery -->
-    <script src="{{ asset('assets/jquery/jquery.min.js"') }}></script>
+    <script src="{{ asset('assets/jquery/jquery.min.js"') }}"></script>
     <!-- Bootstrap 4 -->
     <script src="{{ asset('assets/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- AdminLTE App -->

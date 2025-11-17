@@ -635,14 +635,13 @@
 
 
         function calculatepaymentamount(rent_per_month = 0, payment_count = 0) {
-            // alert(rent_per_month);
             //console.log("count ;", payment_count);
+            // var rentmonth = Number(rent_per_month.replace(/,/g, '')) || 0;
             var rentmonth = rent_per_month || 0;
             for (let i = 0; i < payment_count; i++) {
                 $('#payment_amount' + i).val((rentmonth));
             }
             let total_rent_per_annum = rentmonth * payment_count;
-            // alert(total_rent_per_annum);
             $('#total_rent_per_annum').text(total_rent_per_annum);
             $('#total_rent_annum').val(total_rent_per_annum);
         }
