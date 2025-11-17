@@ -60,62 +60,64 @@ class ContractRental extends Model
     {
         $this->attributes['receivable_start_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
-    // private function formatNumber($value)
+
+    private function formatNumber($value)
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        $value = (float) $value;
+
+        if (fmod($value, 1) !== 0.0) {
+            return rtrim(rtrim(number_format($value, 2, '.', ','), '0'), '.');
+        }
+
+        return number_format((int) $value);
+    }
+
+    public function getAttributeValue($key)
+
+    {
+        $value = parent::getAttributeValue($key);
+        $formatted = [
+            'total_payment_to_vendor',
+            'total_otc',
+            'expected_profit',
+            'roi_perc',
+            'rent_receivable_per_annum',
+            'rent_per_annum_payable',
+        ];
+
+        if (in_array($key, $formatted, true)) {
+            return $this->formatNumber($value);
+        }
+        return $value;
+    }
+
+
+    // public function getTotalPaymentToVendorAttribute($value)
     // {
-    //     if ($value === null || $value === '') {
-    //         return null;
-    //     }
-
-    //     $value = (float) $value;
-
-    //     if (fmod($value, 1) !== 0.0) {
-    //         return rtrim(rtrim(number_format($value, 2, '.', ','), '0'), '.');
-    //     }
-
-    //     return number_format((int) $value);
+    //     return formatNumber($value);
     // }
-
-    // public function getAttributeValue($key)
-
+    // public function getTotalOtcAttribute($value)
     // {
-    //     $value = parent::getAttributeValue($key);
-    //     $formatted = [
-    //         'total_payment_to_vendor',
-    //         'total_otc',
-    //         'expected_profit',
-    //         'roi_perc',
-    //         'rent_receivable_per_annum',
-    //         'rent_per_annum_payable',
-    //     ];
-
-    //     if (in_array($key, $formatted, true)) {
-    //         return formatNumber($value);
-    //     }
-    //     return $value;
+    //     return formatNumber($value);
     // }
-
-    public function getTotalPaymentToVendorAttribute($value)
-    {
-        return formatNumber($value);
-    }
-    public function getTotalOtcAttribute($value)
-    {
-        return formatNumber($value);
-    }
-    public function getExpectedProfitAttribute($value)
-    {
-        return formatNumber($value);
-    }
-    public function getRoiPercAttribute($value)
-    {
-        return formatNumber($value);
-    }
-    public function getRentReceivablePerAnnumAttribute($value)
-    {
-        return formatNumber($value);
-    }
-    public function getRentPerAnnumPayableAttribute($value)
-    {
-        return formatNumber($value);
-    }
+    // public function getExpectedProfitAttribute($value)
+    // {
+    //     return formatNumber($value);
+    // }
+    // public function getRoiPercAttribute($value)
+    // {
+    //     return formatNumber($value);
+    // }
+    // public function getRentReceivablePerAnnumAttribute($value)
+    // {
+    //     return formatNumber($value);
+    // }
+    // public function getRentPerAnnumPayableAttribute($value)
+    // {
+    //     return formatNumber($value);
+    // }
 }

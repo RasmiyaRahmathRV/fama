@@ -31,9 +31,13 @@
                         <!-- Main content -->
                         <div class="invoice p-3 mb-3">
 
-                            <div class="text-uppercase text-bold text-info">
+                            {{-- <div class="text-uppercase text-bold text-info">
                                 {{ $agreement->contract->contract_type->contract_type }} Project
-                            </div>
+                            </div> --}}
+
+                            <span class="price-badge badge badge-danger">
+                                {{ $agreement->contract->contract_type->contract_type }} Project
+                            </span>
                             <!-- title row -->
 
                             <!-- info row -->
@@ -49,6 +53,7 @@
                                         <span
                                             class="mobile">{{ strtoupper($agreement->contract->vendor->vendor_phone) }}</span></br>
                                         <span class="email">{{ $agreement->contract->vendor->vendor_email }}</span></br>
+                                        <span class="area">{{ strtoupper($agreement->contract->area->area_name) }}</span>,
                                         <span
                                             class="locality">{{ strtoupper($agreement->contract->locality->locality_name) }}</span>,
                                         <span
@@ -72,6 +77,8 @@
                                                 class="vendor_name">{{ strtoupper($agreement->tenant->tenant_name) }}</span></br>
                                             <span class="mobile">{{ $agreement->tenant->tenant_mobile }}</span></br>
                                             <span class="email">{{ $agreement->tenant->tenant_email }}</span></br>
+                                            <span
+                                                class="area">{{ strtoupper($agreement->contract->area->area_name) }}</span>,
                                             <span
                                                 class="locality">{{ strtoupper($agreement->contract->locality->locality_name) }}</span>,
                                             <span class="building">
@@ -112,7 +119,7 @@
                                                 UNIT: {{ $unit->contractUnitDetail->unit_number }}
                                             </h5>
 
-                                            <p class="mb-1 text-muted font-weight-bold">
+                                            <p class="mb-1 text-green font-weight-bold">
                                                 Type: {{ $unit->contractUnitDetail->unit_type->unit_type ?? '-' }} |
                                                 @if ($unit->contractSubunitDetail)
                                                     @if ($unit->contractSubunitDetail->subunit_type == 1)
@@ -146,8 +153,8 @@
                                                         <th>Paid Amount</th>
                                                         <th>Composition</th>
                                                         <!-- <th>Edit</th>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <th>Delete</th>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <th>Bifurcate</th> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <th>Delete</th>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <th>Bifurcate</th> -->
                                                         <!-- <th>Bifurcate Edit</th> -->
                                                     </tr>
                                                 </thead>
