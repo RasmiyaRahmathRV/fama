@@ -17,11 +17,12 @@
   @endphp
   {{-- {{ dd($agreement->agreement_units) }} --}}
   @foreach ($agreement->agreement_units as $unit)
-      <table width="1025" border="2" align="center" class="mt-5" cellpadding="0" cellspacing="0"
-          style="box-shadow:-4px 4px 20px #666" ;>
+      <table width="100%" border="2" align="center" class="mt-5" cellpadding="0" cellspacing="0"
+          style="box-shadow:-4px 4px 20px #666; max-width:1025px;">
           <tr height="21">
-              <td width="1025" colspan="6" bgcolor="#FFFFFF">
-                  <table width="1025" height="80" border="0" align="center" cellpadding="5" class="table0">
+              <td width="100%" colspan="6" bgcolor="#FFFFFF" style="max-width:1025px;">
+                  <table width="100%" height="80" border="0" align="center" cellpadding="5" class="table0"
+                      style="max-width:1025px;">
                       <tr>
                           <td height="70">
                               <table width="100%" height="70" border="0" align="center" cellpadding="10">
@@ -52,7 +53,7 @@
               </td>
           </tr>
           <tr>
-              <td width="1025" colspan="6" bgcolor="#FFFFFF">
+              <td width="100%" colspan="6" bgcolor="#FFFFFF" style="max-width:1025px;">
                   <table width="100%" border="1" align="center">
                       <tr>
                           <td width="15%" bgcolor="#FFFFFF">
@@ -583,7 +584,7 @@
           </tr>
 
           <tr>
-              <td width="1025" colspan="6" bgcolor="#FFFFFF">
+              <td width="100%" colspan="6" bgcolor="#FFFFFF" style="max-width:1025px;">
                   <table width="100%" border="1" align="center">
                       <tr>
                           <td width="26.5%" bgcolor="#FFFFFF">
@@ -705,8 +706,8 @@
               </td>
           </tr>
           <tr>
-              <td width="1025" colspan="6" bgcolor="#FFFFFF">
-                  <table width="1025" border="1" align="center" class="table0">
+              <td width="100%" colspan="6" bgcolor="#FFFFFF" style="max-width:1025px;">
+                  <table width="100%" border="1" align="center" class="table0" style="max-width:1025px;">
                       <tr>
                           <td>
                               <div class="ml-1 text-sm ">
