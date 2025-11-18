@@ -518,6 +518,7 @@ namespace App\Models{
  * @property-read int|null $contract_payment_receivables_count
  * @property-read \App\Models\ContractPayment|null $contract_payments
  * @property-read \App\Models\ContractRental|null $contract_rentals
+ * @property-read \App\Models\ContractScope|null $contract_scope
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractSubunitDetail> $contract_subunit_details
  * @property-read int|null $contract_subunit_details_count
  * @property-read \App\Models\ContractType|null $contract_type
@@ -910,6 +911,40 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $contract_id
+ * @property string $scope
+ * @property string $file_name
+ * @property int $generated_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Contract $contract
+ * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope whereContractId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope whereFileName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope whereGeneratedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope whereScope($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractScope withoutTrashed()
+ */
+	class ContractScope extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $contract_id
  * @property int $contract_unit_id
  * @property int $contract_unit_detail_id
  * @property string $subunit_no
@@ -980,6 +1015,9 @@ namespace App\Models{
  * @property int $no_of_units
  * @property string|null $unit_numbers
  * @property string|null $unit_type_count
+ * @property string|null $unit_property_type
+ * @property string|null $no_of_floors
+ * @property string|null $floor_numbers
  * @property int $total_subunit_count_per_contract
  * @property int $added_by
  * @property int|null $updated_by
@@ -991,6 +1029,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractUnitDetail> $contractUnitDetails
  * @property-read int|null $contract_unit_details_count
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read mixed $property_type
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit onlyTrashed()
@@ -1003,10 +1042,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereFloorNumbers($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereNoOfFloors($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereNoOfUnits($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereTotalSubunitCountPerContract($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereUnitNumbers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereUnitPropertyType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereUnitTypeCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnit whereUpdatedBy($value)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ArrayToSheetExport;
 use App\Exports\ContractExport;
 use App\Exports\ProjectScopeExport;
 use App\Models\Bank;
@@ -19,6 +20,7 @@ use App\Services\CompanyService;
 use App\Services\Contracts\ContractService;
 use App\Services\Contracts\PaymentDetailService;
 use App\Services\Contracts\PaymentReceivableService;
+use App\Services\Contracts\ProjectScopeDataService;
 use App\Services\Contracts\UnitDetailService;
 use Illuminate\Http\Request;
 use App\Services\InstallmentService;
@@ -42,7 +44,8 @@ class ContractController extends Controller
         protected ContractService $contractService,
         protected UnitDetailService $udetSev,
         protected PaymentDetailService $paymentSev,
-        protected PaymentReceivableService $paymentRecSev
+        protected PaymentReceivableService $paymentRecSev,
+        protected ProjectScopeDataService $scopeService
     ) {}
 
     public function index()
@@ -135,10 +138,11 @@ class ContractController extends Controller
         return response()->json(['success' => true, 'message' => 'Contract deleted successfully']);
     }
 
-    public function contract_documents()
+    public function contract_documents($contractId)
     {
         $title = 'Contract Documents';
-        return view("admin.projects.contract.contract-documents", compact("title"));
+        $contract = $this->contractService->getById($contractId);
+        return view("admin.projects.contract.contract-documents", compact("title", 'contract'));
     }
     public function document_upload(Request $request) {}
 
@@ -255,7 +259,48 @@ class ContractController extends Controller
     public function exportBuildingSummary($id)
     {
         $contract = $this->contractService->getAllDataById($id);
-        $file_name = "Project " . $contract->project_number . (($contract->contract_type_id == 1) ? '_Direct' : '') . (($contract->parent_contract_id) ? '_Renewal' : '') . '_' . $contract->property->property_name . ' Building Summary';
-        return Excel::download(new ProjectScopeExport($id), $file_name . '.xlsx');
+        $file_name = "Project " . $contract->project_number . (($contract->contract_type_id == 1) ? '_Direct' : '') . (($contract->parent_contract_id) ? '_Renewal' : '') . '_' . $contract->property->property_name . ' Building Summary.xlsx';
+
+
+        // Generate temporary signed URL valid for a few seconds
+        $downloadUrl = route('contract.downloadSummary', [
+            'id' => $id,
+            'filename' => urlencode($file_name)
+        ]);
+
+        return response()->json([
+            'file_url' => $downloadUrl,
+            'redirect_url' => route('contract.index')
+        ]);
+    }
+
+    public function downloadSummary($contractId, $filename)
+    {
+        // dd('downloadsummary');
+        // return;
+        return Excel::download(new ProjectScopeExport($contractId, $this->scopeService), $filename);
+    }
+
+    public function downloadScope($id)
+    {
+        $scopeData = $this->scopeService->getScope($id);
+        $binaryExcel = base64_decode($scopeData['scope']);
+        // dd($binaryExcel);
+        return response()->stream(function () use ($binaryExcel) {
+            echo $binaryExcel;
+        }, 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="' . $scopeData['file_name'] . '"',
+            'Cache-Control' => 'max-age=0',
+        ]);
+
+        // $retData  = $this->scopeService->getScope($id);
+        // dd(gettype($retData));
+        // $sheetdata = $retData['sheetdata'];
+        // $filename = $retData['filename'];
+
+        // return $retData;
+
+        // return Excel::download(new ArrayToSheetExport($sheetdata), $filename . '.xlsx');
     }
 }

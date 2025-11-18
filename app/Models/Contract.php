@@ -131,6 +131,11 @@ class Contract extends Model
         return $this->hasMany(Contract::class, 'parent_contract_id', 'id');
     }
 
+    public function contract_scope()
+    {
+        return $this->hasOne(ContractScope::class, 'contract_id', 'id');
+    }
+
     public function user()
     {
         return $this->belongsTo(

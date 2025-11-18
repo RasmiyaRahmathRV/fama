@@ -105,7 +105,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('contract-list', [ContractController::class, 'getContracts'])->name('contract.list');
     Route::post('contract-approve', [ContractController::class, 'approveContract'])->name('contract.approve');
     Route::post('contract-reject', [ContractController::class, 'rejectContract'])->name('contract.reject');
-    Route::get('contract-documents', [ContractController::class, 'contract_documents'])->name('contract.documents');
+    Route::get('contract-documents/{id}', [ContractController::class, 'contract_documents'])->name('contract.documents');
     Route::post('contract-document-upload', [ContractController::class, 'document_upload'])->name('contract.document_upload');
     Route::get('export-contract', [ContractController::class, 'exportContract'])->name('contract.export');
 
@@ -138,4 +138,7 @@ Route::middleware(['auth'])->group(function () {
 
     // projectScope
     Route::get('/export-building-summary/{id}', [ContractController::class, 'exportBuildingSummary']);
+    Route::get('/download-summary/{id}/{filename}', [ContractController::class, 'downloadSummary'])
+        ->name('contract.downloadSummary');
+    Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);
 });

@@ -3,9 +3,18 @@
 namespace App\Services\Contracts;
 
 use App\Models\Contract;
+use App\Repositories\Contracts\ContractRepository;
+use App\Repositories\Contracts\ContractScopeRepository;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
-class DirectScopeDataService
+class ProjectScopeDataService
 {
+    public function __construct(
+        protected ContractScopeRepository $scopeRepo,
+        protected ContractRepository $contractrepo
+    ) {}
+
     public static function getContractData($contractId)
     {
         $contract = Contract::with([
@@ -18,6 +27,7 @@ class DirectScopeDataService
             'contract_unit_details',
             'contract_payment_receivables',
             'vendor',
+
         ])
             ->whereIn('contract_status', [0, 1])
             ->find($contractId);
@@ -27,7 +37,9 @@ class DirectScopeDataService
         }
 
         return [
+            'id' => $contract->id,
             'project_number' => $contract->project_number ?? '',
+            'contract_type_id' => $contract->contract_type_id ?? 0,
             'property_name' => $contract->property?->property_name ?? '',
             'area' => $contract->area?->area_name ?? '',
             'locality' => $contract->locality?->locality_name ?? '',
@@ -43,6 +55,8 @@ class DirectScopeDataService
             'commission' => formatNumber($contract->contract_rentals?->commission),
             'contract_fee' => formatNumber($contract->contract_detail?->contract_fee),
             'refundable_deposit' => formatNumber($contract->contract_rentals?->deposit),
+            'deposit_perc' => $contract->contract_rentals?->deposit_percentage,
+            'commission_perc' => $contract->contract_rentals?->commission_percentage,
             'total_payment_to_vendor' => formatNumber($contract->contract_rentals?->total_payment_to_vendor),
             'total_otc' => formatNumber($contract->contract_rentals?->total_otc),
             'final_cost' => formatNumber($contract->contract_rentals?->final_cost),
@@ -65,11 +79,85 @@ class DirectScopeDataService
             'number_of_months' => $contract->contract_rentals?->installment->installment_name,
             'total_rental' => formatNumber($contract->contract_rentals?->rent_receivable_per_annum),
             'plot_no' => $contract->property?->plot_no,
-            'renewal_status' => $contract->parent_contract_id ? 'Renewed' : 'New',
+            'renewal_status' => $contract->parent_contract_id ? 'Renew' : 'New',
             'renewal_number' => $contract->renewal_count,
             'unit_details' => $contract->contract_unit_details,
             'contract_payment_details' => $contract->contract_payment_details,
             'contract_payment_receivables' => $contract->contract_payment_receivables,
+
+
+            'plot_no' => $contract->property?->plot_no ?? '',
+            'unit_numbers' => $contract->contract_unit?->unit_numbers,
+            'closing_date' => $contract->contract_detail?->closing_date,
+            'payable_installment' => $contract->contract_payments?->installment?->installment_name,
+
+            'unit_property_type' => $contract->contract_unit?->property_type,
+            'no_of_floors' => $contract->contract_unit?->no_of_floors,
+            'floor_numbers' => $contract->contract_unit?->floor_numbers,
+            'parent' => $contract->parent ?? '',
         ];
+    }
+
+    public function scopeCreate($sheet = null, $contractId, $filename)
+    {
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($this->exportSpreadsheet($sheet));
+
+        ob_start();
+        $writer->save('php://output');
+        $binaryExcel = ob_get_clean();
+
+
+        $data['contract_id'] = $contractId;
+        // $serialized = serialize($sheet);
+        // $encoded = base64_encode($serialized);
+        $data['scope'] = base64_encode($binaryExcel);
+        $data['file_name'] = $filename;
+        $scope = $this->scopeRepo->create($data);
+
+
+        $upData['is_scope_generated'] = 1;
+        $upData['contract_status'] = 1;
+        $upData['scope_generated_by'] = auth()->user()->id;
+
+        $this->contractrepo->update($contractId, $upData);
+
+        return $scope;
+    }
+
+    public function getScope($scopeId)
+    {
+        $scopeData = $this->scopeRepo->find($scopeId);
+
+        return $scopeData;
+    }
+
+    // Helper to convert XLSX binary to array
+    // protected function convertXlsxToArray($binary)
+    // {
+    //     $temp = tempnam(sys_get_temp_dir(), 'xlsx');
+    //     file_put_contents($temp, $binary);
+
+    //     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+    //     $spreadsheet = $reader->load($temp);
+
+    //     return $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+    // }
+
+
+    public function exportSpreadsheet($sheet)
+    {
+        $spreadsheet = new Spreadsheet();
+        $activesheet = $spreadsheet->getActiveSheet();
+
+        foreach ($sheet as $r => $row) {
+            foreach ($row as $c => $val) {
+                $columnLetter = Coordinate::stringFromColumnIndex($c + 1);
+                $cell = $columnLetter . ($r + 1);
+
+                $activesheet->setCellValue($cell, $val);
+            }
+        }
+
+        return $spreadsheet;
     }
 }

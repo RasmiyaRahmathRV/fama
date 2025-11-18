@@ -891,10 +891,10 @@
         let totSubValue = 0;
         let cod = 0;
         let totFlat = 0;
+
+        const countOfHouses = $('.unit_no').filter((_, el) => $(el).val()).length;
+        const totalUnitCount = $('.unit_count').filter((_, el) => $(el).val()).length;
         if ($('#contract_type').val() == '1') {
-            // Count filled inputs
-            const countOfHouses = $('.unit_no').filter((_, el) => $(el).val()).length;
-            const totalUnitCount = $('.unit_count').filter((_, el) => $(el).val()).length;
 
             // Sum values
             const sumValues = selector => $('.' + selector).toArray().reduce((sum, el) => sum + (parseFloat($(el)
@@ -925,6 +925,10 @@
 
             if (totalPartitionFb > 0) cod = totSubValue = totalPartitionFb;
             if (totalBedSpaceFb > 0) totSubValue += totalBedSpaceFb;
+        } else {
+            totFlat = totalUnitCount || countOfHouses;
+            if (totSubValue === 0) totSubValue = totalUnitCount || countOfHouses;
+            if (totalPartitionFb > 0) cod = totSubValue;
         }
 
         return {
@@ -1659,6 +1663,12 @@
 
 
     function calculateRoi() {
+        let contract_type = '{{ $contract ? $contract->contract_type_id : '' }}';
+        if (contract_type == '2') {
+            calculateRoiFF();
+            return;
+        }
+
         let rentPerPartition = parseFloat($('#rent_per_part').val()) || 0;
         let rentPerBedspace = parseFloat($('#rent_per_bs').val()) || 0;
         let rentPerRoom = parseFloat($('#rent_per_room').val()) || 0;
@@ -2224,6 +2234,8 @@
     }
 
     function calculateRoiFF() {
+        console.log('roiff');
+        $('#subunit_count_per_contract').val(calculateSubAccommodations().totSubValue);
         let totalrev = 0;
         $('.unit_revenue').each(function() {
             totalrev += parseFloat($(this).val()) || 0;
@@ -2366,21 +2378,25 @@
         $('#duration_months').val('12');
 
         calculateEndDate();
+        console.log('roi call renew');
         calculateRoi();
+        console.log('roi call renew');
         CalculatePayables();
 
         paymentSplit();
         $('.unit_profit_perc').trigger('change');
     }
 
-    if (isEdit || isRenew) {
+    if (isEdit) {
         // console.log('Editing mode');
         //     $('#contract_type').trigger('change');
         CalculatePayables();
 
         subUnitCheck(edit = true);
         // finalRecCal();
+        console.log('roi call edit');
         calculateRoi();
+        console.log('roi call edit');
         valueTorentRec('load');
 
         $('.rec_payment_amount').on('input change', function() {

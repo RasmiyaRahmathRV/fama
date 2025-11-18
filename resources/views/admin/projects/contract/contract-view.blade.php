@@ -351,15 +351,15 @@
                                     <div class="mt-2 mt-xl-0">
                                         <a class="btn btn-secondary"
                                             href="{{ route('contract.edit', $contract->id) }}">Edit</a>
-                                        @if ($contract->contract_status == 0)
+                                        @if ($contract->is_scope_generated == 0)
+                                            <button class="btn btn-primary" onclick="generateScope({{ $contract->id }})">
+                                                <i class="fas fa-envelope-open-text"></i> Generate Scope</button>
+                                        @elseif ($contract->is_vendor_contract_uploaded == 0)
                                             <button type="button" class="btn btn-warning "><i class="fas fa-upload"></i>
                                                 Upload Contract </button>
-                                            <a href="{{ url('/export-building-summary', $contract->id) }}"
-                                                class="btn btn-primary">
-                                                <i class="fas fa-envelope-open-text"></i> Generate Scope</a>
                                         @elseif($contract->contract_status == 2)
-                                            <button type="button" class="btn btn-success "><i class="far fa-eye"></i> View
-                                                Contract </button>
+                                            <button type="button" class="btn btn-success "><i class="far fa-eye"></i>
+                                                View Contract </button>
                                             <button type="button" class="btn btn-primary ">
                                                 <i class="fas fa-download"></i> download Scope
                                             </button>
@@ -381,4 +381,33 @@
     <!-- /.content-wrapper -->
 @endsection
 @section('custom_js')
+    <script>
+        function generateScope(id) {
+
+            $.ajax({
+                type: "GET",
+                url: "/export-building-summary/" + id, // ← correct
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                    // Create a temporary link
+                    var link = document.createElement('a');
+                    link.href = response.file_url;
+                    link.download = ''; // Let browser pick filename from response
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+
+                    // // 2. REDIRECT AFTER 1 SEC
+                    // setTimeout(() => {
+                    //     // window.location.href = response.redirect_url;
+                    //     window.location.reload();
+                    // }, 800);
+                },
+                error: function(xhr) {
+                    alert("Failed to export summary!");
+                }
+            });
+        }
+    </script>
 @endsection

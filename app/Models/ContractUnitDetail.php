@@ -119,7 +119,6 @@ class ContractUnitDetail extends Model
 
     public function getAttributeValue($key)
     {
-        $keyVal = $key;
         // $value = parent::getAttributeValue($key);
         $formatted = [
             'unit_rent_per_annum',
@@ -129,17 +128,17 @@ class ContractUnitDetail extends Model
         ];
 
         // ✅ Safely get value only if attribute exists
-        $value = array_key_exists($keyVal, $this->attributes)
-            ? parent::getAttributeValue($keyVal)
+        $value = array_key_exists($key, $this->attributes)
+            ? parent::getAttributeValue($key)
             : null;
 
         // ✅ Only format if the key is one of your formatted fields
         //    and the value is numeric
-        if (in_array($keyVal, $formatted, true) && is_numeric($value)) {
+        if (in_array($key, $formatted, true) && is_numeric($value)) {
             return $this->formatNumber($value);
         }
 
-        return $value ?? parent::getAttributeValue($keyVal);
+        return $value ?? parent::getAttributeValue($key);
     }
 
     // public function getUnitRentPerAnnumAttribute($value)

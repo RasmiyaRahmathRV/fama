@@ -37,7 +37,8 @@ class ContractRepository
             'property',
             'contract_type',
             'children',
-            'parent'
+            'parent',
+            'contract_scope'
         )->findOrFail($id);
 
         return $contract;
@@ -51,10 +52,11 @@ class ContractRepository
             DB::raw('MAX(rent_per_partition) as rent_per_partition'),
             DB::raw('MAX(rent_per_bedspace) as rent_per_bedspace'),
             DB::raw('MAX(rent_per_room) as rent_per_room'),
-            DB::raw('MAX(rent_per_flat) as rent_per_flat')
+            DB::raw('MAX(total_rent_per_unit_per_month) as rent_per_flat')
         )
             ->where('contract_id', $id)
             ->first();
+
 
         // Merge totals into the contract object
         $contract->totals = [
@@ -113,13 +115,18 @@ class ContractRepository
                 'vendors.vendor_name',
                 'contract_details.start_date',
                 'contract_details.end_date',
-                'companies.company_name'
+                'companies.company_name',
+                'contract_units.no_of_units',
+                'contract_rentals.roi_perc',
+                'contract_rentals.expected_profit',
             ])
             ->join('contract_details', 'contract_details.contract_id', '=', 'contracts.id')
             ->join('properties', 'properties.id', '=', 'contracts.property_id')
             ->join('vendors', 'vendors.id', '=', 'contracts.vendor_id')
             ->join('companies', 'companies.id', '=', 'contracts.company_id')
-            ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id');
+            ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id')
+            ->leftJoin('contract_units', 'contract_units.contract_id', '=', 'contracts.id')
+            ->leftJoin('contract_rentals', 'contract_rentals.contract_id', '=', 'contracts.id');
 
         if (!empty($filters['search'])) {
             $query->orwhere('project_code', 'like', '%' . $filters['search'] . '%')
@@ -206,12 +213,9 @@ class ContractRepository
             ->join('vendors', 'vendors.id', '=', 'contracts.vendor_id')
             ->join('companies', 'companies.id', '=', 'contracts.company_id')
             ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id')
-            ->where('contract', function ($q) {
-                $q->where('contract_renewal_status', '!=', '1')
-                    ->where('renew_reject_status', '==', '0')
-                    ->where('contract_status', '==', '2');
-            })
-
+            ->where('contract_renewal_status', '!=', '1')
+            ->where('renew_reject_status', '=', '0')
+            ->where('contract_status', '=', '2')
             ->whereHas('contract_detail', function ($q) use ($twoMonthsLater) {
                 $q->where('end_date', '<=', $twoMonthsLater);
             });
