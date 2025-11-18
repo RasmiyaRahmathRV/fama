@@ -180,7 +180,7 @@ class AgreementService
                             // dd("testr");
                         }
                     }
-                    // $this->subUnitDetailserv->markSubunitVacant(
+                    // $this->subUnitDetailserv->markSubunitOccupied(
                     //     $unit['contract_unit_details_id'],
                     //     $unit['contract_subunit_details_id'] ?? null
                     // );
@@ -227,7 +227,7 @@ class AgreementService
 
                     $this->agreementPaymentDetailService->create($detail_data);
                 }
-                $this->subUnitDetailserv->markSubunitVacant($data['contract_unit_details_id'], $data['contract_subunit_details_id'] ?? null);
+                $this->subUnitDetailserv->markSubunitOccupied($data['contract_unit_details_id'], $data['contract_subunit_details_id'] ?? null);
             }
 
             // dd("testsub");
@@ -236,7 +236,7 @@ class AgreementService
             $this->contractService->updateAgreementStatus($contract_id);
 
 
-            // $this->subUnitDetailserv->markSubunitVacant($data['contract_subunit_details_id']);
+            // $this->subUnitDetailserv->markSubunitOccupied($data['contract_subunit_details_id']);
             // $contract_id = $ct->id;
             // $this->contractService->updateAgreementStatus($contract_id);
 
@@ -385,7 +385,7 @@ class AgreementService
                         $this->agreementPaymentDetailService->update($detail_data);
                     }
                     // }
-                    $this->subUnitDetailserv->markSubunitVacant(
+                    $this->subUnitDetailserv->markSubunitOccupied(
                         $unitData['contract_unit_details_id'],
                         $unitData['contract_subunit_details_id'] ?? null
                     );
@@ -483,7 +483,7 @@ class AgreementService
 
                 //     $this->agreementPaymentDetailService->update($detail_data);
                 // }
-                $this->subUnitDetailserv->markSubunitVacant($data['contract_unit_details_id'], $data['contract_subunit_details_id'] ?? null);
+                $this->subUnitDetailserv->markSubunitOccupied($data['contract_unit_details_id'], $data['contract_subunit_details_id'] ?? null);
             }
 
 
@@ -527,6 +527,7 @@ class AgreementService
             ['data' => 'tenant_details', 'name' => 'tenant_details'],
             ['data' => 'start_date', 'name' => 'start_date'],
             ['data' => 'end_date', 'name' => 'end_date'],
+            ['data' => 'is_signed_agreement_uploaded', 'name' => 'is_signed_agreement_uploaded'],
             ['data' => 'created_at', 'name' => 'created_at'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
         ];
@@ -541,8 +542,21 @@ class AgreementService
                 $number = 'P - ' . $row->contract->project_number ?? '-';
                 $type = $row->contract_type ?? '-';
 
-                return "<strong class=''>{$number}</strong><p class='mb-0'>{$type}</p>
-                </p>";
+                // return "<strong class=''>{$number}</strong><p class='mb-0'><span>{$type}</span></p>
+                // </p>";
+                $badgeClass = '';
+                if ($row->contract->contract_type_id == 1) {
+                    $badgeClass = 'badge badge-df';
+                } elseif ($row->contract->contract_type_id == 2) {
+                    $badgeClass = 'badge badge-ff';
+                } else {
+                    $badgeClass = 'badge badge-secondary';
+                }
+
+                return "<strong>{$number}</strong>
+            <p class='mb-0'>
+                <span class='{$badgeClass}'>{$type}</span>
+            </p>";
             })
             ->addColumn('tenant_details', function ($row) {
                 $name = $row->tenant_name ?? '-';
@@ -555,6 +569,7 @@ class AgreementService
             })
             ->addColumn('start_date', fn($row) => $row->start_date ?? '-')
             ->addColumn('end_date', fn($row) => $row->end_date ?? '-')
+            ->addColumn('is_signed_agreement_uploaded', fn($row) => $row->is_signed_agreement_uploaded ?? '-')
             ->addColumn('created_at', fn($row) => $row->created_at ?? '-')
 
 
@@ -566,28 +581,34 @@ class AgreementService
                 $action = '';
 
 
-                if (Gate::allows('agreement.view')) {
-                    $action .= '<a href="' . $viewUrl . '" class="btn btn-primary btn-sm"
+                if (Gate::allows('agreement.manage_installments')) {
+                    $action .= '<a href="' . $viewUrl . '" class="btn btn-primary btn-sm m-1"
                     title="View Installments"><i class="fas fa-eye"></i></a>';
                 }
 
-                $action .= '<a href="' . $docUrl . '" class="btn btn-warning btn-sm"
+                if (Gate::allows('agreement.document_upload')) {
+                    $action .= '<a href="' . $docUrl . '" class="btn btn-warning btn-sm m-1"
                     title="documents"><i class="fas fa-file"></i></a>';
+                }
 
-
-                $action .= '<a href="' . $printUrl . '" class="btn btn-primary btn-sm"
+                if (Gate::allows('agreement.view')) {
+                    $action .= '<a href="' . $printUrl . '" class="btn btn-primary btn-sm m-1"
                     title="Agreement"><i class="fas fa-handshake"></i></a>';
+                }
 
                 if (Gate::allows('agreement.edit')) {
 
-                    $action .= '<a href="' . $editUrl . '" class="btn btn-info  btn-sm" title="Edit agreement"><i
+                    $action .= '<a href="' . $editUrl . '" class="btn btn-info  btn-sm m-1" title="Edit agreement"><i
                         class="fas fa-pencil-alt"></i></a>';
                 }
 
-                $action .= '<a class="btn btn-danger  btn-sm" onclick="deleteConf()" title="delete"><i
-                        class="fas fa-trash"></i></a>';
+                if (Gate::allows('agreement.delete')) {
 
-                $action .= '<a href="#" class="btn btn-danger btn-sm" title="Terminate"
+                    $action .= '<a class="btn btn-danger  btn-sm m-1" onclick="deleteConf(' . $row->id . ')" title="delete"><i
+                        class="fas fa-trash"></i></a>';
+                }
+
+                $action .= '<a href="#" class="btn btn-danger btn-sm m-1" title="Terminate"
                     data-toggle="modal" data-target="#modal-terminate"><i
                         class="fas fa-file-signature"></i></a>
                 ';
@@ -605,5 +626,10 @@ class AgreementService
     public function getDetails($id)
     {
         return $this->agreementRepository->getDetails($id);
+    }
+    public function delete($id)
+    {
+
+        return $this->agreementRepository->delete($id);
     }
 }

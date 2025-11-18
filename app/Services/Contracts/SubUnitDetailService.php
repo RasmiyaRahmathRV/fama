@@ -215,7 +215,7 @@ class SubUnitDetailService
     }
 
 
-    // public function markSubunitVacant($subunitId)
+    // public function markSubunitOccupied($subunitId)
     // {
     //     $subunit = ContractSubunitDetail::find($subunitId);
 
@@ -238,7 +238,7 @@ class SubUnitDetailService
     //     }
     // }
 
-    public function markSubunitVacant($unitId, $subunitId = null)
+    public function markSubunitOccupied($unitId, $subunitId = null)
     {
 
         // Step 1: Mark subunit vacant if exists
