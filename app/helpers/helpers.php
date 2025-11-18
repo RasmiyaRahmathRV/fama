@@ -1,6 +1,7 @@
 <?php
 
 use App\Exports\Styles\DirectScopeStyles;
+use App\Exports\Styles\FFScopeStyles;
 use App\Models\Installment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -214,6 +215,8 @@ function paymentDetailScope($detail)
     return $modeReturn;
 }
 
+
+// DF scope
 function renderSummary($sheet, $contract, $title)
 {
     // Example: add summary data to Excel
@@ -640,4 +643,454 @@ function renderTotal($sheet, $contract)
             'color' => ['rgb' => 'FF0000'],
         ],
     ]));
+}
+
+// FF scope
+function renderFamaPaymentSummary($sheet, $contract)
+{
+    // Example: add summary data to Excel
+    $sheet->setCellValue('A2', 'FAMA REAL ESTATE');
+    $sheet->getStyle('A2')->getFont()->setBold(true);
+    $sheet->getStyle('A2')->applyFromArray(FFScopeStyles::headerFama());
+
+    $summaryArr = [
+        [$contract['property_name'], ''],
+        ['Rent Payable', $contract['total_contract_amount']],
+        ['Deposit', $contract['refundable_deposit']],
+        ['Commission', $contract['commission']],
+        ['Ejari Registration Fee', '0'],
+        ['Total to be paid', $contract['total_contract_amount']],
+        ['Profit', $contract['expected_profit']],
+        ['Total Revenue', $contract['total_rental']],
+        ['Initial Rent', $contract['initial_investment']],
+        ['One Time Cost', $contract['total_otc']],
+        ['Initial Investment', $contract['initial_investment']],
+        ['ROI', $contract['roi']],
+        ['Project Scope', ''],
+    ];
+
+    // Write the array starting at row 2
+    $sheet->fromArray($summaryArr, null, 'A3');
+
+    // Apply style for all rows in the summary table
+    $lastSummRow = 3 + count($summaryArr) - 1;
+
+
+    $sheet->getStyle('A3:A' . $lastSummRow)->applyFromArray(FFScopeStyles::summaryLeft());
+
+    $sheet->getStyle('B3:B' . $lastSummRow)->applyFromArray(FFScopeStyles::summaryRight());
+}
+
+function renderFamaPayables($sheet, $contract)
+{
+    $sheet->mergeCells('A19:D19');
+    $sheet->setCellValue('A19', 'Payment Details');
+    $sheet->getStyle('A19:D19')->applyFromArray(FFScopeStyles::headerFama());
+
+    $installmentDet = $arrayofPayable = [];
+    foreach ($contract['contract_payment_details'] as $paymentDet) {
+        $arrayofPayable[] = toNumeric($paymentDet->payment_amount);
+
+        $installmentDet[] = [
+            $paymentDet->bank?->bank_name ?? $paymentDet->payment_mode?->payment_mode_name,
+            $paymentDet->cheque_no,
+            DateTime::createFromFormat('d-m-Y', $paymentDet->payment_date)->format('d-M-Y'),
+            formatNumber($paymentDet->payment_amount)
+        ];
+    }
+
+
+    $payableInstallmentsArr = [
+        ['Bank Name', 'Cheque Number', 'Cheque Date', 'Amount'],
+    ];
+    $payableDetArr = array_merge($payableInstallmentsArr, $installmentDet);
+
+    $payableDetArr = array_merge($payableDetArr, [['', '', '', $contract['total_contract_amount']]]);
+    // dd($payableDetArr);
+
+    // Write the array starting at row 2
+    $sheet->fromArray($payableDetArr, null, 'A20');
+
+    $sheet->getStyle('A20:D20')->applyFromArray([
+        'font' => [
+            'bold' => true,
+        ],
+        'borders' => ['allBorders' => [
+            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+        ]],
+        'fill' => [
+            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+            'color' => ['rgb' => 'FFFF00'], // background color (yellow)
+        ],
+    ]);
+
+    $sheet->getStyle("A21:C25")->applyFromArray([
+        'alignment' => ['horizontal' => 'left', 'vertical' => 'center'],
+        'borders' => ['allBorders' => [
+            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+        ]],
+        'fill' => [
+            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+            'color' => ['rgb' => 'FFFF00'], // background color (yellow)
+        ],
+    ]);
+    $sheet->getStyle("D21:D25")->applyFromArray([
+        'alignment' => ['horizontal' => 'right', 'vertical' => 'center'],
+        'borders' => ['allBorders' => [
+            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+        ]],
+        'fill' => [
+            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+            'color' => ['rgb' => 'FFFF00'], // background color (yellow)
+        ],
+    ]);
+    $sheet->getStyle('D25:D25')->applyFromArray([
+        'font' => [
+            'bold' => true,
+        ],
+    ]);
+    $sheet->getStyle("D21:D25")
+        ->getNumberFormat()
+        ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+}
+
+function renderReceivablesFF($sheet, $contract)
+{
+    $installmentRec = $arrayofRec = [];
+    foreach ($contract['contract_payment_receivables'] as $key => $paymentRec) {
+        $arrayofRec[] = toNumeric($paymentRec->receivable_amount);
+        $installmentRec[] = [
+            DateTime::createFromFormat('d-m-Y', $paymentRec->receivable_date)->format('d-M-Y'),
+            formatNumber($paymentRec->receivable_amount)
+        ];
+    }
+
+
+    $payableRecArr = [
+        ['Sold To Faateh', 'Receivables',],
+        ['Total Receivables in 12 Cheques',     $contract['total_rental']],
+        ['Receivables Date From Faateh to Fama', ''],
+    ];
+    $receivableDetArr = array_merge($payableRecArr, $installmentRec);
+
+    // Write the array starting at row 2
+    $sheet->fromArray($receivableDetArr, null, 'A27');
+
+    $leftAlign = [
+        'alignment' => ['horizontal' => 'left', 'vertical' => 'center'],
+    ];
+
+    $greenFill = [
+        'borders' => ['allBorders' => [
+            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+        ]],
+        'fill' => [
+            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+            'color' => ['rgb' => 'C6E0B4'], // background color (green)
+        ],
+    ];
+
+    $sheet->getStyle('A27:B29')->applyFromArray(array_merge_recursive(
+        [
+            'font' => [
+                'bold' => true,
+            ],
+        ],
+        $leftAlign,
+        $greenFill
+    ));
+
+    $sheet->getStyle('B28:B28')->applyFromArray([
+        'alignment' => ['horizontal' => 'right', 'vertical' => 'center'],
+    ]);
+
+    $sheet->getStyle("A30:B42")->applyFromArray(array_merge_recursive(
+        [
+            'alignment' => ['horizontal' => 'right', 'vertical' => 'center'],
+        ],
+        $greenFill
+    ));
+
+    $sheet->setCellValue('B42', formatNumber(array_sum($arrayofRec)));
+    $sheet->getStyle('B42')->applyFromArray(
+        [
+            'font' => [
+                'bold' => true,
+            ],
+        ]
+    );
+
+
+    $sheet->getStyle("A27:B42")
+        ->getNumberFormat()
+        ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+}
+
+function renderSummaryFF($sheet, $contract)
+{
+    // Example: add summary data to Excel
+    $sheet->setCellValue('F4', 'Contract Details');
+    $sheet->mergeCells('F4:G4');
+    $sheet->getStyle('F4')->getFont()->setBold(true);
+    $sheet->getStyle('F4:G4')->applyFromArray([
+        'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
+        'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+        'fill' => [
+            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+            'color' => ['rgb' => 'B4C6E7'], // background color (green)
+        ],
+    ]);
+
+    $summaryArr = [
+        ['Building Name', $contract['property_name']],
+        ['Property Type', $contract['unit_property_type']],
+        ['Plot Number', $contract['plot_no']],
+        ['Project Status', $contract['renewal_status']],
+        ['Renewal Number', $contract['renewal_number']],
+        ['Flat No.', $contract['unit_numbers']],
+        ['Number of Floors', $contract['no_of_floors']],
+        ['Floor Number ', $contract['floor_numbers']],
+        ['Number of Houses', $contract['total_units'] . ' Houses'],
+        ['Closing Date', $contract['closing_date']],
+        ['Unit Type', $contract['unit_type']],
+        ['Contract Start Date ', $contract['start_date']],
+        ['Contract End Date', $contract['end_date']],
+        ['Grace Period', $contract['grace_period']],
+        ['Total Amount of Contract', $contract['total_contract_amount']],
+        ['Deposit ' . toNumeric($contract['deposit_perc']) . '%'],
+        ['Commission ' . toNumeric($contract['commission_perc']) . '%', $contract['commission']],
+        ['Ejari Fee', ''],
+        ['Payment in (Number of Cheques)', $contract['payable_installment']],
+        ['Total Payable Amount', $contract['total_contract_amount']]
+    ];
+
+    // Write the array starting at row 2
+    $sheet->fromArray($summaryArr, null, 'F5');
+
+    // Apply style for all rows in the summary table
+    $lastSummRow = 5 + count($summaryArr) - 2;
+
+
+    $sheet->getStyle('F5:G' . $lastSummRow)->applyFromArray(FFScopeStyles::summaryFF());
+
+    $sheet->getStyle('F24:G24')->applyFromArray(array_merge_recursive(
+        FFScopeStyles::summaryFF(),
+        [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+                ],
+            ],
+        ]
+    ));
+    $sheet->getStyle('F24:G24')->getFont()->setBold(true);
+
+    $sheet->getStyle('G5:G24')->applyFromArray([
+        'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
+    ]);
+
+    $sheet->getStyle('F4:G23')->applyFromArray([
+        'borders' => [
+            'outline' => [
+                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+            ],
+        ],
+    ]);
+}
+
+function renderPaymentSummary($sheet, $contract)
+{
+    $sheet->setCellValue('F28', 'Summary');
+    $sheet->mergeCells('F28:G28');
+    $sheet->getStyle('F28')->getFont()->setBold(true);
+    $sheet->getStyle('F28:G28')->applyFromArray([
+        'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
+        'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+
+    ]);
+
+    $summaryArr = [
+        ['Total Cost of Fama', $contract['total_contract_amount']],
+        ['Profit on Cost', $contract['expected_profit']],
+        ['Total Revenue of Fama', $contract['total_rental']],
+    ];
+
+    // Write the array starting at row 2
+    $sheet->fromArray($summaryArr, null, 'F29');
+
+    // Apply style for all rows in the summary table
+    $lastSummRow = 30 + count($summaryArr) - 2;
+    // dd($lastSummRow);
+    $sheet->getStyle('F29:G' . $lastSummRow)->applyFromArray(FFScopeStyles::paymentSummaryFF());
+
+    $sheet->getStyle('G29:G31')->applyFromArray([
+        'alignment' => ['horizontal' => 'right', 'vertical' => 'center'],
+    ]);
+}
+
+function renderUnitDetailsFF($sheet, $contract)
+{
+    $profitPerc = $profit = $rentAnnum = $revenue = [];
+    foreach ($contract['unit_details'] as $key => $unitdetail) {
+
+        $subunitdet = getAccommodationDetails($unitdetail);
+
+        if ($key == 0)
+            $unitDetaiArr[] = ['Flat No', 'Unit Type', 'Rent Amount', 'Total Amount Payable', 'Profit %', 'Profit', 'Revenue'];
+
+
+        $unitDetaiArr[] = [
+            $unitdetail->unit_number ?? '',
+            $unitdetail->unit_type->unit_type ?? '',
+            $unitdetail->unit_rent_per_annum ?? 0,
+            $unitdetail->unit_rent_per_annum ?? 0,
+            $unitdetail->unit_profit_perc . '%' ?? 0,
+            $unitdetail->unit_profit ?? 0,
+            $unitdetail->unit_revenue ?? 0,
+        ];
+        $profitPerc[] = toNumeric($unitdetail->unit_profit_perc);
+        $profit[] = toNumeric($unitdetail->unit_profit);
+        $rentAnnum[] = toNumeric($unitdetail->unit_rent_per_annum);
+        $revenue[] = toNumeric($unitdetail->unit_revenue);
+    }
+
+    $unitDetaiArr[] = [];
+    $unitDetaiArr[] = [];
+    $unitDetaiArr[] = [];
+
+    $totrentannum = formatNumber(array_sum($rentAnnum));
+
+    $unitDetaiArr[] = [
+        '',
+        '',
+        $totrentannum,
+        $totrentannum,
+        formatNumber(array_sum($profitPerc) / count($profitPerc)) . '%',
+        formatNumber(array_sum($profit)),
+        formatNumber(array_sum($revenue))
+    ];
+    $unitDetaiArr[] = ['', '', formatNumber(array_sum($rentAnnum) / 4), '', '', '', ''];
+    $unitDetaiArr[] = ['', '', formatNumber(array_sum($rentAnnum) * 0.1), '', '', '', ''];
+
+    // Write the array starting at row 4, column K
+    $sheet->fromArray($unitDetaiArr, null, 'I5');
+
+    // Calculate the last row
+    $lastRow = 5 + count($unitDetaiArr) - 1;
+
+    // 🔹 Apply style for entire table (borders, fill, alignment)
+    $sheet->getStyle("I5:O" . ($lastRow - 3))->applyFromArray([
+        'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
+        'borders' => ['allBorders' => [
+            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+        ]],
+        'fill' => [
+            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+            'color' => ['rgb' => 'FFFF00'],
+        ],
+    ]);
+
+    // 🔹 Make header row (only first row) bold
+    $sheet->getStyle('I5:O5')->getFont()->setBold(true);
+
+    $sheet->getStyle("I" . ($lastRow - 3) . ":O" . ($lastRow - 1))
+        ->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_NONE,
+                ],
+            ],
+        ]);
+
+
+    $sheet->getStyle("K" . ($lastRow - 2) . ":O" . ($lastRow - 2))
+        ->applyFromArray([
+            'alignment' => ['horizontal' => 'right', 'vertical' => 'center'],
+            'font' => [
+                'bold' => true,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => [
+                    'argb' => 'F4B084', // yellow
+                ],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_NONE,
+                ],
+            ],
+        ]);
+
+    $sheet->getStyle("K" . ($lastRow - 1) . ":P" . $lastRow)
+        ->applyFromArray([
+            'alignment' => ['horizontal' => 'right', 'vertical' => 'center'],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_NONE,
+                ],
+            ],
+            // 'font' => [
+            //     'color' => [
+            //         'argb' => 'D0CECE', // black text color
+            //     ],
+            // ],
+
+        ]);
+
+
+    $sheet->getStyle("I5:O13")
+        ->getNumberFormat()
+        ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+}
+
+function renderRenewDetailsFF($sheet, $contract)
+{
+    $sheet->setCellValue('F32', 'Project ' . $contract['parent']->project_number . ' - Renewal');
+    $sheet->mergeCells('F32:G32');
+    $sheet->getStyle('F32')->getFont()->setBold(true);
+    $sheet->getStyle('F32:G32')->applyFromArray([
+        'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
+        'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+        'fill' => [
+            'fillType' => Fill::FILL_SOLID,
+            'startColor' => [
+                'argb' => '305496', // Blue
+            ],
+        ],
+        'font' => [
+            'color' => [
+                'argb' => 'FFFFFF', // white
+            ],
+        ],
+    ]);
+
+    $summaryArr = [
+        ['Old Rental to Vendor', formatNumber($contract['parent']->contract_rentals?->total_payment_to_vendor)],
+        ['Profit Percentage', $contract['parent']->contract_rentals?->profit_percentage . '%'],
+        ['Total Profit earned', formatNumber($contract['parent']->contract_rentals?->expected_profit)],
+        ['Total Rental Received( ' . $contract['parent']->contract_rentals?->installment->installment_name . ' Installements)', formatNumber($contract['parent']->contract_rentals?->rent_receivable_per_annum)],
+        ['Old Monthly Rental', formatNumber($contract['parent']->contract_rentals?->rent_receivable_per_month)],
+        ['', ''],
+        ['New Rental to Vendor', formatNumber($contract['total_payment_to_vendor'])],
+        ['Profit Percentage', $contract['profit_percentage'] . '%'],
+        ['Total Profit earned', formatNumber($contract['expected_profit'])],
+        ['Total Rental Receivables( ' . $contract['number_of_months'] . ' Installments)', $contract['total_rental']],
+        ['New Monthly Rental', formatNumber($contract['expected_rental'])],
+    ];
+
+    // // Write the array starting at row 2
+    $sheet->fromArray($summaryArr, null, 'F33');
+
+    // // Apply style for all rows in the summary table
+    $lastSummRow = 33 + count($summaryArr) - 1;
+    // dd($lastSummRow);
+
+    $sheet->getStyle('F33:F' . $lastSummRow)->applyFromArray(FFScopeStyles::renewalleftSummaryFF());
+    $sheet->getStyle('G33:G' . $lastSummRow)->applyFromArray(FFScopeStyles::renewalCenterSummaryFF());
+
+
+    $sheet->getStyle('F38:G38')->applyFromArray(FFScopeStyles::clearstyleFF());
+    $sheet->getStyle('F37:G37')->applyFromArray(FFScopeStyles::renewColorChange());
+    $sheet->getStyle('F43:G43')->applyFromArray(FFScopeStyles::renewColorChange());
 }

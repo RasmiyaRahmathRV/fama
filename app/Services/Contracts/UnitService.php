@@ -42,6 +42,7 @@ class UnitService
         $this->validate($data, $id);
         $data['updated_by'] = auth()->user()->id;
         $data = array_merge($data, $this->getUnitSummary($unitdetails));
+        // dd($data);
         return $this->unitRepo->update($id, $data);
     }
 
@@ -53,9 +54,13 @@ class UnitService
 
     public function getUnitSummary(array $unitDetails)
     {
-        $unitNumbers = implode(', ', array_filter($unitDetails['unit_number'] ?? []));
+        $unitNumbers = implode(', ', array_unique($unitDetails['unit_number'] ?? []));
 
         $unitTypeCounts = array_count_values(array_filter($unitDetails['unit_type_id'] ?? []));
+
+        $property_type = implode(', ', array_unique($unitDetails['property_type_id']));
+        $no_of_floors = count(array_unique($unitDetails['floor_no']));
+        $floor_no = implode(', ', array_unique($unitDetails['floor_no']));
 
         $lookupNames = UnitType::getNamesByIds(array_keys($unitTypeCounts));
 
@@ -67,9 +72,14 @@ class UnitService
 
         $unitTypeSummaryText = implode(', ', $unitTypeSummary);
 
+
+
         return [
             'unit_numbers' => $unitNumbers,
             'unit_type_count'   => $unitTypeSummaryText,
+            'unit_property_type' => $property_type,
+            'no_of_floors' => $no_of_floors,
+            'floor_numbers' => $floor_no,
         ];
     }
 

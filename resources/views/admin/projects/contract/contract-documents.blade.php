@@ -50,7 +50,8 @@
                                         <tr>
                                             <td>1</td>
                                             <td>Project Scope</td>
-                                            <td></td>
+                                            <td><a href="{{ url('/download-scope', $contract->contract_scope->id) }}"
+                                                    class="btn btn-info"><i class="far fa-eye"></i></a></td>
                                         </tr>
                                         <tr>
                                             <td>2</td>
