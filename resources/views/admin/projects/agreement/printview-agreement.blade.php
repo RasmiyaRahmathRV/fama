@@ -8,43 +8,41 @@
     <link rel="stylesheet" href="{{ asset('css/adminlte.min.css') }}">
 @endsection
 @section('content')
-    <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
 
         <section class="content">
-            <div class="container-fluid p-5">
+            <div class="container-fluid ">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <h1>Tenant Agreement</h1>
+                            </div>
+
+                        </div>
+                    </div><!-- /.container-fluid -->
+                </section>
                 @include('admin.projects.agreement.partials.agreement_content', [
                     'agreement' => $agreement,
                 ])
-                {{-- {{ dd($agreement) }} --}}
-
-                <div class="mt-5" align="center">
+                <div class="mt-5 text-center">
                     <a href="{{ route('agreement.index') }}" class="btn btn-default">back</a>
                     <a href="{{ route('agreement.print', $agreement->id) }}" rel="noopener" target="_blank"
                         class="btn btn-info">Print</a>
                 </div>
-
-            </div><!-- /.container-fluid -->
-
-
+            </div>
         </section>
-        <!-- /.content -->
     </div>
 @endsection
 @section('custom_js')
     <!-- jQuery -->
-    <script src="{{ asset('assets/jquery/jquery.min.js"') }}"></script>
+    <script src="{{ asset('assets/jquery/jquery.min.js') }}"></script>
     <!-- Bootstrap 4 -->
     <script src="{{ asset('assets/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- AdminLTE App -->
-    <script src="{{ asset('js/adminlte.min.js') }}"></script>
+    {{-- <script src="{{ asset('js/adminlte.min.js') }}"></script> --}}
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('/js/demo.js') }}"></script>
+
+    <script src="{{ asset('assets/select2/js/select2.full.min.js') }}"></script>
 @endsection

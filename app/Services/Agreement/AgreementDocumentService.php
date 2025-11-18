@@ -95,6 +95,7 @@ class AgreementDocumentService
             2 => 'is_emirates_id_uploaded',
             3 => 'is_trade_license_uploaded',
             4 => 'is_visa_uploaded',
+            5 => 'is_signed_agreement_uploaded'
         ];
 
         if (isset($flagMap[$type])) {

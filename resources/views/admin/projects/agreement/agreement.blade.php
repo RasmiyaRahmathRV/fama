@@ -64,6 +64,7 @@
                                             <th>Tenant Details</th>
                                             <th>Start Date</th>
                                             <th>End Date</th>
+                                            <th>Signed Agreement Status</th>
                                             <th>Created At</th>
                                             <th>Actions</th>
                                             <!-- <th>Status</th> -->
@@ -213,6 +214,28 @@
                         name: 'agreements.end_date',
                     },
                     {
+                        data: 'is_signed_agreement_uploaded',
+                        name: 'agreements.is_signed_agreement_uploaded',
+                        render: function(data, type, row) {
+                            let badgeClass = '';
+                            let text = '';
+
+                            switch (data) {
+                                case 0:
+                                    badgeClass = 'badge badge-warning';
+                                    text = 'Not Uploaded';
+                                    break;
+                                case 1:
+                                    badgeClass = 'badge badge-success text-white';
+                                    text = 'Uploaded';
+                                    break;
+
+                            }
+
+                            return '<span class="' + badgeClass + '">' + text + '</span>';
+                        },
+                    },
+                    {
                         data: 'created_at',
                         name: 'agreements.created_at',
                     },
@@ -262,14 +285,14 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "DELETE",
-                        url: '/contract/' + id,
+                        url: '/agreement/' + id,
                         data: {
                             _token: $('meta[name="csrf-token"]').attr('content')
                         },
                         dataType: "json",
                         success: function(response) {
                             toastr.success(response.message);
-                            $('#contractTable').DataTable().ajax.reload();
+                            $('#agreementTable').DataTable().ajax.reload();
                         }
                     });
 
