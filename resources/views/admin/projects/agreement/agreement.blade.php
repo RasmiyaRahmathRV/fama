@@ -98,31 +98,33 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form action="" id="PropertyForm">
-                            <input type="hidden" name="id" id="Property_id">
+                        <form action="" id="terminateForm">
+                            @csrf
                             <div class="modal-body">
                                 <div class="card-body">
                                     <div class="form-group row">
                                         <label for="exampleInputEmail1">Date</label>
                                         <div class="input-group date" id="terminationdate" data-target-input="nearest">
-                                            <input type="text" class="form-control datetimepicker-input"
-                                                data-target="#terminationdate" placeholder="dd-mm-YYYY" />
+                                            <input type="text" name="terminated_date"
+                                                class="form-control datetimepicker-input" data-target="#terminationdate"
+                                                placeholder="dd-mm-YYYY" />
                                             <div class="input-group-append" data-target="#terminationdate"
                                                 data-toggle="datetimepicker">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                <div class="input-group-text"><i class="fa fa-calendar-alt"></i></div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="inputEmail3" class="col-form-label">Reason</label>
-                                        <textarea name="" id="" class="form-control"></textarea>
+                                        <textarea name="terminated_reason" id="" class="form-control"></textarea>
                                     </div>
+                                    <input type="hidden" name="agreement_id" id="agreement_id">
                                 </div>
                             </div>
                             <!-- /.card-body -->
                             <div class="modal-footer justify-content-between">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-info">Save changes</button>
+                                <button type="submit" class="btn btn-info terminate-btn">Save changes</button>
                             </div>
                         </form>
                     </div>
@@ -164,7 +166,18 @@
 
     <script src="{{ asset('assets/bs-stepper/js/bs-stepper.min.js') }}"></script>
 
-
+    <script>
+        $(document).on('click', '.open-terminate-modal', function(e) {
+            e.preventDefault();
+            const agreementId = $(this).data('id');
+            $('#agreement_id').val(agreementId);
+            $('#terminationdate').datetimepicker({
+                format: 'DD-MM-YYYY',
+                useCurrent: false
+            });
+            $('#modal-terminate').modal('show');
+        });
+    </script>
     <script>
         $(function() {
             let table = $('#agreementTable').DataTable({
@@ -301,5 +314,42 @@
                 }
             });
         }
+        $('.terminate-btn').click(function(e) {
+            e.preventDefault();
+
+            const button = $(this);
+            const url = "{{ url('agreement-terminate') }}";
+            const method = 'POST';
+            const form = document.getElementById('terminateForm');
+
+            button.prop('disabled', true);
+
+            const formData = new FormData(form);
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
+            $.ajax({
+                url: url,
+                type: method,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    toastr.success(response.message);
+                    $('#modal-terminate').modal('hide');
+                    window.location.href = "{{ route('agreement.index') }}";
+                },
+                error: function(xhr) {
+                    button.prop('disabled', false);
+                    const response = xhr.responseJSON;
+                    if (xhr.status === 422 && response?.errors) {
+                        $.each(response.errors, function(key, messages) {
+                            toastr.error(messages[0]);
+                        });
+                    } else if (response.message) {
+                        toastr.error(response.message);
+                    }
+                }
+            });
+        });
     </script>
 @endsection

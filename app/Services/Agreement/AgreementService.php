@@ -608,10 +608,12 @@ class AgreementService
                         class="fas fa-trash"></i></a>';
                 }
 
-                $action .= '<a href="#" class="btn btn-danger btn-sm m-1" title="Terminate"
-                    data-toggle="modal" data-target="#modal-terminate"><i
-                        class="fas fa-file-signature"></i></a>
-                ';
+                // $action .= '<a href="#" class="btn btn-danger btn-sm m-1 open-terminate-modal" title="Terminate" id="openTerminatemodal"
+                //      data-id="' . $row->id . '" ><i class="fas fa-file-signature"></i></a>
+                // ';
+                $action .= '<a href="#" class="btn btn-danger btn-sm m-1 open-terminate-modal" title="Terminate" data-id="' . $row->id . '">
+                <i class="fas fa-file-signature"></i>
+            </a>';
 
 
 
@@ -631,5 +633,9 @@ class AgreementService
     {
 
         return $this->agreementRepository->delete($id);
+    }
+    public function terminate($data)
+    {
+        dd($data);
     }
 }

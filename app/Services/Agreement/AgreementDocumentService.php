@@ -34,8 +34,6 @@ class AgreementDocumentService
         }
 
         foreach ($documents as $doc) {
-            // Validate document fields
-
             $validator = Validator::make($doc, [
                 'document_type' => 'nullable|string|max:255',
                 'document_number' => 'required_with:document_path|nullable|string|max:255',
@@ -63,9 +61,12 @@ class AgreementDocumentService
                 continue;
             }
 
-            // Store file
-            $path = $doc['document_path']->store('agreements/documents', 'public');
-            // dd($agreement);
+            $code = $agreement->agreement_code;
+
+            // $path = $doc['document_path']->store('agreements/documents/' . $code . '/', 'public');
+
+            $filename = uniqid() .  '_' . $doc['document_path']->getClientOriginalName();
+            $path = $doc['document_path']->storeAs('agreements/documents/' . $code . '/', $filename, 'public');
 
             $doc_data = [
                 'agreement_id' => $agreement->id,
@@ -76,11 +77,9 @@ class AgreementDocumentService
                 'added_by' => $addedBy,
             ];
 
-            // Create record
             $createdDoc = $this->agreementDocRepository->create($doc_data);
 
 
-            // Update flag based on document type
             $this->updateAgreementFlags($agreement, $createdDoc->document_type);
         }
     }
@@ -105,12 +104,12 @@ class AgreementDocumentService
     }
     public function update($agreement, array $documents, $updatedBy)
     {
-        // dd($documents);
         if (empty($documents)) {
             return;
         }
+        $code = $agreement->agreement_code;
 
-        // // Fetch existing document IDs from the form, if present
+
         // $existingIds = array_filter(array_column($documents, 'id') ?? []);
 
         // // Delete documents that were removed in the form
@@ -123,7 +122,6 @@ class AgreementDocumentService
         //     });
 
         foreach ($documents as $doc) {
-            // If document is existing, update it
             if (!empty($doc['id'])) {
                 $existingDoc = $agreement->agreement_documents()->find($doc['id']);
                 // dd($existingDoc);
@@ -131,11 +129,13 @@ class AgreementDocumentService
                     $existingDoc->document_number = $doc['document_number'] ?? $existingDoc->document_number;
 
                     if (!empty($doc['document_path']) && $doc['document_path'] instanceof UploadedFile) {
-                        // Delete old file
                         Storage::disk('public')->delete($existingDoc->original_document_path);
 
-                        // Store new file
-                        $path = $doc['document_path']->store('agreements/documents', 'public');
+                        // $path = $doc['document_path']->store('agreements/documents/' . $code . '/', 'public');
+
+                        $filename = uniqid()  . '_' . $doc['document_path']->getClientOriginalName();
+                        $path = $doc['document_path']->storeAs('agreements/documents/' . $code . '/', $filename, 'public');
+
                         $existingDoc->original_document_path = $path;
                         $existingDoc->original_document_name = $doc['document_path']->getClientOriginalName();
                         $existingDoc->updated_by = $updatedBy;
@@ -147,7 +147,6 @@ class AgreementDocumentService
                 continue;
             }
 
-            // If document is new, create it
             if (
                 empty($doc['document_number']) ||
                 empty($doc['document_path']) ||
@@ -156,8 +155,11 @@ class AgreementDocumentService
                 continue;
             }
 
-            // Store file
-            $path = $doc['document_path']->store('agreements/documents', 'public');
+
+            // $path = $doc['document_path']->store('agreements/documents/' . $code . '/', 'public');
+
+            $filename = uniqid() .  '_' . $doc['document_path']->getClientOriginalName();
+            $path = $doc['document_path']->storeAs('agreements/documents/' . $code . '/', $filename, 'public');
 
             $doc_data = [
                 'agreement_id' => $agreement->id,
