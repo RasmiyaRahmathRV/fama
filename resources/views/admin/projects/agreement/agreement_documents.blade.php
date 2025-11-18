@@ -195,6 +195,7 @@
 @section('custom_js')
     <script>
         $('.importBtn').click(function(e) {
+
             e.preventDefault();
             const contractForm = $(this);
             const agreementId = $('input[name="agreement_id"]').val();
@@ -207,21 +208,23 @@
             $('#agreementImportForm .form-row').each(function() {
                 const firstField = $(this).find('input[name*="[document_number]"]');
                 const secondField = $(this).find('input[name*="[document_path]"]');
+                const hiddenIdField = $(this).find('input[name*="[id]"]')
 
                 const firstVal = firstField.val()?.trim();
                 const secondVal = secondField.val()?.trim();
+                const hasExistingFile = hiddenIdField.length > 0;
 
                 firstField.removeClass('is-invalid');
                 secondField.removeClass('is-invalid');
                 $(this).find('.invalid-feedback').remove();
 
-                if (firstVal && !secondVal) {
+                if (firstVal && !secondVal && !hasExistingFile) {
                     secondField.addClass('is-invalid');
                     secondField.after(
                         '<span class="invalid-feedback d-block">This field is required.</span>');
                     formValid = false;
                 }
-                if (secondVal && !firstVal) {
+                if ((secondVal || hasExistingFile) && !firstVal) {
                     firstField.addClass('is-invalid');
                     firstField.after(
                         '<span class="invalid-feedback d-block">This field is required.</span>');
@@ -233,11 +236,12 @@
                 toastr.error('Please fill all required fields.');
                 return false;
             }
+            $(this).prop('disabled', true);
 
             var fdata = new FormData(form);
 
             fdata.append('_token', $('meta[name="csrf-token"]').attr('content'));
-            alert("hi");
+            // alert("hi");
 
             $.ajax({
                 url: url,

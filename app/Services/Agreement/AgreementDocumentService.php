@@ -138,6 +138,7 @@ class AgreementDocumentService
                         $path = $doc['document_path']->store('agreements/documents', 'public');
                         $existingDoc->original_document_path = $path;
                         $existingDoc->original_document_name = $doc['document_path']->getClientOriginalName();
+                        $existingDoc->updated_by = $updatedBy;
                     }
 
                     $existingDoc->save();
@@ -164,7 +165,7 @@ class AgreementDocumentService
                 'document_number' => $doc['document_number'] ?? null,
                 'original_document_path' => $path,
                 'original_document_name' => $doc['document_path']->getClientOriginalName(),
-                'updated_by' => $updatedBy,
+                // 'updated_by' => $updatedBy,
                 'added_by' => $updatedBy
             ];
 
