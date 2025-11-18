@@ -205,4 +205,13 @@ class AgreementController extends Controller
         $this->agreementService->delete($agreement->id);
         return response()->json(['success' => true, 'message' => 'Agreement deleted successfully']);
     }
+    public function terminate(Request $request)
+    {
+        try {
+            $agreement = $this->agreementService->terminate($request->all());
+            return response()->json(['success' => true, 'data' => $agreement, 'message' => 'Agreeament terminated successfully'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
+        }
+    }
 }

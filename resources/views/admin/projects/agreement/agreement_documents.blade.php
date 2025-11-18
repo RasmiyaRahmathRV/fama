@@ -197,7 +197,7 @@
         $('.importBtn').click(function(e) {
 
             e.preventDefault();
-            const contractForm = $(this);
+            const uploadBtn = $(this);
             const agreementId = $('input[name="agreement_id"]').val();
             const url = "{{ url('agreement-documents-upload') }}/" + agreementId;
 
@@ -236,7 +236,7 @@
                 toastr.error('Please fill all required fields.');
                 return false;
             }
-            $(this).prop('disabled', true);
+            uploadBtn.prop('disabled', true);
 
             var fdata = new FormData(form);
 
@@ -251,9 +251,11 @@
                 contentType: false,
                 success: function(response) {
                     toastr.success(response.message);
+                    $('#modal-upload').modal('hide');
                     window.location = "{{ route('agreement.index') }}"
                 },
                 error: function(xhr) {
+                    uploadBtn.prop('disabled', false);
                     const response = xhr.responseJSON;
                     if (xhr.status === 422 && response?.errors) {
                         $.each(response.errors, function(key, messages) {
