@@ -1,7 +1,5 @@
 @extends('admin.layout.admin_master')
 @section('custom_css')
-    <!-- Bootstrap 4 CSS -->
-    {{-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.6.2/css/bootstrap.min.css"> --}}
 @endsection
 @section('content')
     <div class="content-wrapper">
@@ -23,7 +21,7 @@
         </section>
 
         <section class="content">
-            {{-- {{ dd($agreement->agreement_units) }} --}}
+            {{-- {{ dd($agreement->contract->contract_type_id) }} --}}
             <div class="container-fluid">
 
                 <div class="row">
@@ -32,14 +30,11 @@
 
                         <!-- Main content -->
                         <div class="invoice p-3 mb-3">
-
-                            {{-- <div class="text-uppercase text-bold text-info">
-                                {{ $agreement->contract->contract_type->contract_type }} Project
-                            </div> --}}
-
-                            <span class="price-badge badge badge-danger">
+                            <span
+                                class="{{ 'badge badge-danger ' . ($agreement->contract->contract_type_id == 1 ? 'price-badge-df ' : 'price-badge-ff') }}">
                                 {{ $agreement->contract->contract_type->contract_type }} Project
                             </span>
+
                             <!-- title row -->
 
                             <!-- info row -->
@@ -71,8 +66,8 @@
                                     </address>
                                 </div>
                                 <!-- /.col -->
-                                <div class="col-sm-6 float-right">
-                                    <span class="float-right">
+                                <div class="col-sm-6 float-xl-right">
+                                    <span class="float-xl-right">
                                         <h5 class="font-weight-bold text-success mb-2">Tenant Details</h5>
                                         <address>
                                             <span
@@ -145,7 +140,7 @@
                                                             {{ number_format($unit->rent_per_annum_agreement, 2) }}
                                                         </span>
                                                     </span>
-                                                    <span clas s="arrow">&#9654;</span>
+                                                    <span class="arrow">&#9654;</span>
                                                 </button>
 
                                             </h5>
@@ -315,7 +310,8 @@
                                                         data-target="#firstpaymntdate" placeholder="dd-mm-YYYY" />
                                                     <div class="input-group-append" data-target="#firstpaymntdate"
                                                         data-toggle="datetimepicker">
-                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -392,8 +388,4 @@
     <!-- /.content-wrapper -->
 @endsection
 @section('custom_js')
-    <!-- jQuery -->
-    <script src="{{ asset('assets/jquery/jquery.min.js"') }}"></script>
-    <!-- Bootstrap 4 -->
-    <script src="{{ asset('assets/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 @endsection
