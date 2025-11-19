@@ -666,14 +666,14 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $contract_id
- * @property string|null $cost_of_development
- * @property string|null $cost_of_bed
- * @property string|null $cost_of_matress
- * @property string|null $appliances
- * @property string|null $decoration
- * @property string|null $dewa_deposit
- * @property string|null $ejari
- * @property string|null $cost_of_cabinets
+ * @property string $cost_of_development
+ * @property string $cost_of_bed
+ * @property string $cost_of_matress
+ * @property string $appliances
+ * @property string $decoration
+ * @property string $dewa_deposit
+ * @property string $ejari
+ * @property string $cost_of_cabinets
  * @property string $added_by
  * @property string|null $updated_by
  * @property string|null $deleted_by
@@ -858,7 +858,7 @@ namespace App\Models{
  * @property string $expected_profit
  * @property string $profit_percentage
  * @property string|null $receivable_start_date
- * @property int $receivable_installments
+ * @property int|null $receivable_installments
  * @property string $total_payment_to_vendor
  * @property string|null $total_otc
  * @property string $final_cost
@@ -948,7 +948,7 @@ namespace App\Models{
  * @property int $contract_unit_id
  * @property int $contract_unit_detail_id
  * @property string $subunit_no
- * @property int $subunit_type 1-partition, 2-bedspace, 3-room, 4-full flat
+ * @property int $subunit_type 1-partition, 2-bedspace
  * @property string $subunit_code proj. no / company code / unit no / subunit no
  * @property int $added_by
  * @property int|null $updated_by

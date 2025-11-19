@@ -3,15 +3,27 @@
 namespace App\Repositories\Agreement;
 
 use App\Models\Agreement;
+use App\Models\AgreementUnit;
 use App\Models\Contract;
+use App\Models\ContractSubunitDetail;
+use App\Models\ContractUnitDetail;
+use App\Repositories\Contracts\ContractRepository;
+use App\Services\Agreement\AgreementPaymentDetailService;
+use App\Services\Agreement\AgreementPaymentService;
+use App\Services\Agreement\AgreementTenantService;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class AgreementRepository
 {
+    public function __construct(
+        protected ContractRepository $contractRepository,
+
+
+    ) {}
     public function all()
     {
-        return Contract::all();
+        return Agreement::all();
     }
 
     public function find($id)
@@ -49,10 +61,12 @@ class AgreementRepository
     }
     public function delete($id)
     {
-        $contract = $this->find($id);
-        $contract->deleted_by = auth()->user()->id;
-        $contract->save();
-        return $contract->delete();
+        $agreement = $this->find($id);
+        $agreement->deleted_by = auth()->user()->id;
+        $agreement->save();
+        $contract_id = $agreement->contract_id;
+        $this->makeVacant($id, $contract_id);
+        return $agreement->delete();
     }
 
 
@@ -135,5 +149,55 @@ class AgreementRepository
             'agreement_units.contractSubunitDetail',
             'agreement_units.contractUnitDetail.unit_type'
         ])->findOrFail($id);
+    }
+    public function makeVacant($agreementid, $contractid)
+    {
+        $contract = $this->contractRepository->find($contractid);
+        $type = $contract->contract_type_id;
+        $business_type = $contract->contract_unit->business_type;
+        // dd($type, $business_type);
+        if ($type == 2 || ($type == 1 && $business_type == 1)) {
+            $contract_units = $contract->contract_unit_details;
+            foreach ($contract_units as $unit) {
+                foreach ($unit->contractSubUnitDetails as $sub) {
+                    $sub->is_vacant = 0;
+                    $sub->save();
+                }
+                $unit->is_vacant = 0;
+                $unit->save();
+            }
+            $contract->is_agreement_added = 0;
+            $contract->has_agreement = 0;
+            $contract->save();
+        } else {
+            $unit = AgreementUnit::where('agreement_id', $agreementid)->first();
+            $contract_unit_id = $unit->contract_unit_details_id;
+            $subunit_id = $unit->contract_subunit_details_id;
+            $subunit = ContractSubunitDetail::find($subunit_id);
+            if ($subunit) {
+                $subunit->is_vacant = 0;
+                $subunit->save();
+            }
+            $hasSubunits = ContractSubunitDetail::where('contract_unit_detail_id', $contract_unit_id)->exists();
+
+            if (
+                !$hasSubunits || ContractSubunitDetail::where('contract_unit_detail_id', $contract_unit_id)
+                ->where('is_vacant', 1)
+                ->doesntExist()
+            ) {
+                $unit = ContractUnitDetail::find($contract_unit_id);
+                if ($unit) {
+                    $unit->is_vacant = 0;
+                    $unit->save();
+                }
+            }
+
+            $allUnitsVacant = $contract->contract_unit_details()->where('is_vacant', 1)->doesntExist();
+            if ($allUnitsVacant) {
+                $contract->is_vacant = 0;
+                $contract->has_agreement = 0;
+                $contract->save();
+            }
+        }
     }
 }

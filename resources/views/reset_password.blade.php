@@ -5,7 +5,7 @@
     <div class="login-box">
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
-                <img src="{{ asset('images/fg.png') }}" height="100px">
+                <img src="{{ asset('images/fama-dark.png') }}" height="100px">
             </div>
             <div class="card-body">
                 <p class="login-box-msg">Reset Password </p>

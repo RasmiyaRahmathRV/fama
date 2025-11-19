@@ -25,9 +25,13 @@
                     <div class="col-12">
                         <!-- Main content -->
                         <div class="invoice p-3 mb-3">
-                            <div class="text-uppercase text-bold text-info">
+                            {{-- <div class="text-uppercase text-bold text-info">
                                 {{ $contract->contract_type->contract_type }} Project
-                            </div>
+                            </div> --}}
+
+                            <span class="price-badge badge badge-danger">
+                                {{ $contract->contract_type->contract_type }} Project
+                            </span>
                             <!-- title row -->
 
                             <!-- info row -->

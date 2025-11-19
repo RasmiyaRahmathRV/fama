@@ -22,7 +22,7 @@
 
         th,
         td {
-            border: 1px solid #000;
+            /* border: 1px solid #000; */
             padding: 5px;
             text-align: left;
             vertical-align: top;

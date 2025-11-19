@@ -57,26 +57,27 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="contractTable" class="table table-striped projects  display nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 1%">#</th>
-                                            <th>Project</th>
-                                            <th>Contract type</th>
-                                            <th>Company Name</th>
-                                            <th>Total Units</th>
-                                            <th>ROI %</th>
-                                            <th>Profit</th>
-                                            <th>Start date</th>
-                                            <th>End date</th>
-                                            <th>Status</th>
-                                            <th style="width:112px;"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    </tbody>
-                                </table>
+                                <div class="table-responsive">
+                                    <table id="contractTable" class="table table-striped projects  display nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 1%">#</th>
+                                                <th>Project</th>
+                                                <th>Contract type</th>
+                                                <th>Company Name</th>
+                                                <th>Total Units</th>
+                                                <th>ROI %</th>
+                                                <th>Profit</th>
+                                                <th>Start date</th>
+                                                <th>End date</th>
+                                                <th>Status</th>
+                                                <th style="width:112px;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                             <!-- /.card-body -->
                         </div>

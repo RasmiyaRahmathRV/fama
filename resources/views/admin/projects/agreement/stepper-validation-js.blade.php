@@ -121,4 +121,101 @@
 
         return isValid;
     }
+
+    $(document).on('blur', 'input[id^="cheque_no"]', function() {
+
+        let result = hasDuplicateChequeNumbers();
+
+        if (result.invalid) {
+            // $(this).addClass('is-invalid').removeClass('is-valid');
+            $(this).val('');
+
+
+            $('#submitBtn').prop('disabled', true);
+            Swal.fire({
+                icon: 'error',
+                position: 'top-end',
+                toast: true,
+                title: 'Invalid Cheque Number',
+                text: 'Cheque numbers must be 6-10 digits.',
+                timer: 2500,
+            });
+            // $(this).val('');
+            return;
+        }
+
+        if (result.duplicate) {
+            // $(this).addClass('is-invalid').removeClass('is-valid');
+            $(this).val('');
+
+            $('#submitBtn').prop('disabled', true);
+            // $(this).val('');
+            Swal.fire({
+                icon: 'error',
+                position: 'top-end',
+                toast: true,
+                title: 'Duplicate Cheque Number',
+                text: 'This cheque number is already used for the selected bank.',
+                timer: 2500,
+            });
+            return;
+        }
+
+        // If no issues
+        // $(this).removeClass('is-invalid');
+        $('#submitBtn').prop('disabled', false);
+    });
+    // $(document).on('input change', 'input[id^="cheque_no"], select[id^="bank_name"]', function() {
+    //     const $parent = $(this).closest('[id^="extra_fields_"]');
+    //     $parent.find('input[id^="cheque_no"]').removeClass('is-invalid is-valid');
+    //     $('#submitBtn').prop('disabled', false);
+    // });
+
+
+
+
+    function hasDuplicateChequeNumbers() {
+        let entries = {};
+        // let valid = false;
+        let invalidFound = false;
+        let duplicateFound = false;
+
+
+        $('[id^="extra_fields_"]').each(function() {
+
+            let chequeInput = $(this).find('input[id^="cheque_no"]');
+            let cheque = chequeInput.val()?.trim();
+            let bank = $(this).find('select[id^="bank_name"]').val();
+
+            if (cheque && !/^\d{6,10}$/.test(cheque)) {
+                invalidFound = true;
+                chequeInput.addClass('is-invalid');
+            } else {
+                chequeInput.removeClass('is-invalid');
+            }
+
+            // if (!cheque || !bank || invalidFound) {
+            //     return;
+            // }
+            if (!cheque || !bank || !/^\d{6,10}$/.test(cheque)) return;
+
+
+            if (cheque && bank) {
+                let key = bank + '_' + cheque;
+
+                if (entries[key]) {
+                    duplicateFound = true;
+                    return false;
+                } else {
+                    entries[key] = true;
+                }
+            }
+        });
+
+        // return valid;
+        return {
+            duplicate: duplicateFound,
+            invalid: invalidFound
+        };
+    }
 </script>

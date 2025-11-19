@@ -93,25 +93,31 @@ class Agreement extends Model
 
     protected static function booted()
     {
+        // dd("test");
         static::deleting(function ($agreement) {
 
-            $userId = auth()->id();
+            $userId = auth()->user()->id;
+            // dd($userId);
 
             // hasOne relations
             $hasOneRelations = [
                 'tenant',
-                'agreement_documents',
                 'agreement_payment',
-                'agreemantUnit'
 
             ];
 
             // hasMany relations
             $hasManyRelations = [
                 'agreement_payment_details',
+                'agreement_documents',
+                'agreement_units'
+
+
             ];
 
             if (!$agreement->isForceDeleting()) {
+                // dd("test");
+
                 // Soft delete hasOne
                 foreach ($hasOneRelations as $relation) {
                     $related = $agreement->$relation;
@@ -141,7 +147,7 @@ class Agreement extends Model
                 'tenant',
                 'agreement_documents',
                 'agreement_payment',
-                'agreemantUnit',
+                'agreement_units',
                 'agreement_payment_details',
             ];
 

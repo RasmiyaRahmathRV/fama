@@ -60,6 +60,7 @@ class ContractRental extends Model
     {
         $this->attributes['receivable_start_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
+
     private function formatNumber($value)
     {
         if ($value === null || $value === '') {
@@ -93,6 +94,7 @@ class ContractRental extends Model
         }
         return $value;
     }
+
 
     // public function getTotalPaymentToVendorAttribute($value)
     // {

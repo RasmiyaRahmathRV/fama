@@ -38,7 +38,10 @@ class AgreementController extends Controller
     ) {}
     public function index()
     {
+        // dd("test");
+
         $title = 'Agreemants';
+        // dd("test");
 
         return view("admin.projects.agreement.agreement", compact("title"));
     }
@@ -85,6 +88,7 @@ class AgreementController extends Controller
     }
     public function getAgreements(Request $request)
     {
+        // dd("test");
         if ($request->ajax()) {
             $filters = [
                 'company_id' => auth()->user()->company_id,
@@ -174,11 +178,40 @@ class AgreementController extends Controller
     {
         $documents = $this->agreementDocumentService->getDocuments($id);
         $tenantIdentities = TenantIdentity::get();
+        $agreementId = $id;
         // dd($documents);
-        return view('admin.projects.agreement.agreement_documents', compact('documents', 'tenantIdentities'));
+        return view('admin.projects.agreement.agreement_documents', compact('documents', 'tenantIdentities', 'agreementId'));
     }
     public function documentUpload(Request $request, $id)
     {
-        dd($request->all());
+        $agreement = $this->agreementService->getById($request->agreement_id);
+        $data['documents'] = $request->documents;
+        $data['added_by'] = auth()->user()->id;
+        try {
+            $documents =  $this->agreementDocumentService->update(
+                $agreement,
+                $data['documents'] ?? [],
+                $data['added_by']
+            );
+
+            return response()->json(['success' => true, 'data' =>  $documents, 'message' => 'Documents added successfully'], 200);
+        } catch (\Exception $e) {
+
+            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
+        }
+    }
+    public function destroy(Agreement $agreement)
+    {
+        $this->agreementService->delete($agreement->id);
+        return response()->json(['success' => true, 'message' => 'Agreement deleted successfully']);
+    }
+    public function terminate(Request $request)
+    {
+        try {
+            $agreement = $this->agreementService->terminate($request->all());
+            return response()->json(['success' => true, 'data' => $agreement, 'message' => 'Agreeament terminated successfully'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
+        }
     }
 }

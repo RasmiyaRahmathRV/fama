@@ -635,14 +635,13 @@
 
 
         function calculatepaymentamount(rent_per_month = 0, payment_count = 0) {
-            // alert(rent_per_month);
             //console.log("count ;", payment_count);
+            // var rentmonth = Number(rent_per_month.replace(/,/g, '')) || 0;
             var rentmonth = rent_per_month || 0;
             for (let i = 0; i < payment_count; i++) {
                 $('#payment_amount' + i).val((rentmonth));
             }
             let total_rent_per_annum = rentmonth * payment_count;
-            // alert(total_rent_per_annum);
             $('#total_rent_per_annum').text(total_rent_per_annum);
             $('#total_rent_annum').val(total_rent_per_annum);
         }
@@ -653,16 +652,16 @@
             var payment_mode = $('#payment_mode' + i).val();
 
             if (payment_mode == '3') { // Cheque
-                alert('hicheque');
-                $('#chq' + i).show().find('input, select').prop('disabled', false);
-                $('#bank' + i).show().find('input, select').prop('disabled', false);
+                // alert('hicheque');
+                $('#chq' + i).show().find('input, select').prop('disabled', false).prop('required', true);
+                $('#bank' + i).show().find('input, select').prop('disabled', false).prop('required', true);
                 $('#chqot' + i).hide().find('input, select').prop('disabled', true);
                 $('#chqot' + i + ', #chqotiss' + i + ', #chqiss' + i)
                     .hide()
                     .find('input, select')
                     .prop('disabled', true);
             } else if (payment_mode == '2') { // Bank Transfer
-                $('#bank' + i).show().find('input, select').prop('disabled', false);
+                $('#bank' + i).show().find('input, select').prop('disabled', false).prop('required', true);
                 $('#chq' + i).hide().find('input, select').prop('disabled', true);
                 $('#chqot' + i).hide().find('input, select').prop('disabled', true);
                 $('#chqot' + i + ', #chqotiss' + i + ', #chqiss' + i)
@@ -670,8 +669,8 @@
                     .find('input, select')
                     .prop('disabled', true);
             } else { // Cash or others
-                $('#bank' + i).hide().find('input, select').prop('disabled', true);
-                $('#chq' + i).hide().find('input, select').prop('disabled', true);
+                $('#bank' + i).hide().find('input, select').prop('disabled', true).prop('required', false);
+                $('#chq' + i).hide().find('input, select').prop('disabled', true).prop('required', false);
                 $('#chqot' + i).hide().find('input, select').prop('disabled', true);
                 $('#chqot' + i + ', #chqotiss' + i + ', #chqiss' + i)
                     .hide()
@@ -703,7 +702,7 @@
         let editedUnit = @json($agreement->agreement_units ?? null);
 
         let fullContracts = @json($fullContracts ?? []);
-        //console.log(fullContracts);
+        // console.log(fullContracts);
 
         // let editedUnit = window.editedUnit || [];
         //console.log("edited Unit :" + JSON.stringify(editedUnit))
@@ -777,6 +776,13 @@
 
         function contractChange(contractId, editedUnit = null) {
             //console.log("full Contracts :", fullContracts);
+
+            // clearing the div
+            const errorDiv = $('#paymentError');
+            errorDiv.html('');
+            errorDiv.addClass('d-none').removeClass('d-flex');
+            $('#submitBtn').prop('disabled', false);
+
             let options = '<option value="">Select Unit Type</option>';
             let contract = null;
             if (editedUnit) {
@@ -803,11 +809,16 @@
                 $('#unit_type_id').html(options).trigger('change');
                 return;
             }
-            // if (contract) {
-            let unitTypeIds = contract.contract_unit.contract_unit_details.map(d => d.unit_type_id);
+            // let unitTypeIds = contract.contract_unit.contract_unit_details.map(d => d.unit_type_id);
+            let unitTypeIds = contract.contract_unit.contract_unit_details
+                .filter(d => d.is_vacant == 0)
+                .map(d => d.unit_type_id);
+            console.log('contract :', contract);
+            console.log('unitIds :', unitTypeIds)
+
 
             unitTypeIds = [...new Set(unitTypeIds)];
-            // }
+
 
             let selectedUnitIds = [];
 
@@ -815,6 +826,11 @@
                 // alert('hoi');
                 //console.log('Edited Units:', editedUnit);
                 selectedUnitIds = editedUnit.map(u => u.unit_type_id);
+                selectedUnitIds.forEach(id => {
+                    if (!unitTypeIds.includes(id)) {
+                        unitTypeIds.push(id);
+                    }
+                });
             }
             //console.log('selectedids :' + JSON.stringify(editedUnit));
 
@@ -823,7 +839,9 @@
                 .filter(ut => unitTypeIds.includes(ut.id))
                 .forEach(ut => {
                     const isSelected = selectedUnitIds.includes(ut.id) ? 'selected' : '';
+                    // if (!selectedUnitnumbers.includes(ut.id)) {
                     options += `<option value="${ut.id}" ${isSelected}>${ut.unit_type}</option>`;
+                    // }
                 });
 
 
@@ -854,13 +872,9 @@
                     unitDetails = editedUnit
                         .filter(u => u.contract_unit_detail)
                         .map(u => u.contract_unit_detail);
-
-                    //console.log('Unit Details (from editedUnit):', unitDetails);
                 } else {
                     unitDetails = contract?.contract_unit?.contract_unit_details || [];
-                    //console.log("CONTRACT UNITS CHOOSEN :", unitDetails)
 
-                    //console.log('Unit Details (from contract):', unitDetails);
                 }
                 unit_details = unitDetails;
 
@@ -879,7 +893,9 @@
                 unitDetails.forEach((u, index) => {
                     const type = allunittypes?.find(t => t.id == u.unit_type_id)?.unit_type || 'Unknown';
                     const subunitCount = u.contract_sub_unit_details?.length || 0;
-                    const rent = monthrent;
+                    // alert(u.total_rent_per_unit_per_month);
+                    // const rent = monthrent;
+                    const rent = parseFloat(u.total_rent_per_unit_per_month);
                     //console.log("uuuuu :", u);
 
                     html += `
@@ -1017,11 +1033,14 @@
             let options = '<option value="">Select Unit No</option>';
             let selectedUnitnumbers = [];
             let contractId = $('#contract_id').val();
+            console.log("contracts:", allContracts);
             let contract = allContracts.find(c => c.id == contractId);
-            //console.log('fileteredunitcontract :', contract);
+            // console.log('fileteredunitcontract :', contract);
 
             if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
-                //console.log("acrualcontracts :", contract)
+                contract = fullContracts.find(c => c.id == contractId);
+                console.log("acrualcontracts :", contract)
+                console.log("editedUnit :", editedUnit)
                 // EDIT MODE: contract may not be in allContracts
                 selectedUnitnumbers = editedUnit.map(u => u.contract_unit_details_id);
 
@@ -1031,7 +1050,10 @@
                         options += `<option value="${u.contract_unit_details_id}" selected>${unitNumber}</option>`;
                     }
                 });
-                let filteredUnits = contract.contract_unit.contract_unit_details;
+                // let filteredUnits = contract.contract_unit.contract_unit_details;
+                let filteredUnits = contract.contract_unit.contract_unit_details
+                    .filter(u => u.is_vacant == 0);
+                console.log("filetred", filteredUnits);
                 if (unitTypeId) {
                     filteredUnits = filteredUnits.filter(d => d.unit_type_id == unitTypeId);
                 }
@@ -1046,7 +1068,60 @@
                     .trigger('change.select2');
 
                 unitNumberChange(selectedUnitnumbers, editedUnit);
-            } else {
+            }
+            // if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
+
+            //     if (!contract) {
+            //         contract = {
+            //             contract_unit: {
+            //                 contract_unit_details: []
+            //             }
+            //         };
+            //     } else if (!contract.contract_unit) {
+            //         contract.contract_unit = {
+            //             contract_unit_details: []
+            //         };
+            //     } else if (!contract.contract_unit.contract_unit_details) {
+            //         contract.contract_unit.contract_unit_details = [];
+            //     }
+
+            //     editedUnit.forEach(u => {
+            //         const detail = u.contract_unit_detail;
+
+            //         if (!contract.contract_unit.contract_unit_details.some(d => d.id == detail.id)) {
+            //             contract.contract_unit.contract_unit_details.push(detail);
+            //         }
+            //     });
+            //     selectedUnitnumbers = editedUnit.map(u => u.contract_unit_details_id);
+
+            //     editedUnit.forEach(u => {
+            //         if (!unitTypeId || u.unit_type_id == unitTypeId) {
+            //             const unitNumber = u.contract_unit_detail?.unit_number || '';
+            //             options += `<option value="${u.contract_unit_details_id}" selected>${unitNumber}</option>`;
+            //         }
+            //     });
+
+            //     let filteredUnits = contract.contract_unit.contract_unit_details;
+
+            //     if (unitTypeId) {
+            //         filteredUnits = filteredUnits.filter(d => d.unit_type_id == unitTypeId);
+            //     }
+
+            //     filteredUnits.forEach(ut => {
+            //         if (!selectedUnitnumbers.includes(ut.id)) {
+            //             options += `<option value="${ut.id}">${ut.unit_number}</option>`;
+            //         }
+            //     });
+
+            //     $('#unit_type0')
+            //         .html(options)
+            //         .val(selectedUnitnumbers.length ? selectedUnitnumbers[0] : '')
+            //         .trigger('change.select2');
+
+            //     unitNumberChange(selectedUnitnumbers, editedUnit);
+            //     return;
+            // }
+            else {
                 // NEW MODE: use allContracts for available units
 
 
@@ -1187,9 +1262,10 @@
             let selectedSubunit = [];
             let subunitId = 0;
             //console.log("test", contract);
-            //console.log("editedUNITunitchage", editedUnit);
+            console.log("editedUNITunitchage", editedUnit);
             if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
                 if (!editedUnit[0].contract_subunit_detail) {
+                    // alert('his');
                     $('#sub_unit_type').html('<option value="">No Subunits Available</option>').trigger('change');
                     $('#sub_unit_type').prop('required', false);
                     $('#rent_per_month')
@@ -1200,6 +1276,7 @@
                     return;
 
                 } else {
+                    // alert(editedUnit[0].rent_per_room);
                     editedUnit.forEach(u => {
                         subunitId = u.contract_subunit_details_id;
                         const subunitNo = u.contract_subunit_detail?.subunit_no || '';
@@ -1211,7 +1288,10 @@
                             options += `<option value="${subunitId}" selected>${subunitNo}</option>`;
                             selectedSubunit.push(subunitId);
                         }
+                        // alert("hi");
                         calculatepaymentamount(editedUnit[0].rent_per_room, count);
+                        // calculatepaymentamount(editedUnit[0].rent_per_month, count);
+
                     });
                     // return;
                 }
@@ -1270,12 +1350,13 @@
         });
 
         function subUnitChange(subunitId, editedUnit) {
+            // alert(subunitId);
             //console.log("subunitchangeinside:", JSON.stringify(editedUnit));
             let contractId = $('#contract_id').val();
             let contract = allContracts.find(c => c.id == contractId);
             let count = contract?.contract_payment_receivables_count || 0;
             if (editedUnit && editedUnit.length > 0) {
-                //console.log("sschanhe", editedUnit);
+                console.log("sschanhe", editedUnit);
                 const eu = editedUnit[0];
                 // alert(eu.rent_per_month);
                 // alert(count);
@@ -1287,39 +1368,24 @@
                 $('#total_rent_per_annum').text(editedUnit[0]['rent_per_annum_agreement']);
                 $('#total_rent_annum').val(editedUnit[0]['rent_per_annum_agreement']);
                 return;
-
-
             }
-
-
-
-
-
             if (!contract || !contract.contract_unit || !contract.contract_unit.contract_unit_details) {
                 $('#rent_per_month').val('').prop('required', false).prop('disabled', false);
                 return;
             }
-
-            // Get selected unit first
             let unitId = $('#unit_type0').val();
             let selectedUnit = contract.contract_unit.contract_unit_details.find(u => u.id == unitId);
             //console.log('Selected Unit Detail for Rent Calculation:', selectedUnit);
-
             if (!selectedUnit) {
                 $('#rent_per_month').val('').prop('required', false).prop('disabled', false);
                 return;
             }
-
-            // If no subunit is selected, clear rent
             if (!subunitId) {
                 $('#rent_per_month').val('').prop('required', false).prop('disabled', false);
                 return;
             }
-
-            // 🔹 Find the selected subunit inside the selected unit
             let selectedSubUnit = selectedUnit.contract_sub_unit_details.find(su => su.id == subunitId);
             //console.log('Selected SubUnit Detail:', selectedSubUnit);
-
             if (!selectedSubUnit) {
                 $('#rent_per_month').val('').prop('required', false).prop('disabled', false);
                 return;
@@ -1331,7 +1397,6 @@
                     .prop('readonly', true);
                 // alert(selectedUnit.rent_per_partition);
                 calculatepaymentamount(selectedUnit.rent_per_partition, count)
-
             }
             if (selectedSubUnit.subunit_type == 2) {
                 $('#rent_per_month')
@@ -1339,7 +1404,6 @@
                     .prop('required', true)
                     .prop('readonly', true);
                 calculatepaymentamount(selectedUnit.rent_per_bedspace, count)
-
             }
             if (selectedSubUnit.subunit_type == 3) {
                 $('#rent_per_month')
@@ -1347,10 +1411,15 @@
                     .prop('required', true)
                     .prop('readonly', true);
                 calculatepaymentamount(selectedUnit.rent_per_room, count)
-
             }
-
-
+            if (selectedSubUnit.subunit_type == 4) {
+                // alert("called");
+                $('#rent_per_month')
+                    .val(selectedUnit.rent_per_flat ?? '')
+                    .prop('required', true)
+                    .prop('readonly', true);
+                calculatepaymentamount(selectedUnit.rent_per_flat, count)
+            }
         }
     </script>
     {{-- end  --}}
@@ -1447,7 +1516,7 @@
 
                 // ====== Unit-wise Accordion Section ======
                 if (editedPayment && editedUnit) {
-                    // alert("hiffagreemanet   ");
+                    // alert("hiffagreemanet");
                     //console.log("edited payment: ", editedPayment);
                     //console.log("edited unit: ", editedUnit);
 
@@ -1550,10 +1619,17 @@
 
                                         <div class="col-md-3 chq" id="chq_${uniqueId}">
                                             <label>Cheque No</label>
-                                            <input type="text" class="form-control" id="cheque_no_${uniqueId}"
+                                            <input type="number" min="0" pattern="\d{6,10}"
+                                            maxlength="10"
+                                            title="Cheque number must be 6–10 digits" class="form-control" id="cheque_no_${uniqueId}"
                                                 name="payment_detail[${unit.id}][${payIndex}][cheque_number]"
                                                 value="${pay.cheque_number ?? ''}"
                                                 placeholder="Cheque No">
+                                                @error('cheque_number')
+                                                    <span class="invalid-feedback d-block">
+                                                        {{ $message }}
+                                                    </span>
+                                                @enderror
                                         </div>
                                     </div>
                                 `;
@@ -1743,7 +1819,14 @@
 
                                     <div class="col-md-3 chq" id="chq_${uniqueId}">
                                         <label>Cheque No</label>
-                                        <input type="text" class="form-control" id="cheque_no_${uniqueId}" name="payment_detail[${unit.id}][${i}][cheque_number]" placeholder="Cheque No">
+                                        <input type="number" pattern="\d{6,10}" min="0"
+                                                maxlength="10"
+                                                title="Cheque number must be 6–10 digits" class="form-control" id="cheque_no_${uniqueId}" name="payment_detail[${unit.id}][${i}][cheque_number]" placeholder="Cheque No">
+                                                @error('cheque_number')
+                                                    <span class="invalid-feedback d-block">
+                                                        {{ $message }}
+                                                    </span>
+                                                @enderror
                                     </div>
                                 </div>
                             `;
@@ -1996,7 +2079,7 @@
                             <input type="text" class="form-control" id="payment_amount_${i}" name="payment_detail[${i}][payment_amount]" value="${pay.payment_amount || ''}" placeholder="Payment Amount" />
                         </div>
                     </div>
-                     <div class="form-group row">
+                     <div class="form-group row" id="extra_fields_${i}">
                         <div class="col-md-4 bank" id="bank${i}">
                         <label>Bank Name</label>
                         <select class="form-control select2" name="payment_detail[${i}][bank_id]" id="bank_name${i}">
@@ -2009,7 +2092,14 @@
 
                         <div class="col-md-3 chq" id="chq${i}">
                             <label>Cheque No</label>
-                            <input type="text" class="form-control" value="${pay.cheque_number || ''}" name="payment_detail[${i}][cheque_number]" id="cheque_no${i}" placeholder="Cheque No">
+                            <input type="number" pattern="\d{6,10}" min="0"
+                                maxlength="10"
+                                title="Cheque number must be 6–10 digits" class="form-control" value="${pay.cheque_number || ''}" name="payment_detail[${i}][cheque_number]" id="cheque_no${i}" placeholder="Cheque No">
+                                @error('cheque_number')
+                                    <span class="invalid-feedback d-block">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
                         </div>
 
 
@@ -2095,7 +2185,7 @@
                                         <input type="text" class="form-control" id="payment_amount${i}" name="payment_detail[${i}][payment_amount]" value="${existingValue}" placeholder="Payment Amount">
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row" id="extra_fields_${i}">
                                         <div class="col-md-4 bank" id="bank${i}">
                                             <label for="exampleInputEmail1">Bank Name</label>
                                             <select class="form-control select2" name="payment_detail[${i}][bank_id]" id="bank_name${i}">
@@ -2109,8 +2199,15 @@
 
                                         <div class="col-md-3 chq" id="chq${i}">
                                             <label for="exampleInputEmail1">Cheque No</label>
-                                            <input type="text" class="form-control" id="cheque_no${i}" name="payment_detail[${i}][cheque_number]" placeholder="Cheque No">
-                                        </div>
+                                            <input type="number" class="form-control" pattern="\d{6,10}" min="0"
+                                                maxlength="10"
+                                                title="Cheque number must be 6–10 digits" id="cheque_no${i}" name="payment_detail[${i}][cheque_number]" placeholder="Cheque No">
+                                                @error('cheque_number')
+                                                        <span class="invalid-feedback d-block">
+                                                            {{ $message }}
+                                                        </span>
+                                                    @enderror
+                                                                                    </div>
 
                                         <div class="col-md-3 chq" id="chqiss${i}">
                                             <label for="exampleInputEmail1">Cheque Issuer</label>
@@ -2190,6 +2287,7 @@
 
         function validateTotalPayment() {
             let totalRent = parseFloat($('#total_rent_per_annum').text()) || 0;
+            // alert(totalRent);
             let totalPayment = 0;
 
             // Sum all payment amounts
@@ -2207,6 +2305,7 @@
             //         `Check Payments`);
             // }
             const errorDiv = $('#paymentError');
+            // errorDiv.html('');
             errorDiv.attr('tabindex', '-1');
 
             // Enable or disable submit button
@@ -2433,8 +2532,8 @@
                 $(`#bank_${uniqueId}`).show().find('input, select').prop('disabled', false).prop('required', true);
                 $(`#chq_${uniqueId}`).hide().find('input, select').prop('disabled', true);
             } else { // Cash or others
-                $(`#bank_${uniqueId}`).hide().find('input, select').prop('disabled', true);
-                $(`#chq_${uniqueId}`).hide().find('input, select').prop('disabled', true);
+                $(`#bank_${uniqueId}`).hide().find('input, select').prop('disabled', true).prop('required', false);
+                $(`#chq_${uniqueId}`).hide().find('input, select').prop('disabled', true).prop('required', false);
             }
         }
 

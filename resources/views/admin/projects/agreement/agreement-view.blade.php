@@ -21,7 +21,7 @@
         </section>
 
         <section class="content">
-            {{-- {{ dd($agreement->agreement_units) }} --}}
+            {{-- {{ dd($agreement->contract->contract_type_id) }} --}}
             <div class="container-fluid">
 
                 <div class="row">
@@ -30,10 +30,11 @@
 
                         <!-- Main content -->
                         <div class="invoice p-3 mb-3">
-
-                            <div class="text-uppercase text-bold text-info">
+                            <span
+                                class="{{ 'badge badge-danger ' . ($agreement->contract->contract_type_id == 1 ? 'price-badge-df ' : 'price-badge-ff') }}">
                                 {{ $agreement->contract->contract_type->contract_type }} Project
-                            </div>
+                            </span>
+
                             <!-- title row -->
 
                             <!-- info row -->
@@ -49,6 +50,7 @@
                                         <span
                                             class="mobile">{{ strtoupper($agreement->contract->vendor->vendor_phone) }}</span></br>
                                         <span class="email">{{ $agreement->contract->vendor->vendor_email }}</span></br>
+                                        <span class="area">{{ strtoupper($agreement->contract->area->area_name) }}</span>,
                                         <span
                                             class="locality">{{ strtoupper($agreement->contract->locality->locality_name) }}</span>,
                                         <span
@@ -64,14 +66,16 @@
                                     </address>
                                 </div>
                                 <!-- /.col -->
-                                <div class="col-sm-6 float-right">
-                                    <span class="float-right">
+                                <div class="col-sm-6 float-xl-right">
+                                    <span class="float-xl-right">
                                         <h5 class="font-weight-bold text-success mb-2">Tenant Details</h5>
                                         <address>
                                             <span
                                                 class="vendor_name">{{ strtoupper($agreement->tenant->tenant_name) }}</span></br>
                                             <span class="mobile">{{ $agreement->tenant->tenant_mobile }}</span></br>
                                             <span class="email">{{ $agreement->tenant->tenant_email }}</span></br>
+                                            <span
+                                                class="area">{{ strtoupper($agreement->contract->area->area_name) }}</span>,
                                             <span
                                                 class="locality">{{ strtoupper($agreement->contract->locality->locality_name) }}</span>,
                                             <span class="building">
@@ -103,131 +107,150 @@
                             </div>
                             <!-- /.row -->
 
-                            <!-- Table row -->
-                            @foreach ($agreement->agreement_units as $unit)
-                                <div class="card">
-                                    <div class="row mt-4">
-                                        <div class="col-12 pl-4">
-                                            <h5 class="mb-2 font-weight-bold text-uppercase text-blue">
-                                                UNIT: {{ $unit->contractUnitDetail->unit_number }}
+                            <div id="unitAccordion">
+                                @foreach ($agreement->agreement_units as $unit)
+                                    <div class="card mb-2">
+                                        <!-- Accordion Header -->
+                                        <div class="card-header agreement-accordion" id="heading{{ $unit->id }}">
+                                            <h5 class="mb-0">
+                                                <button
+                                                    class="btn btn-link text-uppercase font-weight-bold text-blue collapsed d-flex justify-content-between w-100"
+                                                    type="button" data-toggle="collapse"
+                                                    data-target="#collapse{{ $unit->id }}" aria-expanded="false"
+                                                    aria-controls="collapse{{ $unit->id }}">
+                                                    <span>
+                                                        UNIT: {{ $unit->contractUnitDetail->unit_number }}
+                                                        <span class="ml-3 text-green font-weight-bold">
+                                                            Type:
+                                                            {{ $unit->contractUnitDetail->unit_type->unit_type ?? '-' }}
+                                                            @if ($unit->contractSubunitDetail)
+                                                                @if ($unit->contractSubunitDetail->subunit_type == 1)
+                                                                    | Partition:
+                                                                @elseif ($unit->contractSubunitDetail->subunit_type == 2)
+                                                                    | Bedspace:
+                                                                @elseif ($unit->contractSubunitDetail->subunit_type == 3)
+                                                                    | Room:
+                                                                @else
+                                                                    | Full Flat:
+                                                                @endif
+                                                                {{ $unit->contractSubunitDetail->subunit_no }}
+                                                            @endif
+                                                            | Rent/Month: {{ number_format($unit->rent_per_month, 2) }}
+                                                            | Rent/Annum:
+                                                            {{ number_format($unit->rent_per_annum_agreement, 2) }}
+                                                        </span>
+                                                    </span>
+                                                    <span class="arrow">&#9654;</span>
+                                                </button>
+
                                             </h5>
-
-                                            <p class="mb-1 text-muted font-weight-bold">
-                                                Type: {{ $unit->contractUnitDetail->unit_type->unit_type ?? '-' }} |
-                                                @if ($unit->contractSubunitDetail)
-                                                    @if ($unit->contractSubunitDetail->subunit_type == 1)
-                                                        Partition:
-                                                    @elseif ($unit->contractSubunitDetail->subunit_type == 2)
-                                                        Bedspace:
-                                                    @elseif ($unit->contractSubunitDetail->subunit_type == 3)
-                                                        Room:
-                                                    @else
-                                                        Full Flat:
-                                                    @endif
-                                                    {{ $unit->contractSubunitDetail->subunit_no }} |
-                                                @endif
-                                                Rent per Month: {{ number_format($unit->rent_per_month, 2) }} |
-                                                Rent per Annum: {{ number_format($unit->rent_per_annum_agreement, 2) }}
-                                            </p>
-                                            <hr style="margin-top: 8px; margin-bottom: 8px;">
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 table-responsive">
 
-                                            <table class="table table-striped mb-1">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Date</th>
-                                                        <th>Payment Mode</th>
-                                                        <th>Amount</th>
-                                                        <th>Favouring</th>
-                                                        <th>Paid On</th>
-                                                        <th>Paid Amount</th>
-                                                        <th>Composition</th>
-                                                        <!-- <th>Edit</th>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <th>Delete</th>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <th>Bifurcate</th> -->
-                                                        <!-- <th>Bifurcate Edit</th> -->
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($agreement->agreement_payment->agreementPaymentDetails->where('agreement_unit_id', $unit->id) as $index => $detail)
-                                                        @php
-                                                            $bgColor = '';
-                                                            if ($detail->is_payment_received == 0) {
-                                                                $bgColor = '#ffcccc';
-                                                            } elseif ($detail->is_payment_received == 1) {
-                                                                $bgColor = '#dbffdb';
-                                                            } elseif ($detail->is_payment_received == 2) {
-                                                                $bgColor = '#c5f5ff';
-                                                            } elseif ($detail->is_payment_received == 3) {
-                                                                $bgColor = '#fff5c5';
-                                                            }
-                                                        @endphp
-                                                        <tr style="background-color: {{ $bgColor }}">
-                                                            <td>{{ \Carbon\Carbon::parse($detail->payment_date)->format('d/m/Y') }}
-                                                            </td>
-                                                            <td>{{ $detail->paymentMode->payment_mode_name }}
-                                                                @if (!empty($detail->bank_id))
-                                                                    - {!! ucfirst($detail->bank->bank_name) !!}
-                                                                @endif
-                                                                @if (!empty($detail->cheque_number))
-                                                                    - {!! ucfirst($detail->cheque_number) !!}
-                                                                @endif
-                                                            </td>
-                                                            <td>{{ number_format($detail->payment_amount, 2) }}</td>
-                                                            <td>{{ $agreement->agreement_payment->beneficiary }}</td>
-                                                            <td>{{ $detail->paid_date ?? ' - ' }}</td>
-                                                            <td>{{ number_format($detail->paid_amount, 2) ?? ' - ' }}</td>
-                                                            <td>RENT {{ $loop->iteration }}
-                                                                /
-                                                                {{ $agreement->agreement_payment->installment->installment_name }}
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
+                                        <!-- Accordion Body -->
+                                        <div id="collapse{{ $unit->id }}" class="collapse"
+                                            aria-labelledby="heading{{ $unit->id }}" data-parent="#unitAccordion">
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table mb-1">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Date</th>
+                                                                <th>Payment Mode</th>
+                                                                <th>Amount</th>
+                                                                <th>Favouring</th>
+                                                                <th>Paid On</th>
+                                                                <th>Paid Amount</th>
+                                                                <th>Composition</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach ($agreement->agreement_payment->agreementPaymentDetails->where('agreement_unit_id', $unit->id) as $detail)
+                                                                @php
+                                                                    $bgColor = match ($detail->is_payment_received) {
+                                                                        0 => '#ffcccc',
+                                                                        1 => '#dbffdb',
+                                                                        2 => '#c5f5ff',
+                                                                        3 => '#fff5c5',
+                                                                        default => '',
+                                                                    };
+                                                                @endphp
+                                                                <tr>
+                                                                    <td
+                                                                        style="background-color: {{ $bgColor }} !important;">
+                                                                        {{ \Carbon\Carbon::parse($detail->payment_date)->format('d/m/Y') }}
+                                                                    </td>
+                                                                    <td
+                                                                        style="background-color: {{ $bgColor }} !important;">
+                                                                        {{ $detail->paymentMode->payment_mode_name }}
+                                                                        @if (!empty($detail->bank_id))
+                                                                            - {{ ucfirst($detail->bank->bank_name) }}
+                                                                        @endif
+                                                                        @if (!empty($detail->cheque_number))
+                                                                            - {{ ucfirst($detail->cheque_number) }}
+                                                                        @endif
+                                                                    </td>
+                                                                    <td
+                                                                        style="background-color: {{ $bgColor }} !important;">
+                                                                        {{ number_format($detail->payment_amount, 2) }}
+                                                                    </td>
+                                                                    <td
+                                                                        style="background-color: {{ $bgColor }} !important;">
+                                                                        {{ $agreement->agreement_payment->beneficiary }}
+                                                                    </td>
+                                                                    <td
+                                                                        style="background-color: {{ $bgColor }} !important;">
+                                                                        {{ $detail->paid_date ?? '-' }}
+                                                                    </td>
+                                                                    <td
+                                                                        style="background-color: {{ $bgColor }} !important;">
+                                                                        {{ number_format($detail->paid_amount, 2) ?? '-' }}
+                                                                    </td>
+                                                                    <td
+                                                                        style="background-color: {{ $bgColor }} !important;">
+                                                                        RENT
+                                                                        {{ $loop->iteration }}/{{ $agreement->agreement_payment->installment->installment_name }}
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
 
-                                            @php
-                                                $total_paid = 0;
-                                                $total_to_pay = 0;
-
-                                                foreach (
-                                                    $agreement->agreement_payment->agreementPaymentDetails->where(
-                                                        'agreement_unit_id',
-                                                        $unit->id,
-                                                    )
-                                                    as $index => $detail
-                                                ) {
-                                                    $payment_amount = toNumeric($detail->payment_amount);
-                                                    $paid_amount = toNumeric($detail->paid_amount);
-                                                    $total_to_pay += $payment_amount;
-                                                    $total_paid += $paid_amount;
-                                                }
-
-                                                $remaining_amount = $total_to_pay - $total_paid;
-                                            @endphp
-                                            <div class="float-xl-right mb-1 mr-3">
-                                                <span> <strong>Total
-                                                        Received:</strong>{{ number_format($total_paid, 2) }}</span><br>
-                                                <span>
-                                                    <strong>Remaining:</strong>{{ number_format($remaining_amount, 2) }}</span>
+                                                    @php
+                                                        $total_paid = 0;
+                                                        $total_to_pay = 0;
+                                                        foreach (
+                                                            $agreement->agreement_payment->agreementPaymentDetails->where(
+                                                                'agreement_unit_id',
+                                                                $unit->id,
+                                                            )
+                                                            as $detail
+                                                        ) {
+                                                            $total_to_pay += toNumeric($detail->payment_amount);
+                                                            $total_paid += toNumeric($detail->paid_amount);
+                                                        }
+                                                        $remaining_amount = $total_to_pay - $total_paid;
+                                                    @endphp
+                                                    <div class="float-right">
+                                                        <span><strong>Total Received:</strong>
+                                                            {{ number_format($total_paid, 2) }}</span><br>
+                                                        <span><strong>Remaining:</strong>
+                                                            {{ number_format($remaining_amount, 2) }}</span>
+                                                    </div>
+                                                </div>
                                             </div>
-
                                         </div>
-                                        <!-- /.col -->
                                     </div>
+                                @endforeach
+                            </div>
 
-                                </div>
-                            @endforeach
-                            <!-- /.row -->
+
+
 
 
                             <!-- /.row -->
 
                             <!-- this row will not appear when printing -->
-                            <div class="row no-print">
+                            <div class="row no-print mt-2">
                                 <div class="col-12 d-xl-flex justify-content-between">
                                     <a href="{{ route('agreement.index') }}" class="btn btn-info"><i
                                             class="fas mr-2 fa-arrow-left"></i>Back</a>
@@ -287,7 +310,8 @@
                                                         data-target="#firstpaymntdate" placeholder="dd-mm-YYYY" />
                                                     <div class="input-group-append" data-target="#firstpaymntdate"
                                                         data-toggle="datetimepicker">
-                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

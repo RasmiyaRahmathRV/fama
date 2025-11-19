@@ -49,7 +49,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($documents as $doc)
+                                        @forelse ($documents as $doc)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $doc->documentType->identity_type }}</td>
@@ -62,7 +62,11 @@
                                                     </a>
                                                 </td>
                                             </tr>
-                                        @endforeach
+                                        @empty
+                                            <tr>
+                                                <td colspan="4" class="text-center">No documents available</td>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                                 <br>
@@ -93,8 +97,7 @@
                             @csrf
                             <div class="modal-body">
                                 <div class="card-body">
-                                    <input type="hidden" name="agreement_id"
-                                        value="{{ $documents->first()?->agreement_id }}">
+                                    <input type="hidden" name="agreement_id" value="{{ $agreementId }}">
 
                                     @foreach ($tenantIdentities as $index => $identity)
                                         <h6 class="font-weight-bold text-cyan mb-3">
@@ -192,25 +195,53 @@
 @section('custom_js')
     <script>
         $('.importBtn').click(function(e) {
-            alert("hi");
+
             e.preventDefault();
-            const contractForm = $(this);
+            const uploadBtn = $(this);
             const agreementId = $('input[name="agreement_id"]').val();
             const url = "{{ url('agreement-documents-upload') }}/" + agreementId;
 
             let method = 'POST';
             var form = document.getElementById('agreementImportForm');
-            var fdata = new FormData(form);
-            // Update
-            // if (agreementId) {
-            //     url = "{{ url('agreement') }}/" + agreementId;
-            //     method = 'POST';
-            //     fdata.append('_method', 'PUT');
-            // }
+            let formValid = true;
 
-            // Add CSRF
+            $('#agreementImportForm .form-row').each(function() {
+                const firstField = $(this).find('input[name*="[document_number]"]');
+                const secondField = $(this).find('input[name*="[document_path]"]');
+                const hiddenIdField = $(this).find('input[name*="[id]"]')
+
+                const firstVal = firstField.val()?.trim();
+                const secondVal = secondField.val()?.trim();
+                const hasExistingFile = hiddenIdField.length > 0;
+
+                firstField.removeClass('is-invalid');
+                secondField.removeClass('is-invalid');
+                $(this).find('.invalid-feedback').remove();
+
+                if (firstVal && !secondVal && !hasExistingFile) {
+                    secondField.addClass('is-invalid');
+                    secondField.after(
+                        '<span class="invalid-feedback d-block">This field is required.</span>');
+                    formValid = false;
+                }
+                if ((secondVal || hasExistingFile) && !firstVal) {
+                    firstField.addClass('is-invalid');
+                    firstField.after(
+                        '<span class="invalid-feedback d-block">This field is required.</span>');
+                    formValid = false;
+                }
+            });
+
+            if (!formValid) {
+                toastr.error('Please fill all required fields.');
+                return false;
+            }
+            uploadBtn.prop('disabled', true);
+
+            var fdata = new FormData(form);
+
             fdata.append('_token', $('meta[name="csrf-token"]').attr('content'));
-            alert("hi");
+            // alert("hi");
 
             $.ajax({
                 url: url,
@@ -219,19 +250,12 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: response.message,
-                        icon: 'success',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        window.location = "{{ route('agreement.index') }}"
-                    })
-                    // toastr.success(response.message);
-                    // window.location = "{{ route('agreement.index') }}"
+                    toastr.success(response.message);
+                    $('#modal-upload').modal('hide');
+                    window.location = "{{ route('agreement.index') }}"
                 },
                 error: function(xhr) {
+                    uploadBtn.prop('disabled', false);
                     const response = xhr.responseJSON;
                     if (xhr.status === 422 && response?.errors) {
                         $.each(response.errors, function(key, messages) {
