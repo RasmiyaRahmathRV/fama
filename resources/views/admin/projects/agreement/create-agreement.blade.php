@@ -702,7 +702,7 @@
         let editedUnit = @json($agreement->agreement_units ?? null);
 
         let fullContracts = @json($fullContracts ?? []);
-        //console.log(fullContracts);
+        // console.log(fullContracts);
 
         // let editedUnit = window.editedUnit || [];
         //console.log("edited Unit :" + JSON.stringify(editedUnit))
@@ -809,11 +809,16 @@
                 $('#unit_type_id').html(options).trigger('change');
                 return;
             }
-            // if (contract) {
-            let unitTypeIds = contract.contract_unit.contract_unit_details.map(d => d.unit_type_id);
+            // let unitTypeIds = contract.contract_unit.contract_unit_details.map(d => d.unit_type_id);
+            let unitTypeIds = contract.contract_unit.contract_unit_details
+                .filter(d => d.is_vacant == 0)
+                .map(d => d.unit_type_id);
+            console.log('contract :', contract);
+            console.log('unitIds :', unitTypeIds)
+
 
             unitTypeIds = [...new Set(unitTypeIds)];
-            // }
+
 
             let selectedUnitIds = [];
 
@@ -821,6 +826,11 @@
                 // alert('hoi');
                 //console.log('Edited Units:', editedUnit);
                 selectedUnitIds = editedUnit.map(u => u.unit_type_id);
+                selectedUnitIds.forEach(id => {
+                    if (!unitTypeIds.includes(id)) {
+                        unitTypeIds.push(id);
+                    }
+                });
             }
             //console.log('selectedids :' + JSON.stringify(editedUnit));
 
@@ -829,7 +839,9 @@
                 .filter(ut => unitTypeIds.includes(ut.id))
                 .forEach(ut => {
                     const isSelected = selectedUnitIds.includes(ut.id) ? 'selected' : '';
+                    // if (!selectedUnitnumbers.includes(ut.id)) {
                     options += `<option value="${ut.id}" ${isSelected}>${ut.unit_type}</option>`;
+                    // }
                 });
 
 
@@ -860,13 +872,9 @@
                     unitDetails = editedUnit
                         .filter(u => u.contract_unit_detail)
                         .map(u => u.contract_unit_detail);
-
-                    //console.log('Unit Details (from editedUnit):', unitDetails);
                 } else {
                     unitDetails = contract?.contract_unit?.contract_unit_details || [];
-                    //console.log("CONTRACT UNITS CHOOSEN :", unitDetails)
 
-                    //console.log('Unit Details (from contract):', unitDetails);
                 }
                 unit_details = unitDetails;
 
@@ -885,7 +893,9 @@
                 unitDetails.forEach((u, index) => {
                     const type = allunittypes?.find(t => t.id == u.unit_type_id)?.unit_type || 'Unknown';
                     const subunitCount = u.contract_sub_unit_details?.length || 0;
-                    const rent = monthrent;
+                    // alert(u.total_rent_per_unit_per_month);
+                    // const rent = monthrent;
+                    const rent = parseFloat(u.total_rent_per_unit_per_month);
                     //console.log("uuuuu :", u);
 
                     html += `
@@ -1023,11 +1033,14 @@
             let options = '<option value="">Select Unit No</option>';
             let selectedUnitnumbers = [];
             let contractId = $('#contract_id').val();
+            console.log("contracts:", allContracts);
             let contract = allContracts.find(c => c.id == contractId);
-            //console.log('fileteredunitcontract :', contract);
+            // console.log('fileteredunitcontract :', contract);
 
             if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
-                //console.log("acrualcontracts :", contract)
+                contract = fullContracts.find(c => c.id == contractId);
+                console.log("acrualcontracts :", contract)
+                console.log("editedUnit :", editedUnit)
                 // EDIT MODE: contract may not be in allContracts
                 selectedUnitnumbers = editedUnit.map(u => u.contract_unit_details_id);
 
@@ -1037,7 +1050,10 @@
                         options += `<option value="${u.contract_unit_details_id}" selected>${unitNumber}</option>`;
                     }
                 });
-                let filteredUnits = contract.contract_unit.contract_unit_details;
+                // let filteredUnits = contract.contract_unit.contract_unit_details;
+                let filteredUnits = contract.contract_unit.contract_unit_details
+                    .filter(u => u.is_vacant == 0);
+                console.log("filetred", filteredUnits);
                 if (unitTypeId) {
                     filteredUnits = filteredUnits.filter(d => d.unit_type_id == unitTypeId);
                 }
@@ -1052,7 +1068,60 @@
                     .trigger('change.select2');
 
                 unitNumberChange(selectedUnitnumbers, editedUnit);
-            } else {
+            }
+            // if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
+
+            //     if (!contract) {
+            //         contract = {
+            //             contract_unit: {
+            //                 contract_unit_details: []
+            //             }
+            //         };
+            //     } else if (!contract.contract_unit) {
+            //         contract.contract_unit = {
+            //             contract_unit_details: []
+            //         };
+            //     } else if (!contract.contract_unit.contract_unit_details) {
+            //         contract.contract_unit.contract_unit_details = [];
+            //     }
+
+            //     editedUnit.forEach(u => {
+            //         const detail = u.contract_unit_detail;
+
+            //         if (!contract.contract_unit.contract_unit_details.some(d => d.id == detail.id)) {
+            //             contract.contract_unit.contract_unit_details.push(detail);
+            //         }
+            //     });
+            //     selectedUnitnumbers = editedUnit.map(u => u.contract_unit_details_id);
+
+            //     editedUnit.forEach(u => {
+            //         if (!unitTypeId || u.unit_type_id == unitTypeId) {
+            //             const unitNumber = u.contract_unit_detail?.unit_number || '';
+            //             options += `<option value="${u.contract_unit_details_id}" selected>${unitNumber}</option>`;
+            //         }
+            //     });
+
+            //     let filteredUnits = contract.contract_unit.contract_unit_details;
+
+            //     if (unitTypeId) {
+            //         filteredUnits = filteredUnits.filter(d => d.unit_type_id == unitTypeId);
+            //     }
+
+            //     filteredUnits.forEach(ut => {
+            //         if (!selectedUnitnumbers.includes(ut.id)) {
+            //             options += `<option value="${ut.id}">${ut.unit_number}</option>`;
+            //         }
+            //     });
+
+            //     $('#unit_type0')
+            //         .html(options)
+            //         .val(selectedUnitnumbers.length ? selectedUnitnumbers[0] : '')
+            //         .trigger('change.select2');
+
+            //     unitNumberChange(selectedUnitnumbers, editedUnit);
+            //     return;
+            // }
+            else {
                 // NEW MODE: use allContracts for available units
 
 
@@ -1193,9 +1262,10 @@
             let selectedSubunit = [];
             let subunitId = 0;
             //console.log("test", contract);
-            //console.log("editedUNITunitchage", editedUnit);
+            console.log("editedUNITunitchage", editedUnit);
             if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
                 if (!editedUnit[0].contract_subunit_detail) {
+                    // alert('his');
                     $('#sub_unit_type').html('<option value="">No Subunits Available</option>').trigger('change');
                     $('#sub_unit_type').prop('required', false);
                     $('#rent_per_month')
@@ -1206,6 +1276,7 @@
                     return;
 
                 } else {
+                    // alert(editedUnit[0].rent_per_room);
                     editedUnit.forEach(u => {
                         subunitId = u.contract_subunit_details_id;
                         const subunitNo = u.contract_subunit_detail?.subunit_no || '';
@@ -1217,7 +1288,10 @@
                             options += `<option value="${subunitId}" selected>${subunitNo}</option>`;
                             selectedSubunit.push(subunitId);
                         }
+                        // alert("hi");
                         calculatepaymentamount(editedUnit[0].rent_per_room, count);
+                        // calculatepaymentamount(editedUnit[0].rent_per_month, count);
+
                     });
                     // return;
                 }
@@ -1276,12 +1350,13 @@
         });
 
         function subUnitChange(subunitId, editedUnit) {
+            // alert(subunitId);
             //console.log("subunitchangeinside:", JSON.stringify(editedUnit));
             let contractId = $('#contract_id').val();
             let contract = allContracts.find(c => c.id == contractId);
             let count = contract?.contract_payment_receivables_count || 0;
             if (editedUnit && editedUnit.length > 0) {
-                //console.log("sschanhe", editedUnit);
+                console.log("sschanhe", editedUnit);
                 const eu = editedUnit[0];
                 // alert(eu.rent_per_month);
                 // alert(count);
@@ -1293,39 +1368,24 @@
                 $('#total_rent_per_annum').text(editedUnit[0]['rent_per_annum_agreement']);
                 $('#total_rent_annum').val(editedUnit[0]['rent_per_annum_agreement']);
                 return;
-
-
             }
-
-
-
-
-
             if (!contract || !contract.contract_unit || !contract.contract_unit.contract_unit_details) {
                 $('#rent_per_month').val('').prop('required', false).prop('disabled', false);
                 return;
             }
-
-            // Get selected unit first
             let unitId = $('#unit_type0').val();
             let selectedUnit = contract.contract_unit.contract_unit_details.find(u => u.id == unitId);
             //console.log('Selected Unit Detail for Rent Calculation:', selectedUnit);
-
             if (!selectedUnit) {
                 $('#rent_per_month').val('').prop('required', false).prop('disabled', false);
                 return;
             }
-
-            // If no subunit is selected, clear rent
             if (!subunitId) {
                 $('#rent_per_month').val('').prop('required', false).prop('disabled', false);
                 return;
             }
-
-            // 🔹 Find the selected subunit inside the selected unit
             let selectedSubUnit = selectedUnit.contract_sub_unit_details.find(su => su.id == subunitId);
             //console.log('Selected SubUnit Detail:', selectedSubUnit);
-
             if (!selectedSubUnit) {
                 $('#rent_per_month').val('').prop('required', false).prop('disabled', false);
                 return;
@@ -1337,7 +1397,6 @@
                     .prop('readonly', true);
                 // alert(selectedUnit.rent_per_partition);
                 calculatepaymentamount(selectedUnit.rent_per_partition, count)
-
             }
             if (selectedSubUnit.subunit_type == 2) {
                 $('#rent_per_month')
@@ -1345,7 +1404,6 @@
                     .prop('required', true)
                     .prop('readonly', true);
                 calculatepaymentamount(selectedUnit.rent_per_bedspace, count)
-
             }
             if (selectedSubUnit.subunit_type == 3) {
                 $('#rent_per_month')
@@ -1353,10 +1411,15 @@
                     .prop('required', true)
                     .prop('readonly', true);
                 calculatepaymentamount(selectedUnit.rent_per_room, count)
-
             }
-
-
+            if (selectedSubUnit.subunit_type == 4) {
+                // alert("called");
+                $('#rent_per_month')
+                    .val(selectedUnit.rent_per_flat ?? '')
+                    .prop('required', true)
+                    .prop('readonly', true);
+                calculatepaymentamount(selectedUnit.rent_per_flat, count)
+            }
         }
     </script>
     {{-- end  --}}
@@ -1453,7 +1516,7 @@
 
                 // ====== Unit-wise Accordion Section ======
                 if (editedPayment && editedUnit) {
-                    // alert("hiffagreemanet   ");
+                    // alert("hiffagreemanet");
                     //console.log("edited payment: ", editedPayment);
                     //console.log("edited unit: ", editedUnit);
 
@@ -2224,6 +2287,7 @@
 
         function validateTotalPayment() {
             let totalRent = parseFloat($('#total_rent_per_annum').text()) || 0;
+            // alert(totalRent);
             let totalPayment = 0;
 
             // Sum all payment amounts
