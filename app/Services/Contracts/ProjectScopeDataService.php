@@ -7,6 +7,7 @@ use App\Repositories\Contracts\ContractRepository;
 use App\Repositories\Contracts\ContractScopeRepository;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ProjectScopeDataService
 {
@@ -31,6 +32,8 @@ class ProjectScopeDataService
         ])
             ->whereIn('contract_status', [0, 1])
             ->find($contractId);
+
+        // dd($contract);
 
         if (!$contract) {
             return [];
@@ -100,19 +103,34 @@ class ProjectScopeDataService
 
     public function scopeCreate($sheet = null, $contractId, $filename)
     {
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($this->exportSpreadsheet($sheet));
+        $hasScope = $this->scopeRepo->findBYContractId($contractId);
+        // dd($sheet);
+        // $spreadsheet = new Spreadsheet();
+        $spreadsheet = $sheet->getParent();
 
         ob_start();
+        $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
         $binaryExcel = ob_get_clean();
 
+        $data['scope'] = base64_encode($binaryExcel);
+
+
+        // $binaryExceldwn = base64_decode($data['scope']);
+        // file_put_contents(storage_path('app/testup.xlsx'), $binaryExceldwn);
 
         $data['contract_id'] = $contractId;
         // $serialized = serialize($sheet);
         // $encoded = base64_encode($serialized);
-        $data['scope'] = base64_encode($binaryExcel);
+
         $data['file_name'] = $filename;
-        $scope = $this->scopeRepo->create($data);
+
+        if ($hasScope) {
+            $scope = $this->scopeRepo->update($data, $hasScope->id);
+        } else {
+            $scope = $this->scopeRepo->create($data);
+        }
+
 
 
         $upData['is_scope_generated'] = 1;

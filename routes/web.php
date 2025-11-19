@@ -141,3 +141,5 @@ Route::middleware(['auth'])->group(function () {
         ->name('contract.downloadSummary');
     Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);
 });
+
+// Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);

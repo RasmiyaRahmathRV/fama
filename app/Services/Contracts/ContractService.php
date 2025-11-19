@@ -241,6 +241,13 @@ class ContractService
             ->addColumn('action', function ($row) {
                 $action = '';
 
+                if (Gate::allows('contract.edit') && $row->has_agreement == 0) {
+                    $action .= '<a class="btn btn-info btn-sm" href="' . route('contract.edit', $row->id) . '" title="Edit Contract">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a> ';
+                }
+
+
                 if ($row->contract_status == 0) {
 
                     if (Gate::allows('contract.view')) {
@@ -249,11 +256,6 @@ class ContractService
                         </a> ';
                     }
 
-                    if (Gate::allows('contract.edit')) {
-                        $action .= '<a class="btn btn-info btn-sm" href="' . route('contract.edit', $row->id) . '" title="Edit Contract">
-                            <i class="fas fa-pencil-alt"></i>
-                        </a> ';
-                    }
 
                     if (Gate::allows('contract.delete')) {
                         $action .= '<button class="btn btn-danger btn-sm" onclick="deleteConf(' . $row->id . ')" title="Delete Contract">

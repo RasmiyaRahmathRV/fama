@@ -1620,6 +1620,10 @@
             $('.rentBedspace').show();
         }
 
+        if ($('.roomcheck:checked').length > 0) {
+            $('.rentRoom').show();
+        }
+
 
         // }
 

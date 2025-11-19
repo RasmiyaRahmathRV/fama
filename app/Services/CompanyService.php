@@ -40,9 +40,11 @@ class CompanyService
 
     public function createOrRestore(array $data, $user_id = null)
     {
-        $this->validate($data);
+
         $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['company_code'] = $this->setCompanyCode();
+        // dd($data);
+        $this->validate($data);
 
         $existing = $this->companyRepository->checkIfExist($data);
 

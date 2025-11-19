@@ -56,7 +56,7 @@
                                         <tr>
                                             <td>2</td>
                                             <td>Vendor Contract</td>
-                                            <td></td>
+                                            <td>{{ $contract->contract_documents->document_type == 1 }}</td>
                                         </tr>
                                         <tr>
                                             <td>3</td>
@@ -223,7 +223,7 @@
                                 <div class="card-body">
                                     <div class="form-group row">
                                         <label for="inputEmail3" class="col-form-label">Upload Cheque copy</label>
-                                        <input type="file" name="file" class="form-control">
+                                        <input type="file" name="cheque_copy" class="form-control">
                                     </div>
                                 </div>
 

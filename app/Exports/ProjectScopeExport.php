@@ -22,6 +22,7 @@ class ProjectScopeExport implements FromArray, WithHeadings, WithStyles, ShouldA
     {
         $this->contract = ProjectScopeDataService::getContractData($contractId);
         $this->scopeService = $scopeService;
+        // dd($this->contract);
     }
 
     public function title(): string
@@ -61,6 +62,9 @@ class ProjectScopeExport implements FromArray, WithHeadings, WithStyles, ShouldA
             renderPaymentToVendor($sheet, $this->contract);
             renderReceivables($sheet, $this->contract);
             renderTotal($sheet, $this->contract);
+            if ($this->contract['parent']) {
+                renderRenewDetailsDF($sheet, $this->contract);
+            }
 
             foreach (range('A', 'P') as $col) {
                 $sheet->getColumnDimension($col)->setAutoSize(true);
