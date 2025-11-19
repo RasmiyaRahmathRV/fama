@@ -131,6 +131,8 @@ function getPartitionValue($dataArr, $key, $receivable_installments)
         // print('profit');
         $rent_per_flat = $dataArr['unit_revenue'][$key] / $installment->installment_name;
         $rent_per_unit_per_month = $rent_per_flat;
+        $subunit_rent_per_unit = $rent_per_flat;
+        $total_rent_per_unit_per_month  = $rent_per_flat;
     }
     // print($rent_per_unit_per_month);
 
