@@ -191,10 +191,13 @@ class AgreementRepository
                     $unit->save();
                 }
             }
+            // dd($contract->contract_unit_details());
+            $contract->is_agreement_added = 0;
+            $contract->save();
 
             $allUnitsVacant = $contract->contract_unit_details()->where('is_vacant', 1)->doesntExist();
             if ($allUnitsVacant) {
-                $contract->is_vacant = 0;
+                // $contract->is_agreement_added = 0;
                 $contract->has_agreement = 0;
                 $contract->save();
             }
