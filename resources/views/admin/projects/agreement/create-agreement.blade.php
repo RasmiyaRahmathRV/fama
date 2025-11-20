@@ -155,18 +155,26 @@
 
 
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Tenant mobile</label>
-                                                        <input type="number" class="form-control" id="tenant_mobile"
+                                                        <label for="exampleInputEmail1">Tenant mobile <small
+                                                                class="text-muted fonr-weight-lighter">(e.g., +971501234567
+                                                                or 971501234567)</small></label>
+                                                        <input type="text" class="form-control" id="tenant_mobile"
                                                             name="tenant_mobile" placeholder="Tenant mobile"
                                                             value="{{ old('tenant_mobile', $agreement->tenant->tenant_mobile ?? '') }}"
-                                                            required>
+                                                            required pattern="^\+?\d{1,4}\s?\d{7,12}$">
+                                                        <div class="invalid-feedback">
+                                                            Enter valid mobile with country code.
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="exampleInputEmail1">Tenant email</label>
                                                         <input type="email" class="form-control" id="tenant_email"
                                                             name="tenant_email" placeholder="Tenant email"
                                                             value="{{ old('tenant_email', $agreement->tenant->tenant_email ?? '') }}"
-                                                            required>
+                                                            required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$">
+                                                        <div class="invalid-feedback">
+                                                            Please provide a valid email.
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="exampleInputEmail1">Nationality</label>
@@ -181,6 +189,41 @@
 
                                                         </select>
 
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group row">
+
+
+                                                    <div class="col-md-4">
+                                                        <label for="exampleInputEmail1">Contact person</label>
+                                                        <input type="text" class="form-control" id="contact_person"
+                                                            name="contact_person" placeholder="Contact Person"
+                                                            value="{{ old('contact_person', $agreement->tenant->contact_person ?? '') }}"
+                                                            required>
+
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="exampleInputEmail1">Contact email</label>
+                                                        <input type="email" class="form-control " id="contact_email"
+                                                            name="contact_email" placeholder="Contact email"
+                                                            value="{{ old('contact_email', $agreement->tenant->contact_email ?? '') }}"
+                                                            required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$">
+                                                        <div class="invalid-feedback">
+                                                            Please provide a valid email.
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="exampleInputEmail1">Contact Number <small
+                                                                class="text-muted fonr-weight-lighter">(e.g., +971501234567
+                                                                or 971501234567)</small> </label>
+                                                        <input type="text" class="form-control" id="contact_number"
+                                                            name="contact_number" placeholder="Contact number"
+                                                            value="{{ old('contact_number', $agreement->tenant->contact_number ?? '') }}"
+                                                            required pattern="^\+?\d{1,4}\s?\d{7,12}$">
+                                                        <div class="invalid-feedback">
+                                                            Enter valid mobile with country code.
+                                                        </div>
                                                     </div>
 
                                                 </div>
@@ -878,7 +921,7 @@
                         .filter(u => u.contract_unit_detail)
                         .map(u => u.contract_unit_detail);
                 } else {
-                    alert('ff');
+                    // alert('ff');
                     unitDetails = contract?.contract_unit?.contract_unit_details || [];
                     console.log('unit', unitDetails);
 

@@ -68,7 +68,15 @@
         // Validate inputs, selects, and textareas
         stepContainer.querySelectorAll('[required]:not([type="radio"])').forEach(field => {
             if (field.offsetParent === null) return; // skip hidden
-            if (!field.value.trim()) {
+            // if (!field.value.trim()) {
+            //     field.classList.add('is-invalid');
+            //     field.classList.remove('is-valid');
+            //     isValid = false;
+            // } else {
+            //     field.classList.add('is-valid');
+            //     field.classList.remove('is-invalid');
+            // }
+            if (!field.checkValidity()) {
                 field.classList.add('is-invalid');
                 field.classList.remove('is-valid');
                 isValid = false;

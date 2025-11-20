@@ -96,6 +96,9 @@ class AgreementService
                 'nationality_id' => $data['nationality_id'] ?? null,
                 'tenant_address' => $data['tenant_address'] ?? null,
                 'added_by' => $data['added_by'],
+                'contact_person' => $data['contact_person'],
+                'contact_number' => $data['contact_number'],
+                'contact_email' => $data['contact_email']
 
             ];
 
@@ -295,7 +298,10 @@ class AgreementService
                 'nationality_id' => $data['nationality_id'] ?? null,
                 'tenant_address' => $data['tenant_address'] ?? null,
                 'updated_by' => $data['updated_by'],
-                'id' => $data['tenant_id']
+                'id' => $data['tenant_id'],
+                'contact_person' => $data['contact_person'],
+                'contact_number' => $data['contact_number'],
+                'contact_email' => $data['contact_email']
             ];
             $this->agreementTenantService->update($tenantData);
 
