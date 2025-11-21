@@ -56,11 +56,18 @@ class UserSeeder extends Seeder
                 $subModule = ['view'];
             } else {
                 $subModule = ['add', 'view', 'edit', 'delete'];
-                if (in_array($module, ['contract', 'agreement'])) {
+                if (in_array($module, ['contract'])) {
                     $subModule[] = 'approve';
                     $subModule[] = 'reject';
                     $subModule[] = 'document_upload';
                     $subModule[] = 'renew';
+                }
+
+                if (in_array($module, ['agreement'])) {
+                    $subModule[] = 'approve';
+                    $subModule[] = 'reject';
+                    $subModule[] = 'document_upload';
+                    $subModule[] = 'manage_installments';
                 }
             }
 
