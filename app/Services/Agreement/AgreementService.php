@@ -642,6 +642,8 @@ class AgreementService
     }
     public function terminate($data)
     {
-        dd($data);
+        // dd($data);
+
+        return $this->agreementRepository->terminate($data);
     }
 }

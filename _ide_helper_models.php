@@ -51,7 +51,7 @@ namespace App\Models{
  * @property int $is_visa_uploaded
  * @property int $is_signed_agreement_uploaded
  * @property int $is_trade_license_uploaded
- * @property int $agreement_status 0-Pending, 1-Processing, 2-Approved, 3-Rejected
+ * @property int $agreement_status 0-Pending, 1-terminated
  * @property string|null $terminated_date
  * @property string|null $terminated_reason
  * @property int|null $terminated_by
@@ -266,6 +266,9 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property string $contact_person
+ * @property string $contact_number
+ * @property string $contact_email
  * @property-read \App\Models\Agreement $agreement
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\Nationality|null $nationality
@@ -275,6 +278,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant query()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereAddedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereAgreementId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereContactEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereContactNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereContactPerson($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereDeletedBy($value)

@@ -39,7 +39,7 @@ return new class extends Migration
             $table->boolean('is_visa_uploaded')->default(0);
             $table->boolean('is_signed_agreement_uploaded')->default(0);
             $table->boolean('is_trade_license_uploaded')->default(0);
-            $table->integer('agreement_status')->default(0)->comment('0-Pending, 1-Processing, 2-Approved, 3-Rejected');
+            $table->integer('agreement_status')->default(0)->comment('0-Pending, 1-terminated');
             $table->date('terminated_date')->nullable();
             $table->text('terminated_reason')->nullable();
             $table->integer('terminated_by')->nullable();
@@ -49,7 +49,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->softDeletes();
-
         });
     }
 
@@ -60,6 +59,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('agreements');
         Schema::dropIfExists('tenant_identities');
-
     }
 };
