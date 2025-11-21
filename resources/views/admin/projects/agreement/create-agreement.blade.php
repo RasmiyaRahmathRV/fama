@@ -155,18 +155,26 @@
 
 
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Tenant mobile</label>
-                                                        <input type="number" class="form-control" id="tenant_mobile"
+                                                        <label for="exampleInputEmail1">Tenant mobile <small
+                                                                class="text-muted fonr-weight-lighter">(e.g., +971501234567
+                                                                or 971501234567)</small></label>
+                                                        <input type="text" class="form-control" id="tenant_mobile"
                                                             name="tenant_mobile" placeholder="Tenant mobile"
                                                             value="{{ old('tenant_mobile', $agreement->tenant->tenant_mobile ?? '') }}"
-                                                            required>
+                                                            required pattern="^\+?\d{1,4}\s?\d{7,12}$">
+                                                        <div class="invalid-feedback">
+                                                            Enter valid mobile with country code.
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="exampleInputEmail1">Tenant email</label>
                                                         <input type="email" class="form-control" id="tenant_email"
                                                             name="tenant_email" placeholder="Tenant email"
                                                             value="{{ old('tenant_email', $agreement->tenant->tenant_email ?? '') }}"
-                                                            required>
+                                                            required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$">
+                                                        <div class="invalid-feedback">
+                                                            Please provide a valid email.
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="exampleInputEmail1">Nationality</label>
@@ -181,6 +189,41 @@
 
                                                         </select>
 
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group row">
+
+
+                                                    <div class="col-md-4">
+                                                        <label for="exampleInputEmail1">Contact person</label>
+                                                        <input type="text" class="form-control" id="contact_person"
+                                                            name="contact_person" placeholder="Contact Person"
+                                                            value="{{ old('contact_person', $agreement->tenant->contact_person ?? '') }}"
+                                                            required>
+
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="exampleInputEmail1">Contact email</label>
+                                                        <input type="email" class="form-control " id="contact_email"
+                                                            name="contact_email" placeholder="Contact email"
+                                                            value="{{ old('contact_email', $agreement->tenant->contact_email ?? '') }}"
+                                                            required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$">
+                                                        <div class="invalid-feedback">
+                                                            Please provide a valid email.
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="exampleInputEmail1">Contact Number <small
+                                                                class="text-muted fonr-weight-lighter">(e.g., +971501234567
+                                                                or 971501234567)</small> </label>
+                                                        <input type="text" class="form-control" id="contact_number"
+                                                            name="contact_number" placeholder="Contact number"
+                                                            value="{{ old('contact_number', $agreement->tenant->contact_number ?? '') }}"
+                                                            required pattern="^\+?\d{1,4}\s?\d{7,12}$">
+                                                        <div class="invalid-feedback">
+                                                            Enter valid mobile with country code.
+                                                        </div>
                                                     </div>
 
                                                 </div>
@@ -635,11 +678,16 @@
 
 
         function calculatepaymentamount(rent_per_month = 0, payment_count = 0) {
-            //console.log("count ;", payment_count);
-            // var rentmonth = Number(rent_per_month.replace(/,/g, '')) || 0;
+
+            // clearing the div
+            const errorDiv = $('#paymentError');
+            errorDiv.html('');
+            errorDiv.addClass('d-none').removeClass('d-flex');
+            $('#submitBtn').prop('disabled', false);
+
             var rentmonth = rent_per_month || 0;
             for (let i = 0; i < payment_count; i++) {
-                $('#payment_amount' + i).val((rentmonth));
+                $('#payment_amount_' + i).val((rentmonth));
             }
             let total_rent_per_annum = rentmonth * payment_count;
             $('#total_rent_per_annum').text(total_rent_per_annum);
@@ -873,7 +921,9 @@
                         .filter(u => u.contract_unit_detail)
                         .map(u => u.contract_unit_detail);
                 } else {
+                    // alert('ff');
                     unitDetails = contract?.contract_unit?.contract_unit_details || [];
+                    console.log('unit', unitDetails);
 
                 }
                 unit_details = unitDetails;
@@ -889,14 +939,18 @@
                                     <i class="fas fa-door-open text-info"></i> Unit Details - ${selectedContractType.contract_type}
                                 </h5>
                         `;
+                console.log('unitdetails', unitDetails);
 
                 unitDetails.forEach((u, index) => {
                     const type = allunittypes?.find(t => t.id == u.unit_type_id)?.unit_type || 'Unknown';
-                    const subunitCount = u.contract_sub_unit_details?.length || 0;
+                    // const subunitCount = u.contract_sub_unit_details?.length || 0;
+                    const subunitCount = u.subunitcount_per_unit || 0;
+
+                    // alert(subunitCount);
                     // alert(u.total_rent_per_unit_per_month);
                     // const rent = monthrent;
                     const rent = parseFloat(u.total_rent_per_unit_per_month);
-                    //console.log("uuuuu :", u);
+                    // console.log("uuuuu :", rent);
 
                     html += `
                             <div class=" mb-3  border-info">
@@ -992,8 +1046,6 @@
             // $('#no_of_installments').val(payment_count).trigger('change');
             if (agreement && agreement.agreement_payment) {
                 const installmentId = agreement.agreement_payment.installment_id;
-
-                // Loop through options and select the matching one
                 $('#no_of_installments option').each(function() {
                     const optionValue = $(this).val();
                     if (parseInt(optionValue) === parseInt(installmentId)) {
@@ -1068,60 +1120,7 @@
                     .trigger('change.select2');
 
                 unitNumberChange(selectedUnitnumbers, editedUnit);
-            }
-            // if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
-
-            //     if (!contract) {
-            //         contract = {
-            //             contract_unit: {
-            //                 contract_unit_details: []
-            //             }
-            //         };
-            //     } else if (!contract.contract_unit) {
-            //         contract.contract_unit = {
-            //             contract_unit_details: []
-            //         };
-            //     } else if (!contract.contract_unit.contract_unit_details) {
-            //         contract.contract_unit.contract_unit_details = [];
-            //     }
-
-            //     editedUnit.forEach(u => {
-            //         const detail = u.contract_unit_detail;
-
-            //         if (!contract.contract_unit.contract_unit_details.some(d => d.id == detail.id)) {
-            //             contract.contract_unit.contract_unit_details.push(detail);
-            //         }
-            //     });
-            //     selectedUnitnumbers = editedUnit.map(u => u.contract_unit_details_id);
-
-            //     editedUnit.forEach(u => {
-            //         if (!unitTypeId || u.unit_type_id == unitTypeId) {
-            //             const unitNumber = u.contract_unit_detail?.unit_number || '';
-            //             options += `<option value="${u.contract_unit_details_id}" selected>${unitNumber}</option>`;
-            //         }
-            //     });
-
-            //     let filteredUnits = contract.contract_unit.contract_unit_details;
-
-            //     if (unitTypeId) {
-            //         filteredUnits = filteredUnits.filter(d => d.unit_type_id == unitTypeId);
-            //     }
-
-            //     filteredUnits.forEach(ut => {
-            //         if (!selectedUnitnumbers.includes(ut.id)) {
-            //             options += `<option value="${ut.id}">${ut.unit_number}</option>`;
-            //         }
-            //     });
-
-            //     $('#unit_type0')
-            //         .html(options)
-            //         .val(selectedUnitnumbers.length ? selectedUnitnumbers[0] : '')
-            //         .trigger('change.select2');
-
-            //     unitNumberChange(selectedUnitnumbers, editedUnit);
-            //     return;
-            // }
-            else {
+            } else {
                 // NEW MODE: use allContracts for available units
 
 
@@ -1252,6 +1251,7 @@
         // }
 
         function unitNumberChange(unitId, editedUnit) {
+            // alert("called unitnumberchange");
             //console.log('unitNumberChange called with ID:', unitId);
             let options = '<option value="">Select SubUnit</option>';
             let contractId = $('#contract_id').val();
@@ -1289,8 +1289,8 @@
                             selectedSubunit.push(subunitId);
                         }
                         // alert("hi");
-                        calculatepaymentamount(editedUnit[0].rent_per_room, count);
-                        // calculatepaymentamount(editedUnit[0].rent_per_month, count);
+                        // calculatepaymentamount(editedUnit[0].rent_per_room, count);
+                        calculatepaymentamount(editedUnit[0].rent_per_month, count);
 
                     });
                     // return;
@@ -1311,13 +1311,13 @@
                     $('#rent_per_month').val('').prop('required', false);
                     return;
                 }
-                // 🔹 If selected unit exists but has no subunits
+                //  If selected unit exists but has no subunits
                 if (!selectedUnit.contract_sub_unit_details || selectedUnit.contract_sub_unit_details.length === 0) {
                     //console.log('No subunits found for unit ID:', unitId);
                     $('#sub_unit_type').html('<option value="">No Subunits Available</option>').trigger('change');
                     $('#sub_unit_type').prop('required', false);
 
-                    // ✅ Set rent value when there are no subunits
+                    //  Set rent value when there are no subunits
                     $('#rent_per_month')
                         .val(selectedUnit.rent_per_room ?? '')
                         .prop('required', true)
@@ -1350,12 +1350,14 @@
         });
 
         function subUnitChange(subunitId, editedUnit) {
+            // alert("called subunitchange");
+
             // alert(subunitId);
             //console.log("subunitchangeinside:", JSON.stringify(editedUnit));
             let contractId = $('#contract_id').val();
             let contract = allContracts.find(c => c.id == contractId);
             let count = contract?.contract_payment_receivables_count || 0;
-            if (editedUnit && editedUnit.length > 0) {
+            if (editedUnit && editedUnit.length > 0 && (editedUnit[0].contract_subunit_details_id == subunitId)) {
                 console.log("sschanhe", editedUnit);
                 const eu = editedUnit[0];
                 // alert(eu.rent_per_month);
@@ -1364,7 +1366,7 @@
                     .val(eu.rent_per_month)
                     .prop('required', true)
                     .prop('readonly', true);
-                // calculatepaymentamount(eu.rent_per_month, count);
+                calculatepaymentamount(eu.rent_per_month, count);
                 $('#total_rent_per_annum').text(editedUnit[0]['rent_per_annum_agreement']);
                 $('#total_rent_annum').val(editedUnit[0]['rent_per_annum_agreement']);
                 return;
@@ -1413,7 +1415,6 @@
                 calculatepaymentamount(selectedUnit.rent_per_room, count)
             }
             if (selectedSubUnit.subunit_type == 4) {
-                // alert("called");
                 $('#rent_per_month')
                     .val(selectedUnit.rent_per_flat ?? '')
                     .prop('required', true)
@@ -1443,7 +1444,7 @@
             //console.log(containerPayment);
             const oldValues = [];
             containerPayment.querySelectorAll('.payment_mode_div').forEach((block, i) => {
-                const amountInput = block.querySelector(`#payment_amount${i}`);
+                const amountInput = block.querySelector(`#payment_amount_${i}`);
                 oldValues[i] = amountInput ? amountInput.value : '';
             });
             const prevFbBlocks = containerPayment.querySelectorAll('.payment_mode_div');
@@ -2182,7 +2183,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <label>Payment Amount</label>
-                                        <input type="text" class="form-control" id="payment_amount${i}" name="payment_detail[${i}][payment_amount]" value="${existingValue}" placeholder="Payment Amount">
+                                        <input type="text" class="form-control" id="payment_amount_${i}" name="payment_detail[${i}][payment_amount]" value="${existingValue}" placeholder="Payment Amount">
                                     </div>
                                 </div>
                                 <div class="form-group row" id="extra_fields_${i}">
@@ -2311,18 +2312,18 @@
             // Enable or disable submit button
             if (totalPayment === totalRent && totalRent > 0) {
                 $('#submitBtn').prop('disabled', false);
-                errorDiv.addClass('d-none').removeClass('d-flex'); // hide error
+                errorDiv.addClass('d-none').removeClass('d-flex');
             } else {
                 $('#submitBtn').prop('disabled', true);
                 errorDiv.html(
                     `Total payment amount <span class="mx-1 text-dark">${totalPayment}</span> does not match total rent per annum <span class="mx-1 text-dark">${totalRent}</span>.`
                 );
-                errorDiv.removeClass('d-none').addClass('d-flex'); // show error
+                errorDiv.removeClass('d-none').addClass('d-flex');
                 // errorDiv.focus();
-                errorDiv[0].scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
-                });
+                // errorDiv[0].scrollIntoView({
+                //     behavior: 'smooth',
+                //     block: 'center'
+                // });
             }
         }
 

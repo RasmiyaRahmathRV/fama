@@ -170,4 +170,8 @@ class Agreement extends Model
     {
         return Carbon::parse($value)->format('d-m-Y');
     }
+    public function setTerminatedDateAttribute($value)
+    {
+        $this->attributes['terminated_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
 }

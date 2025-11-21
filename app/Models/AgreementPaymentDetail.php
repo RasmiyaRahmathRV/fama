@@ -64,4 +64,8 @@ class AgreementPaymentDetail extends Model
     {
         $this->attributes['payment_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
+    public function invoice()
+    {
+        return $this->hasOne(TenantInvoice::class, 'agreement_payment_detail_id', 'id');
+    }
 }

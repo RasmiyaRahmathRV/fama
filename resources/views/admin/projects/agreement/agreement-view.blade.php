@@ -109,6 +109,9 @@
 
                             <div id="unitAccordion">
                                 @foreach ($agreement->agreement_units as $unit)
+                                    @php
+                                        $isFirst = $loop->first; // true for the first unit
+                                    @endphp
                                     <div class="card mb-2">
                                         <!-- Accordion Header -->
                                         <div class="card-header agreement-accordion" id="heading{{ $unit->id }}">
@@ -147,7 +150,8 @@
                                         </div>
 
                                         <!-- Accordion Body -->
-                                        <div id="collapse{{ $unit->id }}" class="collapse"
+                                        <div id="collapse{{ $unit->id }}"
+                                            class="collapse {{ $isFirst ? 'show' : '' }}"
                                             aria-labelledby="heading{{ $unit->id }}" data-parent="#unitAccordion">
                                             <div class="card-body">
                                                 <div class="table-responsive">
@@ -161,6 +165,8 @@
                                                                 <th>Paid On</th>
                                                                 <th>Paid Amount</th>
                                                                 <th>Composition</th>
+                                                                <th>Invoice Upload</th>
+                                                                <th>View Invoice</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -210,6 +216,36 @@
                                                                         RENT
                                                                         {{ $loop->iteration }}/{{ $agreement->agreement_payment->installment->installment_name }}
                                                                     </td>
+                                                                    <td>
+                                                                        <a href="#"
+                                                                            class="btn btn-success btn-sm open-invoice-modal"
+                                                                            title="Upload Invoice"
+                                                                            data-detailId="{{ $detail->id }}"
+                                                                            data-agreementId="{{ $agreement->id }}"
+                                                                            @if ($detail->invoice) data-invoiceid="{{ $detail->invoice->id }}" @endif><i
+                                                                                class="fas fa-file-upload"></i></a>
+
+                                                                    </td>
+                                                                    <td>
+                                                                        @if ($detail->invoice)
+                                                                            @php
+                                                                                $filePath = asset(
+                                                                                    'storage/' .
+                                                                                        $detail->invoice->invoice_path,
+                                                                                );
+
+                                                                            @endphp
+
+                                                                            <a href="{{ $filePath }}" target="_blank"
+                                                                                class="btn btn-primary btn-sm"
+                                                                                title="View Invoice">
+                                                                                <i class="fas fa-file-pdf"></i> View
+                                                                            </a>
+                                                                        @else
+                                                                            -
+                                                                        @endif
+                                                                    </td>
+
                                                                 </tr>
                                                             @endforeach
                                                         </tbody>
@@ -280,7 +316,8 @@
                                         <div class="form-group row">
                                             <div class="col md-4">
                                                 <label for="exampleInputEmail1">Payment Mode</label>
-                                                <select class="form-control select2" name="payment_mode" id="payment_mode">
+                                                <select class="form-control select2" name="payment_mode"
+                                                    id="payment_mode">
                                                     <option value="">Select</option>
                                                     <option value="1">Cash</option>
                                                     <option value="bank">Bank Transfer</option>
@@ -386,6 +423,106 @@
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
+
+
+    <div class="modal fade" id="modal-invoiceUpload">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Upload Invoice</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="" id="uploadForm" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-form-label">Upload Invoice File</label>
+                                <input type="file" name="invoice_path" id="" class="form-control"
+                                    accept=".pdf,.jpg,.jpeg,.png" required>
+                                <div class="invalid-feedback"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <input type="hidden" name="agreement_id" id="agreement_id">
+                    <input type="hidden" name="detail_id" id="detail_id">
+                    <input type="hidden" name="invoice_id" id="invoice_id">
+
+                    <!-- /.card-body -->
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-info terminate-btn uploadBtn">Save changes</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
 @endsection
 @section('custom_js')
+    <script>
+        $(document).on('click', '.open-invoice-modal', function(e) {
+            e.preventDefault();
+            const agreementId = $(this).data('agreementid');
+            const detailId = $(this).data('detailid');
+            const invoiceId = $(this).data('invoiceid');
+            $('#agreement_id').val(agreementId);
+            $('#detail_id').val(detailId);
+            $('#invoice_id').val(invoiceId);
+
+            $('#modal-invoiceUpload').modal('show');
+        });
+    </script>
+    <script>
+        $('.uploadBtn').click(function(e) {
+            e.preventDefault();
+            const uploadBtn = $(this);
+            var form = document.getElementById('uploadForm');
+            var fdata = new FormData(form);
+
+            // Clear previous errors
+            $('#uploadForm .form-control').removeClass('is-invalid');
+            $('#uploadForm .invalid-feedback').text('');
+
+            // Front-end required validation for file
+            const fileInput = $('#uploadForm [name="invoice_path"]');
+            if (!fileInput.val()) {
+                fileInput.addClass('is-invalid');
+                fileInput.siblings('.invalid-feedback').text('Invoice file is required.');
+                return;
+            }
+
+            uploadBtn.prop('disabled', true);
+
+            $.ajax({
+                url: "{{ url('agreement-invoice-upload') }}/",
+                type: 'POST',
+                data: fdata,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    toastr.success(response.message);
+                    $('#modal-invoiceUpload').modal('hide');
+                    window.location.reload();
+                },
+                error: function(xhr) {
+                    uploadBtn.prop('disabled', false);
+                    const response = xhr.responseJSON;
+                    if (xhr.status === 422 && response?.errors) {
+                        $.each(response.errors, function(key, messages) {
+                            const input = $('#uploadForm [name="' + key + '"]');
+                            input.addClass('is-invalid');
+                            input.siblings('.invalid-feedback').text(messages[0]);
+                        });
+                    } else if (response.message) {
+                        toastr.error(response.message);
+                    }
+                }
+            });
+        });
+    </script>
 @endsection

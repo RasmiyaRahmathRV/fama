@@ -34,6 +34,9 @@ class AgreementTenant extends Model
         'added_by',
         'updated_by',
         'deleted_by',
+        'contact_person',
+        'contact_number',
+        'contact_email'
     ];
 
     /**

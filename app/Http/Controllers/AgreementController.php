@@ -12,6 +12,7 @@ use App\Models\TenantIdentity;
 use App\Models\UnitType;
 use App\Services\Agreement\AgreementDocumentService;
 use App\Services\Agreement\AgreementService;
+use App\Services\Agreement\InvoiceService;
 use App\Services\BankService;
 use App\Services\CompanyService;
 use App\Services\Contracts\ContractService;
@@ -34,7 +35,8 @@ class AgreementController extends Controller
         protected PaymentModeService $paymentModeService,
         protected BankService $bankService,
         protected AgreementService $agreementService,
-        protected AgreementDocumentService $agreementDocumentService
+        protected AgreementDocumentService $agreementDocumentService,
+        protected InvoiceService $invoiceService
     ) {}
     public function index()
     {
@@ -84,6 +86,7 @@ class AgreementController extends Controller
     public function show(Agreement $agreement)
     {
         $agreement = $this->agreementService->getDetails($agreement->id);
+        // dd($agreement);
         return view('admin.projects.agreement.agreement-view', compact('agreement'));
     }
     public function getAgreements(Request $request)
@@ -210,6 +213,16 @@ class AgreementController extends Controller
         try {
             $agreement = $this->agreementService->terminate($request->all());
             return response()->json(['success' => true, 'data' => $agreement, 'message' => 'Agreeament terminated successfully'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
+        }
+    }
+    public function invoice_upload(Request $request)
+    {
+        // dd($request->all());
+        try {
+            $upload = $this->invoiceService->upload_invoice($request->all());
+            return response()->json(['success' => true, 'data' => $upload, 'message' => 'Invoice Uploaded successfully'], 201);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
         }
