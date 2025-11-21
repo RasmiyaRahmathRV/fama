@@ -216,6 +216,7 @@ namespace App\Models{
  * @property-read \App\Models\AgreementPayment|null $agreementPayment
  * @property-read \App\Models\Bank|null $bank
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\TenantInvoice|null $invoice
  * @property-read \App\Models\PaymentMode|null $paymentMode
  * @property-write mixed $paymentdate
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail newModelQuery()
@@ -1517,6 +1518,41 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|TenantIdentity whereUpdatedAt($value)
  */
 	class TenantIdentity extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $agreement_id
+ * @property int $agreement_payment_detail_id
+ * @property string $invoice_path
+ * @property string $invoice_file_name
+ * @property int $added_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice query()
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice whereAgreementId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice whereAgreementPaymentDetailId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice whereInvoiceFileName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice whereInvoicePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|TenantInvoice withoutTrashed()
+ */
+	class TenantInvoice extends \Eloquent {}
 }
 
 namespace App\Models{

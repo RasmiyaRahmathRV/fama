@@ -124,6 +124,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('agreement-documents/{id}', [AgreementController::class, 'agreementDocuments'])->name('agreement.documents');
     Route::post('agreement-documents-upload/{id}', [AgreementController::class, 'documentUpload'])->name('agreement.documentUpload');
     Route::post('agreement-terminate', [AgreementController::class, 'terminate'])->name('agreement.terminate');
+    Route::post('agreement-invoice-upload', [AgreementController::class, 'invoice_upload'])->name('agreement.invoiceUpload');
 
 
 

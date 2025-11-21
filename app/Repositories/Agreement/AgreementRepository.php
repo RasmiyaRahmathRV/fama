@@ -7,6 +7,7 @@ use App\Models\AgreementUnit;
 use App\Models\Contract;
 use App\Models\ContractSubunitDetail;
 use App\Models\ContractUnitDetail;
+use App\Models\TenantInvoice;
 use App\Repositories\Contracts\ContractRepository;
 use App\Services\Agreement\AgreementPaymentDetailService;
 use App\Services\Agreement\AgreementPaymentService;
@@ -143,7 +144,7 @@ class AgreementRepository
             },
             'company',
             'tenant.nationality',
-            'agreement_payment.agreementPaymentDetails',
+            'agreement_payment.agreementPaymentDetails.invoice',
             'agreement_payment.installment',
             'agreement_documents',
             'agreement_units.contractSubunitDetail',
