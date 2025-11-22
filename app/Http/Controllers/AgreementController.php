@@ -180,10 +180,12 @@ class AgreementController extends Controller
     public function agreementDocuments($id)
     {
         $documents = $this->agreementDocumentService->getDocuments($id);
+        // dd($documents);
         $tenantIdentities = TenantIdentity::get();
         $agreementId = $id;
+        $agreement = $this->agreementService->getDetails($id);
         // dd($documents);
-        return view('admin.projects.agreement.agreement_documents', compact('documents', 'tenantIdentities', 'agreementId'));
+        return view('admin.projects.agreement.agreement_documents', compact('documents', 'tenantIdentities', 'agreementId', 'agreement'));
     }
     public function documentUpload(Request $request, $id)
     {

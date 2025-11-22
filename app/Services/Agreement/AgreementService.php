@@ -534,6 +534,7 @@ class AgreementService
             ['data' => 'start_date', 'name' => 'start_date'],
             ['data' => 'end_date', 'name' => 'end_date'],
             ['data' => 'is_signed_agreement_uploaded', 'name' => 'is_signed_agreement_uploaded'],
+            ['data' => 'agreement_status', 'name' => 'agreement_status'],
             ['data' => 'created_at', 'name' => 'created_at'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
         ];
@@ -576,6 +577,7 @@ class AgreementService
             ->addColumn('start_date', fn($row) => $row->start_date ?? '-')
             ->addColumn('end_date', fn($row) => $row->end_date ?? '-')
             ->addColumn('is_signed_agreement_uploaded', fn($row) => $row->is_signed_agreement_uploaded ?? '-')
+            ->addColumn('agreement_status', fn($row) => $row->agreement_status ?? '-')
             ->addColumn('created_at', fn($row) => $row->created_at ?? '-')
 
 

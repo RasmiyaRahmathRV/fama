@@ -64,6 +64,7 @@
                                             <th>Tenant Details</th>
                                             <th>Start Date</th>
                                             <th>End Date</th>
+                                            <th>Agreement Status</th>
                                             <th>Signed Agreement Status</th>
                                             <th>Created At</th>
                                             <th>Actions</th>
@@ -225,6 +226,28 @@
                     {
                         data: 'end_date',
                         name: 'agreements.end_date',
+                    },
+                    {
+                        data: 'agreement_status',
+                        name: 'agreements.agreement_status',
+                        render: function(data, type, row) {
+                            let badgeClass = '';
+                            let text = '';
+
+                            switch (data) {
+                                case 0:
+                                    badgeClass = 'badge badge-success text-white';
+                                    text = 'Active';
+                                    break;
+                                case 1:
+                                    badgeClass = 'badge badge-warning text-white';
+                                    text = 'Terminated';
+                                    break;
+
+                            }
+
+                            return '<span class="' + badgeClass + '">' + text + '</span>';
+                        },
                     },
                     {
                         data: 'is_signed_agreement_uploaded',
