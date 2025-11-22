@@ -29,14 +29,14 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('contract_units', function (Blueprint $table) {
-            $table->integer('total_subunit_count_per_contract');
+            $table->dropColumn('total_subunit_count_per_contract');
         });
 
         Schema::table('contract_unit_details', function (Blueprint $table) {
-            $table->decimal('total_rent_per_unit_per_month');
-            $table->integer('subunittype');
-            $table->integer('subunitcount_per_unit');
-            $table->decimal('subunit_rent_per_unit');
+            $table->dropColumn('total_rent_per_unit_per_month');
+            $table->dropColumn('subunittype');
+            $table->dropColumn('subunitcount_per_unit');
+            $table->dropColumn('subunit_rent_per_unit');
         });
     }
 };

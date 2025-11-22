@@ -8,6 +8,7 @@ use App\Exports\ProjectScopeExport;
 use App\Models\Bank;
 use App\Models\Contract;
 use App\Models\ContractType;
+use App\Models\DocumentType;
 use App\Models\Industry;
 use App\Models\Installment;
 use App\Models\PaymentMode;
@@ -18,6 +19,7 @@ use App\Models\UnitType;
 use App\Services\AreaService;
 use App\Services\CompanyService;
 use App\Services\Contracts\ContractService;
+use App\Services\Contracts\DocumentService;
 use App\Services\Contracts\PaymentDetailService;
 use App\Services\Contracts\PaymentReceivableService;
 use App\Services\Contracts\ProjectScopeDataService;
@@ -47,7 +49,8 @@ class ContractController extends Controller
         protected UnitDetailService $udetSev,
         protected PaymentDetailService $paymentSev,
         protected PaymentReceivableService $paymentRecSev,
-        protected ProjectScopeDataService $scopeService
+        protected ProjectScopeDataService $scopeService,
+        protected DocumentService $documentService,
     ) {}
 
     public function index()
@@ -144,9 +147,24 @@ class ContractController extends Controller
     {
         $title = 'Contract Documents';
         $contract = $this->contractService->getById($contractId);
-        return view("admin.projects.contract.contract-documents", compact("title", 'contract'));
+        $documentTypes = DocumentType::where('status', 1)->get();
+        $contractDocuments = $this->documentService->getByContractId($contractId);
+        return view("admin.projects.contract.contract-documents", compact("title", 'contract', 'documentTypes', 'contractDocuments'));
     }
-    public function document_upload(Request $request) {}
+
+    public function document_upload(Request $request)
+    {
+        try {
+            $this->documentService->uploadDocuments($request->all());
+            // dd('success');
+            // Continue saving documents...
+            return response()->json(['success' => true, 'message' => 'Documents uploaded successfully.'], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // dd($e->errors());
+            // Return error to view
+            return response()->json(['success' => false, 'message' => $e->errors(), 'error'   => $e], 500);
+        }
+    }
 
     public function exportContract(Contract $contract)
     {
