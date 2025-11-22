@@ -106,7 +106,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('contract-approve', [ContractController::class, 'approveContract'])->name('contract.approve');
     Route::post('contract-reject', [ContractController::class, 'rejectContract'])->name('contract.reject');
     Route::get('contract-documents/{id}', [ContractController::class, 'contract_documents'])->name('contract.documents');
-    Route::post('contract-document-upload', [ContractController::class, 'document_upload'])->name('contract.document_upload');
+    Route::post('contract-documents/contract-document-upload', [ContractController::class, 'document_upload'])->name('contract.document_upload');
     Route::get('export-contract', [ContractController::class, 'exportContract'])->name('contract.export');
 
     Route::delete('contracts/unit-detail/{id}', [ContractController::class, 'deleteUnitDetail'])
@@ -125,9 +125,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('agreement-documents-upload/{id}', [AgreementController::class, 'documentUpload'])->name('agreement.documentUpload');
     Route::post('agreement-terminate', [AgreementController::class, 'terminate'])->name('agreement.terminate');
     Route::post('agreement-invoice-upload', [AgreementController::class, 'invoice_upload'])->name('agreement.invoiceUpload');
-
-
-
 
 
     // renewal

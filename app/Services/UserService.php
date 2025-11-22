@@ -55,7 +55,6 @@ class UserService
 
     public function createUserWithPermissions(array $data, $file = null, $user_id = null)
     {
-
         $userData = $data;
         $user_id = $userData['id'] ?? null;
 

@@ -1,4 +1,8 @@
 @extends('admin.layout.admin_master')
+
+@section('custom_css')
+    <link rel="stylesheet" href="{{ asset('assets/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+@endsection
 @section('content')
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -53,23 +57,25 @@
                                             <td><a href="{{ url('/download-scope', $contract->contract_scope->id) }}"
                                                     class="btn btn-info"><i class="far fa-eye"></i></a></td>
                                         </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Vendor Contract</td>
-                                            <td>{{ $contract->contract_documents->document_type == 1 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>Acknoledgement</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td>4</td>
-                                            <td>Cheque Copy</td>
-                                            <td></td>
-                                        </tr>
+                                        @foreach ($contractDocuments as $document)
+                                            <tr>
+                                                <td>{{ $loop->iteration + 1 }}</td>
+                                                <td>{{ $document->document_type->label_name }}</td>
+                                                <td>
+                                                    @if ($document->original_document_path)
+                                                        <a href="{{ asset('storage/' . $document->original_document_path) }}"
+                                                            class="btn btn-info" target="_blank"
+                                                            rel="noopener noreferrer"><i class="far fa-eye"></i></a>
+                                                        {{-- <a href="{{ $document->original_document_path }}">View</a> --}}
+                                                    @elseif($document->signed_document_path)
+                                                        <a href="{{ asset('storage/' . $document->signed_document_path) }}"
+                                                            class="btn btn-info" target="_blank"><i
+                                                                class="far fa-eye"></i></a></a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
-
                                 </table>
 
                                 <br>
@@ -213,21 +219,48 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">Import</h4>
+                            <h4 class="modal-title">Upload Documents</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form action="" id="ContractImportForm" method="POST" enctype="multipart/form-data">
+                        <form action="" id="ContractUploadForm" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="contract_id" value="{{ $contract->id }}">
                             <div class="modal-body">
                                 <div class="card-body">
-                                    <div class="form-group row">
-                                        <label for="inputEmail3" class="col-form-label">Upload Cheque copy</label>
-                                        <input type="file" name="cheque_copy" class="form-control">
-                                    </div>
+                                    @foreach ($documentTypes as $key => $documentType)
+                                        <div class="form-group row">
+                                            @if ($documentType->id == 1)
+                                                <div class="col-9 pr-1">
+                                            @endif
+                                            <input type="hidden" name="{{ $key }}[document_type]"
+                                                value="{{ $documentType->id }}">
+                                            <input type="hidden" name="{{ $key }}[status_change]"
+                                                value="{{ $documentType->status_change_value }}">
+                                            <label for="inputEmail3"
+                                                class="col-form-label">{{ $documentType->label_name }}</label>
+                                            <input type="{{ $documentType->field_type }}"
+                                                name="{{ $key }}[file]" class="form-control"
+                                                accept="{{ $documentType->accept_types }}">
+                                            @if ($documentType->id == 1)
+                                        </div>
+                                        <div class="col-3">
+                                            <span class="float-right mt-31">
+                                                <div class="icheck-success d-inline">
+                                                    <input type="checkbox" id="signed"
+                                                        name="{{ $key }}[signed_contract]"
+                                                        class="signedContract" value="1">
+                                                    <label class="labelpermission" for="signed"> Signed </label>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    @endif
                                 </div>
+                                @endforeach
+                            </div>
 
-                                <div class="card-body">
+
+                            {{-- <div class="card-body">
                                     <div class="form-group row">
                                         <label for="inputEmail3" class="col-form-label">Vendor Contract</label>
                                         <input type="file" name="file" class="form-control">
@@ -239,23 +272,59 @@
                                         <label for="inputEmail3" class="col-form-label">Acknoledgement</label>
                                         <input type="file" name="file" class="form-control">
                                     </div>
-                                </div>
-                                <!-- /.card-body -->
-                            </div>
-                            <div class="modal-footer justify-content-between">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" id="importBtn" class="btn btn-info">Import</button>
-                            </div>
-                        </form>
+                                </div> --}}
+                            <!-- /.card-body -->
                     </div>
-                    <!-- /.modal-content -->
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" id="importBtn" class="btn btn-info">Upload</button>
+                    </div>
+                    </form>
                 </div>
-                <!-- /.modal-dialog -->
+                <!-- /.modal-content -->
             </div>
-            <!-- /.modal -->
+            <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
 
-        </section>
-        <!-- /.content -->
+    </section>
+    <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
+@endsection
+
+@section('custom_js')
+    <script>
+        $('#ContractUploadForm').submit(function(e) {
+            e.preventDefault();
+
+            var form = document.getElementById('ContractUploadForm');
+            var fdata = new FormData(form);
+
+            fdata.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
+            $.ajax({
+                type: "POST",
+                url: 'contract-document-upload',
+                data: fdata,
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    console.log(response);
+                    toastr.success(response.message);
+                    window.location.reload();
+                },
+                error: function(errors) {
+                    // Example: get first file error
+                    let message = errors.responseJSON.message;
+                    if (message.file) {
+                        toastr.error(message.file[0]);
+                    } else {
+                        toastr.error('Something went wrong.');
+                    }
+                }
+            });
+        });
+    </script>
 @endsection

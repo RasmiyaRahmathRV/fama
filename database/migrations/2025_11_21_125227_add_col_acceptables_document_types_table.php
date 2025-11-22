@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('contract_scopes', function (Blueprint $table) {
-            $table->longText('scope')->change();
+        Schema::table('document_types', function (Blueprint $table) {
+            $table->string('accept_types');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('contract_unit_details', function (Blueprint $table) {
-            $table->dropColumn('scope')->change();
+        Schema::table('document_types', function (Blueprint $table) {
+            $table->dropColumn('accept_types');
         });
     }
 };

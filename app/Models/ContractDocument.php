@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\DocumentType;
 use App\Models\Traits\HasActivityLog;
 use App\Models\Traits\HasDeletedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,10 +14,10 @@ class ContractDocument extends Model
     use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
 
     protected $fillable = [
+        'document_type_id',
         'contract_id',
-        'document_type',
         'original_document_path',
-        'original_documant_name',
+        'original_document_name',
         'signed_document_path',
         'signed_document_name',
         'signed_status',
@@ -28,6 +29,11 @@ class ContractDocument extends Model
     public function contract()
     {
         return $this->belongsTo(Contract::class);
+    }
+
+    public function document_type()
+    {
+        return $this->belongsTo(DocumentType::class);
     }
 
     public function user()

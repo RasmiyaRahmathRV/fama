@@ -24,9 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('contract_units', function (Blueprint $table) {
-            $table->text('unit_property_type');
-            $table->text('no_of_floors');
-            $table->text('floor_numbers');
+            $table->dropColumn('unit_property_type');
+            $table->dropColumn('no_of_floors');
+            $table->dropColumn('floor_numbers');
         });
     }
 };

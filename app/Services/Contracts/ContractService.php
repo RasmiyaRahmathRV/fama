@@ -27,6 +27,8 @@ use App\Services\PropertyService;
 use App\Services\PropertyTypeService;
 use App\Services\VendorService;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 
 class ContractService
 {
