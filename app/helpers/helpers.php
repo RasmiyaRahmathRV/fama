@@ -647,6 +647,61 @@ function renderTotal($sheet, $contract)
     ]));
 }
 
+function renderRenewDetailsDF($sheet, $contract)
+{
+    $cellnumber = '20';
+    $sheet->setCellValue('M' . $cellnumber, 'Project ' . $contract['parent']->project_number . ' - Renewal');
+    $sheet->mergeCells('M' . $cellnumber . ':N' . $cellnumber);
+    $sheet->getStyle('M' . $cellnumber)->getFont()->setBold(true);
+    $sheet->getStyle('M' . $cellnumber . ':N' . $cellnumber)->applyFromArray([
+        'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
+        'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+        'fill' => [
+            'fillType' => Fill::FILL_SOLID,
+            'startColor' => [
+                'argb' => '305496', // Blue
+            ],
+        ],
+        'font' => [
+            'color' => [
+                'argb' => 'FFFFFF', // white
+            ],
+        ],
+    ]);
+
+    $summaryArr = [
+        ['Old Rental to Vendor', formatNumber($contract['parent']->contract_rentals?->total_payment_to_vendor)],
+        ['Profit Percentage', $contract['parent']->contract_rentals?->profit_percentage . '%'],
+        ['Ref Deposit',    $contract['parent']->contract_rentals?->commission],
+        ['Commission', $contract['parent']->contract_rentals?->deposit],
+        ['Development Cost', $contract['parent']->contract_rentals?->total_otc],
+        ['Total Profit earned', formatNumber($contract['parent']->contract_rentals?->expected_profit)],
+        ['Total Rental Received( ' . $contract['parent']->contract_rentals?->installment->installment_name . ' Installements)', formatNumber($contract['parent']->contract_rentals?->rent_receivable_per_annum)],
+        ['Old Monthly Rental', formatNumber($contract['parent']->contract_rentals?->rent_receivable_per_month)],
+        ['', ''],
+        ['New Rental to Vendor', formatNumber($contract['total_payment_to_vendor'])],
+        ['Profit Percentage', $contract['profit_percentage'] . '%'],
+        ['Total Profit earned', formatNumber($contract['expected_profit'])],
+        ['Total Rental Receivables( ' . $contract['number_of_months'] . ' Installments)', $contract['total_rental']],
+        ['New Monthly Rental', formatNumber($contract['expected_rental'])],
+    ];
+
+    // // Write the array starting at row 2
+    $sheet->fromArray($summaryArr, null, 'M' . $cellnumber + 1);
+
+    // // Apply style for all rows in the summary table
+    $lastSummRow =  $cellnumber + 1 + count($summaryArr) - 1;
+    // dd($lastSummRow);
+
+    $sheet->getStyle('M' . ($cellnumber + 1) . ':M' . $lastSummRow)->applyFromArray(FFScopeStyles::renewalleftSummaryFF());
+    $sheet->getStyle('N' . ($cellnumber + 1) . ':N' . $lastSummRow)->applyFromArray(FFScopeStyles::renewalCenterSummaryFF());
+
+
+    $sheet->getStyle('M' . ($cellnumber + 9) . ':N' . ($cellnumber + 9))->applyFromArray(FFScopeStyles::clearstyleFF());
+    $sheet->getStyle('M' . ($cellnumber + 8) . ':N' . ($cellnumber + 8))->applyFromArray(FFScopeStyles::renewColorChange());
+    $sheet->getStyle('M' . ($cellnumber + 14) . ':N' . ($cellnumber + 14))->applyFromArray(FFScopeStyles::renewColorChange());
+}
+
 // FF scope
 function renderFamaPaymentSummary($sheet, $contract)
 {
@@ -932,26 +987,44 @@ function renderPaymentSummary($sheet, $contract)
 
 function renderUnitDetailsFF($sheet, $contract)
 {
-    $profitPerc = $profit = $rentAnnum = $revenue = [];
+    $profitPerc = $profit = $rentAnnum = $revenue = $comm = $depo = [];
     foreach ($contract['unit_details'] as $key => $unitdetail) {
 
         $subunitdet = getAccommodationDetails($unitdetail);
 
-        if ($key == 0)
-            $unitDetaiArr[] = ['Flat No', 'Unit Type', 'Rent Amount', 'Total Amount Payable', 'Profit %', 'Profit', 'Revenue'];
 
-
-        $unitDetaiArr[] = [
+        $commonHead = ['Flat No', 'Unit Type', 'Rent Amount',];
+        $commonData =  [
             $unitdetail->unit_number ?? '',
             $unitdetail->unit_type->unit_type ?? '',
             $unitdetail->unit_rent_per_annum ?? 0,
-            $unitdetail->unit_rent_per_annum ?? 0,
+        ];
+        if ($contract['parent']) {
+            $extraHead = [];
+            $extraData = [];
+        } else {
+            $extraHead = ['commission', 'deposit',];
+            $extraData = [
+                $unitdetail->unit_commission ?? 0,
+                $unitdetail->unit_deposit ?? 0,
+            ];
+        }
+
+        $commonHeadEnd = ['Total Amount Payable', 'Profit %', 'Profit', 'Revenue'];
+        $commonDataEnd = [
+            $unitdetail->unit_amount_payable ?? 0,
             $unitdetail->unit_profit_perc . '%' ?? 0,
             $unitdetail->unit_profit ?? 0,
             $unitdetail->unit_revenue ?? 0,
         ];
+        if ($key == 0)
+            $unitDetaiArr[] = array_merge(array_merge($commonHead, $extraHead), $commonHeadEnd);
+        $unitDetaiArr[] = array_merge(array_merge($commonData, $extraData), $commonDataEnd);
+
         $profitPerc[] = toNumeric($unitdetail->unit_profit_perc);
         $profit[] = toNumeric($unitdetail->unit_profit);
+        $comm[] = toNumeric($unitdetail->unit_commission);
+        $depo[] = toNumeric($unitdetail->unit_deposit);
         $rentAnnum[] = toNumeric($unitdetail->unit_rent_per_annum);
         $revenue[] = toNumeric($unitdetail->unit_revenue);
     }
@@ -962,17 +1035,37 @@ function renderUnitDetailsFF($sheet, $contract)
 
     $totrentannum = formatNumber(array_sum($rentAnnum));
 
-    $unitDetaiArr[] = [
-        '',
-        '',
-        $totrentannum,
-        $totrentannum,
-        formatNumber(array_sum($profitPerc) / count($profitPerc)) . '%',
-        formatNumber(array_sum($profit)),
-        formatNumber(array_sum($revenue))
-    ];
-    $unitDetaiArr[] = ['', '', formatNumber(array_sum($rentAnnum) / 4), '', '', '', ''];
-    $unitDetaiArr[] = ['', '', formatNumber(array_sum($rentAnnum) * 0.1), '', '', '', ''];
+
+    if ($contract['parent']) {
+        $unitDetaiArr[] = [
+            '',
+            '',
+            $totrentannum,
+            $totrentannum,
+            formatNumber(array_sum($profitPerc) / count($profitPerc)) . '%',
+            formatNumber(array_sum($profit)),
+            formatNumber(array_sum($revenue))
+        ];
+
+        $unitDetaiArr[] = ['', '', formatNumber(array_sum($rentAnnum) / 4), '', '', '', ''];
+        $unitDetaiArr[] = ['', '', formatNumber(array_sum($rentAnnum) * 0.1), '', '', '', ''];
+    } else {
+        $unitDetaiArr[] = [
+            '',
+            '',
+            $totrentannum,
+            formatNumber(array_sum($comm)),
+            formatNumber(array_sum($depo)),
+            $totrentannum,
+            formatNumber(array_sum($profitPerc) / count($profitPerc)) . '%',
+            formatNumber(array_sum($profit)),
+            formatNumber(array_sum($revenue))
+        ];
+
+        $unitDetaiArr[] = ['', '', formatNumber(array_sum($rentAnnum) / 4), '', '', '', ''];
+        $unitDetaiArr[] = ['', '', formatNumber(array_sum($rentAnnum) * 0.1), '', '', '', ''];
+    }
+
 
     // Write the array starting at row 4, column K
     $sheet->fromArray($unitDetaiArr, null, 'I5');
@@ -980,8 +1073,12 @@ function renderUnitDetailsFF($sheet, $contract)
     // Calculate the last row
     $lastRow = 5 + count($unitDetaiArr) - 1;
 
+    // Auto-detect last column 
+    $lastColumn = $sheet->getHighestColumn();
+    // $lastRow    = $sheet->getHighestRow();
+
     // 🔹 Apply style for entire table (borders, fill, alignment)
-    $sheet->getStyle("I5:O" . ($lastRow - 3))->applyFromArray([
+    $sheet->getStyle("I5:" . $lastColumn . ($lastRow - 3))->applyFromArray([
         'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
         'borders' => ['allBorders' => [
             'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
@@ -993,9 +1090,9 @@ function renderUnitDetailsFF($sheet, $contract)
     ]);
 
     // 🔹 Make header row (only first row) bold
-    $sheet->getStyle('I5:O5')->getFont()->setBold(true);
+    $sheet->getStyle('I5:' . $lastColumn . '5')->getFont()->setBold(true);
 
-    $sheet->getStyle("I" . ($lastRow - 3) . ":O" . ($lastRow - 1))
+    $sheet->getStyle("I" . ($lastRow - 3) . ":" . $lastColumn . ($lastRow - 1))
         ->applyFromArray([
             'borders' => [
                 'allBorders' => [
@@ -1005,7 +1102,7 @@ function renderUnitDetailsFF($sheet, $contract)
         ]);
 
 
-    $sheet->getStyle("K" . ($lastRow - 2) . ":O" . ($lastRow - 2))
+    $sheet->getStyle("K" . ($lastRow - 2) . ":" . $lastColumn . ($lastRow - 2))
         ->applyFromArray([
             'alignment' => ['horizontal' => 'right', 'vertical' => 'center'],
             'font' => [
@@ -1048,10 +1145,11 @@ function renderUnitDetailsFF($sheet, $contract)
 
 function renderRenewDetailsFF($sheet, $contract)
 {
-    $sheet->setCellValue('F32', 'Project ' . $contract['parent']->project_number . ' - Renewal');
-    $sheet->mergeCells('F32:G32');
-    $sheet->getStyle('F32')->getFont()->setBold(true);
-    $sheet->getStyle('F32:G32')->applyFromArray([
+    $cellnumber = '34';
+    $sheet->setCellValue('F' . $cellnumber, 'Project ' . $contract['parent']->project_number . ' - Renewal');
+    $sheet->mergeCells('F' . $cellnumber . ':G' . $cellnumber);
+    $sheet->getStyle('F' . $cellnumber)->getFont()->setBold(true);
+    $sheet->getStyle('F' . $cellnumber . ':G' . $cellnumber)->applyFromArray([
         'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
         'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
         'fill' => [
@@ -1082,17 +1180,17 @@ function renderRenewDetailsFF($sheet, $contract)
     ];
 
     // // Write the array starting at row 2
-    $sheet->fromArray($summaryArr, null, 'F33');
+    $sheet->fromArray($summaryArr, null, 'F' . $cellnumber + 1);
 
     // // Apply style for all rows in the summary table
-    $lastSummRow = 33 + count($summaryArr) - 1;
+    $lastSummRow =  $cellnumber + 1 + count($summaryArr) - 1;
     // dd($lastSummRow);
 
-    $sheet->getStyle('F33:F' . $lastSummRow)->applyFromArray(FFScopeStyles::renewalleftSummaryFF());
-    $sheet->getStyle('G33:G' . $lastSummRow)->applyFromArray(FFScopeStyles::renewalCenterSummaryFF());
+    $sheet->getStyle('F' . ($cellnumber + 1) . ':F' . $lastSummRow)->applyFromArray(FFScopeStyles::renewalleftSummaryFF());
+    $sheet->getStyle('G' . ($cellnumber + 1) . ':G' . $lastSummRow)->applyFromArray(FFScopeStyles::renewalCenterSummaryFF());
 
 
-    $sheet->getStyle('F38:G38')->applyFromArray(FFScopeStyles::clearstyleFF());
-    $sheet->getStyle('F37:G37')->applyFromArray(FFScopeStyles::renewColorChange());
-    $sheet->getStyle('F43:G43')->applyFromArray(FFScopeStyles::renewColorChange());
+    $sheet->getStyle('F' . ($cellnumber + 6) . ':G' . ($cellnumber + 6))->applyFromArray(FFScopeStyles::clearstyleFF());
+    $sheet->getStyle('F' . ($cellnumber + 5) . ':G' . ($cellnumber + 5))->applyFromArray(FFScopeStyles::renewColorChange());
+    $sheet->getStyle('F' . ($cellnumber + 11) . ':G' . ($cellnumber + 11))->applyFromArray(FFScopeStyles::renewColorChange());
 }

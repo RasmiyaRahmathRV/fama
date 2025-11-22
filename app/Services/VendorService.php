@@ -144,7 +144,7 @@ class VendorService
             $company_id = $this->companyService->getIdByCompanyname($row['company']);
 
             if ($company_id == null) {
-                $existing = $this->companyService->checkIfExist(array('company_id' => $row['company'], 'vendor_name' => $row['vendor_name']));
+                $existing = $this->companyService->checkIfExist(array('company_name' => $row['company']));
 
                 if (!empty($existing)) {
                     // echo "exist";
@@ -154,6 +154,11 @@ class VendorService
                 } else {
                     $company_id = $this->companyService->createOrRestore([
                         'company_name' => $row['company'],
+                        'email' => 'company@demo.com',
+                        'industry_id' => '1',
+                        'phone' => 0000000,
+                        'company_short_code' => $row['company'],
+
                     ], $user_id)->id;
                 }
             }

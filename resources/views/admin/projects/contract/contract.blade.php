@@ -58,16 +58,16 @@
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="contractTable" class="table table-striped projects  display nowrap ">
+                                    <table id="contractTable" class="table table-striped projects  display nowrap">
                                         <thead>
                                             <tr>
                                                 <th style="width: 1%">#</th>
                                                 <th>Project</th>
                                                 <th>Contract type</th>
                                                 <th>Company Name</th>
-                                                <th>no_of_units</th>
-                                                <th>roi_perc</th>
-                                                <th>expected_profit</th>
+                                                <th>Total Units</th>
+                                                <th>ROI %</th>
+                                                <th>Profit</th>
                                                 <th>Start date</th>
                                                 <th>End date</th>
                                                 <th>Status</th>
@@ -75,11 +75,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-
                                         </tbody>
                                     </table>
                                 </div>
-
                             </div>
                             <!-- /.card-body -->
                         </div>

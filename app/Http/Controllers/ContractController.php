@@ -29,6 +29,8 @@ use App\Services\PropertyService;
 use App\Services\PropertyTypeService;
 use App\Services\VendorService;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ContractController extends Controller
 {
@@ -285,6 +287,9 @@ class ContractController extends Controller
     {
         $scopeData = $this->scopeService->getScope($id);
         $binaryExcel = base64_decode($scopeData['scope']);
+
+        // file_put_contents(storage_path('app/test.xlsx'), $binaryExcel);
+
         // dd($binaryExcel);
         return response()->stream(function () use ($binaryExcel) {
             echo $binaryExcel;
@@ -293,14 +298,5 @@ class ContractController extends Controller
             'Content-Disposition' => 'attachment; filename="' . $scopeData['file_name'] . '"',
             'Cache-Control' => 'max-age=0',
         ]);
-
-        // $retData  = $this->scopeService->getScope($id);
-        // dd(gettype($retData));
-        // $sheetdata = $retData['sheetdata'];
-        // $filename = $retData['filename'];
-
-        // return $retData;
-
-        // return Excel::download(new ArrayToSheetExport($sheetdata), $filename . '.xlsx');
     }
 }

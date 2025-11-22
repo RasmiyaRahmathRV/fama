@@ -187,7 +187,7 @@ class PropertyService
                 'getByData',
                 'checkIfExist',
                 array('company_name' => $row['company_name']),
-                ['company_name' => $row['company_name'],],
+                ['company_name' => $row['company_name'], 'email' => 'company@demo.com', 'industry_id' => '1', 'phone' => 0000000, 'company_short_code' => $row['company_name']],
                 $user_id
             );
 
