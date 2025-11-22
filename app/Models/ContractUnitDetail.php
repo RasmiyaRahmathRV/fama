@@ -51,6 +51,10 @@ class ContractUnitDetail extends Model
         'deleted_by',
         'is_vacant',
         'unit_rent_per_month',
+        'subunit_occupied_count',
+        'subunit_vacant_count',
+        'total_payment_received',
+        'total_payment_pending'
     ];
 
     public function contract()

@@ -35,6 +35,7 @@ class AgreementPaymentDetail extends Model
         'added_by',
         'updated_by',
         'deleted_by',
+        'terminate_status'
     ];
 
     /**
