@@ -64,8 +64,8 @@ class UserSeeder extends Seeder
                 }
 
                 if (in_array($module, ['agreement'])) {
-                    $subModule[] = 'approve';
-                    $subModule[] = 'reject';
+                    $subModule[] = 'terminate';
+                    $subModule[] = 'invoice_upload';
                     $subModule[] = 'document_upload';
                     $subModule[] = 'manage_installments';
                 }

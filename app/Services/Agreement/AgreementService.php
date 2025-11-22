@@ -619,9 +619,11 @@ class AgreementService
                 // $action .= '<a href="#" class="btn btn-danger btn-sm m-1 open-terminate-modal" title="Terminate" id="openTerminatemodal"
                 //      data-id="' . $row->id . '" ><i class="fas fa-file-signature"></i></a>
                 // ';
-                $action .= '<a href="#" class="btn btn-danger btn-sm m-1 open-terminate-modal" title="Terminate" data-id="' . $row->id . '">
+                if (Gate::allows('agreement.terminate')) {
+                    $action .= '<a href="#" class="btn btn-danger btn-sm m-1 open-terminate-modal" title="Terminate" data-id="' . $row->id . '">
                 <i class="fas fa-file-signature"></i>
             </a>';
+                }
 
 
 

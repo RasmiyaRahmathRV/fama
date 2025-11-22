@@ -216,16 +216,18 @@
                                                                         RENT
                                                                         {{ $loop->iteration }}/{{ $agreement->agreement_payment->installment->installment_name }}
                                                                     </td>
-                                                                    <td>
-                                                                        <a href="#"
-                                                                            class="btn btn-success btn-sm open-invoice-modal"
-                                                                            title="Upload Invoice"
-                                                                            data-detailId="{{ $detail->id }}"
-                                                                            data-agreementId="{{ $agreement->id }}"
-                                                                            @if ($detail->invoice) data-invoiceid="{{ $detail->invoice->id }}" @endif><i
-                                                                                class="fas fa-file-upload"></i></a>
+                                                                    @can('agreement.invoice_upload')
+                                                                        <td>
+                                                                            <a href="#"
+                                                                                class="btn btn-success btn-sm open-invoice-modal"
+                                                                                title="Upload Invoice"
+                                                                                data-detailId="{{ $detail->id }}"
+                                                                                data-agreementId="{{ $agreement->id }}"
+                                                                                @if ($detail->invoice) data-invoiceid="{{ $detail->invoice->id }}" @endif><i
+                                                                                    class="fas fa-file-upload"></i></a>
 
-                                                                    </td>
+                                                                        </td>
+                                                                    @endcan
                                                                     <td>
                                                                         @if ($detail->invoice)
                                                                             @php
