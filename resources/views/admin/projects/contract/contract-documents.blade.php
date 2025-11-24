@@ -45,6 +45,8 @@
                                 <!-- <h3 class="card-title">Contract Documents list</h3> -->
 
                                 <span class="float-right">
+                                    <a href="{{ route('contract.show', $contract->id) }}"
+                                        class="btn btn-info float-right m-1" target="_blank">View Contract</a>
                                     <button class="btn btn-info float-right m-1" data-toggle="modal"
                                         data-target="#modal-upload">Upload Files</button>
                                 </span>
@@ -284,8 +286,9 @@
                                                 value="{{ $documentType->status_change_value }}">
                                             <label for="inputEmail3"
                                                 class="col-form-label">{{ $documentType->label_name }}</label>
-                                            <input type="{{ $documentType->field_type }}" name="{{ $key }}[file]"
-                                                class="form-control" accept="{{ $documentType->accept_types }}">
+                                            <input type="{{ $documentType->field_type }}"
+                                                name="{{ $key }}[file]" class="form-control"
+                                                accept="{{ $documentType->accept_types }}">
                                             @if ($documentType->id == 1)
                                         </div>
                                         <div class="col-3">

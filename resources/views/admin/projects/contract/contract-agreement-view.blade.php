@@ -88,23 +88,24 @@
                                             <th>Document name</th>
                                             <th>view</th>
                                         </tr>
-
-                                        @foreach ($agreementUnit->agreement->agreement_documents as $agreement_document)
-                                            @php
-                                                // dd($agreement_document);
-                                            @endphp
+                                        @if ($agreementUnit->agreement->agreement_documents->isNotEmpty())
+                                            @foreach ($agreementUnit->agreement->agreement_documents as $agreement_document)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $agreement_document->TenantIdentity->identity_type }}
+                                                    </td>
+                                                    <td><a href="{{ asset('storage/' . $agreement_document->original_document_path) }}"
+                                                            target="_blank" class="btn btn-sm btn-outline-info"
+                                                            title="Click to View">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a></td>
+                                                </tr>
+                                            @endforeach
+                                        @else
                                             <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $agreement_document->TenantIdentity->identity_type }}
-                                                </td>
-                                                <td><a href="{{ asset('storage/' . $agreement_document->original_document_path) }}"
-                                                        target="_blank" class="btn btn-sm btn-outline-info"
-                                                        title="Click to View">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a></td>
+                                                <td colspan="3">No documents uploaded...</td>
                                             </tr>
-                                        @endforeach
-
+                                        @endif
                                     </table>
                                 </div>
                             </div>

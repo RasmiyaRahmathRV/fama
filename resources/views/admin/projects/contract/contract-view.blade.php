@@ -357,7 +357,8 @@
                                         @if ($contract->contract_status != 0)
                                             @if (Gate::allows('contract.document_upload'))
                                                 <a href="{{ route('contract.documents', $contract->id) }}"
-                                                    class="btn btn-warning" title="Upload Documents">
+                                                    class="btn btn-warning" title="Upload Documents"> <i
+                                                        class="fas fa-upload"></i>
                                                     Document
                                                 </a>
                                             @endif
@@ -367,8 +368,8 @@
                                             <button class="btn btn-primary" onclick="generateScope({{ $contract->id }})">
                                                 <i class="fas fa-envelope-open-text"></i> Generate Scope</button>
                                         @elseif ($contract->is_vendor_contract_uploaded == 0)
-                                            <button type="button" class="btn btn-warning "><i class="fas fa-upload"></i>
-                                                Upload Contract </button>
+                                            {{-- <button type="button" class="btn btn-warning "><i class="fas fa-upload"></i>
+                                                Upload Contract </button> --}}
                                             <button class="btn btn-primary" onclick="generateScope({{ $contract->id }})">
                                                 <i class="fas fa-download"></i> Update Scope
                                             </button>
