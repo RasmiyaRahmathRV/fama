@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\AgreementPaymentDetail;
+use App\Models\ContractSubunitDetail;
 use App\Models\Installment;
 
 if (!function_exists('toNumeric')) {
@@ -195,4 +197,32 @@ function getAccommodationDetails($unitDetails)
 function formatNumber($number)
 {
     return number_format(toNumeric($number), 2, '.', ',');
+}
+function getOccupiedDetails($unitId)
+{
+    $totalSubunits = ContractSubunitDetail::where('contract_unit_detail_id', $unitId)->count();
+    $OccupiedSubunitCount = ContractSubunitDetail::where('contract_unit_detail_id', $unitId)
+        ->where('is_vacant', 1)
+        ->count();
+
+    $VacantSubunitCount = $totalSubunits - $OccupiedSubunitCount;
+    return [
+        'occupied' => $OccupiedSubunitCount,
+        'vacant' => $VacantSubunitCount,
+        'totalsubunits' => $totalSubunits
+    ];
+}
+function getPaymentDetails($paymentId, $unitId)
+{
+    $payment_details = AgreementPaymentDetail::where('agreement_payment_id', $paymentId)
+        ->where('contract_unit_id', $unitId)
+        ->where('terminate_status', 0);
+    $totalPaidAmount = $payment_details->sum('paid_amount');
+    $totalPaymentAmount = $payment_details->sum('payment_amount');
+    $pendingAmount = $totalPaymentAmount - $totalPaidAmount;
+    return [
+        'received' => $totalPaidAmount,
+        'pending' => $pendingAmount,
+        'total' => $totalPaymentAmount
+    ];
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services\Contracts;
 
+use App\Models\AgreementPayment;
 use App\Models\Contract;
 use App\Models\ContractSubunitDetail;
 use App\Models\ContractUnitDetail;
@@ -240,49 +241,44 @@ class SubUnitDetailService
 
     public function markSubunitOccupied($unitId, $subunitId = null)
     {
+        DB::transaction(function () use ($unitId, $subunitId) {
 
-        // Step 1: Mark subunit vacant if exists
-        if ($subunitId) {
-            $subunit = ContractSubunitDetail::find($subunitId);
-            if ($subunit) {
-                $subunit->is_vacant = 1;
-                $subunit->save();
-                $unitId = $subunit->contract_unit_detail_id;
+            // Step 1: Mark subunit vacant if exists
+            if ($subunitId) {
+                $subunit = ContractSubunitDetail::find($subunitId);
+                if ($subunit) {
+                    $subunit->is_vacant = 1;
+                    $subunit->save();
+                    $unitId = $subunit->contract_unit_detail_id;
+                }
             }
-        }
 
-        // Step 2: Mark unit vacant if all subunits are vacant (or no subunits exist)
-        $hasSubunits = ContractSubunitDetail::where('contract_unit_detail_id', $unitId)->exists();
-
-        if (
-            !$hasSubunits || ContractSubunitDetail::where('contract_unit_detail_id', $unitId)
-            ->where('is_vacant', 0)
-            ->doesntExist()
-        ) {
+            $details = getOccupiedDetails($unitId);
             $unit = ContractUnitDetail::find($unitId);
-            if ($unit) {
-                $unit->is_vacant = 1;
-                $unit->save();
-                // $contractId = $unit->contract_id;
+            $unit->subunit_occupied_count = $details['occupied'];
+            $unit->subunit_vacant_count = $details['vacant'];
+            $unit->save();
 
-                // // Step 3: Mark contract vacant if all units are vacant
-                // $allUnitsVacant = ContractUnitDetail::where('contract_id', $contractId)
-                //     ->where('is_vacant', 0)
-                //     ->doesntExist();
+            if ($details['totalsubunits'] === 0 || $details['occupied'] === $details['totalsubunits']) {
 
-                // if ($allUnitsVacant) {
-                //     Contract::where('id', $contractId)->update(['is_vacant' => 1]);
-                // }
+                if ($unit) {
+                    $unit->is_vacant = 1;
+                    $unit->save();
+                }
             }
-        }
+        });
     }
+
     public function allVacant($contractId)
     {
         $units = ContractUnitDetail::where('contract_id', $contractId)->get();
 
         foreach ($units as $unit) {
             $unit->contractSubUnitDetails()->update(['is_vacant' => 1]);
-
+            $details = getOccupiedDetails($unit->id);
+            // dd($details);
+            $unit->subunit_occupied_count = $details['occupied'];
+            $unit->subunit_vacant_count = $details['vacant'];
             $unit->is_vacant = 1;
             $unit->save();
         }
@@ -294,5 +290,13 @@ class SubUnitDetailService
         // if ($allUnitsVacant) {
         //     Contract::where('id', $contractId)->update(['is_vacant' => 1]);
         // }
+    }
+    public function Updatepaymentdetails($paymentId, $unitId)
+    {
+        $details = getPaymentDetails($paymentId, $unitId);
+        $unit = ContractUnitDetail::find($unitId);
+        $unit->total_payment_received = $details['received'];
+        $unit->total_payment_pending = $details['pending'];
+        $unit->save();
     }
 }
