@@ -141,20 +141,10 @@ class AgreementService
                         'rent_per_month' => $unit['rent_per_month'],
                         'rent_per_annum_agreement' => $rent_annum_agreement,
                     ];
-                    // dd($unitdata);
 
                     // Create agreement unit record
                     $createdUnit = $this->agreementUnitService->create($unitdata);
                     $agreementUnitId = $createdUnit->id ?? null;
-                    // dd($agreementUnitId);
-
-                    // Update contract/subunit vacancy
-                    // ContractUnitDetail::where('id', $unitdata['contract_unit_details_id'])
-                    //     ->update(['is_vacant' => 1]);
-                    // // dd("test");
-                    // ContractSubunitDetail::where('contract_unit_detail_id', $unitdata['contract_unit_details_id'])
-                    //     ->update(['is_vacant' => 1]);
-                    // // dd("test");
 
 
                     // Now handle payments related to this unit
@@ -183,12 +173,13 @@ class AgreementService
                             // dd("testr");
                         }
                     }
-                    // $this->subUnitDetailserv->markSubunitOccupied(
-                    //     $unit['contract_unit_details_id'],
-                    //     $unit['contract_subunit_details_id'] ?? null
-                    // );
+
                     $this->subUnitDetailserv->allVacant(
                         $agreement->contract_id
+                    );
+                    $this->subUnitDetailserv->Updatepaymentdetails(
+                        $payment->id,
+                        $createdUnit['contract_unit_details_id']
                     );
                 }
             } else {
@@ -231,6 +222,10 @@ class AgreementService
                     $this->agreementPaymentDetailService->create($detail_data);
                 }
                 $this->subUnitDetailserv->markSubunitOccupied($data['contract_unit_details_id'], $data['contract_subunit_details_id'] ?? null);
+                $this->subUnitDetailserv->Updatepaymentdetails(
+                    $payment->id,
+                    $createdUnit['contract_unit_details_id']
+                );
             }
 
             // dd("testsub");
@@ -264,7 +259,7 @@ class AgreementService
     public function update($id, array $data)
     {
         // dd($data);
-        $this->validate($data, $id); // You can have separate validation for update
+        $this->validate($data, $id);
         $data['updated_by'] = auth()->user()->id;
 
         DB::beginTransaction();
@@ -359,15 +354,7 @@ class AgreementService
                     ];
 
                     $createdUnit = $this->agreementUnitService->update($unitData);
-                    // dd($createdUnit);
 
-                    // Update vacancies
-                    // ContractUnitDetail::where('id', $unitData['contract_unit_details_id'])->update(['is_vacant' => 1]);
-                    // ContractSubunitDetail::where('contract_unit_detail_id', $unitData['contract_unit_details_id'])->update(['is_vacant' => 1]);
-
-                    // Update Payments
-                    // if (!empty($data['payment_detail'][$unit['agreement_unit_id']])) {
-                    // dd('test');
 
                     foreach ($data['payment_detail'][$unit['agreement_unit_id']] as $detail) {
                         if (empty($detail['payment_mode_id']) || empty($detail['payment_amount'])) continue;
@@ -394,6 +381,10 @@ class AgreementService
                     $this->subUnitDetailserv->markSubunitOccupied(
                         $unitData['contract_unit_details_id'],
                         $unitData['contract_subunit_details_id'] ?? null
+                    );
+                    $this->subUnitDetailserv->Updatepaymentdetails(
+                        $payment->id,
+                        $createdUnit['contract_unit_details_id']
                     );
                 }
             } else {
@@ -442,7 +433,7 @@ class AgreementService
 
                 // dd($toDelete);
 
-                // 🧹 Delete removed payments
+                //  Delete removed payments
                 if (!empty($toDelete)) {
                     $this->agreementPaymentDetailService->deleteByIds($toDelete);
                 }
@@ -469,27 +460,12 @@ class AgreementService
                     $this->agreementPaymentDetailService->updateOrCreate($detail_data);
                 }
 
-                // foreach ($data['payment_detail'] ?? [] as $detail) {
-                //     if (empty($detail['payment_mode_id']) || empty($detail['payment_amount'])) {
-                //         continue;
-                //     }
 
-                //     $detail_data = [
-                //         'agreement_id' => $agreement->id,
-                //         'agreement_payment_id' => $payment->id,
-                //         'agreement_unit_id' => $agreementUnitId ?? null,
-                //         'payment_mode_id' => $detail['payment_mode_id'],
-                //         'payment_date' => $detail['payment_date'] ?? null,
-                //         'payment_amount' => $detail['payment_amount'],
-                //         'bank_id' => $detail['bank_id'] ?? null,
-                //         'cheque_number' => $detail['cheque_number'] ?? null,
-                //         'updated_by' => $data['updated_by'],
-                //         'id' => $detail['id'] ?? null,
-                //     ];
-
-                //     $this->agreementPaymentDetailService->update($detail_data);
-                // }
                 $this->subUnitDetailserv->markSubunitOccupied($data['contract_unit_details_id'], $data['contract_subunit_details_id'] ?? null);
+                $this->subUnitDetailserv->Updatepaymentdetails(
+                    $payment->id,
+                    $updatedUnit['contract_unit_details_id']
+                );
             }
 
 
@@ -553,9 +529,9 @@ class AgreementService
                 // </p>";
                 $badgeClass = '';
                 if ($row->contract->contract_type_id == 1) {
-                    $badgeClass = 'badge badge-df';
+                    $badgeClass = 'badge badge-df text-dark';
                 } elseif ($row->contract->contract_type_id == 2) {
-                    $badgeClass = 'badge badge-ff';
+                    $badgeClass = 'badge badge-ff text-dark';
                 } else {
                     $badgeClass = 'badge badge-secondary';
                 }

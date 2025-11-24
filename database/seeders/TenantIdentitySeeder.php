@@ -75,5 +75,17 @@ class TenantIdentitySeeder extends Seeder
             'second_field_label' => 'Signed Agreement Upload',
             'show_status' => false,
         ]);
+        TenantIdentity::create([
+            'identity_type' => 'Tenant Contract',
+            // 'first_field_name' => 'agreement_number',
+            // 'first_field_id' => 'agreement_number',
+            // 'first_field_type' => 'text',
+            // 'first_field_label' => 'Agreement Number',
+            'second_field_name' => 'contract_copy',
+            'second_field_id' => 'contract_copy',
+            'second_field_type' => 'file',
+            'second_field_label' => 'Upload Tenant Contract',
+            'show_status' => false,
+        ]);
     }
 }

@@ -120,9 +120,9 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\TenantIdentity|null $TenantIdentity
  * @property-read \App\Models\Agreement $agreement
  * @property-read \App\Models\User|null $deletedBy
- * @property-read \App\Models\TenantIdentity|null $documentType
  * @property-read mixed $document_url
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementDocument newQuery()
@@ -212,6 +212,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property int $terminate_status
  * @property-read \App\Models\Agreement $agreement
  * @property-read \App\Models\AgreementPayment|null $agreementPayment
  * @property-read \App\Models\Bank|null $bank
@@ -244,6 +245,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail wherePaymentDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail wherePaymentModeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail wherePendingAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereTerminateStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail withTrashed()
@@ -631,21 +633,20 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $contract_id
- * @property int|null $document_type_id
+ * @property \App\Models\DocumentType|null $document_type
  * @property string $original_document_path
- * @property string $original_document_name
- * @property string|null $signed_document_path
- * @property string|null $signed_document_name
+ * @property string $original_documant_name
+ * @property string $signed_document_path
+ * @property string $signed_document_name
  * @property int $signed_status 0-unsinged, 1-mr.muneer signed,2- mr.muneer and vendor signed
  * @property int $added_by
- * @property int|null $updated_by
- * @property int|null $deleted_by
+ * @property int $updated_by
+ * @property int $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Contract $contract
  * @property-read \App\Models\User|null $deletedBy
- * @property-read \App\Models\DocumentType|null $document_type
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument onlyTrashed()
@@ -655,9 +656,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDeletedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDocumentTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDocumentType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereOriginalDocumentName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereOriginalDocumantName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereOriginalDocumentPath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereSignedDocumentName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereSignedDocumentPath($value)
@@ -674,14 +675,14 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $contract_id
- * @property string|null $cost_of_development
- * @property string|null $cost_of_bed
- * @property string|null $cost_of_matress
- * @property string|null $appliances
- * @property string|null $decoration
- * @property string|null $dewa_deposit
- * @property string|null $ejari
- * @property string|null $cost_of_cabinets
+ * @property string $cost_of_development
+ * @property string $cost_of_bed
+ * @property string $cost_of_matress
+ * @property string $appliances
+ * @property string $decoration
+ * @property string $dewa_deposit
+ * @property string $ejari
+ * @property string $cost_of_cabinets
  * @property string $added_by
  * @property string|null $updated_by
  * @property string|null $deleted_by
@@ -866,7 +867,7 @@ namespace App\Models{
  * @property string $expected_profit
  * @property string $profit_percentage
  * @property string|null $receivable_start_date
- * @property int $receivable_installments
+ * @property int|null $receivable_installments
  * @property string $total_payment_to_vendor
  * @property string|null $total_otc
  * @property string $final_cost
@@ -956,7 +957,7 @@ namespace App\Models{
  * @property int $contract_unit_id
  * @property int $contract_unit_detail_id
  * @property string $subunit_no
- * @property int $subunit_type 1-partition, 2-bedspace, 3-room, 4-full flat
+ * @property int $subunit_type 1-partition, 2-bedspace
  * @property string $subunit_code proj. no / company code / unit no / subunit no
  * @property int $added_by
  * @property int|null $updated_by
@@ -1112,6 +1113,10 @@ namespace App\Models{
  * @property string|null $unit_commission
  * @property string|null $unit_deposit
  * @property string $unit_rent_per_month
+ * @property int|null $subunit_occupied_count
+ * @property int|null $subunit_vacant_count
+ * @property string|null $total_payment_received
+ * @property string|null $total_payment_pending
  * @property-read \App\Models\Contract $contract
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractSubunitDetail> $contractSubUnitDetails
  * @property-read int|null $contract_sub_unit_details_count
@@ -1146,11 +1151,15 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRentPerUnitPerAnnum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRentPerUnitPerMonth($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereRoom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereSubunitOccupiedCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereSubunitRentPerUnit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereSubunitVacantCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereSubunitcountPerUnit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereSubunittype($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalBedspace($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalPartition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalPaymentPending($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalPaymentReceived($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalRentPerUnitPerMonth($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereTotalRoom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractUnitDetail whereUnitAmountPayable($value)
@@ -1518,10 +1527,10 @@ namespace App\Models{
 /**
  * @property int $id
  * @property string $identity_type
- * @property string $first_field_name
- * @property string $first_field_id
- * @property string $first_field_type
- * @property string $first_field_label
+ * @property string|null $first_field_name
+ * @property string|null $first_field_id
+ * @property string|null $first_field_type
+ * @property string|null $first_field_label
  * @property string $second_field_name
  * @property string $second_field_id
  * @property string $second_field_type
