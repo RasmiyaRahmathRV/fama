@@ -34,25 +34,33 @@ class AgreementDocumentService
         }
 
         foreach ($documents as $doc) {
-            $validator = Validator::make($doc, [
-                'document_type' => 'nullable|string|max:255',
-                'document_number' => 'required_with:document_path|nullable|string|max:255',
-                'document_path' => [
-                    'required_with:document_number',
-                    function ($attribute, $value, $fail) {
-                        if (!empty($value) && !$value instanceof \Illuminate\Http\UploadedFile) {
-                            $fail('The document must be a valid uploaded file.');
-                        }
-                    },
-                ],
-            ], [
-                'document_number.required_with' => 'Document number is required when a file is uploaded.',
-                'document_path.required_with' => 'Document file is required when a document number is provided.',
-            ]);
+            // $validator = Validator::make($doc, [
+            //     'document_type' => 'nullable|string|max:255',
+            //     'document_number' => 'required_with:document_path|nullable|string|max:255',
+            //     'document_path' => [
+            //         'required_with:document_number',
+            //         function ($attribute, $value, $fail) {
+            //             if (!empty($value) && !$value instanceof \Illuminate\Http\UploadedFile) {
+            //                 $fail('The document must be a valid uploaded file.');
+            //             }
+            //             if ($value instanceof \Illuminate\Http\UploadedFile) {
+            //                 $allowed = ['pdf', 'jpg', 'jpeg', 'png'];
 
-            if ($validator->fails()) {
-                throw new ValidationException($validator);
-            }
+            //                 if (!in_array(strtolower($value->getClientOriginalExtension()), $allowed)) {
+            //                     $fail('The document must be a file of type: pdf, jpg, jpeg, png.');
+            //                 }
+            //             }
+            //         },
+            //     ],
+            // ], [
+            //     'document_number.required_with' => 'Document number is required when a file is uploaded.',
+            //     'document_path.required_with' => 'Document file is required when a document number is provided.',
+            // ]);
+
+            // if ($validator->fails()) {
+            //     throw new ValidationException($validator);
+            // }
+            $this->validate($doc);
             if (
                 empty($doc['document_number']) ||
                 empty($doc['document_path']) ||
@@ -104,10 +112,12 @@ class AgreementDocumentService
     }
     public function update($agreement, array $documents, $updatedBy)
     {
+        // dd($documents);
         if (empty($documents)) {
             return;
         }
         $code = $agreement->agreement_code;
+        $project_code = $agreement->contract->project_code;
 
 
         // $existingIds = array_filter(array_column($documents, 'id') ?? []);
@@ -122,6 +132,8 @@ class AgreementDocumentService
         //     });
 
         foreach ($documents as $doc) {
+            $this->validate($doc);
+
             if (!empty($doc['id'])) {
                 $existingDoc = $agreement->agreement_documents()->find($doc['id']);
                 // dd($existingDoc);
@@ -134,7 +146,7 @@ class AgreementDocumentService
                         // $path = $doc['document_path']->store('agreements/documents/' . $code . '/', 'public');
 
                         $filename = uniqid()  . '_' . $doc['document_path']->getClientOriginalName();
-                        $path = $doc['document_path']->storeAs('agreements/documents/' . $code . '/', $filename, 'public');
+                        $path = $doc['document_path']->storeAs("projects/{$project_code}/agreements/{$code}/documents", $filename, 'public');
 
                         $existingDoc->original_document_path = $path;
                         $existingDoc->original_document_name = $doc['document_path']->getClientOriginalName();
@@ -146,20 +158,44 @@ class AgreementDocumentService
                 }
                 continue;
             }
-
-            if (
-                empty($doc['document_number']) ||
-                empty($doc['document_path']) ||
-                !($doc['document_path'] instanceof UploadedFile)
-            ) {
-                continue;
+            // dd("test");
+            if ($doc['document_type'] != 6) {
+                if (
+                    empty($doc['document_number']) ||
+                    empty($doc['document_path']) ||
+                    !($doc['document_path'] instanceof UploadedFile)
+                ) {
+                    continue;
+                }
+            } else {
+                if (
+                    empty($doc['document_path']) ||
+                    !($doc['document_path'] instanceof UploadedFile)
+                ) {
+                    continue;
+                    // $errors["documents.document_path"] = 'Document file is required.';
+                }
+                $doc['document_number'] = 0;
             }
+            // if (!empty($errors)) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'Please fix the errors below.',
+            //         'errors' => $errors,
+            //     ], 422);
+            // }
+
+
+
+            // dd("test");
+            // dd($doc['document_path']);
+
 
 
             // $path = $doc['document_path']->store('agreements/documents/' . $code . '/', 'public');
 
             $filename = uniqid() .  '_' . $doc['document_path']->getClientOriginalName();
-            $path = $doc['document_path']->storeAs('agreements/documents/' . $code . '/', $filename, 'public');
+            $path = $doc['document_path']->storeAs("projects/{$project_code}/agreements/{$code}/documents", $filename, 'public');
 
             $doc_data = [
                 'agreement_id' => $agreement->id,
@@ -170,6 +206,7 @@ class AgreementDocumentService
                 // 'updated_by' => $updatedBy,
                 'added_by' => $updatedBy
             ];
+            // dd($doc_data);
 
             $createdDoc = $this->agreementDocRepository->create($doc_data);
             $this->updateAgreementFlags($agreement, $createdDoc->document_type);
@@ -178,5 +215,45 @@ class AgreementDocumentService
     public function getDocuments($id)
     {
         return $this->agreementDocRepository->getDocuments($id);
+    }
+
+    public function validate($data)
+    {
+        $validator = Validator::make($data, [
+            'document_type' => 'nullable|string|max:255',
+            'document_number' => 'nullable|string|max:255',
+            'document_path' => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    if (!empty($value) && !$value instanceof \Illuminate\Http\UploadedFile) {
+                        $fail('The document must be a valid uploaded file.');
+                        return;
+                    }
+
+                    if ($value instanceof \Illuminate\Http\UploadedFile) {
+                        $allowed = ['pdf', 'jpg', 'jpeg', 'png'];
+                        $ext = strtolower($value->getClientOriginalExtension());
+
+                        if (!in_array($ext, $allowed)) {
+                            $fail('The document must be a file of type: pdf, jpg, jpeg, png.');
+                        }
+                    }
+                },
+            ],
+        ], [
+            'document_number.required_with' => 'Document number is required when a file is uploaded.',
+            'document_path.required' => 'Document file is required when a new document number is provided.',
+        ]);
+
+
+        if (empty($data['id']) && !empty($data['document_number'])) {
+            $validator->sometimes('document_path', 'required', function () use ($data) {
+                return !empty($data['document_number']);
+            });
+        }
+
+        if ($validator->fails()) {
+            throw new \Illuminate\Validation\ValidationException($validator);
+        }
     }
 }
