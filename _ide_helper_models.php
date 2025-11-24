@@ -51,7 +51,7 @@ namespace App\Models{
  * @property int $is_visa_uploaded
  * @property int $is_signed_agreement_uploaded
  * @property int $is_trade_license_uploaded
- * @property int $agreement_status 0-Pending, 1-terminated
+ * @property int $agreement_status 0-Pending, 1-Processing, 2-Approved, 3-Rejected
  * @property string|null $terminated_date
  * @property string|null $terminated_reason
  * @property int|null $terminated_by
@@ -61,7 +61,6 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\AgreementUnit|null $agreementUnit
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AgreementDocument> $agreement_documents
  * @property-read int|null $agreement_documents_count
  * @property-read \App\Models\AgreementPayment|null $agreement_payment
@@ -203,7 +202,7 @@ namespace App\Models{
  * @property string $payment_date
  * @property string $payment_amount
  * @property int $is_payment_received 0-Pending, 1-Received, 2-Half Received,3-Bounced
- * @property string|null $paid_amount
+ * @property int|null $paid_amount
  * @property string|null $pending_amount
  * @property string|null $paid_date
  * @property int $added_by
@@ -514,6 +513,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Agreement> $agreements
+ * @property-read int|null $agreements_count
  * @property-read \App\Models\Area|null $area
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Contract> $children
  * @property-read int|null $children_count
@@ -633,20 +634,21 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $contract_id
- * @property \App\Models\DocumentType|null $document_type
+ * @property int|null $document_type_id
  * @property string $original_document_path
- * @property string $original_documant_name
- * @property string $signed_document_path
- * @property string $signed_document_name
+ * @property string $original_document_name
+ * @property string|null $signed_document_path
+ * @property string|null $signed_document_name
  * @property int $signed_status 0-unsinged, 1-mr.muneer signed,2- mr.muneer and vendor signed
  * @property int $added_by
- * @property int $updated_by
- * @property int $deleted_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Contract $contract
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\DocumentType|null $document_type
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument onlyTrashed()
@@ -656,9 +658,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDeletedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDocumentType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDocumentTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereOriginalDocumantName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereOriginalDocumentName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereOriginalDocumentPath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereSignedDocumentName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereSignedDocumentPath($value)
@@ -675,14 +677,14 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $contract_id
- * @property string $cost_of_development
- * @property string $cost_of_bed
- * @property string $cost_of_matress
- * @property string $appliances
- * @property string $decoration
- * @property string $dewa_deposit
- * @property string $ejari
- * @property string $cost_of_cabinets
+ * @property string|null $cost_of_development
+ * @property string|null $cost_of_bed
+ * @property string|null $cost_of_matress
+ * @property string|null $appliances
+ * @property string|null $decoration
+ * @property string|null $dewa_deposit
+ * @property string|null $ejari
+ * @property string|null $cost_of_cabinets
  * @property string $added_by
  * @property string|null $updated_by
  * @property string|null $deleted_by
@@ -867,7 +869,7 @@ namespace App\Models{
  * @property string $expected_profit
  * @property string $profit_percentage
  * @property string|null $receivable_start_date
- * @property int|null $receivable_installments
+ * @property int $receivable_installments
  * @property string $total_payment_to_vendor
  * @property string|null $total_otc
  * @property string $final_cost
@@ -957,7 +959,7 @@ namespace App\Models{
  * @property int $contract_unit_id
  * @property int $contract_unit_detail_id
  * @property string $subunit_no
- * @property int $subunit_type 1-partition, 2-bedspace
+ * @property int $subunit_type 1-partition, 2-bedspace, 3-room, 4-full flat
  * @property string $subunit_code proj. no / company code / unit no / subunit no
  * @property int $added_by
  * @property int|null $updated_by
@@ -1113,10 +1115,12 @@ namespace App\Models{
  * @property string|null $unit_commission
  * @property string|null $unit_deposit
  * @property string $unit_rent_per_month
- * @property int|null $subunit_occupied_count
- * @property int|null $subunit_vacant_count
- * @property string|null $total_payment_received
- * @property string|null $total_payment_pending
+ * @property int $subunit_occupied_count
+ * @property int $subunit_vacant_count
+ * @property string $total_payment_received
+ * @property string $total_payment_pending
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AgreementUnit> $agreementUnits
+ * @property-read int|null $agreement_units_count
  * @property-read \App\Models\Contract $contract
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractSubunitDetail> $contractSubUnitDetails
  * @property-read int|null $contract_sub_unit_details_count

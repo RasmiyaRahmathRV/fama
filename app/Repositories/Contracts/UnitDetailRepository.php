@@ -21,6 +21,12 @@ class UnitDetailRepository
         return ContractUnitDetail::where($contractUnitDet)->first();
     }
 
+
+    public function getByContractId($contractId)
+    {
+        return ContractUnitDetail::where('contract_id', $contractId)->get();
+    }
+
     public function create($data)
     {
         return ContractUnitDetail::create($data);

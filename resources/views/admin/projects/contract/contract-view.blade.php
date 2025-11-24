@@ -354,6 +354,15 @@
                                                 href="{{ route('contract.edit', $contract->id) }}">Edit</a>
                                         @endif
 
+                                        @if ($contract->contract_status != 0)
+                                            @if (Gate::allows('contract.document_upload'))
+                                                <a href="{{ route('contract.documents', $contract->id) }}"
+                                                    class="btn btn-warning" title="Upload Documents">
+                                                    Document
+                                                </a>
+                                            @endif
+                                        @endif
+
                                         @if ($contract->is_scope_generated == 0)
                                             <button class="btn btn-primary" onclick="generateScope({{ $contract->id }})">
                                                 <i class="fas fa-envelope-open-text"></i> Generate Scope</button>

@@ -2,20 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ArrayToSheetExport;
 use App\Exports\ContractExport;
 use App\Exports\ProjectScopeExport;
-use App\Models\Bank;
 use App\Models\Contract;
-use App\Models\ContractType;
 use App\Models\DocumentType;
-use App\Models\Industry;
-use App\Models\Installment;
-use App\Models\PaymentMode;
-use App\Models\PropertySizeUnit;
-use App\Models\UnitSizeUnit;
-use App\Models\UnitStatus;
-use App\Models\UnitType;
+use App\Repositories\Agreement\AgreementRepository;
 use App\Services\AreaService;
 use App\Services\CompanyService;
 use App\Services\Contracts\ContractService;
@@ -51,6 +42,8 @@ class ContractController extends Controller
         protected PaymentReceivableService $paymentRecSev,
         protected ProjectScopeDataService $scopeService,
         protected DocumentService $documentService,
+        protected AgreementRepository $agreementRepo,
+        protected UnitDetailService $unitdetServ,
     ) {}
 
     public function index()
@@ -149,7 +142,10 @@ class ContractController extends Controller
         $contract = $this->contractService->getById($contractId);
         $documentTypes = DocumentType::where('status', 1)->get();
         $contractDocuments = $this->documentService->getByContractId($contractId);
-        return view("admin.projects.contract.contract-documents", compact("title", 'contract', 'documentTypes', 'contractDocuments'));
+        $contractUnitdetails = $this->unitdetServ->getByContractId($contractId);
+
+        // dd($agreements);
+        return view("admin.projects.contract.contract-documents", compact("title", 'contract', 'documentTypes', 'contractDocuments', 'contractUnitdetails'));
     }
 
     public function document_upload(Request $request)

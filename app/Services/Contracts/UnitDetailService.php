@@ -26,6 +26,11 @@ class UnitDetailService
         return $this->unitdetRepo->find($id);
     }
 
+    public function getByContractId($contractId)
+    {
+        return $this->unitdetRepo->getByContractId($contractId);
+    }
+
     public function create($contractData, array $dataArr, $receivable_installments, $unit_id, $user_id = null)
     {
         $data = [];
@@ -236,6 +241,7 @@ class UnitDetailService
         $subunitcount_per_unit = $partitionValue['subunitcount_per_unit'];
         $subunit_rent_per_unit = $partitionValue['subunit_rent_per_unit'];
         $total_rent_per_unit_per_month = $partitionValue['total_rent_per_unit_per_month'];
+        $total_rent_per_unit_per_annum = $partitionValue['total_rent_per_unit_per_annum'];
 
 
 
@@ -267,12 +273,14 @@ class UnitDetailService
             'subunittype' => $subunittype,
             'subunitcount_per_unit' => $subunitcount_per_unit,
             'subunit_rent_per_unit' => $subunit_rent_per_unit,
+            'subunit_vacant_count' => $subunitcount_per_unit,
             'unit_profit_perc' => isset($dataArr['unit_profit_perc']) ? $dataArr['unit_profit_perc'][$key] : 0,
             'unit_profit' => isset($dataArr['unit_profit']) ? $dataArr['unit_profit'][$key] : 0,
-            'unit_revenue' => isset($dataArr['unit_revenue']) ? $dataArr['unit_revenue'][$key] : 0,
+            'unit_revenue' => isset($dataArr['unit_revenue']) ? $dataArr['unit_revenue'][$key] : $total_rent_per_unit_per_annum,
             'unit_amount_payable' => isset($dataArr['unit_amount_payable']) ? $dataArr['unit_amount_payable'][$key] : 0,
             'unit_commission' => isset($dataArr['unit_commission']) ? $dataArr['unit_commission'][$key] : 0,
             'unit_deposit' => isset($dataArr['unit_deposit']) ? $dataArr['unit_deposit'][$key] : 0,
+            'total_payment_pending' => isset($dataArr['unit_revenue']) ? $dataArr['unit_revenue'][$key] : $total_rent_per_unit_per_annum,
         );
         // dd($unitDetailArr);
         if ($action  == 1) {

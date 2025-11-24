@@ -206,4 +206,10 @@ class ContractUnitDetail extends Model
             }
         });
     }
+
+
+    public function agreementUnits()
+    {
+        return $this->hasMany(AgreementUnit::class, 'contract_unit_details_id');
+    }
 }

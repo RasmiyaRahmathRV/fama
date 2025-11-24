@@ -82,10 +82,10 @@ class Agreement extends Model
     {
         return $this->hasMany(AgreementPaymentDetail::class, 'agreement_id');
     }
-    public function agreementUnit()
-    {
-        return $this->hasOne(AgreementUnit::class, 'agreement_id');
-    }
+    // public function agreementUnit()
+    // {
+    //     return $this->hasOne(AgreementUnit::class, 'agreement_id');
+    // }
     public function agreement_units()
     {
         return $this->hasMany(AgreementUnit::class, 'agreement_id', 'id');

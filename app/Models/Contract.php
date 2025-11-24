@@ -229,4 +229,9 @@ class Contract extends Model
             }
         });
     }
+
+    public function agreements()
+    {
+        return $this->hasMany(Agreement::class);
+    }
 }

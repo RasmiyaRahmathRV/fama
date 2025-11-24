@@ -2,6 +2,16 @@
 
 @section('custom_css')
     <link rel="stylesheet" href="{{ asset('assets/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+
+    <style>
+        .contractTable tbody tr {
+            background-color: #f6ffff;
+        }
+
+        .contractTable thead tr {
+            background-color: #D6EEEE;
+        }
+    </style>
 @endsection
 @section('content')
     <!-- Content Wrapper. Contains page content -->
@@ -41,169 +51,204 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Document name</th>
-                                            <th>view</th>
-                                        </tr>
-                                    </thead>
+                                @php
+                                    $occupied = $vacant = $paymentReceived = $payamentPending = 0;
+                                @endphp
+                                @foreach ($contractUnitdetails as $contractUnitdetail)
+                                    @php
+                                        $occupied += $contractUnitdetail->subunit_occupied_count;
+                                        $vacant += $contractUnitdetail->subunit_vacant_count;
+                                        $paymentReceived += $contractUnitdetail->total_payment_received;
+                                        $payamentPending += $contractUnitdetail->total_payment_pending;
+                                    @endphp
+                                @endforeach
+                                <div class="row">
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <div class="info-box">
+                                            <span class="info-box-icon bg-info"><i class="fas fa-lock"></i></span>
 
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Project Scope</td>
-                                            <td><a href="{{ url('/download-scope', $contract->contract_scope->id) }}"
-                                                    class="btn btn-info"><i class="far fa-eye"></i></a></td>
-                                        </tr>
-                                        @foreach ($contractDocuments as $document)
-                                            <tr>
-                                                <td>{{ $loop->iteration + 1 }}</td>
-                                                <td>{{ $document->document_type->label_name }}</td>
-                                                <td>
-                                                    @if ($document->original_document_path)
-                                                        <a href="{{ asset('storage/' . $document->original_document_path) }}"
-                                                            class="btn btn-info" target="_blank"
-                                                            rel="noopener noreferrer"><i class="far fa-eye"></i></a>
-                                                        {{-- <a href="{{ $document->original_document_path }}">View</a> --}}
-                                                    @elseif($document->signed_document_path)
-                                                        <a href="{{ asset('storage/' . $document->signed_document_path) }}"
-                                                            class="btn btn-info" target="_blank"><i
-                                                                class="far fa-eye"></i></a></a>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Occupied</span>
+                                                <span class="info-box-number">{{ $occupied }}</span>
+                                            </div>
+                                            <!-- /.info-box-content -->
+                                        </div>
+                                        <!-- /.info-box -->
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <div class="info-box">
+                                            <span class="info-box-icon bg-success"><i class="fas fa-unlock"></i></span>
+
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Vacant</span>
+                                                <span class="info-box-number">{{ $vacant }}</span>
+                                            </div>
+                                            <!-- /.info-box-content -->
+                                        </div>
+                                        <!-- /.info-box -->
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <div class="info-box">
+                                            <span class="info-box-icon bg-warning"><i
+                                                    class="fas fa-hand-holding-usd"></i></span>
+
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Payment Received</span>
+                                                <span class="info-box-number">{{ $paymentReceived }}</span>
+                                            </div>
+                                            <!-- /.info-box-content -->
+                                        </div>
+                                        <!-- /.info-box -->
+                                    </div>
+                                    <!-- /.col -->
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <div class="info-box">
+                                            <span class="info-box-icon bg-danger"><i
+                                                    class="fas fa-funnel-dollar"></i></span>
+
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Payment Pending</span>
+                                                <span class="info-box-number">{{ $payamentPending }}</span>
+                                            </div>
+                                            <!-- /.info-box-content -->
+                                        </div>
+                                        <!-- /.info-box -->
+                                    </div>
+                                    <!-- /.col -->
+                                </div>
+                                <div class="card-body">
+                                    {{-- <h4 class="text-bold">Contract Document List</h4> --}}
+                                    <div>
+                                        <table class="table contractTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Document name</th>
+                                                    <th>view</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Project Scope</td>
+                                                    <td><a href="{{ url('/download-scope', $contract->contract_scope->id) }}"
+                                                            class="btn btn-info"><i class="far fa-eye"></i></a></td>
+                                                </tr>
+                                                @foreach ($contractDocuments as $document)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration + 1 }}</td>
+                                                        <td>{{ $document->document_type->label_name }}</td>
+                                                        <td>
+                                                            @if ($document->original_document_path)
+                                                                <a href="{{ asset('storage/' . $document->original_document_path) }}"
+                                                                    class="btn btn-info" target="_blank"
+                                                                    rel="noopener noreferrer"><i class="far fa-eye"></i></a>
+                                                                {{-- <a href="{{ $document->original_document_path }}">View</a> --}}
+                                                            @elseif($document->signed_document_path)
+                                                                <a href="{{ asset('storage/' . $document->signed_document_path) }}"
+                                                                    class="btn btn-info" target="_blank"><i
+                                                                        class="far fa-eye"></i></a></a>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
 
                                 <br>
                                 <!-- we are adding the accordion ID so Bootstrap's collapse plugin detects it -->
                                 <div id="accordion">
-                                    <div class="card card-secondary">
-                                        <div class="card-header">
-                                            <h4 class="card-title w-100">
-                                                <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
-                                                    Unit 1
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseOne" class="collapse" data-parent="#accordion">
-                                            <div class="card-body">
-                                                <table class="table">
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>Document name</th>
-                                                        <th>view</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>1</td>
-                                                        <td>Emirates ID</td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>2</td>
-                                                        <td>Passport</td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>3</td>
-                                                        <td>Visa</td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>4</td>
-                                                        <td>Agreement</td>
-                                                        <td></td>
-                                                    </tr>
+                                    @php
+                                        $unitdet = [];
+                                    @endphp
+                                    @foreach ($contractUnitdetails as $key => $contractUnitdetail)
+                                        @if ($contractUnitdetail->contract->contract_type_id != 2)
+                                            @include('admin.projects.contract.contract-agreement-view', [
+                                                'unitNumbers' => $contractUnitdetail->unit_number,
+                                                'agreementUnits' => $contractUnitdetail->agreementUnits,
+                                                'unitdetail' => $contractUnitdetail,
+                                            ])
+                                        @else
+                                            @include('admin.projects.contract.contract-agreement-view', [
+                                                'unitNumbers' => $contractUnitdetail->unit_number,
+                                                'agreementUnits' => $contractUnitdetail->agreementUnits,
+                                                'unitdetail' => $contractUnitdetail,
+                                            ])
+                                            {{-- <div class="card card-secondary">
+                                                <div class="card-header">
+                                                    <h4 class="card-title w-100 row">
+                                                        <a class="d-block w-100" data-toggle="collapse"
+                                                            href="#collapse{{ $key }}">
+                                                            Unit
+                                                            {{ $contractUnitdetail->contract_unit->unit_numbers }}
 
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card card-secondary">
-                                        <div class="card-header">
-                                            <h4 class="card-title w-100">
-                                                <a class="d-block w-100" data-toggle="collapse" href="#collapseTwo">
-                                                    Unit 2
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseTwo" class="collapse" data-parent="#accordion">
-                                            <div class="card-body">
-                                                <table class="table">
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>Document name</th>
-                                                        <th>view</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>1</td>
-                                                        <td>Emirates ID</td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>2</td>
-                                                        <td>Passport</td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>3</td>
-                                                        <td>Visa</td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>4</td>
-                                                        <td>Agreement</td>
-                                                        <td></td>
-                                                    </tr>
 
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card card-secondary">
-                                        <div class="card-header">
-                                            <h4 class="card-title w-100">
-                                                <a class="d-block w-100" data-toggle="collapse" href="#collapseThree">
-                                                    Unit 3
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseThree" class="collapse" data-parent="#accordion">
-                                            <div class="card-body">
-                                                <table class="table">
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>Document name</th>
-                                                        <th>view</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>1</td>
-                                                        <td>Emirates ID</td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>2</td>
-                                                        <td>Passport</td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>3</td>
-                                                        <td>Visa</td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>4</td>
-                                                        <td>Agreement</td>
-                                                        <td></td>
-                                                    </tr>
+                                                            <span class="badge badge-light float-lg-right"> Total Agreements
+                                                                :
+                                                                {{ count($contractUnitdetail->agreementUnits) }}</span>
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div id="collapse{{ $key }}" class="collapse"
+                                                    data-parent="#accordion">
+                                                    <div class="card-body">
+                                                        <div class="col-12 table-responsive card-body">
+                                                            <div class="d-flex justify-content-center row">
+                                                                @foreach ($contractUnitdetail->agreementUnits as $agreementUnit)
+                                                                    <div class="col-6">
+                                                                        <div class="card">
+                                                                            <div class="card-header bg-gradient-olive">
+                                                                                <h4 class="card-title w-100">
+                                                                                    {{ $agreementUnit->agreement->agreement_code }}
+                                                                                    -
+                                                                                    {{ $agreementUnit->agreement->tenant->tenant_name }}
+                                                                                </h4>
+                                                                            </div>
+                                                                            <div class="card-body">
+                                                                                <table class="table">
+                                                                                    <tr>
+                                                                                        <th>#</th>
+                                                                                        <th>Document name</th>
+                                                                                        <th>view</th>
+                                                                                    </tr>
 
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
+                                                                                    @foreach ($agreementUnit->agreement->agreement_documents as $agreement_document)
+                                                                                        @php
+                                                                                            // dd($agreement_document);
+                                                                                        @endphp
+                                                                                        <tr>
+                                                                                            <td>{{ $loop->iteration }}</td>
+                                                                                            <td>{{ $agreement_document->TenantIdentity->identity_type }}
+                                                                                            </td>
+                                                                                            <td><a href="{{ asset('storage/' . $agreement_document->original_document_path) }}"
+                                                                                                    target="_blank"
+                                                                                                    class="btn btn-sm btn-outline-info"
+                                                                                                    title="Click to View">
+                                                                                                    <i
+                                                                                                        class="fas fa-eye"></i>
+                                                                                                </a></td>
+                                                                                        </tr>
+                                                                                    @endforeach
+
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> --}}
+                                            {{-- @break --}}
+                                        @endif
+                                    @endforeach
+
                                 </div>
                             </div>
                             <!-- /.card-body -->
@@ -239,9 +284,8 @@
                                                 value="{{ $documentType->status_change_value }}">
                                             <label for="inputEmail3"
                                                 class="col-form-label">{{ $documentType->label_name }}</label>
-                                            <input type="{{ $documentType->field_type }}"
-                                                name="{{ $key }}[file]" class="form-control"
-                                                accept="{{ $documentType->accept_types }}">
+                                            <input type="{{ $documentType->field_type }}" name="{{ $key }}[file]"
+                                                class="form-control" accept="{{ $documentType->accept_types }}">
                                             @if ($documentType->id == 1)
                                         </div>
                                         <div class="col-3">
