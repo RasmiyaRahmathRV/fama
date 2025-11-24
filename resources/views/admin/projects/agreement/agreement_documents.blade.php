@@ -52,8 +52,14 @@
                                         @forelse ($documents as $doc)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $doc->documentType->identity_type }}</td>
-                                                <td>{{ $doc->document_number }}</td>
+                                                <td>{{ $doc->TenantIdentity->identity_type }}</td>
+                                                <td>
+                                                    @if ($doc->document_type == 6)
+                                                        -
+                                                    @else
+                                                        {{ $doc->document_number }}
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <a href="{{ asset('storage/' . $doc->original_document_path) }}"
                                                         target="_blank" class="btn btn-sm btn-outline-info"
@@ -98,8 +104,13 @@
                             <div class="modal-body">
                                 <div class="card-body">
                                     <input type="hidden" name="agreement_id" value="{{ $agreementId }}">
-
+                                    @php
+                                        $business_type = $agreement->contract->contract_unit->business_type;
+                                    @endphp
                                     @foreach ($tenantIdentities as $index => $identity)
+                                        @if ($identity->id == 6 && $business_type != 1)
+                                            @continue
+                                        @endif
                                         <h6 class="font-weight-bold text-cyan mb-3">
                                             {{ $identity->identity_type }}
                                         </h6>
@@ -112,18 +123,23 @@
 
                                         <div class="form-row">
                                             {{-- First Field --}}
-                                            <div class="form-group col-md-6">
-                                                <label for="document_number_{{ $index }}">
-                                                    {{ $identity->first_field_label }}
-                                                </label>
-                                                <input type="{{ $identity->first_field_type }}"
-                                                    name="documents[{{ $index }}][document_number]"
-                                                    id="document_number_{{ $index }}"
-                                                    value="{{ $document ? $document->document_number : '' }}"
-                                                    class="form-control" placeholder="{{ $identity->first_field_label }}">
-                                                <input type="hidden" name="documents[{{ $index }}][document_type]"
-                                                    value="{{ $identity->id }}">
-                                            </div>
+                                            {{-- <input type="hidden" name="agreement_id" value="{{ $identity->id }}"> --}}
+                                            @if ($identity->id !== 6)
+                                                <div class="form-group col-md-6">
+                                                    <label for="document_number_{{ $index }}">
+                                                        {{ $identity->first_field_label }}
+                                                    </label>
+                                                    <input type="{{ $identity->first_field_type }}"
+                                                        name="documents[{{ $index }}][document_number]"
+                                                        id="document_number_{{ $index }}"
+                                                        value="{{ $document ? $document->document_number : '' }}"
+                                                        class="form-control"
+                                                        placeholder="{{ $identity->first_field_label }}">
+
+                                                </div>
+                                            @endif
+                                            <input type="hidden" name="documents[{{ $index }}][document_type]"
+                                                value="{{ $identity->id }}">
 
                                             {{-- Second Field --}}
                                             <div class="form-group col-md-6">
@@ -204,11 +220,13 @@
             let method = 'POST';
             var form = document.getElementById('agreementImportForm');
             let formValid = true;
+            let hasInput = false;
 
             $('#agreementImportForm .form-row').each(function() {
                 const firstField = $(this).find('input[name*="[document_number]"]');
                 const secondField = $(this).find('input[name*="[document_path]"]');
                 const hiddenIdField = $(this).find('input[name*="[id]"]')
+                const typefield = parseInt($(this).find('input[name*="[document_type]"]').val());
 
                 const firstVal = firstField.val()?.trim();
                 const secondVal = secondField.val()?.trim();
@@ -225,12 +243,27 @@
                     formValid = false;
                 }
                 if ((secondVal || hasExistingFile) && !firstVal) {
-                    firstField.addClass('is-invalid');
-                    firstField.after(
-                        '<span class="invalid-feedback d-block">This field is required.</span>');
-                    formValid = false;
+                    alert(typefield);
+                    console.log("typefield: " + typefield);
+                    if (typefield == 6) {
+                        formValid = true;
+                    } else {
+                        firstField.addClass('is-invalid');
+                        firstField.after(
+                            '<span class="invalid-feedback d-block">This field is required.</span>');
+                        formValid = false;
+                    }
+
+                }
+                if (firstVal || secondVal || hasExistingFile) {
+                    hasInput = true;
+                    return false;
                 }
             });
+            if (!hasInput) {
+                toastr.error('Please add at least one document details.');
+                return false;
+            }
 
             if (!formValid) {
                 toastr.error('Please fill all required fields.');
@@ -252,7 +285,8 @@
                 success: function(response) {
                     toastr.success(response.message);
                     $('#modal-upload').modal('hide');
-                    window.location = "{{ route('agreement.index') }}"
+                    //  window.location = "{{ route('agreement.index') }}"
+                    location.reload();
                 },
                 error: function(xhr) {
                     uploadBtn.prop('disabled', false);

@@ -35,7 +35,7 @@ class AgreementDocument extends Model
         return $this->belongsTo(Agreement::class);
     }
 
-    public function documentType()
+    public function TenantIdentity()
     {
         return $this->belongsTo(TenantIdentity::class, 'document_type', 'id');
     }

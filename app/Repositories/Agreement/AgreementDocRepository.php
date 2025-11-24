@@ -23,6 +23,6 @@ class AgreementDocRepository
     }
     public function getDocuments($id)
     {
-        return AgreementDocument::with('documentType')->where("agreement_id", $id)->get();
+        return AgreementDocument::with('TenantIdentity')->where("agreement_id", $id)->get();
     }
 }
