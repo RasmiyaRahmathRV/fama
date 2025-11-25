@@ -27,16 +27,26 @@ class ContractCommentService
         return $this->commentRepo->getByContractId($contract_id);
     }
 
-    public function create($contract_id, array $data, $user_id = null)
+    public function create(array $data)
     {
         $this->validate($data);
-        $data['contract_id'] = $contract_id;
-        $data['user_id'] = $user_id ? $user_id : auth()->user()->id;
+
+        if ($data['contract_status']) {
+            // dump($data);
+            contractStatusUpdate($data['contract_status'], $data['contract_id']);
+        }
 
         return $this->commentRepo->create($data);
     }
 
+    private function validate(array $data, $id = null)
+    {
+        $validator = Validator::make($data, [
+            'comment' => 'required',
+        ]);
 
-
-    private function validate(array $data, $id = null) {}
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+    }
 }

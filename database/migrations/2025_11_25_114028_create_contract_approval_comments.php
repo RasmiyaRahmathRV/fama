@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('contract_id');
             $table->unsignedBigInteger('user_id');
-            $table->string('comment');
+            $table->text('comment');
             $table->timestamps();
 
             $table->foreign('contract_id')->references('id')->on('contracts')->onDelete('cascade');

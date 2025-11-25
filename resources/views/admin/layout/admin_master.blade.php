@@ -124,7 +124,7 @@
                         <span class="dropdown-item dropdown-header">15 Notifications</span>
                         <div class="dropdown-divider"></div>
                         <a href="{{ route('contract.renewal_pending_list') }}" class="dropdown-item">
-                            <i class="fas fa-sync-alt mr-2"></i> 4 Renewal
+                            <i class="fas fa-sync-alt mr-2"></i> @dump($renewalCount) Renewal
                             <span class="float-right text-muted text-sm">Exp: 10-11-2025</span>
                         </a>
                         <div class="dropdown-divider"></div>
@@ -313,6 +313,14 @@
                                                 class="nav-link {{ request()->is('contract') ? 'active' : '' }}">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Contract</p>
+                                            </a>
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a href="{{ route('contract.approve.list') }}"
+                                                class="nav-link {{ request()->is('contract') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Contract Approval</p>
                                             </a>
                                         </li>
                                     @endif

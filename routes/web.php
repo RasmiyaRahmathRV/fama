@@ -140,7 +140,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('contract-approval/{id}', [ContractController::class, 'approveContract'])->name('contract.approve');
     Route::post('contract-reject', [ContractController::class, 'rejectContract'])->name('contract.reject');
-    Route::post('contract-sendcommend', [ContractController::class, 'sendComments'])->name('contract.sendComment');
+    Route::post('contract-sendcomment', [ContractController::class, 'sendComments'])->name('contract.sendComment');
+    Route::get('contract-approval-list', [ContractController::class, 'approvalListContract'])->name('contract.approve.list');
 });
 
 // Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);

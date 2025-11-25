@@ -326,8 +326,19 @@ class ContractController extends Controller
 
     public function sendComments(Request $request)
     {
-        dd($request);
+        try {
+            $this->commentservice->create($request->all());
+            // dd('success');
+            // Continue saving documents...
+            return response()->json(['success' => true, 'message' => 'Comments added successfully.'], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // dd($e->errors());
+            // Return error to view
+            return response()->json(['success' => false, 'message' => $e->errors(), 'error'   => $e], 500);
+        }
     }
+
+    public function approvalListContract() {}
 
     public function rejectContract(Request $request) {}
 }

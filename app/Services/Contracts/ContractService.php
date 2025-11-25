@@ -404,6 +404,12 @@ class ContractService
             ->toJson();
     }
 
+    public function getRenewalDataCount(array $filters = [])
+    {
+        $query = $this->contractRepo->getRenewalQuery($filters);
+        dd($query);
+    }
+
 
     public function rejectRenew($data, $contract_id)
     {

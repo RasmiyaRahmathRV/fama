@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\AgreementPaymentDetail;
+use App\Models\Contract;
 use App\Models\ContractSubunitDetail;
 use App\Models\Installment;
 
@@ -246,4 +247,13 @@ function getPaymentDetails($paymentId, $unitId)
         'pending' => $pendingAmount,
         'total' => $totalPaymentAmount
     ];
+}
+
+function contractStatusUpdate($status, $contract_id)
+{
+    $data = ['contract_status' => $status];
+    $contract = Contract::find($contract_id);
+    $contract->update($data);
+
+    // dump($data);
 }

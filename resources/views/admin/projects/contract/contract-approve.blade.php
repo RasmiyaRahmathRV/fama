@@ -123,13 +123,14 @@
                                                         @csrf
                                                         <input type="hidden" name="contract_id" id="contract_id"
                                                             value="{{ $contract->id }}">
+                                                        <input type="hidden" name="user_id"
+                                                            value="{{ auth()->user()->id }}">
                                                         <div class="input-group input-group-sm mb-0">
-                                                            <input class="form-control form-control-sm"
-                                                                placeholder="Response">
-                                                            <div class="input-group-append">
-                                                                <button type="button" class="btn btn-danger"
-                                                                    onclick="SendComments()">Send</button>
-                                                            </div>
+                                                            <textarea class="form-control form-control-sm" name="comment" placeholder="Response" required></textarea>
+                                                            {{-- <div class="input-group-append"> --}}
+                                                            <button type="button" class="btn btn-danger"
+                                                                onclick="SendComments()">Send</button>
+                                                            {{-- </div> --}}
                                                         </div>
                                                     </form>
                                                 @else
@@ -259,7 +260,7 @@
                 confirmButtonText: "Yes!"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "contract.php";
+                    // window.location.href = "contract.php";
                 }
             });
         }
@@ -267,20 +268,59 @@
 
         function SendComments() {
 
-            var form = document.getElementById('CommentForm');
-            var fdata = new FormData(form);
+            const form = document.getElementById("CommentForm");
+            if (!form) return false;
 
-            $.ajax({
-                type: "POST",
-                url: "{{ route('contract.sendComment') }}",
-                data: fdata,
-                dataType: "json",
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    console.log(response);
+            let isValid = true;
+
+            // Select all required fields inside the form
+            const requiredFields = form.querySelectorAll("[required]");
+
+            requiredFields.forEach(field => {
+                // Remove previous error style/message
+                field.style.borderColor = "";
+
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = "red"; // highlight empty field
                 }
             });
+
+            if (isValid) {
+                var fdata = new FormData(form);
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You want to hold approval!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fdata.append('contract_status', 5);
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('contract.sendComment') }}",
+                        data: fdata,
+                        dataType: "json",
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+
+                            // window.location.href = "contract.php";
+                        }
+                    });
+                });
+            } else {
+                toastr.error("Please fill all required fields.");
+            }
+
+            // var form = document.getElementById('CommentForm');
+
         }
     </script>
 @endsection
