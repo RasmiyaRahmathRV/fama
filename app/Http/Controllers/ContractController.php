@@ -9,6 +9,7 @@ use App\Models\DocumentType;
 use App\Repositories\Agreement\AgreementRepository;
 use App\Services\AreaService;
 use App\Services\CompanyService;
+use App\Services\Contracts\ContractCommentService;
 use App\Services\Contracts\ContractService;
 use App\Services\Contracts\DocumentService;
 use App\Services\Contracts\PaymentDetailService;
@@ -44,6 +45,7 @@ class ContractController extends Controller
         protected DocumentService $documentService,
         protected AgreementRepository $agreementRepo,
         protected UnitDetailService $unitdetServ,
+        protected ContractCommentService $commentservice,
     ) {}
 
     public function index()
@@ -116,8 +118,7 @@ class ContractController extends Controller
         return view('admin.projects.contract.contract-view', compact('contract', 'allChildren'));
     }
 
-    public function approveContract(Request $request) {}
-    public function rejectContract(Request $request) {}
+
 
     public function getContracts(Request $request)
     {
@@ -313,4 +314,20 @@ class ContractController extends Controller
             'Cache-Control' => 'max-age=0',
         ]);
     }
+
+    public function approveContract($contractId)
+    {
+        $title = 'Contract Approval';
+        $contract = $this->contractService->getById($contractId);
+        $comments = $this->commentservice->getByContractId($contractId);
+
+        return view('admin.projects.contract.contract-approve', compact('contract', 'title', 'comments'));
+    }
+
+    public function sendComments(Request $request)
+    {
+        dd($request);
+    }
+
+    public function rejectContract(Request $request) {}
 }

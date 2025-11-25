@@ -278,8 +278,14 @@ class ContractService
                         </a> ';
                     }
 
+                    if (Gate::allows('contract.document_upload')) {
+                        $action .= '<a class="btn btn-success btn-sm" href="' . route('contract.approve', $row->id) . '" title="Send for Approval">
+                            <i class="fas fa-paper-plane"></i>
+                        </a>';
+                    }
+                } elseif ($row->contract_status == 4) {
                     if (Gate::allows('contract.approve')) {
-                        $action .= '<a class="btn btn-info btn-sm" href="' . route('contract.approve', $row->id) . '" title="Approve Contract">
+                        $action .= '<a class="btn btn-info btn-sm" href="' . route('contract.approve', $row->id) . '" title="Send for Approval">
                             <i class="fas fa-thumbs-up"></i>
                         </a>';
                     }
@@ -289,12 +295,6 @@ class ContractService
                         $action .= '<a href="' . route('contract.documents', $row->id) . '" class="btn btn-warning btn-sm" title="Upload Documents">
                             <i class="fas fa-file"></i>
                         </a> ';
-                    }
-
-                    if (Gate::allows('contract.view')) {
-                        $action .= '<a class="btn btn-primary btn-sm" href="' . route('contract.show', $row->id) . '" title="View Contract">
-                            <i class="fas fa-eye"></i>
-                        </a>';
                     }
                 } elseif ($row->contract_status == 3) {
 

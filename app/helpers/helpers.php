@@ -160,6 +160,19 @@ function getPartitionValue($dataArr, $key, $receivable_installments)
     return $retData;
 }
 
+function subunittypeName($subunittype)
+{
+    if ($subunittype == 1) {
+        return 'Partition';
+    } else if ($subunittype == 2) {
+        return 'Bedspace';
+    } else if ($subunittype == 3) {
+        return 'Room';
+    } else {
+        return 'Full FLat';
+    }
+}
+
 
 function getAccommodationDetails($unitDetails)
 {
