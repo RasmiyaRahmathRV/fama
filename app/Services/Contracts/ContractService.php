@@ -406,8 +406,11 @@ class ContractService
 
     public function getRenewalDataCount(array $filters = [])
     {
+        // $query = ${$this->contractRepo->getRenewalQuery($filters)}->count();
+
         $query = $this->contractRepo->getRenewalQuery($filters);
-        dd($query);
+
+        return $query->count();
     }
 
 

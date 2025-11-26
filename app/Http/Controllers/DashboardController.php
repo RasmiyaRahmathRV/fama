@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\Contracts\ContractRepository;
+use App\Services\Contracts\ContractService;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function __construct(
-        protected ContractRepository $contractRepo,
+        protected ContractService $contractServ,
     ) {}
-
 
     public function index()
     {
         $title = 'Dashboard';
-        $renewalCount = $this->contractRepo->getRenewalQuery()->count();
+        $renewalCount = $this->contractServ->getRenewalDataCount();
         return view('admin.dashboard', compact('title', 'renewalCount'));
     }
 }

@@ -20,6 +20,7 @@ class DocumentTypeSeeder extends Seeder
                 'field_type' => 'file',
                 'field_name' => 'vendor_contract',
                 'status_change_value' => 'is_vendor_contract_uploaded',
+                'accept_types' => '.pdf,image/*',
                 'status' => 1,
             ],
             [
@@ -28,6 +29,7 @@ class DocumentTypeSeeder extends Seeder
                 'field_type' => 'file',
                 'field_name' => 'cheque_copy',
                 'status_change_value' => 'is_cheque_copy_uploaded',
+                'accept_types' => '.pdf,image/*',
                 'status' => 1,
             ],
             [
@@ -36,6 +38,7 @@ class DocumentTypeSeeder extends Seeder
                 'field_type' => 'file',
                 'field_name' => 'acknoledgement',
                 'status_change_value' => 'is_aknowledgement_uploaded',
+                'accept_types' => '.pdf,image/*',
                 'status' => 1,
             ],
         ];

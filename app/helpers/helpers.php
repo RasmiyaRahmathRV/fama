@@ -90,10 +90,11 @@ function getPartitionValue($dataArr, $key, $receivable_installments)
     $subunitcount_per_unit = 0;
     $subunit_rent_per_unit = 0;
     $total_rent_per_unit_per_month = 0;
-
+    // dd($dataArr);
     if (array_key_exists('partition', $dataArr) && isset($dataArr['partition'][$key])) {
         if ($dataArr['partition'][$key] == 1) {
             $partition = 1;
+            // dd($dataArr['rent_per_partition']);
             $rent_per_unit_per_month = $dataArr['rent_per_partition'];
             $subunittype = 1;
             $subunitcount_per_unit += $dataArr['total_partition'][$key];
@@ -139,7 +140,7 @@ function getPartitionValue($dataArr, $key, $receivable_installments)
         $total_rent_per_unit_per_month  = $rent_per_flat;
     }
     // print($rent_per_unit_per_month);
-
+    // dd($rent_per_unit_per_month);
     $rent_per_unit_per_annum = $rent_per_unit_per_month * $installment;
 
     $total_rent_per_unit_per_annum = $total_rent_per_unit_per_month * $installment;

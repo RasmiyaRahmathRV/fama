@@ -28,7 +28,8 @@ class DatabaseSeeder extends Seeder
             PaymentModeSeeder::class,
             PropertyTypeSeeder::class,
             TenantIdentitySeeder::class,
-
+            DocumentTypeSeeder::class,
+            // DocumentTypeAcceptTypesSeeder::class,
         ]);
     }
 }

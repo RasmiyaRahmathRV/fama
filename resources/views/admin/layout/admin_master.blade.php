@@ -124,7 +124,7 @@
                         <span class="dropdown-item dropdown-header">15 Notifications</span>
                         <div class="dropdown-divider"></div>
                         <a href="{{ route('contract.renewal_pending_list') }}" class="dropdown-item">
-                            <i class="fas fa-sync-alt mr-2"></i> @dump($renewalCount) Renewal
+                            <i class="fas fa-sync-alt mr-2"></i>{{ $renewalCount }} Renewal
                             <span class="float-right text-muted text-sm">Exp: 10-11-2025</span>
                         </a>
                         <div class="dropdown-divider"></div>
