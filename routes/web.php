@@ -125,6 +125,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('agreement-documents-upload/{id}', [AgreementController::class, 'documentUpload'])->name('agreement.documentUpload');
     Route::post('agreement-terminate', [AgreementController::class, 'terminate'])->name('agreement.terminate');
     Route::post('agreement-invoice-upload', [AgreementController::class, 'invoice_upload'])->name('agreement.invoiceUpload');
+    Route::post('/agreement-unit/delete/{unitId}', [AgreementController::class, 'delete_unit'])->name('agreement.deleteUnit');
 
 
     // renewal
@@ -139,6 +140,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/download-summary/{id}/{filename}', [ContractController::class, 'downloadSummary'])
         ->name('contract.downloadSummary');
     Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);
+
+    Route::get(
+        '/contracts/{id}/terminated-agreement-details',
+        [ContractController::class, 'getTerminatedAgreementDetails']
+    );
 });
 
 // Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);
