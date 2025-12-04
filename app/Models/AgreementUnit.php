@@ -25,6 +25,7 @@ class AgreementUnit extends Model
         'updated_by',
         'deleted_by',
         'subunit_ids',
+        'unit_revenue'
     ];
     protected $casts = [
         'subunit_ids' => 'array',

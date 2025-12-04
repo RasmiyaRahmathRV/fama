@@ -122,15 +122,15 @@ class AgreementService
             // dd($rent_annum);
 
 
-            if ($data['contract_type'] == 2 || ($data['contract_type'] == 1 && $ct->contract_unit->business_type == 1)) {
-                // Multiple unit insert
+            if ($data['contract_type'] == 2) {
+
                 foreach ($data['unit_detail'] as $unit) {
-                    // $rent_annum_agreement = $unit['rent_per_month'] * $count;
-                    // $rent_annum_agreement = $rent_annum;
-                    // dd($rent_annum_agreement);
-                    // dd($unit);
+
                     $contractUnitDetail = ContractUnitDetail::find($unit['contract_unit_details_id']);
                     $rent_annum_agreement = $contractUnitDetail->rent_per_unit_per_annum;
+                    $subunit_ids = ContractSubunitDetail::where('contract_unit_detail_id', $unit['contract_unit_details_id'])
+                        ->pluck('id')
+                        ->toArray();
 
                     $unitdata = [
                         'agreement_id' => $agreement->id,
@@ -140,6 +140,8 @@ class AgreementService
                         'contract_subunit_details_id' => $unit['contract_subunit_details_id'] ?? null,
                         'rent_per_month' => $unit['rent_per_month'],
                         'rent_per_annum_agreement' => $rent_annum_agreement,
+                        'subunit_ids' => $subunit_ids,
+                        'unit_revenue' => $contractUnitDetail['unit_revenue'],
                     ];
 
                     // Create agreement unit record
@@ -166,6 +168,7 @@ class AgreementService
                                 'bank_id' => $detail['bank_id'] ?? null,
                                 'cheque_number' => $detail['cheque_number'] ?? null,
                                 'added_by' => $data['added_by'],
+                                'unit_revenue' => $contractUnitDetail['rent_per_unit_per_annum'],
                             ];
                             // dd($detail_data);
 
@@ -182,6 +185,77 @@ class AgreementService
                         $createdUnit['contract_unit_details_id']
                     );
                 }
+            } else if ($data['contract_type'] == 1 && $ct->contract_unit->business_type == 1) {
+                // dd("test");
+                // Default single insert (contract type != 2)
+                // $rent_annum_agreement = $data['rent_per_month'] * $count;
+                $rent_annum_agreement = $data['total_rent_per_annum'];
+
+                // Reindex payment details so $index matches correctly
+                $data['payment_detail'] = array_values($data['payment_detail']);
+
+                foreach ($data['unit_detail'] as $index => $unit) {
+                    $contractUnitDetail = ContractUnitDetail::find($unit['contract_unit_details_id']);
+                    $subunit_ids = ContractSubunitDetail::where('contract_unit_detail_id', $unit['contract_unit_details_id'])
+                        ->pluck('id')
+                        ->toArray();
+
+                    $unitdata = [
+                        'agreement_id' => $agreement->id,
+                        'added_by' => $data['added_by'],
+                        'unit_type_id' => $unit['unit_type_id'],
+                        'contract_unit_details_id' => $unit['contract_unit_details_id'],
+                        'contract_subunit_details_id' => $unit['contract_subunit_details_id'] ?? null,
+                        'rent_per_month' => $unit['rent_per_month'],
+                        'rent_per_annum_agreement' => $rent_annum_agreement,
+                        'subunit_ids' => $subunit_ids,
+                        'unit_revenue' => $contractUnitDetail['unit_revenue'],
+                    ];
+
+                    $createdUnit = $this->agreementUnitService->create($unitdata);
+                    $agreementUnitId = $createdUnit->id;
+
+                    // Correct: now index matches correctly
+                    $paymentDetailsForThisUnit = $data['payment_detail'][$index] ?? [];
+                    // dd($paymentDetailsForThisUnit);
+
+                    foreach ($paymentDetailsForThisUnit as $detail) {
+
+                        // dd($detail);
+
+                        if (empty($detail['payment_mode_id']) || empty($detail['payment_amount'])) {
+                            continue;
+                        }
+
+                        $detail_data = [
+                            'agreement_id' => $agreement->id,
+                            'agreement_payment_id' => $payment->id,
+                            'agreement_unit_id' => $agreementUnitId,
+                            'payment_mode_id' => $detail['payment_mode_id'],
+                            'payment_date' => $detail['payment_date'] ?? null,
+                            'payment_amount' => $detail['payment_amount'],
+                            'bank_id' => $detail['bank_id'] ?? null,
+                            'cheque_number' => $detail['cheque_number'] ?? null,
+                            'added_by' => $data['added_by'],
+                        ];
+
+                        $this->agreementPaymentDetailService->create($detail_data);
+                    }
+
+                    $this->subUnitDetailserv->markSubunitOccupied(
+                        $unit['contract_unit_details_id'],
+                        $unit['contract_subunit_details_id'] ?? null
+                    );
+
+                    if ($ct->contract_unit->business_type == 1) {
+                        $this->subUnitDetailserv->markUnitOccupied($unit['contract_unit_details_id']);
+                    }
+
+                    $this->subUnitDetailserv->Updatepaymentdetails(
+                        $payment->id,
+                        $createdUnit['contract_unit_details_id']
+                    );
+                }
             } else {
                 // dd("test");
                 // Default single insert (contract type != 2)
@@ -189,43 +263,61 @@ class AgreementService
                 $rent_annum_agreement = $data['total_rent_per_annum'];
 
                 // dd($rent_annum_agreement);
-                $unitdata = [
-                    'agreement_id' => $agreement->id,
-                    'added_by' => $data['added_by'],
-                    'unit_type_id' => $data['unit_type_id'],
-                    'contract_unit_details_id' => $data['contract_unit_details_id'],
-                    'contract_subunit_details_id' => $data['contract_subunit_details_id'] ?? null,
-                    'rent_per_month' => $data['rent_per_month'],
-                    'rent_per_annum_agreement' => $rent_annum_agreement,
-                ];
-
-                $createdUnit = $this->agreementUnitService->create($unitdata);
-                $agreementUnitId = $createdUnit->id ?? null;
-
-                foreach ($data['payment_detail'] as $detail) {
-                    if (empty($detail['payment_mode_id']) || empty($detail['payment_amount'])) {
-                        continue;
+                foreach ($data['unit_detail'] as $unit) {
+                    $contractUnitDetail = ContractUnitDetail::find($unit['contract_unit_details_id']);
+                    $subunit_ids = $unit['contract_subunit_details_id'] ?? [];
+                    if (!is_array($subunit_ids)) {
+                        $subunit_ids = [$subunit_ids];
                     }
 
-                    $detail_data = [
+                    $subunit_ids = array_map('intval', $subunit_ids);
+
+                    // dd($unit);
+                    $unitdata = [
                         'agreement_id' => $agreement->id,
-                        'agreement_payment_id' => $payment->id,
-                        'agreement_unit_id' => $agreementUnitId,
-                        'payment_mode_id' => $detail['payment_mode_id'],
-                        'payment_date' => $detail['payment_date'] ?? null,
-                        'payment_amount' => $detail['payment_amount'],
-                        'bank_id' => $detail['bank_id'] ?? null,
-                        'cheque_number' => $detail['cheque_number'] ?? null,
                         'added_by' => $data['added_by'],
+                        'unit_type_id' => $unit['unit_type_id'],
+                        'contract_unit_details_id' => $unit['contract_unit_details_id'],
+                        'contract_subunit_details_id' => $unit['contract_subunit_details_id'] ?? null,
+                        'rent_per_month' => $unit['rent_per_month'],
+                        'rent_per_annum_agreement' => $rent_annum_agreement,
+                        'subunit_ids' => $subunit_ids,
+                        'unit_revenue' => $contractUnitDetail['rent_per_unit_per_annum'],
                     ];
 
-                    $this->agreementPaymentDetailService->create($detail_data);
+                    $createdUnit = $this->agreementUnitService->create($unitdata);
+                    $agreementUnitId = $createdUnit->id ?? null;
+                    // dd($data['payment_detail']);
+
+                    foreach ($data['payment_detail'] as $detail) {
+                        if (empty($detail['payment_mode_id']) || empty($detail['payment_amount'])) {
+                            continue;
+                        }
+                        // dd($detail);
+
+                        $detail_data = [
+                            'agreement_id' => $agreement->id,
+                            'agreement_payment_id' => $payment->id,
+                            'agreement_unit_id' => $agreementUnitId,
+                            'payment_mode_id' => $detail['payment_mode_id'],
+                            'payment_date' => $detail['payment_date'] ?? null,
+                            'payment_amount' => $detail['payment_amount'],
+                            'bank_id' => $detail['bank_id'] ?? null,
+                            'cheque_number' => $detail['cheque_number'] ?? null,
+                            'added_by' => $data['added_by'],
+                        ];
+
+                        $this->agreementPaymentDetailService->create($detail_data);
+                    }
+                    $this->subUnitDetailserv->markSubunitOccupied($unit['contract_unit_details_id'], $unit['contract_subunit_details_id'] ?? null);
+                    if ($ct->contract_unit->business_type == 1) {
+                        $this->subUnitDetailserv->markUnitOccupied($unit['contract_unit_details_id']);
+                    }
+                    $this->subUnitDetailserv->Updatepaymentdetails(
+                        $payment->id,
+                        $createdUnit['contract_unit_details_id']
+                    );
                 }
-                $this->subUnitDetailserv->markSubunitOccupied($data['contract_unit_details_id'], $data['contract_subunit_details_id'] ?? null);
-                $this->subUnitDetailserv->Updatepaymentdetails(
-                    $payment->id,
-                    $createdUnit['contract_unit_details_id']
-                );
             }
 
             // dd("testsub");
@@ -326,7 +418,7 @@ class AgreementService
 
 
             // Insert updated units
-            if ($data['contract_type'] == 2 || ($data['contract_type'] == 1 && $ct->contract_unit->business_type == 1)) {
+            if ($data['contract_type'] == 2) {
                 $unitids = $this->agreementRepository->findunits($id);
                 // dd($unitids);
                 foreach ($data['unit_detail'] as $index => &$unit) {
@@ -342,6 +434,9 @@ class AgreementService
                     // $rent_annum_agreement = $rent_annum;
                     $contractUnitDetail = ContractUnitDetail::find($unit['contract_unit_details_id']);
                     $rent_annum_agreement = $contractUnitDetail->rent_per_unit_per_annum;
+                    $subunit_ids = ContractSubunitDetail::where('contract_unit_detail_id', $unit['contract_unit_details_id'])
+                        ->pluck('id')
+                        ->toArray();
                     $unitData = [
                         'agreement_id' => $agreement->id,
                         'updated_by' => $data['updated_by'],
@@ -350,7 +445,9 @@ class AgreementService
                         'contract_subunit_details_id' => $unit['contract_subunit_details_id'] ?? null,
                         'rent_per_month' => $unit['rent_per_month'],
                         'rent_per_annum_agreement' => $rent_annum_agreement,
-                        'id' => $unit['agreement_unit_id']
+                        'id' => $unit['agreement_unit_id'],
+                        'subunit_ids' => $subunit_ids,
+                        'unit_revenue' => $contractUnitDetail['unit_revenue'],
                     ];
 
                     $createdUnit = $this->agreementUnitService->update($unitData);
@@ -387,85 +484,163 @@ class AgreementService
                         $createdUnit['contract_unit_details_id']
                     );
                 }
+            } else if ($data['contract_type'] == 1 && $ct->contract_unit->business_type == 1) {
+                foreach ($data['unit_detail'] as $index => $unit) {
+                    // dd($unit);
+                    $agUnitId = $unit['agreement_unit_id'] ?? null;
+                    $contractUnitDetail = ContractUnitDetail::find($unit['contract_unit_details_id']);
+                    $subunit_ids = ContractSubunitDetail::where('contract_unit_detail_id', $unit['contract_unit_details_id'])
+                        ->pluck('id')
+                        ->toArray();
+                    $unitdata = [
+                        'id' => $agUnitId,
+                        'agreement_id' => $agreement->id,
+                        'added_by' => $data['updated_by'],
+                        'unit_type_id' => $unit['unit_type_id'],
+                        'contract_unit_details_id' => $unit['contract_unit_details_id'],
+                        'contract_subunit_details_id' => $unit['contract_subunit_details_id'] ?? null,
+                        'rent_per_month' => $unit['rent_per_month'],
+                        'rent_per_annum_agreement' => $data['total_rent_per_annum'],
+                        'subunit_ids' => $subunit_ids,
+                        'unit_revenue' => $contractUnitDetail['unit_revenue'],
+                    ];
+                    if ($agUnitId) {
+                        // update
+                        $exisistingUnit = $this->agreementUnitService->getById($agUnitId);
+                        if ($exisistingUnit->contract_unit_details_id != $unit['contract_unit_details_id']) {
+                            makeUnitVacant($exisistingUnit->contract_unit_details_id, $ct->id);
+                        }
+                        $createdUnit = $this->agreementUnitService->update($unitdata);
+                    } else {
+                        // create
+                        $createdUnit = $this->agreementUnitService->create($unitdata);
+                    }
+                    $agreementUnitId = $createdUnit->id;
+                    $unitId = $unit['contract_unit_details_id'];
+                    $paymentDetailsForThisUnit = $data['payment_detail'][$unitId] ?? [];
+                    foreach ($paymentDetailsForThisUnit as $detail) {
+                        if (empty($detail['payment_mode_id']) || empty($detail['payment_amount'])) {
+                            continue;
+                        }
+
+                        $detail_data = [
+                            'agreement_id' => $agreement->id,
+                            'agreement_payment_id' => $payment->id,
+                            'agreement_unit_id' => $agreementUnitId,
+                            'payment_mode_id' => $detail['payment_mode_id'],
+                            'payment_date' => $detail['payment_date'] ?? null,
+                            'payment_amount' => $detail['payment_amount'],
+                            'bank_id' => $detail['bank_id'] ?? null,
+                            'cheque_number' => $detail['cheque_number'] ?? null,
+                            'updated_by' => $data['updated_by'],
+                            'id' => $detail['detail_id'] ?? null,
+                        ];
+                        $this->agreementPaymentDetailService->updateOrCreate($detail_data);
+                    }
+                    $this->subUnitDetailserv->markSubunitOccupied(
+                        $unit['contract_unit_details_id'],
+                        $unit['contract_subunit_details_id'] ?? null
+                    );
+                    if ($ct->contract_unit->business_type == 1) {
+                        $this->subUnitDetailserv->markUnitOccupied($unit['contract_unit_details_id']);
+                    }
+                    $this->subUnitDetailserv->Updatepaymentdetails(
+                        $payment->id,
+                        $createdUnit->contract_unit_details_id
+                    );
+                }
             } else {
                 // Default single insert (contract type != 2)
                 // $rent_annum_agreement = $data['rent_per_month'] * $count;
                 $rent_annum_agreement = $data['total_rent_per_annum'];
+                // dd($data['unit_detail']);
 
                 // in the case of untnumber change
-                $exisistingUnit = $this->agreementUnitService->getById($data['unit_id']);
-                if ($exisistingUnit->contract_unit_details_id != $data['contract_unit_details_id']) {
-                    ContractUnitDetail::where('id', $exisistingUnit->contract_unit_details_id)->update(['is_vacant' => 0]);
-                }
-                if ($exisistingUnit->contract_subunit_details_id != $data['contract_subunit_details_id']) {
-                    ContractSubunitDetail::where('id', $exisistingUnit->contract_subunit_details_id)->update(['is_vacant' => 0]);
-                }
-
-
-                $unitdata = [
-                    'agreement_id' => $agreement->id,
-                    'updated_by' => $data['updated_by'],
-                    'unit_type_id' => $data['unit_type_id'],
-                    'contract_unit_details_id' => $data['contract_unit_details_id'],
-                    'contract_subunit_details_id' => $data['contract_subunit_details_id'] ?? null,
-                    'rent_per_month' => $data['rent_per_month'],
-                    'rent_per_annum_agreement' => $rent_annum_agreement,
-                    'id' => $data['unit_id']
-                ];
-
-                $updatedUnit = $this->agreementUnitService->update($unitdata);
-                $agreementUnitId = $updatedUnit->id ?? null;
-
-                // STEP 1: Get existing payment detail IDs from DB
-                $existingPaymentIds = $this->agreementPaymentDetailService
-                    ->getByAgreementId($agreement->id)
-                    ->pluck('id')
-                    ->toArray();
-
-                //  STEP 2: Collect new IDs from the request
-                $newPaymentIds = collect($data['payment_detail'] ?? [])
-                    ->pluck('id')
-                    ->filter()
-                    ->toArray();
-
-                //  STEP 3: Find which ones to delete
-                $toDelete = array_diff($existingPaymentIds, $newPaymentIds);
-
-                // dd($toDelete);
-
-                //  Delete removed payments
-                if (!empty($toDelete)) {
-                    $this->agreementPaymentDetailService->deleteByIds($toDelete);
-                }
-
-                foreach ($data['payment_detail'] ?? [] as $detail) {
-                    if (empty($detail['payment_mode_id']) || empty($detail['payment_amount'])) {
-                        continue;
+                foreach ($data['unit_detail'] as $unit) {
+                    $exisistingUnit = $this->agreementUnitService->getById($unit['agreement_unit_id']);
+                    if ($exisistingUnit->contract_unit_details_id != $unit['contract_unit_details_id']) {
+                        ContractUnitDetail::where('id', $exisistingUnit->contract_unit_details_id)->update(['is_vacant' => 0]);
+                    }
+                    if ($exisistingUnit->contract_subunit_details_id != $unit['contract_subunit_details_id']) {
+                        ContractSubunitDetail::where('id', $exisistingUnit->contract_subunit_details_id)->update(['is_vacant' => 0]);
+                    }
+                    $contractUnitDetail = ContractUnitDetail::find($unit['contract_unit_details_id']);
+                    $subunit_ids = $unit['contract_subunit_details_id'] ?? [];
+                    if (!is_array($subunit_ids)) {
+                        $subunit_ids = [$subunit_ids];
                     }
 
-                    $detail_data = [
+                    $subunit_ids = array_map('intval', $subunit_ids);
+
+
+                    $unitdata = [
                         'agreement_id' => $agreement->id,
-                        'agreement_payment_id' => $payment->id,
-                        'agreement_unit_id' => $agreementUnitId,
-                        'payment_mode_id' => $detail['payment_mode_id'],
-                        'payment_date' => $detail['payment_date'] ?? null,
-                        'payment_amount' => $detail['payment_amount'],
-                        'bank_id' => $detail['bank_id'] ?? null,
-                        'cheque_number' => $detail['cheque_number'] ?? null,
                         'updated_by' => $data['updated_by'],
-                        'id' => $detail['id'] ?? null,
+                        'unit_type_id' => $unit['unit_type_id'],
+                        'contract_unit_details_id' => $unit['contract_unit_details_id'],
+                        'contract_subunit_details_id' => $unit['contract_subunit_details_id'] ?? null,
+                        'rent_per_month' => $unit['rent_per_month'],
+                        'rent_per_annum_agreement' => $rent_annum_agreement,
+                        'id' => $unit['agreement_unit_id'],
+                        'subunit_ids' => $subunit_ids,
+                        'unit_revenue' => $contractUnitDetail['rent_per_unit_per_annum'],
                     ];
+                    // dd($unitdata);
 
-                    // Update existing or create new
-                    $this->agreementPaymentDetailService->updateOrCreate($detail_data);
+                    $updatedUnit = $this->agreementUnitService->update($unitdata);
+                    $agreementUnitId = $updatedUnit->id ?? null;
+
+                    // STEP 1: Get existing payment detail IDs from DB
+                    $existingPaymentIds = $this->agreementPaymentDetailService
+                        ->getByAgreementId($agreement->id)
+                        ->pluck('id')
+                        ->toArray();
+
+                    //  STEP 2: Collect new IDs from the request
+                    $newPaymentIds = collect($data['payment_detail'] ?? [])
+                        ->pluck('id')
+                        ->filter()
+                        ->toArray();
+
+                    //  STEP 3: Find which ones to delete
+                    $toDelete = array_diff($existingPaymentIds, $newPaymentIds);
+
+                    // dd($toDelete);
+
+                    //  Delete removed payments
+                    if (!empty($toDelete)) {
+                        $this->agreementPaymentDetailService->deleteByIds($toDelete);
+                    }
+
+                    foreach ($data['payment_detail'] ?? [] as $detail) {
+                        if (empty($detail['payment_mode_id']) || empty($detail['payment_amount'])) {
+                            continue;
+                        }
+
+                        $detail_data = [
+                            'agreement_id' => $agreement->id,
+                            'agreement_payment_id' => $payment->id,
+                            'agreement_unit_id' => $agreementUnitId,
+                            'payment_mode_id' => $detail['payment_mode_id'],
+                            'payment_date' => $detail['payment_date'] ?? null,
+                            'payment_amount' => $detail['payment_amount'],
+                            'bank_id' => $detail['bank_id'] ?? null,
+                            'cheque_number' => $detail['cheque_number'] ?? null,
+                            'updated_by' => $data['updated_by'],
+                            'id' => $detail['id'] ?? null,
+                        ];
+
+                        // Update existing or create new
+                        $this->agreementPaymentDetailService->updateOrCreate($detail_data);
+                    }
+
+
+                    $this->subUnitDetailserv->markSubunitOccupied($updatedUnit->contract_unit_details_id, $updatedUnit->contract_subunit_details_id ?? null);
+                    $this->subUnitDetailserv->Updatepaymentdetails(
+                        $payment->id,
+                        $updatedUnit['contract_unit_details_id']
+                    );
                 }
-
-
-                $this->subUnitDetailserv->markSubunitOccupied($data['contract_unit_details_id'], $data['contract_subunit_details_id'] ?? null);
-                $this->subUnitDetailserv->Updatepaymentdetails(
-                    $payment->id,
-                    $updatedUnit['contract_unit_details_id']
-                );
             }
 
 
@@ -506,6 +681,7 @@ class AgreementService
             ['data' => 'agreemant_code', 'name' => 'agreemant_code'],
             ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'project_number', 'name' => 'project_number'],
+            ['data' => 'business_type', 'name' => 'business_type'],
             ['data' => 'tenant_details', 'name' => 'tenant_details'],
             ['data' => 'start_date', 'name' => 'start_date'],
             ['data' => 'end_date', 'name' => 'end_date'],
@@ -516,12 +692,14 @@ class AgreementService
         ];
 
         return datatables()
+
             ->of($query)
             ->addIndexColumn()
             ->addColumn('agreement_code', fn($row) =>  ucfirst($row->agreement_code) ?? '-')
             ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             // ->addColumn('project_number', fn($row) => 'P - ' . $row->contract->project_number ?? '-')
             ->addColumn('project_number', function ($row) {
+                // dd($row);
                 $number = 'P - ' . $row->contract->project_number ?? '-';
                 $type = $row->contract_type ?? '-';
 
@@ -549,6 +727,38 @@ class AgreementService
                 return "<strong class='text-capitalize'>{$name}</strong><p class='mb-0 text-primary'>{$email}</p><p class='text-muted small'>
                     <i class='fa fa-phone-alt text-danger'></i> <span class='font-weight-bold'>{$phone}</span>
                 </p>";
+            })
+            ->addColumn('project_number', function ($row) {
+                // dd($row);
+                $number = 'P - ' . $row->contract->project_number ?? '-';
+                $type = $row->contract_type ?? '-';
+
+                // return "<strong class=''>{$number}</strong><p class='mb-0'><span>{$type}</span></p>
+                // </p>";
+                $badgeClass = '';
+                if ($row->contract->contract_type_id == 1) {
+                    $badgeClass = 'badge badge-df text-dark';
+                } elseif ($row->contract->contract_type_id == 2) {
+                    $badgeClass = 'badge badge-ff text-dark';
+                } else {
+                    $badgeClass = 'badge badge-secondary';
+                }
+
+                return "<strong>{$number}</strong>
+            <p class='mb-0'>
+                <span class='{$badgeClass}'>{$type}</span>
+            </p>";
+            })
+            ->addColumn('business_type', function ($row) {
+                if ($row->business_type == 1) {
+                    $type = "B2B";
+                } elseif ($row->business_type == 2) {
+                    $type = "B2C";
+                } else {
+                    $type = "-";
+                }
+
+                return "<strong class='text-uppercase'>{$type}</strong>";
             })
             ->addColumn('start_date', fn($row) => $row->start_date ?? '-')
             ->addColumn('end_date', fn($row) => $row->end_date ?? '-')
@@ -580,13 +790,13 @@ class AgreementService
                     title="Agreement"><i class="fas fa-handshake"></i></a>';
                 }
 
-                if (Gate::allows('agreement.edit')) {
+                if (Gate::allows('agreement.edit') && $row->agreement_status == 0) {
 
                     $action .= '<a href="' . $editUrl . '" class="btn btn-info  btn-sm m-1" title="Edit agreement"><i
                         class="fas fa-pencil-alt"></i></a>';
                 }
 
-                if (Gate::allows('agreement.delete')) {
+                if (Gate::allows('agreement.delete') && (paymentStatus($row->id) == 0)) {
 
                     $action .= '<a class="btn btn-danger  btn-sm m-1" onclick="deleteConf(' . $row->id . ')" title="delete"><i
                         class="fas fa-trash"></i></a>';
@@ -595,7 +805,7 @@ class AgreementService
                 // $action .= '<a href="#" class="btn btn-danger btn-sm m-1 open-terminate-modal" title="Terminate" id="openTerminatemodal"
                 //      data-id="' . $row->id . '" ><i class="fas fa-file-signature"></i></a>
                 // ';
-                if (Gate::allows('agreement.terminate')) {
+                if (Gate::allows('agreement.terminate') && ($row->agreement_status == 0)) {
                     $action .= '<a href="#" class="btn btn-danger btn-sm m-1 open-terminate-modal" title="Terminate" data-id="' . $row->id . '">
                 <i class="fas fa-file-signature"></i>
             </a>';
@@ -606,7 +816,7 @@ class AgreementService
                 return $action ?: '-';
             })
 
-            ->rawColumns(['tenant_details', 'action', 'project_number'])
+            ->rawColumns(['tenant_details', 'action', 'project_number', 'business_type'])
             // ->rawColumns(['action'])
             ->with(['columns' => $columns])
             ->toJson();

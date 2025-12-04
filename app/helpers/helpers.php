@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Agreement;
 use App\Models\AgreementPaymentDetail;
+use App\Models\Contract;
 use App\Models\ContractSubunitDetail;
 use App\Models\ContractUnitDetail;
 use App\Models\Installment;
@@ -261,4 +263,14 @@ function paymentStatus($agreementid)
     // dd($paid);
 
     return $paid;
+}
+function makeContractAvailable($contract_id)
+{
+    $contract = Contract::find($contract_id);
+    $contract->is_agreement_added = 0;
+    $hasagreement = Agreement::where('contract_id', $contract_id)->exists();
+    if (!$hasagreement) {
+        $contract->has_agreement = 0;
+    }
+    $contract->save();
 }

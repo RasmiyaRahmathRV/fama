@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\ContractExport;
 use App\Exports\ProjectScopeExport;
+use App\Models\Agreement;
 use App\Models\Contract;
 use App\Models\DocumentType;
 use App\Repositories\Agreement\AgreementRepository;
@@ -311,6 +312,22 @@ class ContractController extends Controller
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition' => 'attachment; filename="' . $scopeData['file_name'] . '"',
             'Cache-Control' => 'max-age=0',
+        ]);
+    }
+    public function getTerminatedAgreementDetails($id)
+    {
+        // Latest terminated agreement for this contract
+        $agreement = Agreement::where('contract_id', $id)
+            ->where('agreement_status', 1)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        // Contract details
+        $contract = Contract::find($id);
+
+        return response()->json([
+            'terminated_agreement' => $agreement,
+            'contract_end_date' => $contract?->contract_end_date,
         ]);
     }
 }

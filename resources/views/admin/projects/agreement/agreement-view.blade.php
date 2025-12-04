@@ -2,6 +2,16 @@
 @section('custom_css')
 @endsection
 @section('content')
+    @php
+        $business_type = ' - ';
+        $type = $agreement->contract->contract_unit->business_type;
+        if ($type == 1) {
+            $business_type = 'B2B';
+        } else {
+            $business_type = 'B2C';
+        }
+
+    @endphp
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
@@ -68,7 +78,9 @@
                                 <!-- /.col -->
                                 <div class="col-sm-6 float-xl-right">
                                     <span class="float-xl-right">
-                                        <h5 class="font-weight-bold text-success mb-2">Tenant Details</h5>
+                                        <h5 class="font-weight-bold text-success mb-2">Tenant Details -
+                                            <span class="text-danger">{{ $business_type }}</span>
+                                        </h5>
                                         <address>
                                             <span
                                                 class="vendor_name">{{ strtoupper($agreement->tenant->tenant_name) }}</span></br>
@@ -164,6 +176,7 @@
                                                                 <th>Favouring</th>
                                                                 <th>Paid On</th>
                                                                 <th>Paid Amount</th>
+                                                                <th>Status of Termination</th>
                                                                 <th>Composition</th>
                                                                 <th>Invoice Upload</th>
                                                                 <th>View Invoice</th>
@@ -213,17 +226,27 @@
                                                                     </td>
                                                                     <td
                                                                         style="background-color: {{ $bgColor }} !important;">
+                                                                        @if ($detail->terminate_status == 0)
+                                                                            <span class="badge bg-success">Active</span>
+                                                                        @else
+                                                                            <span class="badge bg-danger">Terminated</span>
+                                                                        @endif
+                                                                    </td>
+
+                                                                    <td
+                                                                        style="background-color: {{ $bgColor }} !important;">
                                                                         RENT
                                                                         {{ $loop->iteration }}/{{ $agreement->agreement_payment->installment->installment_name }}
                                                                     </td>
                                                                     @can('agreement.invoice_upload')
                                                                         <td>
-                                                                            <a href="#"
+                                                                            <button type="button"
                                                                                 class="btn btn-success btn-sm open-invoice-modal"
                                                                                 title="Upload Invoice"
                                                                                 data-detailId="{{ $detail->id }}"
                                                                                 data-agreementId="{{ $agreement->id }}"
-                                                                                @if ($detail->invoice) data-invoiceid="{{ $detail->invoice->id }}" @endif><i
+                                                                                @if ($detail->invoice) data-invoiceid="{{ $detail->invoice->id }}" @endif
+                                                                                {{ $detail->terminate_status != 0 ? 'disabled' : '' }}><i
                                                                                     class="fas fa-file-upload"></i></a>
 
                                                                         </td>

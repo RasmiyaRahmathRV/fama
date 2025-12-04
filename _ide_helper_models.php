@@ -307,6 +307,7 @@ namespace App\Models{
  * @property int $unit_type_id
  * @property int $contract_unit_details_id
  * @property int|null $contract_subunit_details_id
+ * @property array|null $subunit_ids
  * @property string $rent_per_month
  * @property string $rent_per_annum_agreement
  * @property int $added_by
@@ -336,6 +337,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereRentPerAnnumAgreement($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereRentPerMonth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereSubunitIds($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereUnitTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereUpdatedBy($value)

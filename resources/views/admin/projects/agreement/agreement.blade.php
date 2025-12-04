@@ -60,7 +60,8 @@
                                             <th style="width: 1%">#</th>
                                             <th>Agreement Code</th>
                                             <th>Company Name</th>
-                                            <th>Project Number</th>
+                                            <th>Project Details</th>
+                                            <th>Customer Type</th>
                                             <th>Tenant Details</th>
                                             <th>Start Date</th>
                                             <th>End Date</th>
@@ -210,6 +211,10 @@
                         name: 'contracts.project_number',
                     },
                     {
+                        data: 'business_type',
+                        name: 'contract_units.business_type',
+                    },
+                    {
                         data: 'tenant_details',
                         name: 'agreement_tenants.tenant_name',
                         render: function(data, type, row) {
@@ -240,7 +245,7 @@
                                     text = 'Active';
                                     break;
                                 case 1:
-                                    badgeClass = 'badge badge-warning text-white';
+                                    badgeClass = 'badge badge-warning text-black';
                                     text = 'Terminated';
                                     break;
 

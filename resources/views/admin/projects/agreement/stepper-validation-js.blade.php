@@ -20,6 +20,9 @@
                     const stepIndex = window.stepper._currentIndex;
                     if (validateStep(stepIndex)) {
                         window.stepper.next();
+                        if (window.stepper._currentIndex === 4) {
+                            $('#no_of_installments').trigger('change');
+                        }
                     } else {
                         Swal.fire({
                             icon: 'warning',
