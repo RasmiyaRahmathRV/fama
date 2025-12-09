@@ -244,7 +244,7 @@ class UnitDetailService
         $total_rent_per_unit_per_annum = $partitionValue['total_rent_per_unit_per_annum'];
 
 
-
+        // dd($partitionValue);
         $unitDetailArr = array(
             'contract_id' => $contractData->id,
             'contract_unit_id' => $unit_id,

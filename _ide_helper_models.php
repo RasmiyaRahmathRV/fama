@@ -598,6 +598,29 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $contract_id
+ * @property int $user_id
+ * @property string $comment
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Contract $contract
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractApprovalComment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractApprovalComment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractApprovalComment query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractApprovalComment whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractApprovalComment whereContractId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractApprovalComment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractApprovalComment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractApprovalComment whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractApprovalComment whereUserId($value)
+ */
+	class ContractApprovalComment extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $contract_id
  * @property string|null $contract_fee
  * @property string $start_date
  * @property string $end_date

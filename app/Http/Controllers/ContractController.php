@@ -10,6 +10,7 @@ use App\Models\DocumentType;
 use App\Repositories\Agreement\AgreementRepository;
 use App\Services\AreaService;
 use App\Services\CompanyService;
+use App\Services\Contracts\ContractCommentService;
 use App\Services\Contracts\ContractService;
 use App\Services\Contracts\DocumentService;
 use App\Services\Contracts\PaymentDetailService;
@@ -46,6 +47,7 @@ class ContractController extends Controller
         protected DocumentService $documentService,
         protected AgreementRepository $agreementRepo,
         protected UnitDetailService $unitdetServ,
+        protected ContractCommentService $commentservice,
     ) {}
 
     public function index()
@@ -118,8 +120,7 @@ class ContractController extends Controller
         return view('admin.projects.contract.contract-view', compact('contract', 'allChildren'));
     }
 
-    public function approveContract(Request $request) {}
-    public function rejectContract(Request $request) {}
+
 
     public function getContracts(Request $request)
     {
@@ -317,7 +318,6 @@ class ContractController extends Controller
     }
     public function getTerminatedAgreementDetails($id)
     {
-        // Latest terminated agreement for this contract
         $agreement = Agreement::where('contract_id', $id)
             ->where('agreement_status', 1)
             ->latest()
@@ -328,7 +328,6 @@ class ContractController extends Controller
         $contract = Contract::with('contract_payment_receivables')->find($id);
         $receivables = $contract->contract_payment_receivables;
 
-        // Convert all receivable dates to Carbon
         $startDate = Carbon::parse(
             $receivables->first()->receivable_date
         );
@@ -348,7 +347,6 @@ class ContractController extends Controller
 
         // $remainingCount = $remaining->count();
 
-        // Filter receivables after terminated date
         $remainingReceivables = $receivables
             ->filter(function ($receivable) use ($terminatedDate) {
                 return Carbon::parse($receivable->receivable_date)->greaterThan($terminatedDate);
@@ -364,7 +362,6 @@ class ContractController extends Controller
         $remainingCount = $remainingReceivables->count();
         $remainingAmountSum = $remainingReceivables->sum('receivable_amount');
 
-        //DEBUG OUTPUT
         // dd([
         //     'receivables' => $receivables,
         //     'start_date' => $startDate->format('Y-m-d'),
@@ -405,7 +402,6 @@ class ContractController extends Controller
         $contract = Contract::with('contract_payment_receivables')->find($contractId);
         $receivables = $contract->contract_payment_receivables;
 
-        // Default values if no agreement exists
         $remainingReceivables = collect();
         $remainingCount = 0;
         $remainingAmountSum = 0;
@@ -451,4 +447,31 @@ class ContractController extends Controller
             'remainingTotal' => $remainingAmountSum
         ]);
     }
+
+    public function approveContract($contractId)
+    {
+        $title = 'Contract Approval';
+        $contract = $this->contractService->getById($contractId);
+        $comments = $this->commentservice->getByContractId($contractId);
+
+        return view('admin.projects.contract.contract-approve', compact('contract', 'title', 'comments'));
+    }
+
+    public function sendComments(Request $request)
+    {
+        try {
+            $this->commentservice->create($request->all());
+            // dd('success');
+            // Continue saving documents...
+            return response()->json(['success' => true, 'message' => 'Comments added successfully.'], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // dd($e->errors());
+            // Return error to view
+            return response()->json(['success' => false, 'message' => $e->errors(), 'error'   => $e], 500);
+        }
+    }
+
+    public function approvalListContract() {}
+
+    public function rejectContract(Request $request) {}
 }

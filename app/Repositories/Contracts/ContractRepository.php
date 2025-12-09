@@ -108,6 +108,7 @@ class ContractRepository
 
     public function getQuery(array $filters = []): Builder
     {
+
         $query = Contract::query()
             ->select([
                 'contracts.*',
@@ -119,6 +120,7 @@ class ContractRepository
                 'contract_units.no_of_units',
                 'contract_rentals.roi_perc',
                 'contract_rentals.expected_profit',
+                // $statusText
             ])
             ->join('contract_details', 'contract_details.contract_id', '=', 'contracts.id')
             ->join('properties', 'properties.id', '=', 'contracts.property_id')
@@ -147,6 +149,16 @@ class ContractRepository
                 ->orWhereHas('property', function ($q) use ($filters) {
                     $q->where('property_name', 'like', '%' . $filters['search'] . '%');
                 })
+                ->orWhereRaw("
+                    CASE 
+                        WHEN contract_status = 0 THEN 'Pending'
+                        WHEN contract_status = 1 THEN 'Processing'
+                        WHEN contract_status = 2 THEN 'Approved'
+                        WHEN contract_status = 3 THEN 'Rejected'
+                        WHEN contract_status = 4 THEN 'Approval Pending'
+                        WHEN contract_status = 5 THEN 'Approval on Hold'
+                    END LIKE ?
+                ", ['%' . $filters['search'] . '%'])
                 ->orWhereRaw("CAST(contracts.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
 

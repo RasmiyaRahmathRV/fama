@@ -103,8 +103,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('export-company', [CompanyController::class, 'exportCompany'])->name('company.export');
 
     Route::get('contract-list', [ContractController::class, 'getContracts'])->name('contract.list');
-    Route::post('contract-approve', [ContractController::class, 'approveContract'])->name('contract.approve');
-    Route::post('contract-reject', [ContractController::class, 'rejectContract'])->name('contract.reject');
     Route::get('contract-documents/{id}', [ContractController::class, 'contract_documents'])->name('contract.documents');
     Route::post('contract-documents/contract-document-upload', [ContractController::class, 'document_upload'])->name('contract.document_upload');
     Route::get('export-contract', [ContractController::class, 'exportContract'])->name('contract.export');
@@ -146,6 +144,10 @@ Route::middleware(['auth'])->group(function () {
         [ContractController::class, 'getTerminatedAgreementDetails']
     );
     Route::get('/contracts/{contract}/check-agreement', [ContractController::class, 'checkAgreement']);
+    Route::get('contract-approval/{id}', [ContractController::class, 'approveContract'])->name('contract.approve');
+    Route::post('contract-reject', [ContractController::class, 'rejectContract'])->name('contract.reject');
+    Route::post('contract-sendcomment', [ContractController::class, 'sendComments'])->name('contract.sendComment');
+    Route::get('contract-approval-list', [ContractController::class, 'approvalListContract'])->name('contract.approve.list');
 });
 
 // Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);

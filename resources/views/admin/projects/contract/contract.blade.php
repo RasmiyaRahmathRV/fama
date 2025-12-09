@@ -156,8 +156,11 @@
                 ajax: {
                     url: "{{ route('contract.list') }}",
                     data: function(d) {
+                        filre: 'require'
                         // d.company_id = $('#companyFilter').val();
+                        d.company_id = $('#companyFilter').val();
                     },
+
                 },
                 columns: [{
                         data: 'DT_RowIndex',

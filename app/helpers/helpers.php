@@ -92,10 +92,11 @@ function getPartitionValue($dataArr, $key, $receivable_installments)
     $subunitcount_per_unit = 0;
     $subunit_rent_per_unit = 0;
     $total_rent_per_unit_per_month = 0;
-
+    // dd($dataArr);
     if (array_key_exists('partition', $dataArr) && isset($dataArr['partition'][$key])) {
         if ($dataArr['partition'][$key] == 1) {
             $partition = 1;
+            // dd($dataArr['rent_per_partition']);
             $rent_per_unit_per_month = $dataArr['rent_per_partition'];
             $subunittype = 1;
             $subunitcount_per_unit += $dataArr['total_partition'][$key];
@@ -141,7 +142,7 @@ function getPartitionValue($dataArr, $key, $receivable_installments)
         $total_rent_per_unit_per_month  = $rent_per_flat;
     }
     // print($rent_per_unit_per_month);
-
+    // dd($rent_per_unit_per_month);
     $rent_per_unit_per_annum = $rent_per_unit_per_month * $installment;
 
     $total_rent_per_unit_per_annum = $total_rent_per_unit_per_month * $installment;
@@ -161,6 +162,19 @@ function getPartitionValue($dataArr, $key, $receivable_installments)
     );
     // dd($retData);
     return $retData;
+}
+
+function subunittypeName($subunittype)
+{
+    if ($subunittype == 1) {
+        return 'Partition';
+    } else if ($subunittype == 2) {
+        return 'Bedspace';
+    } else if ($subunittype == 3) {
+        return 'Room';
+    } else {
+        return 'Full FLat';
+    }
 }
 
 
@@ -273,4 +287,13 @@ function makeContractAvailable($contract_id)
         $contract->has_agreement = 0;
     }
     $contract->save();
+}
+
+function contractStatusUpdate($status, $contract_id)
+{
+    $data = ['contract_status' => $status];
+    $contract = Contract::find($contract_id);
+    $contract->update($data);
+
+    // dump($data);
 }
