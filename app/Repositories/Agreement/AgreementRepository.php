@@ -97,6 +97,7 @@ class AgreementRepository
             ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id')
             ->join('contract_units', 'contract_units.contract_id', '=', 'contracts.id');
 
+
         // $get = $query->get();
         // dd($get);
 
@@ -126,7 +127,9 @@ class AgreementRepository
         }
 
 
-
+        if (isset($filters['status']) && $filters['status'] !== 'all') {
+            $query->where('agreements.agreement_status', $filters['status']);
+        }
 
 
         // if (!empty($filters['company_id'])) {
@@ -186,9 +189,11 @@ class AgreementRepository
                     makeUnitVacant($unit->id, $contractid);
                 }
             } else {
+                // dd($contract_unit_details);
                 foreach ($contract_unit_details as $unit) {
                     $unitdetail = ContractUnitDetail::find($unit);
                     if ($unitdetail) {
+                        // dd($unitdetail);
                         $unitdetail->is_vacant = 0;
                         $unitdetail->save();
                     }

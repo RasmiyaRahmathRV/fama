@@ -20,7 +20,7 @@
                     const stepIndex = window.stepper._currentIndex;
                     if (validateStep(stepIndex)) {
                         window.stepper.next();
-                        if (window.stepper._currentIndex === 4) {
+                        if (window.stepper._currentIndex === 3) {
                             $('#no_of_installments').trigger('change');
                         }
                     } else {

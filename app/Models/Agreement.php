@@ -110,7 +110,8 @@ class Agreement extends Model
             $hasManyRelations = [
                 'agreement_payment_details',
                 'agreement_documents',
-                'agreement_units'
+                'agreement_units',
+                'tenant_invoices'
 
 
             ];
@@ -207,5 +208,9 @@ class Agreement extends Model
             'units' => $vacantUnits,
             'subunits_by_unit' => $subunitsByUnitId,
         ];
+    }
+    public function tenant_invoices()
+    {
+        return $this->hasMany(AgreementUnit::class, 'agreement_id', 'id');
     }
 }

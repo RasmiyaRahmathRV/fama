@@ -145,6 +145,7 @@ Route::middleware(['auth'])->group(function () {
         '/contracts/{id}/terminated-agreement-details',
         [ContractController::class, 'getTerminatedAgreementDetails']
     );
+    Route::get('/contracts/{contract}/check-agreement', [ContractController::class, 'checkAgreement']);
 });
 
 // Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);

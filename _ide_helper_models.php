@@ -72,6 +72,8 @@ namespace App\Models{
  * @property-read \App\Models\Contract|null $contract
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\AgreementTenant|null $tenant
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AgreementUnit> $tenant_invoices
+ * @property-read int|null $tenant_invoices_count
  * @method static \Illuminate\Database\Eloquent\Builder|Agreement newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Agreement newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Agreement onlyTrashed()
@@ -310,6 +312,7 @@ namespace App\Models{
  * @property array|null $subunit_ids
  * @property string $rent_per_month
  * @property string $rent_per_annum_agreement
+ * @property string $unit_revenue
  * @property int $added_by
  * @property int|null $updated_by
  * @property int|null $deleted_by
@@ -338,6 +341,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereRentPerAnnumAgreement($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereRentPerMonth($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereSubunitIds($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereUnitRevenue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereUnitTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementUnit whereUpdatedBy($value)

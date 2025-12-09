@@ -5,7 +5,7 @@
             let contractId = "{{ $agreement->contract_id }}";
 
             $('#company_id').val(companyId).trigger('change');
-            console.log("ids" + companyId, contractId);
+            // console.log("ids" + companyId, contractId);
 
             CompanyChange(companyId, contractId, editedContract);
         });
@@ -123,7 +123,7 @@
             return;
         }
         let contractId = $(this).data('contract-id');
-        console.log("Deleting unit:", unitId, "from contract:", contractId);
+        // console.log("Deleting unit:", unitId, "from contract:", contractId);
         let row = $(this).closest('.unit-row');
 
         Swal.fire({
@@ -154,7 +154,7 @@
                         contract_id: contractId
                     },
                     success: function(response) {
-                        console.log('no of units', response.vacant_units)
+                        // console.log('no of units', response.vacant_units)
                         if (response.success) {
                             if (response.deleted_agreement_unit_id) {
                                 let deletedAgreementUnitIds = [];
@@ -195,13 +195,13 @@
     });
 
     function buildUnitAccordion(unit, payments, unitIndex) {
-        console.log("Building accordion for unit index:", unitIndex);
-        console.log('Building accordion for unit:', unit, 'with payments:', payments);
+        // console.log("Building accordion for unit index:", unitIndex);
+        // console.log('Building accordion for unit:', unit, 'with payments:', payments);
         const containerPayment = document.querySelector('.payment_details');
         const collapseId = `collapse_${unit.id}`;
         let unitName = `Unit ${unitIndex + 1}`;
-        console.log("Unit Name ", unitName);
-        console.log("unitIndex :", unit);
+        // console.log("Unit Name ", unitName);
+        // console.log("unitIndex :", unit);
         const row = document.querySelector(`.unit-row[data-row-index='${unitIndex}']`);
         // if (row) {
         //     const unitNoSelect = row.querySelector('.unit_no_select');
@@ -225,12 +225,23 @@
         payments.forEach((pay, payIndex) => {
             const uniqueId = `${unit.id}_${payIndex}`;
             let formattedDate = '';
+            let showDelete = false;
+            // console.log("Pay", pay);
 
             if (pay.payment_date) {
                 formattedDate = moment(pay.payment_date, 'YYYY-MM-DD').format('DD-MM-YYYY');
+                // Check against termDate
+
             } else if (pay.receivable_date) {
                 formattedDate = pay.receivable_date;
+                // const paymentMoment = moment(pay.receivable_date, 'DD-MM-YYYY');
+                // const termMoment = moment(termDate, 'DD-MM-YYYY');
+                // console.log('DATES', paymentMoment, termMoment);
+                // if (paymentMoment.isBefore(termMoment)) {
+                //     showDelete = true;
+                // }
             }
+
             installmentBlocks += `
             <div class="form-group row mb-2">
                 <input type="hidden" name="payment_detail[${unit.id}][${payIndex}][detail_id]" value="${pay.id ?? ''}">
@@ -263,6 +274,11 @@
                     value="${pay.payment_amount ?? ''}"
                     placeholder="Payment Amount" />
                 </div>
+            //     <div class="col-md-1 text-end">
+            //                 <button type="button" class="btn btn-danger delete-row-edit-dfb2b ${showDelete ? 'd-block' : 'd-none'}">
+            //     <i class="fa fa-trash"></i>
+            // </button>
+            //             </div>
 
             </div>
              <div class="form-group row extra-fields" id="extra_fields_${uniqueId}">
@@ -321,9 +337,35 @@
         }
 
         accordion.innerHTML += accordionHTML;
+        // console.log('termDATE', termDate);
 
         // Initialize datetimepickers, event listeners
 
 
+
+
+
     }
+    // $(document).on('click', '.delete-row-edit-dfb2b', function() {
+    //     const row = $(this).closest('.form-group.row.mb-2');
+    //     const extra = row.next('.form-group.row.extra-fields');
+
+
+    //     Swal.fire({
+    //         title: 'Are you sure?',
+    //         text: "You are about to delete this payment.",
+    //         icon: 'warning',
+    //         showCancelButton: true,
+    //         confirmButtonColor: '#3085d6',
+    //         cancelButtonColor: '#d33',
+    //         confirmButtonText: 'Yes, delete it!',
+    //         cancelButtonText: 'Cancel'
+    //     }).then((result) => {
+    //         if (result.isConfirmed) {
+    //             row.remove();
+    //             extra.remove();
+    //             toastr.success('Installment deleted successfully.');
+    //         }
+    //     });
+    // });
 </script>

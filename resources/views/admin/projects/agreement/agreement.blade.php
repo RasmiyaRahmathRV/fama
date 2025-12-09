@@ -28,7 +28,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}">Home</a></li>
-                            <li class="breadcrumb-item active"><a href="{{ route('agreement.index') }}">Agreement</a></li>
+                            <li class="breadcrumb-item active">Agreement List</li>
                         </ol>
                     </div>
                 </div>
@@ -54,6 +54,23 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
+                                <div class="mb-3 text-center">
+                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                        <label class="btn btn-outline-primary active">
+                                            <input type="radio" name="agreementFilter" value="all" autocomplete="off"
+                                                checked> All
+                                        </label>
+                                        <label class="btn btn-outline-success">
+                                            <input type="radio" name="agreementFilter" value="0" autocomplete="off">
+                                            Active
+                                        </label>
+                                        <label class="btn btn-outline-danger">
+                                            <input type="radio" name="agreementFilter" value="1" autocomplete="off">
+                                            Terminated
+                                        </label>
+                                    </div>
+                                </div>
+
                                 <table id="agreementTable" class="table table-striped projects display nowrap">
                                     <thead>
                                         <tr>
@@ -181,15 +198,18 @@
         });
     </script>
     <script>
+        let table;
         $(function() {
-            let table = $('#agreementTable').DataTable({
+            table = $('#agreementTable').DataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
 
                 ajax: {
                     url: "{{ route('agreement.list') }}",
-                    data: function(d) {},
+                    data: function(d) {
+                        d.status = $('input[name="agreementFilter"]:checked').val();
+                    },
                 },
                 columns: [{
                         data: 'DT_RowIndex',
@@ -378,6 +398,9 @@
                     }
                 }
             });
+        });
+        $('input[name="agreementFilter"]').on('change', function() {
+            table.ajax.reload();
         });
     </script>
 @endsection

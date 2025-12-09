@@ -8,10 +8,10 @@
           $email = $agreement->tenant->tenant_email;
           $tenant_name = $agreement->tenant->tenant_name;
       } else {
-          $contact_person = $agreement->tenant->tenant_name;
+          $tenant_name = $agreement->tenant->tenant_name;
           $contact_number = $agreement->tenant->tenant_mobile;
           $email = $agreement->tenant->tenant_email;
-          $tenant_name = $contact_person;
+          $contact_person = $agreement->tenant->contact_person;
           //   $total_receivable = $agreement->$contact->
       }
   @endphp
