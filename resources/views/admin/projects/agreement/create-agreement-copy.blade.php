@@ -25,13 +25,8 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}">Home</a></li>
-                            <li class="breadcrumb-item active">Create Agreement
-                            </li>
+                            <li class="breadcrumb-item active"><a href="{{ route('agreement.index') }}">Agreement</a></li>
                         </ol>
-                        <!-- Back to List Button -->
-                        <a href="{{ route('agreement.index') }}" class="btn btn-info float-sm-right mx-2 btn-sm ml-2">
-                            <i class="fa fa-arrow-left"></i> Back to List
-                        </a>
                     </div>
                 </div>
             </div><!-- /.container-fluid -->
@@ -63,20 +58,19 @@
                                             </button>
                                         </div>
                                         <div class="line"></div>
-                                        <div class="step" data-target="#unit-step">
-                                            <button type="button" class="step-trigger" role="tab"
-                                                aria-controls="unit-step" id="unit-step-trigger">
-                                                <span class="bs-stepper-circle"><i class="fas fa-door-open"></i></span>
-                                                <span class="bs-stepper-label">Unit</span>
-                                            </button>
-                                        </div>
-
-                                        <div class="line"></div>
                                         <div class="step" data-target="#agreement-step">
                                             <button type="button" class="step-trigger" role="tab"
                                                 aria-controls="agreement-step" id="agreement-step-trigger">
                                                 <span class="bs-stepper-circle"><i class="fas fa-file-contract"></i></span>
                                                 <span class="bs-stepper-label">Agreement</span>
+                                            </button>
+                                        </div>
+                                        <div class="line"></div>
+                                        <div class="step" data-target="#unit-step">
+                                            <button type="button" class="step-trigger" role="tab"
+                                                aria-controls="unit-step" id="unit-step-trigger">
+                                                <span class="bs-stepper-circle"><i class="fas fa-door-open"></i></span>
+                                                <span class="bs-stepper-label">Unit</span>
                                             </button>
                                         </div>
                                         <div class="line"></div>
@@ -338,77 +332,86 @@
                                                 <button class="btn btn-info prevBtn" type="button">Previous</button>
                                                 <button type="button" class="btn btn-info nextBtn">Next</button>
                                             </div>
-                                            <div id="unit-step" class="content step-content" role="tabpanel"
-                                                aria-labelledby="unit-step-trigger" data-step="3">
-                                                {{-- {{ dd($agreement) }} --}}
-                                                @if (isset($agreement) && isset($agreement->agreement_units) && $agreement->contract->contract_type_id == 1)
-                                                    @include('admin.projects.agreement.edit_unit', [
-                                                        'agreement_units' => $agreement->agreement_units ?? [],
-                                                        'contract_id' => $agreement->contract_id,
-                                                        'businessType' =>
-                                                            $agreement->contract->contract_unit->business_type,
-                                                    ])
-                                                @else
-                                                    <div id="unit_details_container">
-                                                        <div id="unit_details_div_df">
-
-                                                            <!-- Add More Button at the Top -->
-                                                            <div class="d-flex  mb-3">
-                                                                <button type="button" class="btn btn-success"
-                                                                    id="add_more_unit">
-                                                                    + Add More Unit
-                                                                </button>
-                                                            </div>
-
-                                                            <!-- First Unit Card -->
-                                                            <div class="card mb-3 p-3 unit-row">
-                                                                <div class="card-body">
-
-                                                                    <div class="row g-3 align-items-end">
-
-                                                                        <div class="col-sm-3">
-                                                                            <label class="form-label">Unit Type</label>
-                                                                            <input type="hidden"
-                                                                                name="unit_detail[0][unit_id]"
-                                                                                value="">
-                                                                            <select class="form-control  unit_type_id"
-                                                                                name="unit_detail[0][unit_type_id]"
-                                                                                required></select>
-                                                                        </div>
-
-                                                                        <div class="col-sm-3">
-                                                                            <label class="form-label">Select Unit
-                                                                                No</label>
-                                                                            <select class="form-control  unit_type0"
-                                                                                name="unit_detail[0][contract_unit_details_id]"
-                                                                                required></select>
-                                                                        </div>
-
-                                                                        <div class="col-sm-3 subunit_number_div">
-                                                                            <label class="form-label">Sub Unit</label>
-                                                                            <select class="form-control sub_unit_type"
-                                                                                name="unit_detail[0][contract_subunit_details_id]"></select>
-                                                                        </div>
-
-                                                                        <div class="col-sm-3">
-                                                                            <label class="form-label">Rent per
-                                                                                Month</label>
-                                                                            <input type="text"
-                                                                                class="form-control rent_per_month"
-                                                                                name="unit_detail[0][rent_per_month]"
-                                                                                placeholder="Rent per month">
-                                                                        </div>
-                                                                    </div>
+                                            <div id="agreement-step" class="content step-content" role="tabpanel"
+                                                aria-labelledby="agreement-step-trigger" data-step="2">
+                                                <div class="form-group row">
+                                                    <div class="col-md-4">
+                                                        <label for="exampleInputEmail1">Start Date</label>
+                                                        <div class="input-group date" id="startdate"
+                                                            data-target-input="nearest">
+                                                            <input type="text"
+                                                                class="form-control datetimepicker-input startdate"
+                                                                name="start_date" id="start_date"
+                                                                data-target="#startdate" placeholder="dd-mm-YYYY" />
+                                                            <div class="input-group-append" data-target="#startdate"
+                                                                data-toggle="datetimepicker">
+                                                                <div class="input-group-text">
+                                                                    <i class="fa fa-calendar"></i>
                                                                 </div>
                                                             </div>
-
-                                                            <!-- Container for dynamically added unit rows -->
-                                                            <div id="additional_unit_rows"></div>
                                                         </div>
-
-
                                                     </div>
-                                                @endif
+                                                    <div class="col-md-4">
+                                                        <label for="exampleInputEmail1">Duration in Months</label>
+                                                        <input type="number" class="form-control" id="duration_months"
+                                                            name="duration_in_months" placeholder="Duration in Months"
+                                                            value="">
+                                                    </div>
+                                                    {{-- <div class="col-md-3">
+                                                    <label for="exampleInputEmail1">Duration in Days</label>
+                                                    <input type="number" class="form-control" id="duration_days"
+                                                        placeholder="Duration in Days" value="0">
+                                                    </div> --}}
+                                                    <div class="col-md-4">
+                                                        <label for="exampleInputEmail1">End Date</label>
+                                                        <div class="input-group date" id="enddate"
+                                                            data-target-input="nearest">
+                                                            <input type="text"
+                                                                class="form-control datetimepicker-input enddate"
+                                                                id="end_date" name="end_date" placeholder="dd-mm-YYYY"
+                                                                readonly onfocus="this.blur()" />
+                                                            <div class="input-group-append" data-toggle="datetimepicker">
+                                                                <div class="input-group-text"><i
+                                                                        class="fa fa-calendar"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button class="btn btn-info prevBtn" type="button">Previous</button>
+                                                <button class="btn btn-info nextBtn" type="button">Next</button>
+                                            </div>
+                                            <div id="unit-step" class="content step-content" role="tabpanel"
+                                                aria-labelledby="unit-step-trigger" data-step="3">
+                                                <div class="form-group row" id="unit_details_div_df">
+                                                    <div class="col-sm-3">
+                                                        <label class="control-label">Unit Type</label>
+                                                        <input type="hidden" name="unit_id" id="unit_id"
+                                                            value="">
+                                                        <select class="form-control select2" name="unit_type_id"
+                                                            id="unit_type_id" required>
+
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <label class="control-label">Select Unit No</label>
+                                                        <select class="form-control select2"
+                                                            name="contract_unit_details_id" id="unit_type0" required>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-sm-3">
+                                                        <label class="control-label">Sub Unit</label>
+                                                        <select class="form-control select2"
+                                                            name="contract_subunit_details_id" id="sub_unit_type">
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label for="exampleInputEmail1">Rent per Month</label>
+                                                        <input type="text" class="form-control" id="rent_per_month"
+                                                            name="rent_per_month" placeholder="Rent per month">
+                                                    </div>
+                                                </div>
                                                 <div class="form-group  d-none" id="unit_details_div_ff">
                                                     <div class="card mt-3" id="unit_summary_div">
                                                         <div class="card-body">
@@ -445,61 +448,6 @@
                                                 <button class="btn btn-info prevBtn" type="button">Previous</button>
                                                 <button class="btn btn-info nextBtn" type="button">Next</button>
                                             </div>
-                                            <div id="agreement-step" class="content step-content" role="tabpanel"
-                                                aria-labelledby="agreement-step-trigger" data-step="2">
-                                                @if (isset($agreement))
-                                                    @include(
-                                                        'admin.projects.agreement.edit-start_and_end',
-                                                        [
-                                                            'agreement' => $agreement ?? [],
-                                                        ]
-                                                    )
-                                                @else
-                                                    <div class="form-group row">
-                                                        <div class="col-md-4">
-                                                            <label for="exampleInputEmail1">Start Date</label>
-                                                            <div class="input-group date" id="startdate"
-                                                                data-target-input="nearest">
-                                                                <input type="text"
-                                                                    class="form-control datetimepicker-input startdate"
-                                                                    name="start_date" id="start_date"
-                                                                    data-target="#startdate" placeholder="dd-mm-YYYY" />
-                                                                <div class="input-group-append" data-target="#startdate"
-                                                                    data-toggle="datetimepicker">
-                                                                    <div class="input-group-text">
-                                                                        <i class="fa fa-calendar"></i>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label for="exampleInputEmail1">Duration in Months</label>
-                                                            <input type="number" class="form-control"
-                                                                id="duration_months" name="duration_in_months"
-                                                                placeholder="Duration in Months" value="">
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label for="exampleInputEmail1">End Date</label>
-                                                            <div class="input-group date" id="enddate"
-                                                                data-target-input="nearest">
-                                                                <input type="text"
-                                                                    class="form-control datetimepicker-input enddate"
-                                                                    id="end_date" name="end_date" data-target="#enddate"
-                                                                    placeholder="dd-mm-YYYY" readonly />
-                                                                <div class="input-group-append" data-target="#enddate"
-                                                                    data-toggle="datetimepicker">
-                                                                    <div class="input-group-text"><i
-                                                                            class="fa fa-calendar"></i>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                                <button class="btn btn-info prevBtn" type="button">Previous</button>
-                                                <button class="btn btn-info nextBtn" type="button">Next</button>
-                                            </div>
-
                                             <div id="payment-step" class="content step-content" role="tabpanel"
                                                 aria-labelledby="payment-step-trigger" data-step='4'>
                                                 <div class="form-group row">
@@ -531,9 +479,7 @@
                                                     <div class="col-md-3">
                                                         <label for="exampleInputEmail1">Total Rent Per Annum</label>
                                                         <input type="text" class="form-control" id="total_rent_annum"
-                                                            name="total_rent_per_annum" placeholder=""
-                                                            value="{{ isset($agreement) ? $agreement->agreement_payment->total_rent_annum : '' }}"
-                                                            readonly>
+                                                            name="total_rent_per_annum" placeholder="" readonly>
                                                     </div>
                                                 </div>
                                                 <hr>
@@ -543,9 +489,7 @@
                                                         <div class="col-auto text-end">
                                                             <label class="me-2">Total Rent per Annum:</label>
                                                             <span id="total_rent_per_annum"
-                                                                class="text-info font-weight-bold">
-                                                                {{ isset($agreement) ? $agreement->agreement_payment->total_rent_annum : 0 }}
-                                                            </span>
+                                                                class="text-info font-weight-bold">0</span>
                                                         </div>
                                                     </div>
                                                     <div id="paymentError"
@@ -734,7 +678,7 @@
 
 
         function calculatepaymentamount(rent_per_month = 0, payment_count = 0) {
-            // alert("called");
+
             // clearing the div
             const errorDiv = $('#paymentError');
             errorDiv.html('');
@@ -812,17 +756,20 @@
         //console.log("edited Unit :" + JSON.stringify(editedUnit))
 
         $(document).on('change', '#company_id', function() {
-            CompanyChange();
-        });
-
-        function CompanyChange(contractId = null) {
-            const companyId = $('#company_id').val();
             if (editedUnit) {
+                // $(this).prop('readonly', true);
                 $(this).on('select2:opening', function(e) {
                     e.preventDefault();
                 });
-            }
 
+            }
+            const companyId = $(this).val();
+
+            CompanyChange(companyId, null, editedContract);
+
+        });
+
+        function CompanyChange(companyId, contractId = null, editedContract = null) {
             //console.log("ids3" + companyId, contractId);
             let beneficiary = $('#company_id option:selected').text().trim();
             $('#beneficiary').val(beneficiary).prop('readonly', true);
@@ -845,25 +792,24 @@
                 .forEach(c => {
                     options +=
                         `<option value="${c.id}" ${(c.id == contractId) ? 'selected' : ''}>${c.project_code} - ${c.project_number}</option>`;
+                    // options += `<option value="${a.id}" ${(a.id == areaVal) ? 'selected' : ''}>${a.area_name}</option>`;
                 });
+            // if (editedUnit) {
+            //     $('#contract_id').html(options).prop('readonly', true);
+            //     // $('#contract_id').on('select2:opening', function(e) {
+            //     //     e.preventDefault();
+            //     // });
+            //     contractChange(contractId, editedUnit);
 
+            // } else {
             $('#contract_id').html(options).trigger('change');
 
+            // }
+            // contractChange(contractId);
 
         }
 
         $(document).on('change', '#contract_id', function() {
-
-            contractChange();
-
-        });
-        let defaultStart = null;
-        let defaultEnd = null;
-        let defaultDuration = 0;
-
-
-        function contractChange() {
-            // alert("called");
             if (editedUnit) {
                 // $(this).prop('readonly', true);
                 $(this).on('select2:opening', function(e) {
@@ -871,32 +817,33 @@
                 });
 
             }
-            const contractId = $('#contract_id').val();
+            const contractId = $(this).val();
+            contractChange(contractId, editedUnit);
 
+        });
 
+        function contractChange(contractId, editedUnit = null) {
+            // alert("called");
+            // console.log("full Contracts :", fullContracts);
+
+            // clearing the div
             const errorDiv = $('#paymentError');
             errorDiv.html('');
             errorDiv.addClass('d-none').removeClass('d-flex');
             $('#submitBtn').prop('disabled', false);
-            $("#additional_unit_rows").empty().removeClass("d-block").addClass("d-none");
 
             let options = '<option value="">Select Unit Type</option>';
             let contract = null;
             if (editedUnit) {
                 contract = fullContracts.find(c => c.id == contractId);
+                //console.log(contract);
 
             }
             if (!contract) {
                 contract = allContracts.find(c => c.id == contractId);
 
             }
-            // console.log("contract", contract);
             selectedContract = contract;
-            if (contract?.contract_unit?.business_type == 1) {
-                $('#add_more_unit').removeClass('d-none').addClass('d-flex');
-            } else {
-                $('#add_more_unit').removeClass('d-flex').addClass('d-none');
-            }
 
             $('#selctedcontractType').val(contract?.contract_type_id || 0);
             let receivable_sum = contract?.contract_payment_receivables_sum_receivable_amount || 0;
@@ -904,22 +851,29 @@
             let number_of_units = contract?.contract_unit?.no_of_units;
             let monthrent = parseFloat(receivable_sum) / (payment_count * number_of_units);
 
+            //console.log('CONTRACT :', selectedContract)
 
             if (!contract || !contract.contract_unit || !contract.contract_unit.contract_unit_details) {
+                // alert('hi');
                 $('#unit_type_id').html(options).trigger('change');
                 return;
             }
+            // let unitTypeIds = contract.contract_unit.contract_unit_details.map(d => d.unit_type_id);
             let unitTypeIds = contract.contract_unit.contract_unit_details
                 .filter(d => d.is_vacant == 0)
                 .map(d => d.unit_type_id);
+            // console.log('contract :', contract);
+            // console.log('unitIds :', unitTypeIds)
+
+
             unitTypeIds = [...new Set(unitTypeIds)];
-            console.log('Unit Type Ids:', unitTypeIds);
 
 
             let selectedUnitIds = [];
 
             if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
-                // alert('edited unit found');
+                // alert('hoi');
+                //console.log('Edited Units:', editedUnit);
                 selectedUnitIds = editedUnit.map(u => u.unit_type_id);
                 selectedUnitIds.forEach(id => {
                     if (!unitTypeIds.includes(id)) {
@@ -927,36 +881,40 @@
                     }
                 });
             }
-            console.log('Selected Unit Ids:', selectedUnitIds);
+            //console.log('selectedids :' + JSON.stringify(editedUnit));
 
 
             allunittypes
                 .filter(ut => unitTypeIds.includes(ut.id))
                 .forEach(ut => {
-                    // const isSelected = selectedUnitIds.includes(ut.id) ? 'selected' : '';
-                    options += `<option value="${ut.id}">${ut.unit_type}</option>`;
+                    const isSelected = selectedUnitIds.includes(ut.id) ? 'selected' : '';
+                    if (!selectedUnitnumbers.includes(ut.id)) {
+                        options += `<option value="${ut.id}" ${isSelected}>${ut.unit_type}</option>`;
+                    }
                 });
 
 
-            $('.unit_type_id').html(options);
+            $('#unit_type_id').html(options);
             const selectedUnitTypeId = selectedUnitIds.length ? selectedUnitIds[0] : '';
-            console.log('Selected Unit Type ID:', selectedUnitTypeId);
-            $('.unit_type_id')
+            $('#unit_type_id')
                 .val(selectedUnitIds.length ? selectedUnitIds[0] : '')
                 .trigger('change.select2');
+            // unitTypeChange(selectedUnitTypeId, editedUnit);
             let agreement = @json($agreement ?? null);
 
 
             let contractTypes = @json($contractTypes);
             let selectedContractType = contractTypes.find(ct => ct.id === contract.contract_type_id);
-            if ((selectedContractType && selectedContractType.contract_type === 'Direct Fama')) {
-                unitTypeChange(selectedUnitTypeId, editedUnit, row = null);
-                unitDetails = contract?.contract_unit?.contract_unit_details || [];
-                unit_details = unitDetails;
+            if ((selectedContractType && selectedContractType.contract_type === 'Direct Fama' && contract?.contract_unit
+                    ?.business_type == 2)) {
+                unitTypeChange(selectedUnitTypeId, editedUnit);
             }
             if (
-                (selectedContractType && selectedContractType.contract_type === 'Fama Faateh')
+                (selectedContractType && selectedContractType.contract_type === 'Fama Faateh') ||
+                (selectedContractType && selectedContractType.contract_type === 'Direct Fama' && contract?.contract_unit
+                    ?.business_type == 1)
             ) {
+                // alert("ff");
                 let uniDetails = [];
                 console.log('Agreemant :', agreement);
                 if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
@@ -970,58 +928,68 @@
 
                 }
                 unit_details = unitDetails;
+
+                // const unitDetails = contract?.contract_unit?.contract_unit_details || [];
+                // unit_details = unitDetails;
+
+
+
                 let html = `
-                                <div class="card-body">
-                                    <h5 class="mb-3">
-                                        <i class="fas fa-door-open text-info"></i> Unit Details - ${selectedContractType.contract_type}
-                                    </h5>
-                            `;
+                            <div class="card-body">
+                                <h5 class="mb-3">
+                                    <i class="fas fa-door-open text-info"></i> Unit Details - ${selectedContractType.contract_type}
+                                </h5>
+                        `;
                 console.log('unitdetails', unitDetails);
-                console.log("editedUnit", editedUnit);
 
                 unitDetails.forEach((u, index) => {
                     const type = allunittypes?.find(t => t.id == u.unit_type_id)?.unit_type || 'Unknown';
+                    // const subunitCount = u.contract_sub_unit_details?.length || 0;
                     const subunitCount = u.subunitcount_per_unit || 0;
-                    const rent = parseFloat(u.total_rent_per_unit_per_month);
 
+                    // alert(subunitCount);
+                    // alert(u.total_rent_per_unit_per_month);
+                    // const rent = monthrent;
+                    const rent = parseFloat(u.total_rent_per_unit_per_month);
+                    // console.log("uuuuu :", rent);
 
                     html += `
-                                <div class=" mb-3 ">
-                                            <div class="row unit-row" data-row-index=${index}>
+                            <div class=" mb-3  border-info">
+                                        <div class="row">
 
 
-                                                <div class="col-md-3">
-                                                    <label class="form-label">Unit Number</label>
-                                                    <select class="form-control select2 unit_type0  unit_no_select" name="" id="unit_number_${index}" disabled>
-                                                        <option value="${u.id}">${u.unit_number || ''}</option>
-                                                    </select>
-                                                    <input type="hidden" name="unit_detail[${index}][contract_unit_details_id]" value="${u.id}">
-                                                </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Unit Number</label>
+                                                <select class="form-control select2" name="" id="unit_number_${index}" disabled>
+                                                    <option value="${u.id}">${u.unit_number || ''}</option>
+                                                </select>
+                                                <input type="hidden" name="unit_detail[${index}][contract_unit_details_id]" value="${u.id}">
+                                            </div>
 
-                                                <!-- Unit Type -->
-                                                <div class="col-md-3">
-                                                    <label class="form-label">Unit Type</label>
-                                                    <select class="form-control select2 " name="unit_detail[${index}][unit_type_id]" id="unit_type_${index}" disabled>
-                                                        <option value="${u.unit_type_id}">${type}</option>
-                                                    </select>
-                                                    <input type="hidden" name="unit_detail[${index}][unit_type_id]" value="${u.unit_type_id}">
+                                            <!-- Unit Type -->
+                                            <div class="col-md-3">
+                                                <label class="form-label">Unit Type</label>
+                                                <select class="form-control select2" name="unit_detail[${index}][unit_type_id]" id="unit_type_${index}" disabled>
+                                                    <option value="${u.unit_type_id}">${type}</option>
+                                                </select>
+                                                <input type="hidden" name="unit_detail[${index}][unit_type_id]" value="${u.unit_type_id}">
 
-                                                </div>
+                                            </div>
 
-                                                <div class="col-md-3">
-                                                    <label class="form-label">Total Subunits</label>
-                                                    <input type="text" class="form-control" name="total_subunits_${index}"
-                                                        value="${subunitCount}" readonly>
-                                                </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Total Subunits</label>
+                                                <input type="text" class="form-control" name="total_subunits_${index}"
+                                                    value="${subunitCount}" readonly>
+                                            </div>
 
-                                                <div class="col-md-3">
-                                                    <label class="form-label">Rent per month</label>
-                                                    <input type="text" class="form-control" name="unit_detail[${index}][rent_per_month]"
-                                                        value="${rent.toFixed(2)}" readonly>
-                                                </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">Rent per month</label>
+                                                <input type="text" class="form-control" name="unit_detail[${index}][rent_per_month]"
+                                                    value="${rent.toFixed(2)}" readonly>
                                             </div>
                                         </div>
-                            `;
+                                    </div>
+                        `;
                 });
 
                 html += `</div>`;
@@ -1042,66 +1010,47 @@
                     $('#unit_id').val(agreementUnitId);
                 }
                 $('#unit_details_div_ff').addClass('d-none');
-                if (contract?.contract_unit
-                    ?.business_type == 1) {
-                    // alert('disabling subunit');
-                    $('.subunit_number_div select').prop('disabled', true);
-                } else {
-                    $('.subunit_number_div select').prop('disabled', false);
-                }
                 $('#unit_details_div_df').removeClass('d-none');
 
             }
 
 
-
             const contract_start = contract?.contract_detail?.start_date ?? '';
+            //console.log('Contract Start Date:', contract_start + contract);
             const contract_end = contract?.contract_detail?.end_date ?? '';
             const ct_duration_months = contract?.contract_detail?.duration_in_months ?? 0;
-            if (!agreement) {
-                if (contract_start) {
-                    const startDateObj = parseDateCustom(contract_start);
-                    const formattedStart =
-                        `${String(startDateObj.getDate()).padStart(2, '0')}-${String(startDateObj.getMonth() + 1).padStart(2, '0')}-${startDateObj.getFullYear()}`;
-                    $('#start_date').val(formattedStart).prop('readonly', true);
-                } else {
-                    $('#start_date').val('');
-                }
-                if (contract_end) {
-                    const endDateObj = parseDateCustom(contract_end);
-                    const formattedEnd =
-                        `${String(endDateObj.getDate()).padStart(2, '0')}-${String(endDateObj.getMonth() + 1).padStart(2, '0')}-${endDateObj.getFullYear()}`;
-                    $('#end_date').val(formattedEnd).prop('readonly', true);
-                } else {
-                    $('#end_date').val('');
-                }
-                $('#duration_months').val(ct_duration_months).prop('readonly', true);
-                defaultStart = moment($('#start_date').val(), "DD-MM-YYYY");
-                defaultEnd = moment($('#end_date').val(), "DD-MM-YYYY");
-                defaultDuration = $("#duration_months").val();
-                // console.log('Default values set:', defaultStart, defaultEnd, defaultDuration);
+            if (contract_start) {
+                const startDateObj = parseDateCustom(contract_start);
+                const formattedStart =
+                    `${String(startDateObj.getDate()).padStart(2, '0')}-${String(startDateObj.getMonth() + 1).padStart(2, '0')}-${startDateObj.getFullYear()}`;
+                $('#start_date').val(formattedStart).prop('readonly', true);
+            } else {
+                $('#start_date').val('');
             }
-
-
-            defaultStart = moment($('#start_date').val(), "DD-MM-YYYY");
-            defaultEnd = moment($('#end_date').val(), "DD-MM-YYYY");
-            defaultDuration = $("#duration_months").val();
-            console.log('Default values set:', defaultStart, defaultEnd, defaultDuration);
-
-
+            if (contract_end) {
+                const endDateObj = parseDateCustom(contract_end);
+                const formattedEnd =
+                    `${String(endDateObj.getDate()).padStart(2, '0')}-${String(endDateObj.getMonth() + 1).padStart(2, '0')}-${endDateObj.getFullYear()}`;
+                $('#end_date').val(formattedEnd).prop('readonly', true);
+            } else {
+                $('#end_date').val('');
+            }
+            $('#duration_months').val(ct_duration_months).prop('readonly', true);
 
 
             payment_count = contract?.contract_payment_receivables_count ?? 0;
+            // $('#no_of_installments option').each(function() {
+            //     if ($(this).text().trim() === payment_count.toString().trim()) {
+            //         $(this).prop('selected', true);
+            //     }
+            // });
+            // $('#no_of_installments').val(payment_count).trigger('change');
             if (agreement && agreement.agreement_payment) {
                 const installmentId = agreement.agreement_payment.installment_id;
                 $('#no_of_installments option').each(function() {
                     const optionValue = $(this).val();
                     if (parseInt(optionValue) === parseInt(installmentId)) {
                         $(this).prop('selected', true);
-                        $(this).next('.select2-container')
-                            .find('.select2-selection')
-                            .addClass('readonly');
-
                         $('#no_of_installments').trigger('change');
                     }
                 });
@@ -1109,209 +1058,267 @@
                 $('#no_of_installments option').each(function() {
                     const optionText = $(this).text().trim();
                     const countText = payment_count.toString().trim();
+                    //console.log(`Comparing option: '${optionText}' with count: '${countText}'`);
                     if (optionText === countText) {
                         $(this).prop('selected', true);
+                        // trigger change if needed
                         $('#no_of_installments').trigger('change');
                     }
                 });
             }
-            // console.log('contracttype', contract.contract_type_id);
-            // console.log('business_type', contract.contract_unit.business_type);
-            // console.log("contrat", contract);
-            if (contract.contract_type_id === 2 ||
-                (contract.contract_type_id === 1 && contract.contract_unit.business_type === 1)) {
-                // alert("test");
-                checkTerminatedAgreement(contractId);
-            }
 
 
+
+            // $('#no_of_installments')
+            //     .trigger('change');
+            // for (let i = 0; i < payment_count; i++) {
+            //     $('#payment_amount' + i).val((monthrent).toFixed(2));
+            // }
 
         }
-
-
-
-        $(document).on('change', '.unit_type_id', function() {
+        $(document).on('change', '#unit_type_id', function() {
             const unitTypeId = $(this).val();
-            const row = $(this).closest('.unit-row');
-            unitTypeChange(unitTypeId, editedUnit, row);
+            //console.log("gvdgcvgvcvhsd :" + editedUnit)
+            unitTypeChange(unitTypeId, editedUnit);
         });
 
-        function unitTypeChange(unitTypeId, editedUnit, row) {
+        function unitTypeChange(unitTypeId, editedUnit) {
             let options = '<option value="">Select Unit No</option>';
             let selectedUnitnumbers = [];
             let contractId = $('#contract_id').val();
-            // console.log("contracts:", allContracts);
+            console.log("contracts:", allContracts);
             let contract = allContracts.find(c => c.id == contractId);
+            // console.log('fileteredunitcontract :', contract);
 
-            // if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
-            //     contract = fullContracts.find(c => c.id == contractId);
-            //     console.log("acrualcontracts :", contract)
-            //     console.log("editedUnit :", editedUnit)
+            if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
+                contract = fullContracts.find(c => c.id == contractId);
+                console.log("acrualcontracts :", contract)
+                console.log("editedUnit :", editedUnit)
+                // EDIT MODE: contract may not be in allContracts
+                selectedUnitnumbers = editedUnit.map(u => u.contract_unit_details_id);
 
-            //     selectedUnitnumbers = editedUnit.map(u => u.contract_unit_details_id);
+                editedUnit.forEach(u => {
+                    if (!unitTypeId || u.unit_type_id == unitTypeId) {
+                        const unitNumber = u.contract_unit_detail?.unit_number || '';
+                        options += `<option value="${u.contract_unit_details_id}" selected>${unitNumber}</option>`;
+                    }
+                });
+                // let filteredUnits = contract.contract_unit.contract_unit_details;
+                let filteredUnits = contract.contract_unit.contract_unit_details
+                    .filter(u => u.is_vacant == 0);
+                console.log("filetred", filteredUnits);
+                if (unitTypeId) {
+                    filteredUnits = filteredUnits.filter(d => d.unit_type_id == unitTypeId);
+                }
 
-            //     editedUnit.forEach(u => {
-            //         if (!unitTypeId || u.unit_type_id == unitTypeId) {
-            //             const unitNumber = u.contract_unit_detail?.unit_number || '';
-            //             options += `<option value="${u.contract_unit_details_id}" selected>${unitNumber}</option>`;
-            //         }
-            //     });
-
-            //     let filteredUnits = contract.contract_unit.contract_unit_details
-            //         .filter(u => u.is_vacant == 0);
-            //     console.log("filetred", filteredUnits);
-            //     if (unitTypeId) {
-            //         filteredUnits = filteredUnits.filter(d => d.unit_type_id == unitTypeId);
-            //     }
-
-            //     filteredUnits.forEach(ut => {
-            //         if (!selectedUnitnumbers.includes(ut.id)) {
-            //             options += `<option value="${ut.id}">${ut.unit_number}</option>`;
-            //         }
-            //     });
-            //     if (row) {
-            //         row.find('.unit_type0').html(options)
-            //             .val(selectedUnitnumbers.length ? selectedUnitnumbers[0] : '')
-            //             .trigger('change.select2');
-            //     }
-            //     updateUnitOptions();
-
-            //     unitNumberChange(selectedUnitnumbers, editedUnit);
-            // }
-            // else {
-
-
-            if (!contract || !contract.contract_unit || !contract.contract_unit.contract_unit_details) {
-                $('#unit_type0').html(options).trigger('change.select2');
-                return;
-            }
-
-            let filteredUnits = contract.contract_unit.contract_unit_details;
-            if (unitTypeId) {
-                filteredUnits = filteredUnits.filter(d => d.unit_type_id == unitTypeId);
-            }
-
-
-            filteredUnits.forEach(ut => {
-                options += `<option value="${ut.id}">${ut.unit_number}</option>`;
-            });
-
-            if (row) {
-                row.find('.unit_type0').html(options);
-                updateUnitOptions('.unit_type0');
-                const safeVal = selectedUnitnumbers.length ? selectedUnitnumbers[0] : '';
-                // console.log("safeval", safeVal);
-                row.find('.unit_type0').val(safeVal).trigger('change.select2');
-
-            } else {
-                $('.unit-row:first .unit_type0').html(options)
+                filteredUnits.forEach(ut => {
+                    if (!selectedUnitnumbers.includes(ut.id)) {
+                        options += `<option value="${ut.id}">${ut.unit_number}</option>`;
+                    }
+                });
+                $('#unit_type0').html(options)
                     .val(selectedUnitnumbers.length ? selectedUnitnumbers[0] : '')
                     .trigger('change.select2');
+
+                unitNumberChange(selectedUnitnumbers, editedUnit);
+            } else {
+                // NEW MODE: use allContracts for available units
+
+
+                if (!contract || !contract.contract_unit || !contract.contract_unit.contract_unit_details) {
+                    $('#unit_type0').html(options).trigger('change.select2');
+                    return;
+                }
+
+                let filteredUnits = contract.contract_unit.contract_unit_details;
+                if (unitTypeId) {
+                    filteredUnits = filteredUnits.filter(d => d.unit_type_id == unitTypeId);
+                }
+
+                // filteredUnits.forEach(ut => {
+                //     options += `<option value="${ut.id}">${ut.unit_number}</option>`;
+                // });
+                filteredUnits.forEach(ut => {
+                    options += `<option value="${ut.id}">${ut.unit_number}</option>`;
+                });
+
+                $('#unit_type0').html(options).trigger('change');
+                unitNumberChange();
             }
+
             // $('#unit_type0').html(options)
             //     .val(selectedUnitnumbers.length ? selectedUnitnumbers[0] : '')
             //     .trigger('change.select2');
-            // }
-            unitNumberChange();
-            // }
 
+            // unitNumberChange(selectedUnitnumbers, editedUnit);
         }
 
-        $(document).on('change', '.unit_type0', function() {
+        $(document).on('change', '#unit_type0', function() {
             const unitId = $(this).val();
-            const row = $(this).closest('.unit-row');
-            unitNumberChange(unitId, row);
+            // //console.log("unitid", unitId);
+            unitNumberChange(unitId, editedUnit);
         });
 
+        // function unitNumberChange(unitId, editedUnit) {
+        //     alert("unitnum");
+        //     //console.log('unitNumberChange called with ID:', unitId);
+        //     let options = '<option value="">Select SubUnit</option>';
+        //     let contractId = $('#contract_id').val();
+        //     let contract = allContracts.find(c => c.id == contractId);
+        //     //console.log("contra", contract);
+        //     //console.log("unitid", unitId);
+        //     let count = contract?.contract_payment_receivables_count || 0;
+        //     let selectedUnit = contract?.contract_unit?.contract_unit_details?.find(u => u.id == unitId);
+        //     //console.log('Selected Unit Detail:', selectedUnit);
+        //     let selectedSubunit = [];
+        //     let subunitId = 0;
+        //     //console.log("test", editedUnit);
+        //     if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
+        //         // alert("edit");
+        //         if (!editedUnit[0].contract_subunit_detail) {
+        //             alert("alertnotsub");
+        //             // alert(editedUnit.rent_per_room);
+        //             $('#sub_unit_type').html('<option value="">No Subunits Available</option>').trigger('change');
+        //             $('#sub_unit_type').prop('required', false);
+        //             $('#rent_per_month')
+        //                 .val(editedUnit.rent_per_room ?? '')
+        //                 .prop('required', true)
+        //                 .prop('disabled', true);
+        //             calculatepaymentamount(editedUnit.rent_per_room, count);
 
+        //         } else {
+        //             alert("sub");
+        //             // alert("edit");
+        //             editedUnit.forEach(u => {
+        //                 subunitId = u.contract_subunit_details_id;
+        //                 const subunitNo = u.contract_subunit_detail?.subunit_no || '';
+        //                 const unitDetailId = u.contract_subunit_detail?.contract_unit_detail_id;
+        //                 //console.log('Details', u.contract_subunit_detail.contract_unit_detail_id, unitId);
+        //                 if (unitDetailId == unitId) {
+        //                     // alert(subunitNo);
+        //                     options += `<option value="${subunitId}" selected>${subunitNo}</option>`;
+        //                     selectedSubunit.push(subunitId);
+        //                 }
+        //             });
+        //         }
+        //     } else {
+        //         alert("edit");
 
-        function unitNumberChange(unitId, row) {
-            // alert("unitnumber changes")
+        //         if (!contract || !contract.contract_unit || !contract.contract_unit.contract_unit_details) {
+        //             options += `<option value="">No Subunits Available</option>`;
+        //             $('#sub_unit_type').html(options).trigger('change');
+        //             return;
+        //         }
+        //         if (!selectedUnit) {
+        //             //console.log('No unit found for ID:', unitId);
+        //             $('#sub_unit_type').html('<option value="">No Unit Selected</option>').trigger('change');
+        //             $('#sub_unit_type').prop('required', false);
+        //             $('#rent_per_month').val('').prop('required', false);
+        //             return;
+        //         }
+        //         //console.log("SUBUNIT :", selectedUnit);
+        //         alert("select");
+        //         // 🔹 If selected unit exists but has no subunits
+        //         if (!selectedUnit.contract_sub_unit_details || selectedUnit.contract_sub_unit_details.length === 0) {
+        //             //console.log('No subunits found for unit ID:', unitId);
+        //             $('#sub_unit_type').html('<option value="">No Subunits Available</option>').trigger('change');
+        //             $('#sub_unit_type').prop('required', false);
 
+        //             // ✅ Set rent value when there are no subunits
+        //             //console.log("room", selectedUnit.rent_per_room);
+        //             $('#rent_per_month')
+        //                 .val(selectedUnit.rent_per_room ?? '')
+        //                 .prop('required', true)
+        //                 .prop('readonly', true);
+        //             calculatepaymentamount(selectedUnit.rent_per_room, count);
+
+        //             return;
+        //         }
+
+        //     }
+        //     // 🔹 Populate subunit options
+        //     if (selectedUnit && Array.isArray(selectedUnit.contract_sub_unit_details)) {
+        //         selectedUnit.contract_sub_unit_details.forEach(sub => {
+        //             // Skip already selected subunits (avoid duplicates)
+        //             if (!selectedSubunit.includes(sub.id)) {
+        //                 options += `<option value="${sub.id}">${sub.subunit_no}</option>`;
+        //             }
+        //         });
+        //         // return;
+        //     }
+        //     $('#sub_unit_type').html(options).trigger('change');
+        //     $('#sub_unit_type').prop('required', true);
+        //     subUnitChange(subunitId, editedUnit);
+        // }
+
+        function unitNumberChange(unitId, editedUnit) {
+            // alert("called unitnumberchange");
+            //console.log('unitNumberChange called with ID:', unitId);
             let options = '<option value="">Select SubUnit</option>';
             let contractId = $('#contract_id').val();
             let contract = allContracts.find(c => c.id == contractId);
             let count = contract?.contract_payment_receivables_count || 0;
             let selectedUnit = contract?.contract_unit?.contract_unit_details?.find(u => u.id == unitId);
-
+            //console.log('Selected Unit Detail:', selectedUnit);
             let selectedSubunit = [];
             let subunitId = 0;
-            // console.log("editedUNITunitchage", selectedUnit);
-            // console.log("editedUNIT", editedUnit);
-
-            // if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
-
-            //     if (!editedUnit[0].contract_subunit_detail) {
-            //         $('#sub_unit_type').html('<option value="">No Subunits Available</option>').trigger('change');
-            //         $('#sub_unit_type').prop('required', false);
-            //         $('#rent_per_month')
-            //             .val(editedUnit[0].rent_per_month ?? '')
-            //             .prop('required', true)
-            //             .prop('readonly', true);
-            //         calculatepaymentamount(editedUnit[0].rent_per_month, count);
-            //         return;
-
-            //     } else {
-            //         editedUnit.forEach(u => {
-            //             subunitId = u.contract_subunit_details_id;
-            //             const subunitNo = u.contract_subunit_detail?.subunit_no || '';
-            //             const unitDetailId = u.contract_subunit_detail?.contract_unit_detail_id;
-            //             if (unitDetailId == unitId) {
-            //                 options += `<option value="${subunitId}" selected>${subunitNo}</option>`;
-            //                 selectedSubunit.push(subunitId);
-            //             }
-            //             calculatepaymentamount(editedUnit[0].rent_per_month, count);
-
-            //         });
-            //     }
-            // } else {
+            //console.log("test", contract);
+            console.log("editedUNITunitchage", editedUnit);
             if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
-                contract = fullContracts.find(c => c.id == contractId);
-                selectedUnit = contract?.contract_unit?.contract_unit_details?.find(u => u.id == unitId);
-                editedUnit.forEach(u => {
-                    subunitId = u.contract_subunit_details_id;
-                    const subunitNo = u.contract_subunit_detail?.subunit_no || '';
-                    const unitDetailId = u.contract_subunit_detail?.contract_unit_detail_id;
-                    if (unitDetailId == unitId) {
-                        options += `<option value="${subunitId}" selected>${subunitNo}</option>`;
-                        selectedSubunit.push(subunitId);
-                    }
-                });
-            }
-            // console.log("selectedUnit", selectedUnit);
+                if (!editedUnit[0].contract_subunit_detail) {
+                    // alert('his');
+                    $('#sub_unit_type').html('<option value="">No Subunits Available</option>').trigger('change');
+                    $('#sub_unit_type').prop('required', false);
+                    $('#rent_per_month')
+                        .val(editedUnit[0].rent_per_month ?? '')
+                        .prop('required', true)
+                        .prop('readonly', true);
+                    calculatepaymentamount(editedUnit[0].rent_per_month, count);
+                    return;
 
-            if (contract?.contract_unit
-                ?.business_type == 1) {
-                // alert("directfama rentpermonth");
-                // alert(selectedUnit.total_rent_per_unit_per_month);
-                if (row) {
-                    // console.log("selectedUnit", row);
+                } else {
+                    // alert(editedUnit[0].rent_per_room);
+                    editedUnit.forEach(u => {
+                        subunitId = u.contract_subunit_details_id;
+                        const subunitNo = u.contract_subunit_detail?.subunit_no || '';
+                        // alert(subunitNo);
+                        const unitDetailId = u.contract_subunit_detail?.contract_unit_detail_id;
+                        //console.log('Details', u.contract_subunit_detail.contract_unit_detail_id, unitId);
+                        if (unitDetailId == unitId) {
+                            // alert(subunitNo);
+                            options += `<option value="${subunitId}" selected>${subunitNo}</option>`;
+                            selectedSubunit.push(subunitId);
+                        }
+                        // alert("hi");
+                        // calculatepaymentamount(editedUnit[0].rent_per_room, count);
+                        calculatepaymentamount(editedUnit[0].rent_per_month, count);
 
-
-                    row.find('.rent_per_month').val(selectedUnit.total_rent_per_unit_per_month);
-
+                    });
+                    // return;
                 }
-                // alert(selectedUnit.total_rent_per_unit_per_month);
             } else {
+
+                // alert("rent_per_month");
+
                 if (!contract || !contract.contract_unit || !contract.contract_unit.contract_unit_details) {
                     options += `<option value="">No Subunits Available</option>`;
                     $('#sub_unit_type').html(options).trigger('change');
                     return;
                 }
                 if (!selectedUnit) {
+                    //console.log('No unit found for ID:', unitId);
                     $('#sub_unit_type').html('<option value="">No Unit Selected</option>').trigger('change');
                     $('#sub_unit_type').prop('required', false);
                     $('#rent_per_month').val('').prop('required', false);
                     return;
                 }
-                let subunits = selectedUnit.contract_sub_unit_details || selectedUnit
-                    .contract_subunit_details || [];
-                // console.log("subunits", subunits);
-                if (!subunits || subunits.length === 0) {
-                    $('#sub_unit_type').html('<option value="">No Subunits Available</option>').trigger(
-                        'change');
+                //  If selected unit exists but has no subunits
+                if (!selectedUnit.contract_sub_unit_details || selectedUnit.contract_sub_unit_details.length === 0) {
+                    //console.log('No subunits found for unit ID:', unitId);
+                    $('#sub_unit_type').html('<option value="">No Subunits Available</option>').trigger('change');
                     $('#sub_unit_type').prop('required', false);
 
+                    //  Set rent value when there are no subunits
                     $('#rent_per_month')
                         .val(selectedUnit.rent_per_room ?? '')
                         .prop('required', true)
@@ -1320,80 +1327,110 @@
 
                     return;
                 }
-                subunits = subunits.filter(sub => sub.is_vacant == 0 || selectedSubunit.includes(sub.id));
-
-                if (selectedUnit && Array.isArray(subunits)) {
-                    // console.log("selectedUnit.subunits", subunits);
-                    subunits.forEach(sub => {
-                        if (!selectedSubunit.includes(sub.id)) {
-                            options += `<option value="${sub.id}">${sub.subunit_no}</option>`;
-                        }
-                    });
-                }
-                $('.sub_unit_type').html(options).trigger('change');
-                $('.sub_unit_type').prop('required', true);
-
-
-                // subUnitChange(subunitId, editedUnit);
 
             }
-
-
-            // }
-
+            // 🔹 Populate subunit options
+            if (selectedUnit && Array.isArray(selectedUnit.contract_sub_unit_details)) {
+                selectedUnit.contract_sub_unit_details.forEach(sub => {
+                    // Skip already selected subunits (avoid duplicates)
+                    if (!selectedSubunit.includes(sub.id)) {
+                        options += `<option value="${sub.id}">${sub.subunit_no}</option>`;
+                    }
+                });
+                // return;
+            }
+            $('#sub_unit_type').html(options).trigger('change');
+            $('#sub_unit_type').prop('required', true);
+            subUnitChange(subunitId, editedUnit);
         }
 
 
-        $(document).on('change', '.sub_unit_type', function() {
+        $(document).on('change', '#sub_unit_type', function() {
             const subunitId = $(this).val();
-            const row = $(this).closest('.unit-row');
-            subUnitChange(subunitId, editedUnit, row);
+            subUnitChange(subunitId, editedUnit);
         });
 
-        function subUnitChange(subunitId, editedUnit, row) {
-            // alert("subunitchangecalled");
+        function subUnitChange(subunitId, editedUnit) {
+            // alert("called subunitchange");
+
+            // alert(subunitId);
+            //console.log("subunitchangeinside:", JSON.stringify(editedUnit));
             let contractId = $('#contract_id').val();
             let contract = allContracts.find(c => c.id == contractId);
-            if (editedUnit) {
-                contract = fullContracts.find(c => c.id == contractId);
-            }
             let count = contract?.contract_payment_receivables_count || 0;
-            // console.log("contract in subunit change", contract);
-
-            let unitId = row.find('.unit_no_select').val();
-            if (!unitId) unitId = row.find('.unit_type0').val();
-
-            let selectedUnit = contract.contract_unit.contract_unit_details.find(u => u.id == unitId);
-
-            let selectedSubUnit = selectedUnit?.contract_subunit_details?.find(su => su.id == subunitId);
-            // console.log("selectedSubUnit", selectedSubUnit);
-
-
-            $('.rent_per_month')
-                .val(selectedUnit.rent_per_unit_per_month ?? '')
-                .prop('required', true)
-                .prop('readonly', true);
-
-            calculatepaymentamount(selectedUnit.rent_per_unit_per_month, count);
-            if (subunitId) {
-                checkTermination(subunitId, unitId, contractId);
-
+            if (editedUnit && editedUnit.length > 0 && (editedUnit[0].contract_subunit_details_id == subunitId)) {
+                console.log("sschanhe", editedUnit);
+                const eu = editedUnit[0];
+                // alert(eu.rent_per_month);
+                // alert(count);
+                $('#rent_per_month')
+                    .val(eu.rent_per_month)
+                    .prop('required', true)
+                    .prop('readonly', true);
+                calculatepaymentamount(eu.rent_per_month, count);
+                $('#total_rent_per_annum').text(editedUnit[0]['rent_per_annum_agreement']);
+                $('#total_rent_annum').val(editedUnit[0]['rent_per_annum_agreement']);
+                return;
             }
-
+            if (!contract || !contract.contract_unit || !contract.contract_unit.contract_unit_details) {
+                $('#rent_per_month').val('').prop('required', false).prop('disabled', false);
+                return;
+            }
+            let unitId = $('#unit_type0').val();
+            let selectedUnit = contract.contract_unit.contract_unit_details.find(u => u.id == unitId);
+            //console.log('Selected Unit Detail for Rent Calculation:', selectedUnit);
+            if (!selectedUnit) {
+                $('#rent_per_month').val('').prop('required', false).prop('disabled', false);
+                return;
+            }
+            if (!subunitId) {
+                $('#rent_per_month').val('').prop('required', false).prop('disabled', false);
+                return;
+            }
+            let selectedSubUnit = selectedUnit.contract_sub_unit_details.find(su => su.id == subunitId);
+            //console.log('Selected SubUnit Detail:', selectedSubUnit);
+            if (!selectedSubUnit) {
+                $('#rent_per_month').val('').prop('required', false).prop('disabled', false);
+                return;
+            }
+            if (selectedSubUnit.subunit_type == 1) {
+                $('#rent_per_month')
+                    .val(selectedUnit.rent_per_partition ?? '')
+                    .prop('required', true)
+                    .prop('readonly', true);
+                // alert(selectedUnit.rent_per_partition);
+                calculatepaymentamount(selectedUnit.rent_per_partition, count)
+            }
+            if (selectedSubUnit.subunit_type == 2) {
+                $('#rent_per_month')
+                    .val(selectedUnit.rent_per_bedspace ?? '')
+                    .prop('required', true)
+                    .prop('readonly', true);
+                calculatepaymentamount(selectedUnit.rent_per_bedspace, count)
+            }
+            if (selectedSubUnit.subunit_type == 3) {
+                $('#rent_per_month')
+                    .val(selectedUnit.rent_per_room ?? '')
+                    .prop('required', true)
+                    .prop('readonly', true);
+                calculatepaymentamount(selectedUnit.rent_per_room, count)
+            }
+            if (selectedSubUnit.subunit_type == 4) {
+                $('#rent_per_month')
+                    .val(selectedUnit.rent_per_flat ?? '')
+                    .prop('required', true)
+                    .prop('readonly', true);
+                calculatepaymentamount(selectedUnit.rent_per_flat, count)
+            }
         }
     </script>
     {{-- end  --}}
-    @include('admin.projects.agreement.terminate-js')
+
 
     <script>
         $('#no_of_installments').on('change', function() {
+            // alert("called");
             let editedPayment = @json($agreement->agreement_payment ?? null);
-            let agreementPaymentDetails = editedPayment?.agreement_payment_details || [];
-            let contractReceivables = selectedContract.contract_payment_receivables || [];
-            let deletedAgreementUnitIds = [];
-            // console.log("editedPayment", editedPayment);
-            // console.log("editedUnit", editedUnit);
-
             if (editedPayment) {
                 //console.log('editedpayment', editedPayment);
             }
@@ -1401,7 +1438,7 @@
             $('.payment_details').removeClass('d-none');
             const installments = $(this).find('option:selected').text().trim();
             let interval = $(this).find(':selected').data('interval');
-            let totalRevenue = 0;
+
 
             $('#interval').val(interval);
             const containerPayment = document.getElementsByClassName('payment_details')[0];
@@ -1422,7 +1459,12 @@
 
                 $(containerPayment).find('.fama-table, #accordion').remove();
                 $('.header-row').removeClass('d-none').addClass('d-flex');
-
+                $('#total_rent_per_annum').text(selectedContract.contract_rentals
+                    .rent_receivable_per_annum);
+                $('#total_rent_annum').val(selectedContract.contract_rentals
+                    .rent_receivable_per_annum);
+                // alert(selectedContract.contract_rentals
+                //     .rent_receivable_per_annum);
 
                 const total_units = selectedContract.contract_unit.no_of_units;
                 // alert(total_units);
@@ -1442,70 +1484,27 @@
                             </thead>
                             <tbody>
                     `;
-                // console.log("remaining_receivables", remainingReceivables)
-                let receivablesToUse = remainingReceivables.length > 0 ?
-                    remainingReceivables :
-                    selectedContract.contract_payment_receivables;
 
-
-                if (receivablesToUse &&
-                    receivablesToUse.length > 0) {
-                    // alert("createtable");
-
-                    let totalMonthlyRent = 0;
-                    let selectedUnits = [];
-
-                    // Condition check once BEFORE looping
-                    if (selectedContract.contract_type_id == 1 &&
-                        selectedContract.contract_unit?.business_type == 1) {
-                        if (editedUnit) {
-                            selectedUnits = $('.unit-row').map(function() {
-                                return $(this).find('select.unit_no_select').val();
-                            }).get();
-                        } else {
-                            selectedUnits = $('.unit-row').map(function() {
-                                return $(this).find('select.unit_type0').val();
-                            }).get();
-                        }
-
-
-
-                        const unitsFiltered = window.unit_details.filter(u =>
-                            selectedUnits.includes(String(u.id))
-                        );
-                        // console.log("unitsFiltered", unitsFiltered);
-
-                        unitsFiltered.forEach(unit => {
-                            totalMonthlyRent += parseFloat(unit.total_rent_per_unit_per_month || 0);
-                        });
-                    }
-
-                    // Now loop receivables
-                    receivablesToUse.forEach((r, index) => {
-
-                        let amount = r.receivable_amount ?? 0;
-
-                        // Apply condition inside loop
-                        if (selectedContract.contract_type_id == 1 &&
-                            selectedContract.contract_unit?.business_type == 1) {
-                            amount = totalMonthlyRent;
-                        }
-
+                if (selectedContract.contract_payment_receivables && selectedContract
+                    .contract_payment_receivables
+                    .length > 0) {
+                    console.log("selected contract receivables", selectedContract);
+                    selectedContract.contract_payment_receivables.forEach((r, index) => {
                         tableHTML += `
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${r.receivable_date ?? '-'}</td>
-                                <td class="receivable_amount${index}">${amount}</td>
-                                <td class="amountchange" data-installment="${index}">${r.receivable_amount ?? 0}</td>
-                            </tr>
-                        `;
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${r.receivable_date ?? '-'}</td>
+                        <td class="receivable_amount${index}">${r.receivable_amount ?? 0}</td>
+                        <td class="amountchange" data-installment="${index}">${r.receivable_amount ?? 0}</td>
+                    </tr>
+                `;
                     });
                 } else {
                     tableHTML += `
-                        <tr>
-                            <td colspan="4" class="text-center text-muted">No receivables found for this contract.</td>
-                        </tr>
-                        `;
+                <tr>
+                    <td colspan="4" class="text-center text-muted">No receivables found for this contract.</td>
+                </tr>
+                `;
                 }
 
                 tableHTML += `
@@ -1519,7 +1518,9 @@
 
                 // ====== Unit-wise Accordion Section ======
                 if (editedPayment && editedUnit) {
-
+                    // alert("hiffagreemanet");
+                    //console.log("edited payment: ", editedPayment);
+                    //console.log("edited unit: ", editedUnit);
 
                     const containerPayment = document.querySelector('.payment_details');
                     const accordion = document.createElement('div');
@@ -1527,169 +1528,53 @@
 
                     // Extract payment details
                     const paymentDetails = editedPayment.agreement_payment_details || [];
-                    // console.log("Payment Details :", paymentDetails);
+                    //console.log(paymentDetails);
+                    // const installmentCount = editedPayment
+                    //     .installment_id;
+
+                    // Loop through units
+                    editedUnit.forEach((unitObj, unitIndex) => {
+                        const unit = unitObj;
+                        //console.log("unit :", unit);
+
+                        const collapseId = `collapse_${unit.id}`;
+                        const unitName = unit.contract_unit_detail.unit_number || `Unit ${unitIndex + 1}`;
 
 
+                        //console.log("unit :", unit);
 
-                    if (
-                        selectedContract.contract_type_id === 1 && selectedContract?.contract_unit
-                        ?.business_type == 1) {
-                        let total_revenue = 0;
-                        $('.unit-row').each(function(index, row) {
-                            const unitId = $(row).find('.unit_no_select').val();
-                            const agunitId = $(row).find('.agreement_unit_id').val();
-                            const unitObj = window.unit_details.find(u => u.id == unitId);
-                            // console.log("Processing unitId:", unitId, unitObj);
-                            // console.log("editedunit :", editedUnit);
-                            // console.log("agunitId :", agunitId);
-                            let isEditedUnit = false;
-                            if (remainingReceivables.length > 0) {
-                                b2b_per_month = parseFloat(unitObj.total_rent_per_unit_per_month)
-                                    .toFixed(
-                                        2);
-                                total_revenue += b2b_per_month * (remainingReceivables.length);
-                            } else {
-                                if (unitObj && unitObj.unit_revenue) {
-                                    total_revenue += parseFloat(unitObj.unit_revenue);
-                                }
-                            }
+                        // Get payments for this specific unit
+                        const unitPayments = paymentDetails.filter(
+                            pay => pay.agreement_unit_id === unit.id
+                        );
+                        //console.log("Payment Details :", unitPayments);
 
+                        let installmentBlocks = `
+                            <div class="row font-weight-bold mb-2">
+                                <div class="col-md-4">Payment Mode</div>
+                                <div class="col-md-4">Payment Date</div>
+                                <div class="col-md-4">Payment Amount</div>
+                            </div>
+                        `;
 
+                        // Loop through payments
+                        unitPayments.forEach((pay, payIndex) => {
+                            const uniqueId = `${unit.id}_${payIndex}`;
+                            //console.log("unitpay", unitPayments);
 
-                            // Get payments: either from agreement or fallback to contract
-                            let unitPayments = agreementPaymentDetails.filter(p => p.agreement_unit_id ==
-                                agunitId);
-                            editedUnit.forEach(eu => {
-                                if (parseInt(eu.id) === parseInt(agunitId) &&
-                                    parseInt(eu.contract_unit_details_id) === parseInt(unitId)) {
-                                    isEditedUnit = true;
-                                    editedData = eu;
-                                }
-                            });
-                            if (!isEditedUnit && unitPayments.length > 0) {
-                                unitPayments.forEach(p => {
-                                    p.payment_amount = (unitObj.unit_revenue / installments)
-                                        .toFixed(2);
-                                });
-                            }
-                            // console.log("isEditedUnit :", isEditedUnit);
-                            // console.log("agreementPaymentDetails :", agreementPaymentDetails);
-                            // console.log("agreementPaymentDetails :", unitPayments);
-                            // console.log("receivables :", contractReceivables);
-                            // console.log("deleted", deletedAgreementUnitIds);
-                            // console.log("terminatedReceivables", remainingReceivables);
-                            if (remainingReceivables.length > 0) {
-                                df_b2b_per_month = parseFloat(unitObj.total_rent_per_unit_per_month)
-                                    .toFixed(
-                                        2);
-                                // total_revenue += df_b2b_per_month * (remainingReceivables.length);
-                            } else {
-                                df_b2b_per_month = parseFloat(unitObj.unit_revenue / installments)
-                                    .toFixed(
-                                        2);
-                            }
-                            if (unitPayments.length === 0) {
-                                // alert("hi");
-                                unitPayments = contractReceivables.map(r => ({
-                                    agreement_unit_id: unitId,
-                                    receivable_amount: r.receivable_amount,
-                                    receivable_date: r.receivable_date,
-                                    payment_mode_id: 2,
-                                    payment_amount: df_b2b_per_month,
-                                    bank_id: null,
-                                    cheque_number: null,
-                                }));
-                                const termMoment = moment(termDate, 'YYYY-MM-DD');
+                            const formattedDate = pay.payment_date ?
+                                moment(pay.payment_date, 'YYYY-MM-DD').format('DD-MM-YYYY') :
+                                '';
+                            //console.log(pay.payment_date);
 
-                                unitPayments = unitPayments.filter(pay => {
-                                    if (!pay.receivable_date) return true;
-
-                                    const payMoment = moment(pay.receivable_date, 'DD-MM-YYYY');
-
-                                    return !payMoment.isBefore(
-                                        termMoment);
-                                });
-                            }
-
-                            // console.log("unitPayments for unitId " + unitId + ":", unitPayments);
-
-                            // Build accordion per unit
-                            buildUnitAccordion(unitObj, unitPayments, index);
-
-                            // Initialize datetimepickers and event handlers after HTML is inserted
-                            unitPayments.forEach((pay, payIndex) => {
-                                const uniqueId = `${unitId}_${payIndex}`;
-                                const dateContainer = $(`#otherPaymentDate_${uniqueId}`);
-
-                                if (dateContainer.length) {
-                                    dateContainer.datetimepicker({
-                                        format: 'DD-MM-YYYY'
-                                    });
+                            //console.log(formattedDate);
 
 
-                                    dateContainer.find('input').attr('readonly', true).off('focus');
-                                    dateContainer.find('.input-group-append').removeAttr(
-                                        'data-toggle');
-
-                                    // Event handlers
-                                    $(`#payment_mode${uniqueId}`).off('change').on('change',
-                                        function() {
-                                            paymentModeChangeFF(unitId, payIndex);
-                                        });
-
-                                    dateContainer.off('input change').on('input change',
-                                        function() {
-                                            calculatePaymentDatesFF(unitId, payIndex);
-                                        });
-
-                                    paymentModeChangeFF(unitId, payIndex);
-                                }
-                            });
-                        });
-                        $('#total_rent_per_annum').text(total_revenue.toFixed(2));
-                        $('#total_rent_annum').val(total_revenue.toFixed(2));
-                    } else if (selectedContract.contract_type_id == 2) {
-                        // Loop through units
-                        editedUnit.forEach((unitObj, unitIndex) => {
-                            const unit = unitObj;
-                            // console.log("unit :", unit);
-                            // console.log("unitinedx", unitIndex);
-                            // console.log('unitobj', unitObj);
-                            const row = document.querySelector(`.unit-row[data-row-index='${unitIndex}']`);
-                            let unitName = `Unit ${unitIndex + 1}`;
-                            if (row) {
-                                const unitNoSelect = row.querySelector('.unit_no_select');
-                                if (unitNoSelect) {
-                                    // Use the text of the selected option
-                                    unitName = unitNoSelect.options[unitNoSelect.selectedIndex].text;
-                                }
-                            }
-                            const collapseId = `collapse_${unitObj.id}`;
-                            const unitPayments = paymentDetails.filter(
-                                pay => pay.agreement_unit_id === unit.id
-                            );
-
-                            let installmentBlocks = `
-                                <div class="row font-weight-bold mb-2">
-                                    <div class="col-md-4">Payment Mode</div>
-                                    <div class="col-md-4">Payment Date</div>
-                                    <div class="col-md-4">Payment Amount</div>
-                                </div>
-                            `;
-
-                            // console.log("unitPayments", unitPayments);
-
-                            // Loop through payments
-                            unitPayments.forEach((pay, payIndex) => {
-                                const uniqueId = `${unit.id}_${payIndex}`;
-                                const formattedDate = pay.payment_date ?
-                                    moment(pay.payment_date, 'YYYY-MM-DD').format('DD-MM-YYYY') :
-                                    '';
-                                installmentBlocks += `
+                            installmentBlocks += `
                                     <div class="form-group row mb-2">
                                         <input type="hidden" name="payment_detail[${unit.id}][${payIndex}][detail_id]" value="${pay.id}">
                                         <div class="col-md-4">
-                                            <select class="form-control " name="payment_detail[${unit.id}][${payIndex}][payment_mode_id]" id="payment_mode${uniqueId}">
+                                            <select class="form-control select2" name="payment_detail[${unit.id}][${payIndex}][payment_mode_id]" id="payment_mode${uniqueId}">
                                                 <option value="">Select</option>
                                                 @foreach ($paymentmodes as $paymentmode)
                                                     <option value="{{ $paymentmode->id }}" ${pay.payment_mode_id == {{ $paymentmode->id }} ? 'selected' : ''}>
@@ -1724,8 +1609,8 @@
                                     <div class="form-group row extra-fields" id="extra_fields_${uniqueId}">
                                         <div class="col-md-4 bank" id="bank_${uniqueId}">
                                             <label>Bank Name</label>
-                                            <select class="form-control " name="payment_detail[${unit.id}][${payIndex}][bank_id]" id="bank_name_${uniqueId}">
-                                                <option value="" disabled>Select bank</option>
+                                            <select class="form-control select2" name="payment_detail[${unit.id}][${payIndex}][bank_id]" id="bank_name_${uniqueId}">
+                                                <option value="">Select bank</option>
                                                 @foreach ($banks as $bank)
                                                     <option value="{{ $bank->id }}" ${pay.bank_id == {{ $bank->id }} ? 'selected' : ''}>
                                                         {{ $bank->bank_name }}
@@ -1750,9 +1635,9 @@
                                         </div>
                                     </div>
                                 `;
-                            });
+                        });
 
-                            accordion.innerHTML += `
+                        accordion.innerHTML += `
                                 <div class="card card-info">
                                     <div class="card-header d-flex justify-content-between">
                                         <div class="card-title">
@@ -1768,57 +1653,53 @@
                                     </div>
                                 </div>
                             `;
-                        });
-                        // Initialize dates and hide/show extras
-                        setTimeout(() => {
-                            editedUnit.forEach(unitObj => {
-                                const unit = unitObj;
-                                const unitPayments = paymentDetails.filter(p => p
-                                    .agreement_unit_id ===
-                                    unit.id);
-                                unitPayments.forEach((_, payIndex) => {
-                                    const uniqueId = `${unit.id}_${payIndex}`;
-                                    $(`#otherPaymentDate_${uniqueId}`).datetimepicker({
-                                        format: 'DD-MM-YYYY'
-                                    });
-                                    paymentModeChangeFF(unit.id, payIndex);
-                                });
-                            });
-                        }, 200);
-
-                        editedUnit.forEach((unit) => {
-                            for (let i = 0; i < installments; i++) {
-                                const uniqueId = `${unit.id}_${i}`;
-
-                                $(`#otherPaymentDate_${uniqueId}`).datetimepicker({
-                                    format: 'DD-MM-YYYY'
-                                });
-
-                                $(`#otherPaymentDate_${uniqueId} input`).attr('readonly', true).off(
-                                    'focus');
-                                $(`#otherPaymentDate_${uniqueId} .input-group-append`).removeAttr(
-                                    'data-toggle');
-                                hidePayments(i);
-
-                                $('#payment_mode' + uniqueId).change(function() {
-                                    paymentModeChangeFF(unit.id, i);
-                                });
-
-                                $('#otherPaymentDate_' + uniqueId).on('input change', function() {
-                                    calculatePaymentDatesFF(unit.id, i);
-                                });
-
-                                paymentModeChangeFF(unit.id, i);
-                            }
-                        });
-                    }
-
-
+                    });
 
                     containerPayment.appendChild(accordion);
                     $(accordion).find('.select2').select2();
 
+                    // Initialize dates and hide/show extras
+                    setTimeout(() => {
+                        editedUnit.forEach(unitObj => {
+                            const unit = unitObj;
+                            const unitPayments = paymentDetails.filter(p => p.agreement_unit_id ===
+                                unit.id);
+                            unitPayments.forEach((_, payIndex) => {
+                                const uniqueId = `${unit.id}_${payIndex}`;
+                                $(`#otherPaymentDate_${uniqueId}`).datetimepicker({
+                                    format: 'DD-MM-YYYY'
+                                });
+                                paymentModeChangeFF(unit.id, payIndex);
+                            });
+                        });
+                    }, 200);
 
+                    editedUnit.forEach((unit) => {
+                        for (let i = 0; i < installments; i++) {
+                            const uniqueId = `${unit.id}_${i}`;
+
+                            $(`#otherPaymentDate_${uniqueId}`).datetimepicker({
+                                format: 'DD-MM-YYYY'
+                            });
+
+                            $(`#otherPaymentDate_${uniqueId} input`).attr('readonly', true).off(
+                                'focus');
+                            $(`#otherPaymentDate_${uniqueId} .input-group-append`).removeAttr(
+                                'data-toggle');
+                            hidePayments(i);
+
+                            $('#payment_mode' + uniqueId).change(function() {
+                                paymentModeChangeFF(unit.id, i);
+                            });
+
+                            $('#otherPaymentDate_' + uniqueId).on('input change', function() {
+                                calculatePaymentDatesFF(unit.id, i);
+                            });
+
+                            paymentModeChangeFF(unit.id, i);
+                        }
+                    });
+                    //console.log("selectedcontract :", selectedContract);
 
                     initPaymentValidation(selectedContract.contract_type_id, selectedContract.contract_unit
                         .business_type);
@@ -1826,34 +1707,15 @@
                         $(this).trigger('input.paymentValidation');
                     });
                 } else {
-                    const selectedUnits = $('.unit-row').map(function() {
-                        return $(this).find('select.unit_type0').val();
-                    }).get();
-                    // console.log('selected units', selectedUnits)
-                    const filteredUnits = window.unit_details.filter(u => selectedUnits.includes(String(u.id)));
-                    // const filteredUnits = selectedUnits.map(id =>
-                    //     window.unit_details.find(u => String(u.id) === id)
-                    // ).filter(Boolean);
-                    // console.log("selected units row:", selectedUnits);
-                    // console.log("filtered units row:", filteredUnits);
-                    // alert("hi");
-                    if (filteredUnits.length > 0) {
-                        // alert("new agreement");
-                        // console.log("unit details:", window.unit_details);
-
+                    if (window.unit_details && window.unit_details.length > 0) {
                         const containerPayment = document.querySelector('.payment_details');
                         const accordion = document.createElement('div');
                         accordion.id = 'accordion';
-                        // console.log('rent receivable per annum:' + selectedContract);
+                        //console.log('rent receivable per annum:' + selectedContract);
                         const installmentCount = $(this).find('option:selected').text().trim();
+                        window.unit_details.forEach((unit, unitIndex) => {
 
-                        filteredUnits.forEach((unit, unitIndex) => {
-                            const reven = parseFloat(unit.unit_revenue) || 0;
-                            // console.log('reven', reven);
-                            totalRevenue += reven;
-                            // console.log('totalRevenue', totalRevenue);
-
-                            // console.log('unit', unit);
+                            //console.log('unit', unit);
 
                             const collapseId = `collapse_${unit.id}`;
                             const unitName = unit.unit_number || `Unit ${unitIndex + 1}`;
@@ -1866,25 +1728,29 @@
                             // alert(rev);
                             let monthlyrent = 0;
                             if (selectedContract.contract_type_id == 2) {
-                                // alert("dfb2b");
-                                // monthlyrent = (rev / installmentCount).toFixed(2);
+
+                                monthlyrent = (rev / installmentCount).toFixed(2);
                                 // alert(monthlyrent);
-                                monthlyrent = parseFloat(unit.total_rent_per_unit_per_month || 0).toFixed(
-                                    2);
-                                // monthlyrent = 100;
-
-
 
                             } else if (selectedContract.contract_type_id === 1 && selectedContract
                                 ?.contract_unit
                                 ?.business_type == 1) {
-
-                                monthlyrent = parseFloat(unit.total_rent_per_unit_per_month || 0).toFixed(
-                                    2);
-
+                                // alert("dfb2b");
+                                if (unit.partition) {
+                                    monthlyrent = parseFloat(unit.total_partition * unit.rent_per_partition)
+                                        .toFixed(2);
+                                } else if (unit.bedspace) {
+                                    monthlyrent = parseFloat(unit.total_bedspace * unit.rent_per_bedspace)
+                                        .toFixed(2);
+                                } else if (unit.room) {
+                                    monthlyrent = parseFloat(unit.total_room * unit.rent_per_room)
+                                } else {
+                                    monthlyrent = parseFloat(unit.rent_per_flat)
+                                }
 
 
                             }
+
 
 
                             let installmentBlocks = `
@@ -1903,23 +1769,14 @@
 
 
                                 // 🗓️ Get the receivable date safely
-                                let receivableDate = '';
-
-                                if (remainingReceivables.length > 0) {
-                                    // console.log('remaining', remainingReceivables);
-                                    const rawDate = remainingReceivables[i]?.receivable_date;
-                                    receivableDate = rawDate ? moment(rawDate, 'DD-MM-YYYY').format(
-                                        'DD-MM-YYYY') : '';
-                                } else {
-                                    const rawDate = selectedContract.contract_payment_receivables?.[i]
-                                        ?.receivable_date;
-                                    receivableDate = rawDate ? moment(rawDate, 'DD-MM-YYYY').format(
-                                        'DD-MM-YYYY') : '';
-                                }
+                                const rawDate = selectedContract.contract_payment_receivables?.[i]
+                                    ?.receivable_date;
+                                const receivableDate = rawDate ? moment(rawDate, 'DD-MM-YYYY').format(
+                                    'DD-MM-YYYY') : '';
                                 installmentBlocks += `
                                 <div class="form-group row mb-2">
                                     <div class="col-md-4">
-                                        <select class="form-control " name="payment_detail[${unit.id}][${i}][payment_mode_id]" id="payment_mode${uniqueId}" required>
+                                        <select class="form-control select2" name="payment_detail[${unit.id}][${i}][payment_mode_id]" id="payment_mode${uniqueId}" required>
                                             <option value="">Select</option>
                                             @foreach ($paymentmodes as $paymentmode)
                                                  <option value="{{ $paymentmode->id }}"
@@ -1955,7 +1812,7 @@
                                     <div class="col-md-4 bank" id="bank_${uniqueId}">
                                         <label>Bank Name</label>
                                         <select class="form-control select2" name="payment_detail[${unit.id}][${i}][bank_id]" id="bank_name_${uniqueId}">
-                                            <option value="" >Select bank</option>
+                                            <option value="">Select bank</option>
                                             @foreach ($banks as $bank)
                                                 <option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>
                                             @endforeach
@@ -2053,30 +1910,9 @@
 
                     }
                 }
-                if (
-                    selectedContract.contract_type_id === 1 && selectedContract?.contract_unit
-                    ?.business_type == 1) {
-                    // console.log('totalRevenue', totalRevenue);
-                    // totalRevenue = 1000;
-                    if (totalRevenue) {
-
-                        $('#total_rent_per_annum').text(totalRevenue);
-                        $('#total_rent_annum').val(totalRevenue);
-                    }
 
 
-                } else {
-                    if (remainingTotal) {
-                        $('#total_rent_per_annum').text(remainingTotal);
-                        $('#total_rent_annum').val(remainingTotal);
-                    } else {
-                        $('#total_rent_per_annum').text(selectedContract.contract_rentals
-                            .rent_receivable_per_annum);
-                        $('#total_rent_annum').val(selectedContract.contract_rentals
-                            .rent_receivable_per_annum);
-                    }
-
-                }
+                // $('#submitBtn').prop('disabled', false);
                 return;
             } else {
 
@@ -2086,7 +1922,101 @@
                 $(containerPayment).find('.fama-table, #accordion').remove();
                 $('.header-row').removeClass('d-none').addClass('d-flex');
 
+                // if (editedPayment && Array.isArray(editedPayment.agreement_payment_details)) {
+                //     editedPayment.agreement_payment_details.forEach((pay, i) => {
 
+                //         const formattedDate = pay.payment_date ? moment(pay.payment_date, 'YYYY-MM-DD')
+                //             .format('DD-MM-YYYY') : '';
+
+                //         const paymentBlock = document.createElement('div');
+                //         paymentBlock.classList.add('payment_mode_div');
+
+                //         paymentBlock.innerHTML = `
+            //     <input type="hidden" name="payment_detail[${i}][id]" value="${pay.id}">
+
+            //     <div class="form-group row">
+            //         <div class="col-md-4">
+            //             <label>Payment Mode</label>
+            //             <select class="form-control select2" name="payment_detail[${i}][payment_mode_id]" id="payment_mode${i}" required>
+            //                 <option value="">Select</option>
+            //                 @foreach ($paymentmodes as $paymentmode)
+            //                     <option value="{{ $paymentmode->id }}" ${pay.payment_mode_id == {{ $paymentmode->id }} ? 'selected' : ''}>
+            //                         {{ $paymentmode->payment_mode_name }}
+            //                     </option>
+            //                 @endforeach
+            //             </select>
+            //         </div>
+
+            //         <div class="col-md-4">
+            //             <label>Payment Date</label>
+            //             <div class="input-group date" id="otherPaymentDate${i}" data-target-input="nearest">
+            //                 <input type="text" class="form-control datetimepicker-input otherPaymentDate"
+            //                     name="payment_detail[${i}][payment_date]" id="payment_date${i}"
+            //                     value="${formattedDate}" data-target="#otherPaymentDate${i}" placeholder="dd-mm-YYYY" />
+            //                 <div class="input-group-append" data-target="#otherPaymentDate${i}" data-toggle="datetimepicker">
+            //                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            //                 </div>
+            //             </div>
+            //         </div>
+
+            //         <div class="col-md-4">
+            //             <label>Payment Amount</label>
+            //             <input type="text" class="form-control" name="payment_detail[${i}][payment_amount]" value="${pay.payment_amount}">
+            //         </div>
+            //     </div>
+
+            //     <div class="form-group row">
+            //         <div class="col-md-4 bank" id="bank${i}">
+            //             <label>Bank Name</label>
+            //             <select class="form-control select2" name="payment_detail[${i}][bank_id]" id="bank_name${i}">
+            //                 <option value="">Select Bank Name</option>
+            //                 @foreach ($banks as $bank)
+            //                     <option value="{{ $bank->id }}" ${pay.bank_id == {{ $bank->id }} ? 'selected' : ''}>{{ $bank->bank_name }}</option>
+            //                 @endforeach
+            //             </select>
+            //         </div>
+
+            //         <div class="col-md-3 chq" id="chq${i}">
+            //             <label>Cheque No</label>
+            //             <input type="text" class="form-control" value="${pay.cheque_number || ''}" name="payment_detail[${i}][cheque_number]" id="cheque_no${i}" placeholder="Cheque No">
+            //         </div>
+
+
+            //     </div>
+            // `;
+
+                //         // Append block
+                //         containerPayment.appendChild(paymentBlock);
+
+                //         // Initialize select2 / datepicker / validation
+                //         initPaymentValidation(selectedContract.contract_type_id, selectedContract
+                //             .contract_unit.business_type);
+
+                //         $('#otherPaymentDate' + i).datetimepicker({
+                //             format: 'DD-MM-YYYY'
+                //         });
+
+                //         hidePayments(i);
+
+
+                //         // Then apply the right visibility logic
+                //         setTimeout(() => {
+                //             paymentModeChange(i);
+                //         }, 50);
+
+                //         // Attach change event for user interaction
+                //         $('#payment_mode' + i).change(function() {
+                //             paymentModeChange(i);
+                //         });
+
+                //         // Recalculate dates
+                //         $('#otherPaymentDate' + i).on('input change', function() {
+                //             calculatePaymentDates();
+                //         });
+
+
+                //     });
+                // }
                 const newInstallments = $(this).find('option:selected').text().trim();
                 if (editedPayment && Array.isArray(editedPayment.agreement_payment_details)) {
                     // Grab existing payment details if any
@@ -2120,63 +2050,63 @@
                         }
 
                         paymentBlock.innerHTML = `
-                            <input type="hidden" name="payment_detail[${i}][id]" value="${pay.id || ''}">
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <label>Payment Mode</label>
-                                    <select class="form-control " name="payment_detail[${i}][payment_mode_id]" id="payment_mode${i}" required>
-                                        <option value="">Select</option>
-                                        @foreach ($paymentmodes as $paymentmode)
-                                            <option value="{{ $paymentmode->id }}" ${pay.payment_mode_id == {{ $paymentmode->id }} ? 'selected' : ''}>
-                                                {{ $paymentmode->payment_mode_name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                    <input type="hidden" name="payment_detail[${i}][id]" value="${pay.id || ''}">
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label>Payment Mode ${i + 1}</label>
+                            <select class="form-control select2" name="payment_detail[${i}][payment_mode_id]" id="payment_mode${i}" required>
+                                <option value="">Select</option>
+                                @foreach ($paymentmodes as $paymentmode)
+                                    <option value="{{ $paymentmode->id }}" ${pay.payment_mode_id == {{ $paymentmode->id }} ? 'selected' : ''}>
+                                        {{ $paymentmode->payment_mode_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                                <div class="col-md-4">
-                                    <label>Payment Date</label>
-                                    <div class="input-group date" id="otherPaymentDate${i}" data-target-input="nearest">
-                                        <input type="text" class="form-control datetimepicker-input otherPaymentDate"
-                                            name="payment_detail[${i}][payment_date]" id="payment_date${i}"
-                                            value="${formattedDate}" data-target="#otherPaymentDate${i}" placeholder="dd-mm-YYYY" />
-                                        <div class="input-group-append" data-target="#otherPaymentDate${i}" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label>Payment Amount</label>
-                                    <input type="text" class="form-control" id="payment_amount_${i}" name="payment_detail[${i}][payment_amount]" value="${pay.payment_amount || ''}" placeholder="Payment Amount" />
+                        <div class="col-md-4">
+                            <label>Payment Date</label>
+                            <div class="input-group date" id="otherPaymentDate${i}" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input otherPaymentDate"
+                                    name="payment_detail[${i}][payment_date]" id="payment_date${i}"
+                                    value="${formattedDate}" data-target="#otherPaymentDate${i}" placeholder="dd-mm-YYYY" />
+                                <div class="input-group-append" data-target="#otherPaymentDate${i}" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
-                            <div class="form-group row" id="extra_fields_${i}">
-                                <div class="col-md-4 bank" id="bank${i}">
-                                <label>Bank Name</label>
-                                <select class="form-control select2" name="payment_detail[${i}][bank_id]" id="bank_name${i}">
-                                    <option value="" >Select Bank Name</option>
-                                    @foreach ($banks as $bank)
-                                        <option value="{{ $bank->id }}" ${pay.bank_id == {{ $bank->id }} ? 'selected' : ''}>{{ $bank->bank_name }}</option>
-                                    @endforeach
-                                </select>
-                                </div>
+                        </div>
 
-                                <div class="col-md-3 chq" id="chq${i}">
-                                    <label>Cheque No</label>
-                                    <input type="number" pattern="\d{6,10}" min="0"
-                                        maxlength="10"
-                                        title="Cheque number must be 6–10 digits" class="form-control" value="${pay.cheque_number || ''}" name="payment_detail[${i}][cheque_number]" id="cheque_no${i}" placeholder="Cheque No">
-                                        @error('cheque_number')
-                                            <span class="invalid-feedback d-block">
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-                                </div>
+                        <div class="col-md-4">
+                            <label>Payment Amount</label>
+                            <input type="text" class="form-control" id="payment_amount_${i}" name="payment_detail[${i}][payment_amount]" value="${pay.payment_amount || ''}" placeholder="Payment Amount" />
+                        </div>
+                    </div>
+                     <div class="form-group row" id="extra_fields_${i}">
+                        <div class="col-md-4 bank" id="bank${i}">
+                        <label>Bank Name</label>
+                        <select class="form-control select2" name="payment_detail[${i}][bank_id]" id="bank_name${i}">
+                            <option value="">Select Bank Name</option>
+                            @foreach ($banks as $bank)
+                                <option value="{{ $bank->id }}" ${pay.bank_id == {{ $bank->id }} ? 'selected' : ''}>{{ $bank->bank_name }}</option>
+                            @endforeach
+                        </select>
+                        </div>
+
+                        <div class="col-md-3 chq" id="chq${i}">
+                            <label>Cheque No</label>
+                            <input type="number" pattern="\d{6,10}" min="0"
+                                maxlength="10"
+                                title="Cheque number must be 6–10 digits" class="form-control" value="${pay.cheque_number || ''}" name="payment_detail[${i}][cheque_number]" id="cheque_no${i}" placeholder="Cheque No">
+                                @error('cheque_number')
+                                    <span class="invalid-feedback d-block">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                        </div>
 
 
-                            </div>
-                        `;
+                    </div>
+                `;
 
                         // Initialize Select2 and Datepicker AFTER appending to DOM
                         $(paymentBlock).find('.select2').select2();
@@ -2219,21 +2149,13 @@
                 } else {
                     // alert("DFFFFFF");
                     for (let i = 0; i < installments; i++) {
-                        // alert(installments);
 
                         const paymentBlock = document.createElement('div');
                         paymentBlock.classList.add('payment_mode_div');
-                        let receivableDate = '';
-
-                        if (remainingReceivables) {
-                            // console.log('remaining', remainingReceivables);
-                            const rawDate = remainingReceivables[i]?.receivable_date;
-                            receivableDate = rawDate ? moment(rawDate, 'DD-MM-YYYY').format('DD-MM-YYYY') : '';
-                        } else {
-                            const rawDate = selectedContract.contract_payment_receivables?.[i]?.receivable_date;
-                            receivableDate = rawDate ? moment(rawDate, 'DD-MM-YYYY').format('DD-MM-YYYY') : '';
-                        }
-
+                        const rawDate = selectedContract.contract_payment_receivables?.[i]
+                            ?.receivable_date;
+                        const receivableDate = rawDate ? moment(rawDate, 'DD-MM-YYYY').format(
+                            'DD-MM-YYYY') : '';
                         const existingValue = oldValues[i] || '';
 
                         paymentBlock.innerHTML = `
@@ -2241,7 +2163,7 @@
                                 <div class="form-group row">
                                     <div class="col-md-4">
                                         <label>Payment Mode</label>
-                                        <select class="form-control " name="payment_detail[${i}][payment_mode_id]" id="payment_mode${i}" required>
+                                        <select class="form-control select2" name="payment_detail[${i}][payment_mode_id]" id="payment_mode${i}" required>
                                             <option value="">Select</option>
                                             @foreach ($paymentmodes as $paymentmode)
                                             <option value="{{ $paymentmode->id }}">
@@ -2269,7 +2191,7 @@
                                         <div class="col-md-4 bank" id="bank${i}">
                                             <label for="exampleInputEmail1">Bank Name</label>
                                             <select class="form-control select2" name="payment_detail[${i}][bank_id]" id="bank_name${i}">
-                                                <option value="" disabled>Select Bank Name</option>
+                                                <option value="">Select Bank Name</option>
                                                 @foreach ($banks as $bank)
                                             <option value="{{ $bank->id }}">
                                                     {{ $bank->bank_name }} </option>
@@ -2407,10 +2329,85 @@
         }
 
 
+        // function validateTotalPaymentFF(changedIndex = null) {
+        //     // alert(changedIndex);
+        //     const totalsByInstallment = {};
+
+        //     // Sum all
+        //     $('input[name^="payment_detail"][name$="[payment_amount]"]').each(function() {
+        //         const name = $(this).attr('name');
+        //         const match = name.match(/payment_detail\[\d+\]\[(\d+)\]/);
+        //         if (!match) return;
+
+        //         const installmentIndex = parseInt(match[1]);
+        //         const val = parseFloat($(this).val()) || 0;
+
+        //         if (!totalsByInstallment[installmentIndex]) {
+        //             totalsByInstallment[installmentIndex] = 0;
+        //         }
+        //         totalsByInstallment[installmentIndex] += val;
+        //     });
+        //     // //console.log(totalsByInstallment);
+
+        //     // Validate only changed installment (if specified)
+        //     const keysToCheck = changedIndex !== null ? [changedIndex] : Object.keys(totalsByInstallment);
+        //     //console.log(keysToCheck);
+
+        //     keysToCheck.forEach(index => {
+        //         const total = totalsByInstallment[index]?.toFixed(2) || 0;
+        //         // //console.log('index' + index);
+        //         const $amountCell = $(`.amountchange[data-installment="${index}"]`);
+        //         const receivable = parseFloat($(`.receivable_amount${index}`).text()) || 0;
+        //         // //console.log('receivable' + receivable)
+
+        //         // Update cell
+        //         $amountCell.text(total);
+        //         // //console.log("gy" + receivable + total);
+        //         const errorDiv = $('#paymentError');
+        //         errorDiv.attr('tabindex', '-1');
+
+        //         if (receivable == total) {
+        //             $amountCell.css({
+        //                 backgroundColor: '#d4edda',
+        //                 color: '#155724'
+        //             });
+        //             $('#submitBtn').prop('disabled', false);
+        //             errorDiv.addClass('d-none').removeClass('d-flex');
+        //         } else {
+        //             $amountCell.css({
+        //                 backgroundColor: '#f8d7da',
+        //                 color: '#721c24'
+        //             });
+        //             $('#submitBtn').prop('disabled', true);
+        //             // errorDiv.html(
+        //             //     // `Total payment amount <span class="mx-1 text-dark">${totalPayment}</span> does not match total rent per annum <span class="mx-1 text-dark">${totalRent}</span>.`
+        //             //     `Installment <span class="mx-1 text-dark">${parseInt(index) + 1}</span>: Total <span class="mx-1 text-dark">(${total})</span> is not equal to Receivable <span class="mx-1 text-dark">(${receivable})</span>`
+        //             // );
+        //             // errorDiv.removeClass('d-none').addClass('d-flex'); // show error
+        //             // // errorDiv.focus();
+        //             // errorDiv[0].scrollIntoView({
+        //             //     behavior: 'smooth',
+        //             //     block: 'center'
+        //             // });
+        //             toastr.options = {
+        //                 "closeButton": true,
+        //                 "progressBar": true,
+        //                 timeOut: 5000,
+        //                 extendedTimeOut: 2000
+        //             };
+        //             toastr.error(
+        //                 `Installment ${parseInt(index) + 1}: Total (${total}) is not equal to Receivable (${receivable})`
+        //             );
+        //             console.warn(`Installment ${index}: mismatch → total=${total}, receivable=${receivable}`);
+
+
+        //         }
+        //     });
+        // }
         function validateTotalPaymentFF(changedIndex = null) {
             const totalsByInstallment = {};
             const errorDiv = $('#paymentError');
-            let errorMessages = [];
+            let errorMessages = []; // collect all errors
 
             $('input[name^="payment_detail"][name$="[payment_amount]"]').each(function() {
                 const name = $(this).attr('name');
@@ -2468,7 +2465,62 @@
             }
         }
 
+        // function validateTotalPaymentFF() {
+        //     const totalsByInstallment = {};
 
+        //     // Loop through all inputs
+        //     $('input[name^="payment_detail"][name$="[payment_amount]"]').each(function() {
+        //         const name = $(this).attr('name');
+        //         const match = name.match(/payment_detail\[\d+\]\[(\d+)\]\[payment_amount\]/);
+        //         if (!match) return;
+
+        //         const installmentIndex = parseInt(match[1]);
+        //         const val = parseFloat($(this).val()) || 0;
+
+        //         if (!totalsByInstallment[installmentIndex]) {
+        //             totalsByInstallment[installmentIndex] = 0;
+        //         }
+        //         totalsByInstallment[installmentIndex] += val;
+        //     });
+
+        //     // Validate all installments
+        //     Object.keys(totalsByInstallment).forEach(index => {
+        //         const total = totalsByInstallment[index].toFixed(2);
+
+        //         // Select all cells for this installment
+        //         const $amountCell = $(`.amountchange[data-installment="${index}"]`);
+        //         const receivable = parseFloat($(`.receivable_amount${index}`).text()) || 0;
+
+        //         if (Math.abs(receivable - total) < 0.01) { // small tolerance for float
+        //             $amountCell.css({
+        //                 backgroundColor: '#d4edda',
+        //                 color: '#155724'
+        //             });
+        //         } else {
+        //             $amountCell.css({
+        //                 backgroundColor: '#f8d7da',
+        //                 color: '#721c24'
+        //             });
+        //         }
+        //     });
+
+        //     // Update error div separately for summary
+        //     const errors = Object.keys(totalsByInstallment).filter(index => {
+        //         const total = totalsByInstallment[index].toFixed(2);
+        //         const receivable = parseFloat($(`.receivable_amount${index}`).text()) || 0;
+        //         return Math.abs(receivable - total) >= 0.01;
+        //     });
+
+        //     if (errors.length) {
+        //         $('#submitBtn').prop('disabled', true);
+        //         $('#paymentError').html(`Mismatch in Installments: ${errors.map(i => parseInt(i)+1).join(', ')}`)
+        //             .removeClass('d-none').addClass('d-flex');
+        //     } else {
+        //         $('#submitBtn').prop('disabled', false);
+        //         $('#paymentError').addClass('d-none').removeClass('d-flex');
+        //     }
+
+        // }
 
 
         function paymentModeChangeFF(unitId, i) {
@@ -2524,199 +2576,5 @@
                 calculatePaymentDatesFF(unitId, index);
             });
         }
-    </script>
-    {{-- Df B2B unit selection add more --}}
-    <script>
-        let counter = 1;
-        let deletedUnits = [];
-
-        $("#add_more_unit").on("click", function() {
-            let addedUnits = getUnitCount();
-            const totalUnitsAvailable = window.unit_details.length;
-
-            if (addedUnits >= totalUnitsAvailable) {
-                $("#add_more_unit")
-                    .prop("disabled", true)
-                    .addClass("shake");
-
-                Swal.fire({
-                    icon: "warning",
-                    title: "Unit Limit Reached",
-                    text: "No more units can be added.",
-                });
-                return;
-            }
-
-
-            let clone = `
-                    <div class="card mb-3 unit-row p-3" data-row-index="${counter}">
-                        <div class="card-body">
-                        <div class="row g-3 align-items-end">
-
-                            <div class="col-sm-3">
-                                <label class="form-label">Unit Type</label>
-                                <input type="hidden" name="unit_detail[${counter}][unit_id]" value="">
-                                <select class="form-control select2 unit_type_id"
-                                        name="unit_detail[${counter}][unit_type_id]" required>
-                                </select>
-                            </div>
-
-                            <div class="col-sm-3">
-                                <label class="form-label">Select Unit No</label>
-                                <select class="form-control select2 unit_type0"
-                                        name="unit_detail[${counter}][contract_unit_details_id]" required>
-                                    <option value="">Select Unit Number</option>
-                                </select>
-                            </div>
-
-                            <div class="col-sm-3 subunit_number_div">
-                                <label class="form-label">Sub Unit</label>
-                                <select class="form-control select2 sub_unit_type"
-                                        name="unit_detail[${counter}][contract_subunit_details_id]" disabled></select>
-                            </div>
-
-                            <div class="col-sm-2">
-                                <label class="form-label">Rent per Month</label>
-                                <input type="text" class="form-control rent_per_month"
-                                    name="unit_detail[${counter}][rent_per_month]" placeholder="Rent per month">
-                            </div>
-                            <div class="col-sm-1 text-end">
-                                <button type="button" class="btn btn-danger delete-row"> <i class="fa fa-trash"></i></button>
-                                </div>
-
-                        </div>
-                        </div>
-
-
-                    </div>
-                    `;
-
-
-
-
-            $("#additional_unit_rows").append(clone);
-            $("#additional_unit_rows").removeClass("d-none").addClass("d-block");
-
-            populateUnitTypesForNewRow(counter);
-
-            // $(".select2").select2();
-
-
-            counter++;
-            updateUnitOptions('.unit_type0');
-        });
-
-
-
-        // Delete row
-        $(document).on("click", ".delete-row", function() {
-            $(this).closest(".unit-row").remove();
-        });
-
-
-
-
-        function getUnitCount() {
-            return $(".unit-row").length;
-        }
-
-        function updateUnitOptions(selecter) {
-            const selectedUnitIds = $(selecter).map(function() {
-                return $(this).val();
-            }).get();
-            // console.log("Selected Unit IDs:", selectedUnitIds);
-            // console.log("Selector:", selecter);
-
-            $(selecter).each(function() {
-                const select = $(this);
-                const currentVal = select.val();
-                // console.log("Current Value:", currentVal);
-
-                select.find("option").prop("disabled", false);
-
-                selectedUnitIds.forEach(function(id) {
-                    if (id && id !== currentVal) {
-                        // alert(currentVal);
-                        const opt = select.find(`option[value='${id}']`);
-                        opt.prop("disabled", true);
-                        opt.text(opt.text() + " (Already selected)");
-                    }
-                });
-                // select.trigger('change');
-
-                // select.select2();
-            });
-        }
-
-
-        $(document).on("click", ".delete-row", function() {
-            $("#add_more_unit")
-                .prop("disabled", false);
-            $(this).closest(".unit-row").remove();
-            updateUnitOptions();
-        });
-
-        $(document).on("change", ".unit_type0", function() {
-            updateUnitOptions();
-        });
-
-        function populateUnitTypesForNewRow(index) {
-            let contract = selectedContract;
-            let unitTypeIds = contract.contract_unit.contract_unit_details
-                .filter(d => d.is_vacant == 0)
-                .map(d => d.unit_type_id);
-
-            unitTypeIds = [...new Set(unitTypeIds)];
-
-            let options = `<option value="">Select Unit Types</option>`;
-
-            allunittypes
-                .filter(t => unitTypeIds.includes(t.id))
-                .forEach(t => {
-                    options += `<option value="${t.id}">${t.unit_type}</option>`;
-                });
-            deletedUnits.forEach(du => {
-                if (!unitTypeIds.includes(du.unit_type_id)) {
-                    options += `<option value="${du.unit_type_id}">${du.unit_type_name}</option>`;
-                }
-            });
-
-            $(`select[name="unit_detail[${index}][unit_type_id]"]`).html(options);
-        }
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            if (editedUnit) {
-                updateUnitOptions('.unit_no_select');
-            }
-            $(document).on('change', '.unit_type_select', function() {
-                // alert('unit type changed');
-                var typeId = $(this).val();
-                var $unitNoSelect = $(this).closest('.unit-row').find('.unit_no_select');
-                // console.log('Selected Unit Type ID:', typeId);
-                // console.log('unitsbytype', mergedUnitsByType[typeId]);
-                // var $unitNoSelect = $(this).closest('.unit-row');
-                // unitTypeChange(typeId, null, $unitNoSelect);
-
-
-                $unitNoSelect.empty().append('<option value="">Select Unit Number</option>');
-
-                if (mergedUnitsByType[typeId]) {
-                    mergedUnitsByType[typeId].forEach(function(unit) {
-                        $unitNoSelect.append('<option value="' + unit.id + '">' + unit.unit_number +
-                            '</option>');
-                    });
-                }
-                updateUnitOptions('.unit_no_select');
-            });
-        });
-        $(document).on('change', '.unit_no_select', function() {
-            // alert('unit no changed');
-            const unitId = $(this).val();
-            const row = $(this).closest('.unit-row');
-            unitNumberChange(unitId, row);
-            updateUnitOptions('.unit_no_select');
-        });
     </script>
 @endsection

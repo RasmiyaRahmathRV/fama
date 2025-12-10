@@ -12,6 +12,7 @@ use App\Models\TenantIdentity;
 use App\Models\UnitType;
 use App\Services\Agreement\AgreementDocumentService;
 use App\Services\Agreement\AgreementService;
+use App\Services\Agreement\AgreementUnitService;
 use App\Services\Agreement\InvoiceService;
 use App\Services\BankService;
 use App\Services\CompanyService;
@@ -36,15 +37,12 @@ class AgreementController extends Controller
         protected BankService $bankService,
         protected AgreementService $agreementService,
         protected AgreementDocumentService $agreementDocumentService,
+        protected AgreementUnitService $agreementUnitService,
         protected InvoiceService $invoiceService
     ) {}
     public function index()
     {
-        // dd("test");
-
         $title = 'Agreemants';
-        // dd("test");
-
         return view("admin.projects.agreement.agreement", compact("title"));
     }
     public function create()
@@ -95,7 +93,8 @@ class AgreementController extends Controller
         if ($request->ajax()) {
             $filters = [
                 'company_id' => auth()->user()->company_id,
-                'search' => $request->search['value'] ?? null
+                'search' => $request->search['value'] ?? null,
+                'status' => $request->status ?? 'all',
             ];
             return $this->agreementService->getDataTable($filters);
         }
@@ -125,6 +124,9 @@ class AgreementController extends Controller
         $banks = $this->bankService->getAll();
         $nationalities = $this->nationalityService->getAll();
         $contractTypes = ContractType::all();
+        $unitTypeList = $agreement->getVacantunitTypes();
+        $vacantData = $agreement->getVacantUnits();
+        // dd($unitTypeList);
 
         return view('admin.projects.agreement.create-agreement', compact(
             'agreement',
@@ -137,7 +139,9 @@ class AgreementController extends Controller
             'banks',
             'nationalities',
             'contractTypes',
-            'fullContracts'
+            'fullContracts',
+            'unitTypeList',
+            'vacantData'
         ));
     }
     public function update(Request $request, $id)
@@ -225,6 +229,23 @@ class AgreementController extends Controller
         try {
             $upload = $this->invoiceService->upload_invoice($request->all());
             return response()->json(['success' => true, 'data' => $upload, 'message' => 'Invoice Uploaded successfully'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
+        }
+    }
+    public function delete_unit(Request $request, $unitId)
+    {
+        // dd($request->all());
+        $contract_id = $request->contract_id;
+        // dd($contract_id);
+        try {
+            $response = $this->agreementUnitService->deleteUnit($unitId, $contract_id);
+
+            return response()->json([
+                'success' => $response['success'],
+                'vacant_units' => $response['vacant_units'] ?? 0,
+                'message' => 'Agreement Unit deleted successfully'
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
         }

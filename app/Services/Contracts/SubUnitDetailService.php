@@ -299,4 +299,20 @@ class SubUnitDetailService
         $unit->total_payment_pending = $details['pending'];
         $unit->save();
     }
+    public function markUnitOccupied($unitId)
+    {
+        $unit = ContractUnitDetail::find($unitId);
+
+        if (!$unit) {
+            return;
+        }
+
+        $unit->is_vacant = 1;
+        $unit->save();
+        $subunits = ContractSubunitDetail::where('contract_unit_detail_id', $unitId)->get();
+        foreach ($subunits as $subunit) {
+            $subunit->is_vacant = 1;
+            $subunit->save();
+        }
+    }
 }

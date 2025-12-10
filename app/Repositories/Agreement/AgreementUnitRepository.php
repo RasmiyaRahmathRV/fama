@@ -21,6 +21,7 @@ class AgreementUnitRepository
     }
     public function update($id, array $data)
     {
+        // dd($data);
         $unit = $this->find($id);
         $unit->update($data);
         return $unit;
@@ -28,5 +29,12 @@ class AgreementUnitRepository
     public function find($id)
     {
         return AgreementUnit::findOrFail($id);
+    }
+    public function delete($unitId, $contract_id)
+    {
+        // dd($unitId, $contract_id);
+        $unit = AgreementUnit::findOrFail($unitId);
+        // dd($unit);
+        return $unit->delete();
     }
 }

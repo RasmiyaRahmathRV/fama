@@ -1,8 +1,10 @@
 <?php
 
+use App\Models\Agreement;
 use App\Models\AgreementPaymentDetail;
 use App\Models\Contract;
 use App\Models\ContractSubunitDetail;
+use App\Models\ContractUnitDetail;
 use App\Models\Installment;
 use App\Repositories\Contracts\ContractRepository;
 use App\Services\Contracts\ContractService;
@@ -250,6 +252,43 @@ function getPaymentDetails($paymentId, $unitId)
         'pending' => $pendingAmount,
         'total' => $totalPaymentAmount
     ];
+}
+function makeUnitVacant($unitId, $contract_id)
+{
+    $unit = ContractUnitDetail::find($unitId);
+    if ($unit) {
+        $unit->is_vacant = 0;
+        $unit->save();
+    }
+    $subunit = ContractSubunitDetail::where('contract_unit_detail_id', $unitId)->get();
+    foreach ($subunit as $sub) {
+        $sub->is_vacant = 0;
+        $sub->save();
+    }
+}
+function getVacantUnits($id)
+{
+    $unit_count = ContractUnitDetail::where('contract_id', $id)->where('is_vacant', 0)->count();
+    return $unit_count;
+}
+function paymentStatus($agreementid)
+{
+    $paid = AgreementPaymentDetail::where('agreement_id', $agreementid)
+        ->where('terminate_status', 0)
+        ->SUM('paid_amount');
+    // dd($paid);
+
+    return $paid;
+}
+function makeContractAvailable($contract_id)
+{
+    $contract = Contract::find($contract_id);
+    $contract->is_agreement_added = 0;
+    $hasagreement = Agreement::where('contract_id', $contract_id)->exists();
+    if (!$hasagreement) {
+        $contract->has_agreement = 0;
+    }
+    $contract->save();
 }
 
 function contractStatusUpdate($status, $contract_id)

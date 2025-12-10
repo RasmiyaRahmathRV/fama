@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\ContractExport;
 use App\Exports\ProjectScopeExport;
+use App\Models\Agreement;
 use App\Models\Contract;
 use App\Models\DocumentType;
 use App\Repositories\Agreement\AgreementRepository;
@@ -22,6 +23,7 @@ use App\Services\LocalityService;
 use App\Services\PropertyService;
 use App\Services\PropertyTypeService;
 use App\Services\VendorService;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -313,6 +315,137 @@ class ContractController extends Controller
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition' => 'attachment; filename="' . $scopeData['file_name'] . '"',
             'Cache-Control' => 'max-age=0',
+        ]);
+    }
+    public function getTerminatedAgreementDetails($id)
+    {
+        $agreement = Agreement::where('contract_id', $id)
+            ->where('agreement_status', 1)
+            ->latest()
+            ->first();
+        // dd($agreement);
+
+        // Contract details
+        $contract = Contract::with('contract_payment_receivables')->find($id);
+        $receivables = $contract->contract_payment_receivables;
+
+        $startDate = Carbon::parse(
+            $receivables->first()->receivable_date
+        );
+
+        $endDate = Carbon::parse(
+            $receivables->last()->receivable_date
+        );
+        if (!$agreement) {
+            return;
+        }
+
+        $terminatedDate = Carbon::parse($agreement->terminated_date);
+
+        // $remaining = $receivables->filter(function ($r) use ($terminatedDate) {
+        //     return Carbon::parse($r->receivable_date)->gt($terminatedDate);
+        // });
+
+        // $remainingCount = $remaining->count();
+
+        $remainingReceivables = $receivables
+            ->filter(function ($receivable) use ($terminatedDate) {
+                return Carbon::parse($receivable->receivable_date)->greaterThan($terminatedDate);
+            })
+            ->map(function ($receivable) {
+                return [
+                    'receivable_date' => Carbon::parse($receivable->receivable_date)->format('d-m-Y'),
+                    'receivable_amount' => $receivable->receivable_amount,
+                ];
+            })
+            ->values();
+        // dd($remainingReceivables);
+        $remainingCount = $remainingReceivables->count();
+        $remainingAmountSum = $remainingReceivables->sum('receivable_amount');
+
+        // dd([
+        //     'receivables' => $receivables,
+        //     'start_date' => $startDate->format('Y-m-d'),
+        //     'end_date' => $endDate->format('Y-m-d'),
+        //     'terminated_date' => $terminatedDate->format('Y-m-d'),
+        //     'remaining_installments' => $remainingCount,
+        //     'remaining_receivables' => $remainingReceivables
+        // ]);
+
+        return response()->json([
+            'terminated_agreement' => $agreement,
+            'contract_end_date' => $contract?->contract_end_date,
+            'receivables' => $receivables,
+            'start_date' => $startDate->format('Y-m-d'),
+            'end_date' => $endDate->format('Y-m-d'),
+            'terminated_date' => $terminatedDate->format('Y-m-d'),
+            'remaining_installments' => $remainingCount,
+            'remaining_receivables' => $remainingReceivables,
+            'remainingTotal' => $remainingAmountSum
+        ]);
+    }
+    public function checkAgreement(Request $request, $contractId)
+    {
+        $unitId = $request->unit_id;
+        $subunitId = $request->subunit_id;
+
+        $agreement = Agreement::with('agreement_payment_details')
+            ->where('agreements.contract_id', $contractId)
+            ->where('agreements.agreement_status', 1)
+            ->whereHas('agreement_units', function ($query) use ($unitId, $subunitId) {
+                $query->where('contract_unit_details_id', $unitId)
+                    ->where('contract_subunit_details_id', $subunitId);
+            })
+            ->latest()
+            ->first();
+        // dd($agreement);
+
+        $contract = Contract::with('contract_payment_receivables')->find($contractId);
+        $receivables = $contract->contract_payment_receivables;
+
+        $remainingReceivables = collect();
+        $remainingCount = 0;
+        $remainingAmountSum = 0;
+        $terminatedDate = null;
+        if (!$agreement) {
+            return response()->json([
+                'exists' => false,
+                'agreement' => null,
+                'remaining_installments' => 0,
+                'remaining_receivables' => [],
+                'remainingTotal' => 0,
+            ]);
+        }
+
+        if ($agreement) {
+            $terminatedDate = Carbon::parse($agreement->terminated_date);
+            // dd($terminatedDate);
+
+            $remainingReceivables = $receivables
+                ->filter(function ($receivable) use ($terminatedDate) {
+                    return Carbon::parse($receivable->receivable_date)->greaterThan($terminatedDate);
+                })
+                ->map(function ($receivable) {
+                    return [
+                        'receivable_date' => Carbon::parse($receivable->receivable_date)->format('d-m-Y'),
+                        'receivable_amount' => $receivable->receivable_amount,
+                    ];
+                })
+                ->values();
+            // dd($remainingReceivables);
+
+            $remainingCount = $remainingReceivables->count();
+            $remainingAmountSum = $agreement->agreement_payment_details
+                ->where('terminated_status', 1)
+                ->sum('payment_amount');
+        }
+
+        return response()->json([
+            'exists' => $agreement ? true : false,
+            'agreement' => $agreement,
+            'remaining_installments' => $remainingCount,
+            'remaining_receivables' => $remainingReceivables,
+            'remainingTotal' => $remainingAmountSum
         ]);
     }
 

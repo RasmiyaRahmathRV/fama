@@ -124,6 +124,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('agreement-documents-upload/{id}', [AgreementController::class, 'documentUpload'])->name('agreement.documentUpload');
     Route::post('agreement-terminate', [AgreementController::class, 'terminate'])->name('agreement.terminate');
     Route::post('agreement-invoice-upload', [AgreementController::class, 'invoice_upload'])->name('agreement.invoiceUpload');
+    Route::post('/agreement-unit/delete/{unitId}', [AgreementController::class, 'delete_unit'])->name('agreement.deleteUnit');
 
 
     // renewal
@@ -139,7 +140,12 @@ Route::middleware(['auth'])->group(function () {
         ->name('contract.downloadSummary');
     Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);
 
-    Route::get('contract-approval/{id}', [ContractController::class, 'contractApproval'])->name('contract.approve');
+    Route::get(
+        '/contracts/{id}/terminated-agreement-details',
+        [ContractController::class, 'getTerminatedAgreementDetails']
+    );
+    Route::get('/contracts/{contract}/check-agreement', [ContractController::class, 'checkAgreement']);
+    Route::get('contract-approval/{id}', [ContractController::class, 'approveContract'])->name('contract.approve');
     Route::post('contract-reject', [ContractController::class, 'rejectContract'])->name('contract.reject');
     Route::post('contract-sendcomment', [ContractController::class, 'sendComments'])->name('contract.sendComment');
     Route::get('contract-approval-list', [ContractController::class, 'approvalListContract'])->name('contract.approve.list');

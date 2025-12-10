@@ -2,6 +2,17 @@
 @section('custom_css')
 @endsection
 @section('content')
+    @php
+        $business_type = ' - ';
+        $type = $agreement->contract->contract_unit->business_type;
+        if ($type == 1) {
+            $business_type = 'B2B';
+        } else {
+            $business_type = 'B2C';
+        }
+
+    @endphp
+    {{-- {{ dd($agreement) }} --}}
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
@@ -15,6 +26,10 @@
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
                             <li class="breadcrumb-item active">Installment details</li>
                         </ol>
+                        <!-- Back to List Button -->
+                        <a href="{{ route('agreement.index') }}" class="btn btn-info float-sm-right mx-2 btn-sm ml-2">
+                            <i class="fa fa-arrow-left"></i> Back to List
+                        </a>
                     </div>
                 </div>
             </div><!-- /.container-fluid -->
@@ -67,8 +82,12 @@
                                 </div>
                                 <!-- /.col -->
                                 <div class="col-sm-6 float-xl-right">
+
                                     <span class="float-xl-right">
-                                        <h5 class="font-weight-bold text-success mb-2">Tenant Details</h5>
+
+                                        <h5 class="font-weight-bold text-success mb-2">Tenant Details -
+                                            <span class="text-danger">{{ $business_type }}</span>
+                                        </h5>
                                         <address>
                                             <span
                                                 class="vendor_name">{{ strtoupper($agreement->tenant->tenant_name) }}</span></br>
@@ -101,16 +120,183 @@
                                             </span>
                                             - <span class="inst_mode">12 /
                                                 Bank</span></br> --}}
+                                            @if ($agreement->agreement_status == 1)
+                                                <span class="badge badge-danger px-3 py-2">Terminated</span>
+                                                <span class="btn btn-warning btn-sm px-3 py-1 ml-2" data-toggle="modal"
+                                                    data-target="#terminationReasonModal"
+                                                    data-reason="{{ $agreement->terminated_reason }}"
+                                                    data-date="{{ $agreement->terminated_date }}">
+                                                    <i class="fas fa-info-circle mr-1"></i> Reason
+                                                </span>
+                                            @else
+                                                <span class="badge badge-success px-3 py-2">Active</span>
+                                            @endif
                                         </address>
                                     </span>
                                 </div>
                             </div>
                             <!-- /.row -->
 
-                            <div id="unitAccordion">
+                            <div class="row d-flex justify-content-center">
+                                <div class="col-md-6">
+                                    <div class="card card-widget  shadow-sm">
+                                        <div class="bg-gradient-olive pl-4 py-2 widget-user-header">
+
+                                            <h5 class="widget-user-username"><i
+                                                    class="fa fa-solid mx-1 fa-user"></i>{{ $agreement->tenant->tenant_name }}
+                                                </h3>
+                                                <h6 class="widget-user-desc"><i
+                                                        class="fa  fa-solid fa-inbox mx-1"></i>{{ $agreement->tenant->tenant_email }}
+                                            </h5>
+                                        </div>
+                                        <div class="card-footer p-0">
+                                            <ul class="nav flex-column">
+                                                <li class="nav-item">
+                                                <li class="nav-item">
+                                                    <div class="nav-link">
+                                                        Phone Number
+                                                        <span
+                                                            class="float-right text-bold">{{ $agreement->tenant->tenant_mobile }}</span>
+                                                    </div>
+                                                </li>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <div class="nav-link">
+                                                        Contact person <span
+                                                            class="float-right text-bold text-capitalize ">{{ $agreement->tenant->contact_person }}</span>
+                                                    </div>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <div class="nav-link">
+                                                        Contact Number <span
+                                                            class="float-right text-bold">{{ $agreement->tenant->contact_number }}</span>
+                                                    </div>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <div class="nav-link">
+                                                        Contact Email <span
+                                                            class="float-right text-bold">{{ $agreement->tenant->contact_email }}</span>
+                                                    </div>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- /.widget-user -->
+                                </div>
+                                {{-- <div class="card table-responsive p-0 col-md-6 mt-sm-3 mt-lg-0">
+                                    <h5 class="border-bottom border-top p-2 text-center text-maroon">Unit Details</h5>
+                                    <div class="bg-gradient-lightblue card-header py-2 text-center text-white">
+                                        <h5 class="mb-0">Unit Details</h5>
+                                    </div>
+                                    <table class="bg-gradient-lightblue table table-hover text-nowrap text-white">
+                                        <thead>
+                                            <tr>
+                                                <th>Unit Number</th>
+                                                <th>Unit Type</th>
+                                                @if ($type == 2)
+                                                    <th>Subunit Number</th>
+                                                @elseif ($type == 1)
+                                                    <th>Total subunits</th>
+                                                @endif
+                                                <th>Subunit Type</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($agreement->agreement_units as $unit)
+                                                <tr>
+                                                    <td>{{ $unit->contractUnitDetail->unit_number }}</td>
+                                                    <td>{{ $unit->contractUnitDetail->unit_type->unit_type }}</td>
+                                                    @if ($type == 2)
+                                                        <td>{{ $unit->contractSubunitDetail->subunit_no ?? ' ' }}</td>
+                                                    @elseif ($type == 1)
+                                                        <th>{{ $unit->contractUnitDetail->subunitcount_per_unit ?? ' ' }}
+                                                        </th>
+                                                    @endif
+
+                                                    @if ($unit->contractUnitDetail->subunittype == 1)
+                                                        <td>Partition</td>
+                                                    @elseif ($unit->contractUnitDetail->subunittype == 2)
+                                                        <td>BedSpace</td>
+                                                    @elseif ($unit->contractUnitDetail->subunittype == 3)
+                                                        <td>Room</td>
+                                                    @elseif ($unit->contractUnitDetail->subunittype == 4)
+                                                        <td>Full Flat</td>
+                                                    @endif
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div> --}}
+                                <div class="col-md-6 mt-sm-3 mt-lg-0">
+                                    <div class="card shadow-sm border-0 rounded">
+                                        <div class="card-header text-white text-center py-2 bg-maroon"
+                                            style=" font-size:18px; font-weight:600;">
+                                            Unit Details
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover mb-0 ">
+                                                <thead style=" color:white;">
+                                                    <tr class="text-center bg-cyan">
+                                                        <th>Unit Number</th>
+                                                        <th>Unit Type</th>
+
+                                                        @if ($type == 2)
+                                                            <th>Subunit Number</th>
+                                                        @elseif ($type == 1)
+                                                            <th>Total Subunits</th>
+                                                        @endif
+
+                                                        <th>Subunit Type</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    @foreach ($agreement->agreement_units as $unit)
+                                                        <tr class="text-center">
+                                                            <td>{{ $unit->contractUnitDetail->unit_number }}</td>
+                                                            <td>{{ $unit->contractUnitDetail->unit_type->unit_type }}</td>
+
+                                                            @if ($type == 2)
+                                                                <td>{{ $unit->contractSubunitDetail->subunit_no ?? '-' }}
+                                                                </td>
+                                                            @elseif ($type == 1)
+                                                                <td>{{ $unit->contractUnitDetail->subunitcount_per_unit ?? '-' }}
+                                                                </td>
+                                                            @endif
+
+                                                            <td>
+                                                                @php
+                                                                    $types = [
+                                                                        1 => 'Partition',
+                                                                        2 => 'BedSpace',
+                                                                        3 => 'Room',
+                                                                        4 => 'Full Flat',
+                                                                    ];
+                                                                @endphp
+                                                                {{ $types[$unit->contractUnitDetail->subunittype] ?? '-' }}
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+
+
+
+
+                            <div id="unitAccordion" class="mt-sm-3">
                                 @foreach ($agreement->agreement_units as $unit)
                                     @php
-                                        $isFirst = $loop->first; // true for the first unit
+                                        $isFirst = $loop->first;
                                     @endphp
                                     <div class="card mb-2">
                                         <!-- Accordion Header -->
@@ -121,9 +307,10 @@
                                                     type="button" data-toggle="collapse"
                                                     data-target="#collapse{{ $unit->id }}" aria-expanded="false"
                                                     aria-controls="collapse{{ $unit->id }}">
-                                                    <span>
+                                                    <span style="letter-spacing: .5px;">
                                                         UNIT: {{ $unit->contractUnitDetail->unit_number }}
-                                                        <span class="ml-3 text-green font-weight-bold">
+                                                        <span class="ml-3 text-green font-weight-bolder"
+                                                            style="letter-spacing: .5px;">
                                                             Type:
                                                             {{ $unit->contractUnitDetail->unit_type->unit_type ?? '-' }}
                                                             @if ($unit->contractSubunitDetail)
@@ -140,7 +327,7 @@
                                                             @endif
                                                             | Rent/Month: {{ number_format($unit->rent_per_month, 2) }}
                                                             | Rent/Annum:
-                                                            {{ number_format($unit->rent_per_annum_agreement, 2) }}
+                                                            {{ number_format($unit->unit_revenue, 2) }}
                                                         </span>
                                                     </span>
                                                     <span class="arrow">&#9654;</span>
@@ -164,6 +351,7 @@
                                                                 <th>Favouring</th>
                                                                 <th>Paid On</th>
                                                                 <th>Paid Amount</th>
+                                                                <th>Status of Termination</th>
                                                                 <th>Composition</th>
                                                                 <th>Invoice Upload</th>
                                                                 <th>View Invoice</th>
@@ -213,17 +401,27 @@
                                                                     </td>
                                                                     <td
                                                                         style="background-color: {{ $bgColor }} !important;">
+                                                                        @if ($detail->terminate_status == 0)
+                                                                            <span class="badge bg-success">Active</span>
+                                                                        @else
+                                                                            <span class="badge bg-danger">Terminated</span>
+                                                                        @endif
+                                                                    </td>
+
+                                                                    <td
+                                                                        style="background-color: {{ $bgColor }} !important;">
                                                                         RENT
                                                                         {{ $loop->iteration }}/{{ $agreement->agreement_payment->installment->installment_name }}
                                                                     </td>
                                                                     @can('agreement.invoice_upload')
                                                                         <td>
-                                                                            <a href="#"
+                                                                            <button type="button"
                                                                                 class="btn btn-success btn-sm open-invoice-modal"
                                                                                 title="Upload Invoice"
                                                                                 data-detailId="{{ $detail->id }}"
                                                                                 data-agreementId="{{ $agreement->id }}"
-                                                                                @if ($detail->invoice) data-invoiceid="{{ $detail->invoice->id }}" @endif><i
+                                                                                @if ($detail->invoice) data-invoiceid="{{ $detail->invoice->id }}" @endif
+                                                                                {{ $detail->terminate_status != 0 ? 'disabled' : '' }}><i
                                                                                     class="fas fa-file-upload"></i></a>
 
                                                                         </td>
@@ -421,6 +619,9 @@
             </div>
             <!-- /.modal -->
 
+
+
+
         </section>
         <!-- /.content -->
     </div>
@@ -463,6 +664,46 @@
             <!-- /.modal-content -->
         </div>
         <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="terminationReasonModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content shadow-lg">
+
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-ban mr-2"></i> Termination Details
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="alert alert-light border-left border-danger p-3 shadow-sm">
+                        <h6 class="font-weight-bold text-danger mb-2">
+                            <i class="fas fa-info-circle mr-1"></i> Reason
+                        </h6>
+                        <p id="terminationReasonText" class="mb-0"></p>
+                    </div>
+
+                    <div id="terminationDateBox" class="mt-3 d-none">
+                        <h6 class="font-weight-bold text-dark mb-1">
+                            <i class="fas fa-calendar-alt mr-1 text-primary"></i> Termination Date
+                        </h6>
+                        <p id="terminationDateText" class="text-muted"></p>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+
+            </div>
+        </div>
     </div>
 @endsection
 @section('custom_js')
@@ -525,6 +766,17 @@
                     }
                 }
             });
+        });
+        $('#terminationReasonModal').on('show.bs.modal', function(event) {
+            let reason = $(event.relatedTarget).data('reason') || 'No reason provided';
+            let date = $(event.relatedTarget).data('date') || null;
+
+            $('#terminationReasonText').text(reason);
+
+            if (date) {
+                $('#terminationDateText').text(date);
+                $('#terminationDateBox').removeClass('d-none');
+            }
         });
     </script>
 @endsection

@@ -110,7 +110,8 @@ class Agreement extends Model
             $hasManyRelations = [
                 'agreement_payment_details',
                 'agreement_documents',
-                'agreement_units'
+                'agreement_units',
+                'tenant_invoices'
 
 
             ];
@@ -173,5 +174,43 @@ class Agreement extends Model
     public function setTerminatedDateAttribute($value)
     {
         $this->attributes['terminated_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+    public function getVacantUnitTypes()
+    {
+        $vacantUnitTypes = $this->contract->contract_unit_details
+            ->where('is_vacant', 0)
+            ->pluck('unit_type_id')
+            ->unique();
+        $agreementUnitTypes = $this->agreement_units
+            ->pluck('unit_type_id')
+            ->unique();
+
+        $unitTypeIds = $vacantUnitTypes->merge($agreementUnitTypes)->unique();
+
+        return UnitType::whereIn('id', $unitTypeIds)->get();
+    }
+    public function getVacantunits()
+    {
+        $vacantUnitIds = $this->contract->contract_unit_details
+            ->where('is_vacant', 0)
+            ->pluck('id')
+            ->unique();
+
+        $vacantUnits = ContractUnitDetail::whereIn('id', $vacantUnitIds)->get();
+
+        $vacantSubunits = ContractSubUnitDetail::whereIn('contract_unit_detail_id', $vacantUnitIds)
+            ->where('is_vacant', 0)
+            ->get();
+
+        $subunitsByUnitId = $vacantSubunits->groupBy('contract_unit_detail_id');
+
+        return [
+            'units' => $vacantUnits,
+            'subunits_by_unit' => $subunitsByUnitId,
+        ];
+    }
+    public function tenant_invoices()
+    {
+        return $this->hasMany(AgreementUnit::class, 'agreement_id', 'id');
     }
 }

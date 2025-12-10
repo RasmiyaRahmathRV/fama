@@ -151,7 +151,7 @@ class ContractRepository
                     $q->where('property_name', 'like', '%' . $filters['search'] . '%');
                 })
                 ->orWhereRaw("
-                    CASE 
+                    CASE
                         WHEN contract_status = 0 THEN 'Pending'
                         WHEN contract_status = 1 THEN 'Processing'
                         WHEN contract_status = 2 THEN 'Approved'
@@ -190,7 +190,7 @@ class ContractRepository
         ])
             ->withCount('contract_payment_receivables')
             ->withSum('contract_payment_receivables', 'receivable_amount')
-            ->where('contract_status', 2)
+            ->where('contract_status', 7)
             ->where('is_agreement_added', 0)
             ->get();
     }
@@ -204,7 +204,7 @@ class ContractRepository
         ])
             ->withCount('contract_payment_receivables')
             ->withSum('contract_payment_receivables', 'receivable_amount')
-            ->where('contract_status', 2)
+            ->where('contract_status', 7)
             // ->where('is_agreement_added', 0)
             ->get();
     }
