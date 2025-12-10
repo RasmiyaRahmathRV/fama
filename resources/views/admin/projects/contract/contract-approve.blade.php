@@ -95,7 +95,7 @@
                                                 <h4>Comments</h4>
                                             </div>
                                             <!-- /.card-header -->
-                                            <div class="card-body row">
+                                            <div class="card-body row scrollery">
                                                 @if ($comments->isNotEmpty())
                                                     @foreach ($comments as $comment)
                                                         <!-- Post -->
@@ -119,26 +119,28 @@
                                                         </div>
                                                         <!-- /.post -->
                                                     @endforeach
-                                                    <form class="form-horizontal" id="CommentForm">
-                                                        @csrf
-                                                        <input type="hidden" name="contract_id" id="contract_id"
-                                                            value="{{ $contract->id }}">
-                                                        <input type="hidden" name="user_id"
-                                                            value="{{ auth()->user()->id }}">
-                                                        <div class="input-group input-group-sm mb-0">
-                                                            <textarea class="form-control form-control-sm" name="comment" placeholder="Response" required></textarea>
-                                                            {{-- <div class="input-group-append"> --}}
-                                                            <button type="button" class="btn btn-danger"
-                                                                onclick="SendComments()">Send</button>
-                                                            {{-- </div> --}}
-                                                        </div>
-                                                    </form>
                                                 @else
                                                     <div class="post clearfix"> No Comments ... </div>
                                                 @endif
 
 
                                             </div>
+                                            <div class="form-group m-3">
+                                                <form class="form-horizontal" id="CommentForm">
+                                                    @csrf
+                                                    <input type="hidden" name="contract_id" id="contract_id"
+                                                        value="{{ $contract->id }}">
+                                                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+
+                                                    <textarea class="form-control form-control-sm" name="comment" placeholder="Response" required></textarea>
+                                                    {{-- <div class="input-group-append"> --}}
+                                                    <button type="button" class="btn btn-success mt-2"
+                                                        onclick="SendComments()">Send</button>
+                                                    {{-- </div> --}}
+
+                                                </form>
+                                            </div>
+
                                         </div>
                                     </div>
                                     <div class="col-sm-9">
@@ -195,18 +197,21 @@
                                                                 class="tag tag-info" target="_blank">View Contract</a></p>
 
                                                         @php
-                                                            $doc = $contract->contract_documents;
+                                                            $doc = $contract->contract_documents
+                                                                ->where('document_type_id', '1')
+                                                                ->first();
+
                                                             $href =
-                                                                $doc?->document_type == '1'
+                                                                $doc?->document_type_id == '1'
                                                                     ? asset('storage/' . $doc->original_document_path)
                                                                     : 'javascript:void(0)';
                                                         @endphp
 
                                                         <a href="{{ $href }}"
                                                             @if ($href !== 'javascript:void(0)') target="_blank" @endif>
-                                                            <div class="icheck-success d-inline">
+                                                            <div class="icheck-success d-inline vcDoc">
                                                                 <input type="radio" name="r2" id="radioSuccess1"
-                                                                    {{ $contract->contract_documents->document_type == '1' ? 'checked' : '' }}
+                                                                    {{ $doc?->document_type_id == '1' ? 'checked' : '' }}
                                                                     disabled>
                                                                 <label for="radioSuccess1" class="mt-0">Vendor
                                                                     Contract</label>
@@ -227,12 +232,13 @@
 
                                 </div>
 
-                                <button type="button" class="btn btn-danger float-right" style="margin-right: 5px;">
+                                <button type="button" class="btn btn-danger float-right" style="margin-right: 5px;"
+                                    data-toggle="modal" data-target="#modal-rejectreason">
                                     <i class="fas fa-window-close"></i> Reject
                                 </button>
 
                                 <button type="button" class="btn btn-info float-right" style="margin-right: 5px;"
-                                    onclick="approveContract()">
+                                    onclick="approveContract(2)">
                                     <i class="fas fa-thumbs-up"></i> Approve
                                 </button>
 
@@ -241,6 +247,37 @@
                     </div>
                 </div>
             </div>
+
+            <div class="modal fade" id="modal-rejectreason">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Reject Reason</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="" id="" method="POST" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Reason</label>
+                                        <textarea name="comment" class="form-control" id="reject_reason" cols="10" rows="5"></textarea>
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-info" onclick="approveContract(3)">Send</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
         </section>
         <!-- /.content -->
     </div>
@@ -249,10 +286,19 @@
 
 @section('custom_js')
     <script>
-        function approveContract() {
+        function approveContract(status) {
+            let message = reason = ''
+            if (status == 3) {
+                message = "You want to reject!";
+                reason = $('#reject_reason').val();
+            } else {
+                message = "You want to approve!";
+            }
+
+
             Swal.fire({
                 title: "Are you sure?",
-                text: "You want to approve!",
+                text: message,
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
@@ -260,7 +306,21 @@
                 confirmButtonText: "Yes!"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // window.location.href = "contract.php";
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('approve') }}",
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content'),
+                            contract_id: '{{ $contract->id }}',
+                            status: status,
+                            reason: reason
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            window.location.href = "{{ route('contract.index') }}";
+                        }
+                    });
                 }
             });
         }
@@ -310,8 +370,7 @@
                         processData: false,
                         contentType: false,
                         success: function(response) {
-
-                            // window.location.href = "contract.php";
+                            window.location.href = "{{ route('contract.index') }}";
                         }
                     });
                 });
@@ -320,7 +379,6 @@
             }
 
             // var form = document.getElementById('CommentForm');
-
         }
     </script>
 @endsection

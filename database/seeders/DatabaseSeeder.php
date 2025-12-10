@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             TenantIdentitySeeder::class,
             DocumentTypeSeeder::class,
             // DocumentTypeAcceptTypesSeeder::class,
+            VendorContractTemplateSeeder::class,
         ]);
     }
 }

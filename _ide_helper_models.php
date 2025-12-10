@@ -490,7 +490,9 @@ namespace App\Models{
  * @property int $property_id
  * @property int $is_vendor_contract_uploaded
  * @property int $is_scope_generated
- * @property int $contract_status 0-Pending, 1-Processing, 2-Approved, 3-Rejected
+ * @property int $contract_status 0-Pending, 1-Processing, 2-Approved, 3-Rejected, 4-Send for Approval, 5-Approval on Hold, 6-Sign Pending, 7- Signed, 8-Expired
+ * @property string|null $signed_at
+ * @property int|null $signed_by
  * @property int $is_aknowledgement_uploaded
  * @property int $is_cheque_copy_uploaded
  * @property int|null $parent_contract_id
@@ -513,6 +515,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property string|null $approved_date
+ * @property string|null $rejected_date
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Agreement> $agreements
  * @property-read int|null $agreements_count
  * @property-read \App\Models\Area|null $area
@@ -520,7 +524,8 @@ namespace App\Models{
  * @property-read int|null $children_count
  * @property-read \App\Models\Company|null $company
  * @property-read \App\Models\ContractDetail|null $contract_detail
- * @property-read \App\Models\ContractDocument|null $contract_documents
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractDocument> $contract_documents
+ * @property-read int|null $contract_documents_count
  * @property-read \App\Models\ContractOtc|null $contract_otc
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractPaymentDetail> $contract_payment_details
  * @property-read int|null $contract_payment_details_count
@@ -546,6 +551,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Contract query()
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereAddedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereApprovedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereApprovedDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereAreaId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereCompanyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereContactNumber($value)
@@ -569,6 +575,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereProjectCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereProjectNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract wherePropertyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRejectedDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRejectedReason($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRenewRejectReason($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRenewRejectStatus($value)
@@ -577,6 +584,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRenewalDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereRenewedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereScopeGeneratedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereSignedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereSignedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereVendorId($value)
@@ -973,6 +982,59 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractScope withoutTrashed()
  */
 	class ContractScope extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $contract_template_id
+ * @property string $page_type
+ * @property int $x
+ * @property int $y
+ * @property int $width
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\VendorContractTemplate|null $contract_template
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignatureDimension newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignatureDimension newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignatureDimension query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignatureDimension whereContractTemplateId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignatureDimension whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignatureDimension whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignatureDimension wherePageType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignatureDimension whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignatureDimension whereWidth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignatureDimension whereX($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignatureDimension whereY($value)
+ */
+	class ContractSignatureDimension extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $contract_id
+ * @property int $vendor_id
+ * @property string $email_to
+ * @property string $email_subject
+ * @property string|null $email_body
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\Vendor|null $vendor
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignedEmail newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignedEmail newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignedEmail query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignedEmail whereContractId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignedEmail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignedEmail whereEmailBody($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignedEmail whereEmailSubject($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignedEmail whereEmailTo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignedEmail whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignedEmail whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractSignedEmail whereVendorId($value)
+ */
+	class ContractSignedEmail extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -1828,9 +1890,36 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Vendor withoutTrashed()
  * @mixin \Eloquent
  * @property int|null $deleted_by
+ * @property int $contract_template_id
+ * @property-read \App\Models\VendorContractTemplate|null $contract_template
  * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereContractTemplateId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereDeletedBy($value)
  */
 	class Vendor extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $template_name
+ * @property int $version
+ * @property int $status 1=active, 0=inactive
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractSignatureDimension> $contract_signature_dimensions
+ * @property-read int|null $contract_signature_dimensions_count
+ * @property-read \App\Models\Vendor|null $vendors
+ * @method static \Illuminate\Database\Eloquent\Builder|VendorContractTemplate newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|VendorContractTemplate newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|VendorContractTemplate query()
+ * @method static \Illuminate\Database\Eloquent\Builder|VendorContractTemplate whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VendorContractTemplate whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VendorContractTemplate whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VendorContractTemplate whereTemplateName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VendorContractTemplate whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VendorContractTemplate whereVersion($value)
+ */
+	class VendorContractTemplate extends \Eloquent {}
 }
 

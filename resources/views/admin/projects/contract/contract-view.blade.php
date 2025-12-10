@@ -349,9 +349,35 @@
                                             class="fas mr-2 fa-arrow-left"></i>Back</a>
 
                                     <div class="mt-2 mt-xl-0">
-                                        @if (Gate::allows('contract.edit') && $contract->has_agreement == 0)
-                                            <a class="btn btn-secondary"
-                                                href="{{ route('contract.edit', $contract->id) }}">Edit</a>
+
+
+                                        @if ($contract->contract_status != 3)
+                                            @if (Gate::allows('contract.edit') && $contract->has_agreement == 0)
+                                                <a class="btn btn-secondary"
+                                                    href="{{ route('contract.edit', $contract->id) }}">Edit</a>
+                                            @endif
+
+
+                                            @if ($contract->is_scope_generated == 0)
+                                                <button class="btn btn-primary"
+                                                    onclick="generateScope({{ $contract->id }})">
+                                                    <i class="fas fa-envelope-open-text"></i> Generate Scope</button>
+                                            @elseif ($contract->is_vendor_contract_uploaded == 0)
+                                                {{-- <button type="button" class="btn btn-warning "><i class="fas fa-upload"></i>
+                                                Upload Contract </button> --}}
+                                                <button class="btn btn-primary"
+                                                    onclick="generateScope({{ $contract->id }})">
+                                                    <i class="fas fa-download"></i> Update Scope
+                                                </button>
+                                            @elseif($contract->contract_status == 2)
+                                                <a href="{{ route('contract.documents', $contract->id) }}"
+                                                    class="btn btn-warning" title="Upload Documents">
+                                                    Documents
+                                                </a>
+                                                <button type="button" class="btn btn-info mt-1 mt-xl-0">
+                                                    <i class="fas fa-envelope-open-text"></i> Generate Acknoledgement
+                                                </button>
+                                            @endif
                                         @endif
 
                                         @if ($contract->contract_status != 0)
@@ -364,24 +390,6 @@
                                             @endif
                                         @endif
 
-                                        @if ($contract->is_scope_generated == 0)
-                                            <button class="btn btn-primary" onclick="generateScope({{ $contract->id }})">
-                                                <i class="fas fa-envelope-open-text"></i> Generate Scope</button>
-                                        @elseif ($contract->is_vendor_contract_uploaded == 0)
-                                            {{-- <button type="button" class="btn btn-warning "><i class="fas fa-upload"></i>
-                                                Upload Contract </button> --}}
-                                            <button class="btn btn-primary" onclick="generateScope({{ $contract->id }})">
-                                                <i class="fas fa-download"></i> Update Scope
-                                            </button>
-                                        @elseif($contract->contract_status == 2)
-                                            <a href="{{ route('contract.documents', $contract->id) }}"
-                                                class="btn btn-warning" title="Upload Documents">
-                                                Documents
-                                            </a>
-                                            <button type="button" class="btn btn-info mt-1 mt-xl-0">
-                                                <i class="fas fa-envelope-open-text"></i> Generate Acknoledgement
-                                            </button>
-                                        @endif
                                     </div>
                                 </div>
                             </div>

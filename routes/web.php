@@ -12,6 +12,7 @@ use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NationalityController;
 use App\Http\Controllers\PaymentModeController;
+use App\Http\Controllers\PdfSignController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyTypeController;
 use App\Http\Controllers\UserController;
@@ -138,10 +139,18 @@ Route::middleware(['auth'])->group(function () {
         ->name('contract.downloadSummary');
     Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);
 
-    Route::get('contract-approval/{id}', [ContractController::class, 'approveContract'])->name('contract.approve');
+    Route::get('contract-approval/{id}', [ContractController::class, 'contractApproval'])->name('contract.approve');
     Route::post('contract-reject', [ContractController::class, 'rejectContract'])->name('contract.reject');
     Route::post('contract-sendcomment', [ContractController::class, 'sendComments'])->name('contract.sendComment');
     Route::get('contract-approval-list', [ContractController::class, 'approvalListContract'])->name('contract.approve.list');
+    Route::post('contract-send-for-approval', [ContractController::class, 'sendForApproval'])->name('contract.sendapprove');
+    Route::post('approve', [ContractController::class, 'approveContract'])->name('approve');
+
+    // test sign
+    Route::get('/signed-pdf/{id}', [PdfSignController::class, 'signedPdf'])->name('sign.contract');
+
+    Route::post('/save-signed-pdf', [PdfSignController::class, 'saveSignedPdf']);
+    Route::get('/contracts/{id}/comments', [ContractController::class, 'getComments']);
 });
 
 // Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);

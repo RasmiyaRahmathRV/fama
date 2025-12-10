@@ -143,13 +143,13 @@
                                                         <td>{{ $loop->iteration + 1 }}</td>
                                                         <td>{{ $document->document_type->label_name }}</td>
                                                         <td>
-                                                            @if ($document->original_document_path)
-                                                                <a href="{{ asset('storage/' . $document->original_document_path) }}"
+                                                            @if ($document->signed_document_path)
+                                                                <a href="{{ asset('storage/' . $document->signed_document_path) }}"
                                                                     class="btn btn-info" target="_blank"
                                                                     rel="noopener noreferrer"><i class="far fa-eye"></i></a>
                                                                 {{-- <a href="{{ $document->original_document_path }}">View</a> --}}
-                                                            @elseif($document->signed_document_path)
-                                                                <a href="{{ asset('storage/' . $document->signed_document_path) }}"
+                                                            @elseif($document->original_document_path)
+                                                                <a href="{{ asset('storage/' . $document->original_document_path) }}"
                                                                     class="btn btn-info" target="_blank"><i
                                                                         class="far fa-eye"></i></a></a>
                                                             @endif
@@ -344,6 +344,15 @@
     <script>
         $('#ContractUploadForm').submit(function(e) {
             e.preventDefault();
+
+            Swal.fire({
+                title: 'Processing upload...',
+                html: 'Please wait while the documents are being uploaded.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
             var form = document.getElementById('ContractUploadForm');
             var fdata = new FormData(form);
