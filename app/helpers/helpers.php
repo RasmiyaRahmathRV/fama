@@ -8,6 +8,7 @@ use App\Models\ContractUnitDetail;
 use App\Models\Installment;
 use App\Repositories\Contracts\ContractRepository;
 use App\Services\Contracts\ContractService;
+use Carbon\Carbon;
 
 if (!function_exists('toNumeric')) {
     /**
@@ -340,4 +341,16 @@ function statusCount($status)
         'search' => contractStatusName($status)
     ];
     return $repository->getQuery($filter)->count();
+}
+function getAgreementExpiringCounts()
+{
+    $today = Carbon::today();
+    $oneMonthLater = Carbon::today()->addMonth(1)->format('Y-m-d');
+
+
+    $expiredCount = Agreement::where('agreement_status', "=", 0)
+        ->where('end_date', '<=', $oneMonthLater)
+        ->count();
+
+    return $expiredCount;
 }

@@ -14,6 +14,7 @@ use App\Services\Agreement\AgreementPaymentDetailService;
 use App\Services\Agreement\AgreementPaymentService;
 use App\Services\Agreement\AgreementTenantService;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AgreementRepository
@@ -302,5 +303,88 @@ class AgreementRepository
         }
 
         return $paymentDetails;
+    }
+    public function getExpired(array $filters = [])
+    {
+        // dd($filters['end_date_from']);
+
+        $oneMonthsLater = Carbon::today()->addMonths(1)->format('Y-m-d');
+        // dd($oneMonthsLater);
+        $query = Agreement::query()
+            ->select([
+                'agreements.*',
+                'contracts.project_number',
+                'companies.company_name',
+                'agreement_tenants.tenant_name',
+                'agreement_tenants.tenant_email',
+                'agreement_tenants.tenant_mobile',
+                'contract_types.contract_type',
+                // \DB::raw('SUM(agreement_payment_details.paid_amount) as paid_amount')
+                'contract_units.business_type as business_type'
+
+
+            ])
+            ->join('contracts', 'contracts.id', '=', 'agreements.contract_id')
+            ->join('properties', 'properties.id', '=', 'contracts.property_id')
+            // ->join('vendors', 'vendors.id', '=', 'contracts.vendor_id')
+            ->join('companies', 'companies.id', '=', 'agreements.company_id')
+            ->join('agreement_tenants', 'agreement_tenants.agreement_id', '=', 'agreements.id')
+            ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id')
+            ->join('contract_units', 'contract_units.contract_id', '=', 'contracts.id')
+            ->where('agreement_status', "=", 0)
+            ->where('end_date', '<=', $oneMonthsLater);
+
+        // $get = $query->get();
+        // dd($get);
+
+        if (!empty($filters['search'])) {
+            $query->orwhere('agreement_code', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('project_number', 'like', '%' . $filters['search'] . '%')
+
+                ->orWhereHas('company', function ($q) use ($filters) {
+                    $q->where('company_name', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('contract.contract_type', function ($q) use ($filters) {
+                    $q->where('contract_type', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('contract.contract_unit', function ($q) use ($filters) {
+                    $q->where('business_type', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('tenant', function ($q) use ($filters) {
+                    $q->where('tenant_name', 'like', '%' . $filters['search'] . '%')
+                        ->orWhere('tenant_email', 'like', '%' . $filters['search'] . '%')
+                        ->orWhere('tenant_mobile', 'like', '%' . $filters['search'] . '%');
+                })
+                // ->orWhereHas('contract_type', function ($q) use ($filters) {
+                //     $q->where('contract_type', 'like', '%' . $filters['search'] . '%');
+                // })
+
+                ->orWhereRaw("CAST(contracts.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
+        }
+
+
+        if (isset($filters['status']) && $filters['status'] !== 'all') {
+            $query->where('agreements.agreement_status', $filters['status']);
+        }
+
+        if (!empty($filters['end_date_from'])) {
+            $from = Carbon::createFromFormat('d-m-Y', $filters['end_date_from'])->format('Y-m-d');
+            $query->whereDate('agreements.end_date', '>=', $from);
+        }
+
+        if (!empty($filters['end_date_to'])) {
+            $to = Carbon::createFromFormat('d-m-Y', $filters['end_date_to'])->format('Y-m-d');
+            $query->whereDate('agreements.end_date', '<=', $to);
+        }
+
+
+
+        // if (!empty($filters['company_id'])) {
+        //     $query->Where('contracts.company_id', $filters['company_id']);
+        // }
+
+        $query->orderBy('agreements.id', 'desc');
+
+        return $query;
     }
 }

@@ -836,4 +836,121 @@ class AgreementService
 
         return $this->agreementRepository->terminate($data);
     }
+
+    public function getExpired(array $filters = [])
+    {
+        $query = $this->agreementRepository->getExpired($filters);
+        // dd($query);
+
+        $columns = [
+            ['data' => 'DT_RowIndex', 'name' => 'id'],
+            ['data' => 'agreemant_code', 'name' => 'agreemant_code'],
+            ['data' => 'company_name', 'name' => 'company_name'],
+            ['data' => 'project_number', 'name' => 'project_number'],
+            ['data' => 'business_type', 'name' => 'business_type'],
+            ['data' => 'tenant_details', 'name' => 'tenant_details'],
+            ['data' => 'start_date', 'name' => 'start_date'],
+            ['data' => 'end_date', 'name' => 'end_date'],
+            ['data' => 'is_signed_agreement_uploaded', 'name' => 'is_signed_agreement_uploaded'],
+            ['data' => 'agreement_status', 'name' => 'agreement_status'],
+            ['data' => 'created_at', 'name' => 'created_at'],
+            ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
+        ];
+
+        return datatables()
+
+            ->of($query)
+            ->addIndexColumn()
+            ->addColumn('agreement_code', fn($row) =>  ucfirst($row->agreement_code) ?? '-')
+            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            // ->addColumn('project_number', fn($row) => 'P - ' . $row->contract->project_number ?? '-')
+            ->addColumn('project_number', function ($row) {
+                // dd($row);
+                $number = 'P - ' . $row->contract->project_number ?? '-';
+                $type = $row->contract_type ?? '-';
+
+                // return "<strong class=''>{$number}</strong><p class='mb-0'><span>{$type}</span></p>
+                // </p>";
+                $badgeClass = '';
+                if ($row->contract->contract_type_id == 1) {
+                    $badgeClass = 'badge badge-df text-dark';
+                } elseif ($row->contract->contract_type_id == 2) {
+                    $badgeClass = 'badge badge-ff text-dark';
+                } else {
+                    $badgeClass = 'badge badge-secondary';
+                }
+
+                return "<strong>{$number}</strong>
+            <p class='mb-0'>
+                <span class='{$badgeClass}'>{$type}</span>
+            </p>";
+            })
+            ->addColumn('tenant_details', function ($row) {
+                $name = $row->tenant_name ?? '-';
+                $email = $row->tenant_email ?? '-';
+                $phone = $row->tenant_mobile ?? '-';
+
+                return "<strong class='text-capitalize'>{$name}</strong><p class='mb-0 text-primary'>{$email}</p><p class='text-muted small'>
+                    <i class='fa fa-phone-alt text-danger'></i> <span class='font-weight-bold'>{$phone}</span>
+                </p>";
+            })
+            ->addColumn('project_number', function ($row) {
+                // dd($row);
+                $number = 'P - ' . $row->contract->project_number ?? '-';
+                $type = $row->contract_type ?? '-';
+
+                // return "<strong class=''>{$number}</strong><p class='mb-0'><span>{$type}</span></p>
+                // </p>";
+                $badgeClass = '';
+                if ($row->contract->contract_type_id == 1) {
+                    $badgeClass = 'badge badge-df text-dark';
+                } elseif ($row->contract->contract_type_id == 2) {
+                    $badgeClass = 'badge badge-ff text-dark';
+                } else {
+                    $badgeClass = 'badge badge-secondary';
+                }
+
+                return "<strong>{$number}</strong>
+            <p class='mb-0'>
+                <span class='{$badgeClass}'>{$type}</span>
+            </p>";
+            })
+            ->addColumn('business_type', function ($row) {
+                if ($row->business_type == 1) {
+                    $type = "B2B";
+                } elseif ($row->business_type == 2) {
+                    $type = "B2C";
+                } else {
+                    $type = "-";
+                }
+
+                return "<strong class='text-uppercase'>{$type}</strong>";
+            })
+            ->addColumn('start_date', fn($row) => $row->start_date ?? '-')
+            ->addColumn('end_date', fn($row) => $row->end_date ?? '-')
+            ->addColumn('is_signed_agreement_uploaded', fn($row) => $row->is_signed_agreement_uploaded ?? '-')
+            ->addColumn('agreement_status', fn($row) => $row->agreement_status ?? '-')
+            ->addColumn('created_at', fn($row) => $row->created_at ?? '-')
+
+
+            ->addColumn('action', function ($row) {
+                $renewUrl = route('agreement.renew', $row->id);
+                $action = '';
+
+
+
+                $action .= '<a href="' . $renewUrl . '" class="btn btn-info  btn-sm m-1" title="Renew agreement">Renew</a>';
+
+
+
+
+
+                return $action ?: '-';
+            })
+
+            ->rawColumns(['tenant_details', 'action', 'project_number', 'business_type'])
+            // ->rawColumns(['action'])
+            ->with(['columns' => $columns])
+            ->toJson();
+    }
 }

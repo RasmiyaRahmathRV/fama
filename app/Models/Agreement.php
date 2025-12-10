@@ -111,7 +111,8 @@ class Agreement extends Model
                 'agreement_payment_details',
                 'agreement_documents',
                 'agreement_units',
-                'tenant_invoices'
+                'tenant_invoices',
+                'agreementStatusLogs'
 
 
             ];
@@ -150,6 +151,8 @@ class Agreement extends Model
                 'agreement_payment',
                 'agreement_units',
                 'agreement_payment_details',
+                'tenant_invoices',
+                'agreementStatusLogs'
             ];
 
             foreach ($relations as $relation) {
@@ -212,5 +215,9 @@ class Agreement extends Model
     public function tenant_invoices()
     {
         return $this->hasMany(AgreementUnit::class, 'agreement_id', 'id');
+    }
+    public function agreementStatusLogs()
+    {
+        return $this->hasMany(AgreementStatusLogs::class, 'agreement_id', 'id');
     }
 }
