@@ -24,6 +24,7 @@ use App\Services\PropertyService;
 use App\Services\PropertyTypeService;
 use App\Services\VendorService;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -126,7 +127,7 @@ class ContractController extends Controller
     {
         if ($request->ajax()) {
             $filters = [
-                'company_id' => auth()->user()->company_id,
+                // 'company_id' => auth()->user()->company_id,
                 'search' => $request->search['value'] ?? null
             ];
             return $this->contractService->getDataTable($filters);
@@ -169,7 +170,7 @@ class ContractController extends Controller
     {
         $search = request('search');
         $filters = auth()->user()->company_id ? [
-            'company_id' => auth()->user()->company_id,
+            // 'company_id' => auth()->user()->company_id,
         ] : null;
 
         return Excel::download(new ContractExport($search, $filters), 'contracts.xlsx');
@@ -240,7 +241,7 @@ class ContractController extends Controller
     {
         if ($request->ajax()) {
             $filters = [
-                'company_id' => auth()->user()->company_id,
+                // 'company_id' => auth()->user()->company_id,
                 'search' => $request->search['value'] ?? null
             ];
             return $this->contractService->getRenewalDataTable($filters);
@@ -448,7 +449,7 @@ class ContractController extends Controller
         ]);
     }
 
-    public function approveContract($contractId)
+    public function contractApproval($contractId)
     {
         $title = 'Contract Approval';
         $contract = $this->contractService->getById($contractId);
@@ -471,7 +472,43 @@ class ContractController extends Controller
         }
     }
 
-    public function approvalListContract() {}
+    public function sendForApproval(Request $request)
+    {
+        try {
+            $this->commentservice->create($request->all());
+            // $contract = Contract::findOrFail($request->id);
+            // $contract->contract_status = $request->status;
+            // $contract->save();
 
-    public function rejectContract(Request $request) {}
+            return response()->json(['success' => true, 'message' => 'Contract send for Approval.'], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // dd($e->errors());
+            // Return error to view
+            return response()->json(['success' => false, 'message' => $e->errors(), 'error'   => $e], 500);
+        }
+    }
+
+    public function approveContract(Request $request)
+    {
+        try {
+            $this->contractService->approveContract($request->all());
+            // $contract = Contract::findOrFail($request->id);
+            // $contract->contract_status = $request->status;
+            // $contract->save();
+
+            return response()->json(['success' => true, 'message' => 'Contract send for Approval.'], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // dd($e->errors());
+            // Return error to view
+            return response()->json(['success' => false, 'message' => $e->errors(), 'error'   => $e], 500);
+        }
+    }
+
+    // public function rejectContract(Request $request) {}
+
+    public function getComments($contractId)
+    {
+        $comments = $this->commentservice->getByContractId($contractId);
+        return response()->json(['comments' => $comments]);
+    }
 }

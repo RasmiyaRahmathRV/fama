@@ -18,7 +18,7 @@ class CommentRepository
 
     public function getByContractId($contract_id)
     {
-        return ContractApprovalComment::where('contract_id', $contract_id)->get();
+        return ContractApprovalComment::with('user')->where('contract_id', $contract_id)->get();
     }
 
     public function create($data)

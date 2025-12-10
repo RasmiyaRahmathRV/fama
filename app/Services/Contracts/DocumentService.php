@@ -33,6 +33,7 @@ class DocumentService
     public function uploadDocuments($data)
     {
         // dd($data);
+        $contractStatus = null;
         $contractId = $data['contract_id'];
         // print($contractId);
         $result = Arr::except($data, ['contract_id', '_token']);
@@ -82,11 +83,17 @@ class DocumentService
                     $documentData['signed_document_name'] = $filename;
                     $documentData['signed_document_path'] = $path;
                     $documentData['signed_status'] = 2;
+                    $contractStatus = 7;
+
+                    if (!$cDocument || $cDocument->original_document_name == null) {
+                        $documentData['original_document_name'] = $filename;
+                        $documentData['original_document_path'] = $path;
+                    }
                 } else {
                     $documentData['original_document_name'] = $filename;
                     $documentData['original_document_path'] = $path;
                 }
-                // dd(!$cDocument->isEmpty());
+                // dd($documentData);
                 // dump(!$cDocument->isEmpty());
                 if ($cDocument) {
                     // dump('inside if update');
@@ -98,16 +105,20 @@ class DocumentService
                     $this->documentRepo->create($documentData);
                 }
 
-                $this->contractFlagUpdate($contractId, $value['status_change']);
+                $this->contractFlagUpdate($contractId, $value['status_change'], $contractStatus);
             }
         }
 
         return true;
     }
 
-    public function contractFlagUpdate($contractId, $flag)
+    public function contractFlagUpdate($contractId, $flag, $contractStatus)
     {
         $contract = $this->contractRepo->find($contractId);
+
+        if ($contract->contract_status < $contractStatus && $contract->approved_by != null && $contractStatus != null) {
+            $contract->contract_status = $contractStatus;
+        }
 
         $contract->{$flag} = 1;
         $contract->save();

@@ -141,7 +141,8 @@ class ContractRepository
                     $q->where('vendor_name', 'like', '%' . $filters['search'] . '%');
                 })
                 ->orWhereHas('contract_type', function ($q) use ($filters) {
-                    $q->where('contract_type', 'like', '%' . $filters['search'] . '%');
+                    $q->where('contract_type', 'like', '%' . $filters['search'] . '%')
+                        ->orWhere('shortcode', 'like', '%' . $filters['search'] . '%');
                 })
                 ->orWhereHas('locality', function ($q) use ($filters) {
                     $q->where('locality_name', 'like', '%' . $filters['search'] . '%');
@@ -227,7 +228,7 @@ class ContractRepository
             ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id')
             ->where('contract_renewal_status', '!=', '1')
             ->where('renew_reject_status', '=', '0')
-            ->where('contract_status', '=', '2')
+            ->where('contract_status', '=', '7')
             ->whereHas('contract_detail', function ($q) use ($twoMonthsLater) {
                 $q->where('end_date', '<=', $twoMonthsLater);
             });

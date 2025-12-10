@@ -58,12 +58,47 @@
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <div class="table-responsive">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="mb-2" id="statusFilters">
+                                            @php
+                                                $permission = auth()
+                                                    ->user()
+                                                    ->permissions()
+                                                    ->whereIn('permission_id', [57, 59, 60, 63, 64, 92])
+                                                    ->exists();
+                                            @endphp
+                                            @if ($permission)
+                                                <button class="btn btn-primary filter-btn" add-class="btn-primary"
+                                                    data-filter="">All</button>
+                                                <button class="btn btn-outline-warning filter-btn" add-class="btn-warning"
+                                                    data-filter="0">Pending</button>
+                                                <button class="btn btn-outline-info filter-btn" add-class="btn-info"
+                                                    data-filter="1">Processing</button>
+                                            @endif
+                                            <button class="btn btn-outline-df filter-btn approvalPending" add-class="btn-df"
+                                                data-filter="4">Approval Pending</button>
+                                            <button class="btn btn-outline-secondary filter-btn" add-class="btn-secondary"
+                                                data-filter="5">Approval On Hold</button>
+                                            <button class="btn btn-outline-success filter-btn" add-class="btn-success"
+                                                data-filter="2">Approved</button>
+                                            <button class="btn btn-outline-maroon filter-btn" add-class="btn-maroon"
+                                                data-filter="6">Partially Signed</button>
+                                            <button class="btn btn-outline-lightblue filter-btn" add-class="btn-lightblue"
+                                                data-filter="7">Both Signed</button>
+                                            <button class="btn btn-outline-dark filter-btn" add-class="btn-dark"
+                                                data-filter="8">Expired</button>
+                                            <button class="btn btn-outline-danger filter-btn" add-class="btn-danger"
+                                                data-filter="3">Rejected</button>
+                                        </div>
+                                    </div>
+
+
                                     <table id="contractTable" class="table table-striped projects  display nowrap">
                                         <thead>
                                             <tr>
                                                 <th style="width: 1%">#</th>
                                                 <th>Project</th>
-                                                <th>Contract type</th>
+                                                {{-- <th>Contract type</th> --}}
                                                 <th>Company Name</th>
                                                 <th>Total Units</th>
                                                 <th>ROI %</th>
@@ -92,28 +127,32 @@
 
 
 
-            <div class="modal fade" id="modal-import">
+            <div class="modal fade" id="modal-send-approval">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">Import</h4>
+                            <h4 class="modal-title">Approval comments</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form action="" id="ContractImportForm" method="POST" enctype="multipart/form-data">
+                        <form action="" id="ContractCommentsForm" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="contract_id" id="approval_contract_id">
+                            <input type="hidden" name="_token" id="approval_token">
+                            <input type="hidden" name="contract_status" id="approval_status">
+                            <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                             <div class="modal-body">
                                 <div class="card-body">
                                     <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Import excel</label>
-                                        <input type="file" name="file" class="col-sm-9 form-control">
+                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Comments</label>
+                                        <textarea name="comment" class="form-control" id="" cols="10" rows="5"></textarea>
                                     </div>
                                 </div>
                                 <!-- /.card-body -->
                             </div>
                             <div class="modal-footer justify-content-between">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" id="importBtn" class="btn btn-info">Import</button>
+                                <button type="button" class="btn btn-info" onclick="sendForApproval()">Send</button>
                             </div>
                         </form>
                     </div>
@@ -122,6 +161,58 @@
                 <!-- /.modal-dialog -->
             </div>
             <!-- /.modal -->
+
+
+            <div class="modal fade" id="commentsModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Approval comments</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" style="max-height:400px; overflow-y:auto;">
+                            <ul id="commentsList" class="list-group"></ul>
+
+                            {{-- @if ($comments->isNotEmpty())
+                                @foreach ($comments as $comment)
+                                    <!-- Post -->
+                                    <div class="post clearfix" style="width: 100%">
+                                        <div class="user-block">
+                                            <img class="img-circle img-bordered-sm"
+                                                src="{{ $comment->user->profile_path ? asset('storage/' . $comment->user->profile_path) : asset('img copy/avatar.png') }}"
+                                                alt="User Image">
+                                            <span class="username">
+                                                {{ $comment->user->first_name }}
+                                                {{ $comment->user->last_name }}
+                                            </span>
+                                            <span class="description">Date -
+                                                {{ $comment->created_at }}</span>
+                                        </div>
+                                        <!-- /.user-block -->
+                                        <p>
+                                            {{ $comment->comment }}
+                                        </p>
+
+                                    </div>
+                                    <!-- /.post -->
+                                @endforeach
+                            @else
+                                <div class="post clearfix"> No Comments ... </div>
+                            @endif --}}
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+
+
         </section>
         <!-- /.content -->
     </div>
@@ -152,13 +243,13 @@
             let table = $('#contractTable').DataTable({
                 processing: true,
                 serverSide: true,
+                responsive: true,
 
                 ajax: {
                     url: "{{ route('contract.list') }}",
                     data: function(d) {
                         filre: 'require'
                         // d.company_id = $('#companyFilter').val();
-                        d.company_id = $('#companyFilter').val();
                     },
 
                 },
@@ -172,10 +263,10 @@
                         data: 'project_number',
                         name: 'contracts.project_number',
                     },
-                    {
-                        data: 'contract_type',
-                        name: 'contract_types.contract_type',
-                    },
+                    // {
+                    //     data: 'contract_type',
+                    //     name: 'contract_types.contract_type',
+                    // },
                     {
                         data: 'company_name',
                         name: 'companies.company_name',
@@ -203,31 +294,31 @@
                     {
                         data: 'status',
                         name: 'contracts.contract_status',
-                        render: function(data, type, row) {
-                            let badgeClass = '';
-                            let text = '';
+                        // render: function(data, type, row) {
+                        //     let badgeClass = '';
+                        //     let text = '';
 
-                            switch (data) {
-                                case 0:
-                                    badgeClass = 'badge badge-warning';
-                                    text = 'Pending';
-                                    break;
-                                case 1:
-                                    badgeClass = 'badge badge-info text-white';
-                                    text = 'Processing';
-                                    break;
-                                case 2:
-                                    badgeClass = 'badge badge-success text-white';
-                                    text = 'Approved';
-                                    break;
-                                case 3:
-                                    badgeClass = 'badge badge-danger text-white';
-                                    text = 'Terminated';
-                                    break;
-                            }
+                        //     switch (data) {
+                        //         case 0:
+                        //             badgeClass = 'badge badge-warning';
+                        //             text = 'Pending';
+                        //             break;
+                        //         case 1:
+                        //             badgeClass = 'badge badge-info text-white';
+                        //             text = 'Processing';
+                        //             break;
+                        //         case 2:
+                        //             badgeClass = 'badge badge-success text-white';
+                        //             text = 'Approved';
+                        //             break;
+                        //         case 3:
+                        //             badgeClass = 'badge badge-danger text-white';
+                        //             text = 'Terminated';
+                        //             break;
+                        //     }
 
-                            return '<span class="' + badgeClass + '">' + text + '</span>';
-                        },
+                        //     return '<span class="' + badgeClass + '">' + text + '</span>';
+                        // },
                     },
 
                     {
@@ -253,6 +344,40 @@
                         window.location.href = url;
                     }
                 }]
+            });
+
+            @if ($permission == false)
+                $(document).ready(function() {
+                    $('.approvalPending').click();
+                });
+            @endif
+
+            // Filter buttons
+            $('.filter-btn').on('click', function() {
+                let filterValue = $(this).data('filter');
+
+                // Reset ALL buttons
+                $('.filter-btn').each(function() {
+                    let solidClass = $(this).attr('add-class'); // btn-warning
+                    let outlineClass = solidClass ? 'btn-outline-' + solidClass.replace('btn-',
+                        '') : '';
+
+                    if (solidClass) {
+                        $(this).removeClass(solidClass).addClass(outlineClass);
+                    }
+                });
+
+                // Apply ACTIVE state to clicked button
+                let solidClass = $(this).attr('add-class'); // e.g. btn-warning
+                let outlineClass = solidClass ? 'btn-outline-' + solidClass.replace('btn-', '') : '';
+
+
+                if (solidClass) {
+                    $(this).removeClass(outlineClass).addClass(solidClass);
+                }
+
+                // Apply DataTable search column filter (status = column index 1)
+                table.column(8).search(filterValue).draw();
             });
         });
 
@@ -284,5 +409,101 @@
                 }
             });
         }
+
+        function sendForApproval() {
+            const form = document.getElementById("ContractCommentsForm");
+            var fdata = new FormData(form);
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "The contract is ready to approve!",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, send!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: '/contract-send-for-approval',
+                        data: fdata,
+                        dataType: "json",
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            toastr.success(response.message);
+                            $('#modal-send-approval').modal('hide');
+                            $('#modal-send-approval').find('input, textarea, select').val('');
+
+                            $('#contractTable').DataTable().ajax.reload();
+                        }
+                    });
+                }
+            });
+        }
+
+        $('#modal-send-approval').on('show.bs.modal', function(event) {
+            var button = event.relatedTarget;
+
+            // values from button
+            var id = button.getAttribute('data-id');
+
+            // set to modal fields
+            $('#approval_contract_id').val(id);
+            $('#approval_token').val($('meta[name="csrf-token"]').attr('content'));
+            $('#approval_status').val(4);
+        });
+    </script>
+
+    <script>
+        $(document).on('click', '.loadComments', function(e) {
+            e.preventDefault();
+
+            let contractId = $(this).data('id');
+            $('#commentsList').html('<li class="list-group-item">Loading...</li>');
+
+            $.get('/contracts/' + contractId + '/comments', function(response) {
+
+                $('#commentsList').empty();
+
+                if (response.comments.length === 0) {
+                    $('#commentsList').append('<li class="list-group-item">No comments found.</li>');
+                } else {
+                    response.comments.forEach(function(comment) {
+                        $('#commentsList').append(`
+                            <li class="list-group-item">
+                                <div class="post clearfix" style="width: 100%">
+                                    <div class="user-block">
+                                        <img class="img-circle img-bordered-sm"
+                                            src="${ comment.user?.profile_path ? '/storage/'+comment.user?.profile_path : '/img/avatar.png' }"
+                                            alt="User Image">
+                                        <span class="username">
+                                            ${ comment.user?.first_name }
+                                            ${ comment.user?.last_name ?? '' }
+                                        </span>
+                                        <span class="description">Date -
+                                            ${ comment.created_at }</span>
+                                    </div>
+                                    <!-- /.user-block -->
+                                    <p>
+                                        ${ comment.comment }
+                                    </p>
+                                </div>
+                            </li>
+                        `);
+
+                        // <li class="list-group-item">
+                        //         <strong>${comment.user}</strong>
+                        //         <br>
+                        //         ${comment.comment}
+                        //         <br>
+                        //         <small class="text-muted">${comment.created_at}</small>
+                        //     </li>
+                    });
+                }
+
+                $('#commentsModal').modal('show');
+            });
+        });
     </script>
 @endsection

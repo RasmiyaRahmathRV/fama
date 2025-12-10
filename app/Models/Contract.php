@@ -49,6 +49,8 @@ class Contract extends Model
         'renew_reject_reason',
         'renew_rejected_by',
         'contract_rejected_by',
+        'rejected_date',
+        'approved_date'
     ];
 
     public function property()
@@ -94,7 +96,7 @@ class Contract extends Model
     }
     public function contract_documents()
     {
-        return $this->hasOne(ContractDocument::class, 'contract_id', 'id');
+        return $this->hasMany(ContractDocument::class, 'contract_id', 'id');
     }
     public function contract_otc()
     {

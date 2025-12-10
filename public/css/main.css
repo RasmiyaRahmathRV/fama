@@ -75,6 +75,96 @@ select.is-invalid {
     border-radius: 50%;
 }
 
+.scrollery {
+    max-height: 60vh;   /* at most 60% of viewport height */
+    overflow-y: auto;
+}
+
+.btn-outline-df {
+        /* background-color: #baa360; */
+    border-color: #baa360;
+    color: #baa360;
+}
+
+.btn-outline-df:hover {
+    background-color: #baa360;
+    border-color: #baa360;
+    color: white;
+}
+
+.btn-df {
+    background-color: #baa360;
+    border-color: #baa360;
+    color: white;
+}
+
+
+.btn-outline-maroon {
+        /* background-color: #baa360; */
+    border-color: #de3d78;
+    color: #de3d78;
+}
+
+.btn-outline-maroon:hover {
+    background-color: #de3d78;
+    border-color: #de3d78;
+    color: white;
+}
+
+.btn-maroon {
+    background-color: #de3d78;
+    border-color: #de3d78;
+    color: white;
+}
+
+.btn-outline-lightblue {
+        /* background-color: #baa360; */
+    border-color: #599ec6;
+    color: #599ec6;
+}
+
+.btn-outline-lightblue:hover {
+    background-color: #599ec6;
+    border-color: #599ec6;
+    color: white;
+}
+
+.btn-lightblue {
+    background-color: #599ec6;
+    border-color: #599ec6;
+    color: white;
+}
+
+[class*=icheck-]>input:first-child:disabled+label,.vcDoc>input:first-child:disabled+label, .vcDoc>input:first-child:disabled+label::before {
+    pointer-events: none;
+    cursor: default;
+    filter: alpha(opacity=65);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    opacity: 1.65 !important;
+}
+
+
+.signature {
+    position: absolute;
+    cursor: move;
+    width: 100px;
+    z-index: 10;
+}
+
+.signature::after {
+    content: '×';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: red;
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 2px 6px;
+    cursor: pointer;
+}
+
 
 /* Shrink circle and label on small devices */
 @media (max-width: 768px) {

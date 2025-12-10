@@ -29,7 +29,9 @@ class ContractCommentService
 
     public function create(array $data)
     {
-        $this->validate($data);
+        if ($data['contract_status'] != 4) {
+            $this->validate($data);
+        }
 
         if ($data['contract_status']) {
             // dump($data);
