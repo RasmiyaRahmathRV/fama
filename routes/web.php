@@ -3,6 +3,7 @@
 use App\Http\Controllers\AgreementController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\BankController;
+use App\Http\Controllers\ChequeClearingController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
@@ -157,6 +158,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/save-signed-pdf', [PdfSignController::class, 'saveSignedPdf']);
     Route::get('/contracts/{id}/comments', [ContractController::class, 'getComments']);
+
+    Route::get('vendor-cheque-clearing', [ChequeClearingController::class, 'vendorChequeClearing'])->name('vendor.cheque.clearing');
 });
 
 // Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);

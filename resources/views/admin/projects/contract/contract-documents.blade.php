@@ -345,14 +345,7 @@
         $('#ContractUploadForm').submit(function(e) {
             e.preventDefault();
 
-            Swal.fire({
-                title: 'Processing upload...',
-                html: 'Please wait while the documents are being uploaded.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+            showLoader('Processing upload...', 'Please wait while the documents are being uploaded.');
 
             var form = document.getElementById('ContractUploadForm');
             var fdata = new FormData(form);
@@ -372,6 +365,7 @@
                     window.location.reload();
                 },
                 error: function(errors) {
+                    hideLoader();
                     // Example: get first file error
                     let message = errors.responseJSON.message;
                     if (message.file) {
