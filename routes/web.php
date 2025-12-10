@@ -145,7 +145,6 @@ Route::middleware(['auth'])->group(function () {
         [ContractController::class, 'getTerminatedAgreementDetails']
     );
     Route::get('/contracts/{contract}/check-agreement', [ContractController::class, 'checkAgreement']);
-    Route::get('contract-approval/{id}', [ContractController::class, 'approveContract'])->name('contract.approve');
     Route::get('contract-approval/{id}', [ContractController::class, 'contractApproval'])->name('contract.approve');
     Route::post('contract-reject', [ContractController::class, 'rejectContract'])->name('contract.reject');
     Route::post('contract-sendcomment', [ContractController::class, 'sendComments'])->name('contract.sendComment');
