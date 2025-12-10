@@ -6,6 +6,8 @@ use App\Models\Contract;
 use App\Models\ContractSubunitDetail;
 use App\Models\ContractUnitDetail;
 use App\Models\Installment;
+use App\Repositories\Contracts\ContractRepository;
+use App\Services\Contracts\ContractService;
 
 if (!function_exists('toNumeric')) {
     /**
@@ -296,4 +298,46 @@ function contractStatusUpdate($status, $contract_id)
     $contract->update($data);
 
     // dump($data);
+}
+
+function renewalCount()
+{
+    $service = app(ContractService::class);  // resolve service
+    return $service->getRenewalDataCount();
+}
+
+function contractStatusName($contract_status)
+{
+    if ($contract_status == 0) return 'Pending';
+    elseif ($contract_status == 1) return 'Processing';
+    elseif ($contract_status == 2) return 'Approved';
+    elseif ($contract_status == 3) return 'Rejected';
+    elseif ($contract_status == 4) return 'Approval Pending';
+    elseif ($contract_status == 5) return 'Approval on Hold';
+    elseif ($contract_status == 6) return 'Partially Signed';
+    elseif ($contract_status == 7) return 'Fully Signed';
+    elseif ($contract_status == 8) return 'Expired';
+}
+
+function contractStatusClass($contract_status)
+{
+    if ($contract_status == 0) return 'badge badge-warning text-black';
+    elseif ($contract_status == 1) return 'badge badge-info text-white';
+    elseif ($contract_status == 2) return 'badge badge-success text-white';
+    elseif ($contract_status == 3) return 'badge badge-danger text-white';
+    elseif ($contract_status == 4) return 'badge badge-df text-white';
+    elseif ($contract_status == 5) return 'badge badge-secondary text-white';
+    elseif ($contract_status == 6) return 'badge bg-gradient-maroon text-white';
+    elseif ($contract_status == 7) return 'badge bg-gradient-lightblue text-white';
+    elseif ($contract_status == 8) return 'badge badge-warning text-black';
+}
+
+function statusCount($status)
+{
+    $repository = app(ContractRepository::class);
+
+    $filter = [
+        'search' => contractStatusName($status)
+    ];
+    return $repository->getQuery($filter)->count();
 }

@@ -41,7 +41,7 @@
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         <!-- Navbar -->
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <nav class="main-header navbar fixed-top navbar-expand navbar-white navbar-light">
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -118,14 +118,20 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell"></i>
-                        <span class="badge badge-warning navbar-badge">15</span>
+                        <span class="badge badge-warning navbar-badge">{{ renewalCount() + statusCount(4) }}</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-item dropdown-header">15 Notifications</span>
+                        <span class="dropdown-item dropdown-header">{{ renewalCount() + statusCount(4) }}
+                            Notifications</span>
                         <div class="dropdown-divider"></div>
                         <a href="{{ route('contract.renewal_pending_list') }}" class="dropdown-item">
-                            <i class="fas fa-sync-alt mr-2"></i>{{ $renewalCount }} Renewal
-                            <span class="float-right text-muted text-sm">Exp: 10-11-2025</span>
+                            <i class="fas fa-sync-alt mr-2"></i>{{ renewalCount() }} Renewal
+                            {{-- <span class="float-right text-muted text-sm">Exp: 10-11-2025</span> --}}
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ route('contract.index') }}" class="dropdown-item">
+                            <i class="fas fa-hourglass-half mr-2"></i>{{ statusCount(4) }} Approval Pending
+                            {{-- <span class="float-right text-muted text-sm">Exp: 10-11-2025</span> --}}
                         </a>
                         <div class="dropdown-divider"></div>
                     </div>
@@ -297,7 +303,7 @@
                             </li>
                         @endif
 
-                        @if (auth()->user()->hasPermissionInRange(56, 73))
+                        @if (auth()->user()->hasPermissionInRange(56, 73) || Gate::any(['contract.send_for_approval']))
                             <li class="nav-item {{ $project ? 'menu-open' : '' }}">
                                 <a href="#" class="nav-link {{ $project ? 'active' : '' }}">
                                     <i class="nav-icon fas fa-edit"></i>
@@ -313,14 +319,6 @@
                                                 class="nav-link {{ request()->is('contract') ? 'active' : '' }}">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Contract</p>
-                                            </a>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <a href="{{ route('contract.approve.list') }}"
-                                                class="nav-link {{ request()->is('contract') ? 'active' : '' }}">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Contract Approval</p>
                                             </a>
                                         </li>
                                     @endif
