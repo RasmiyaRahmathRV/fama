@@ -335,6 +335,41 @@
                             </li>
                         @endif
 
+                        @if (auth()->user()->hasPermissionInRange(84, 86))
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-file-invoice"></i>
+                                    <p>
+                                        Finance
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    @if (Gate::any(['finance.cheque_clearing']))
+                                        <li class="nav-item">
+                                            <a href="{{ route('vendor.cheque.clearing') }}" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Vendor Cheque clearing</p>
+                                            </a>
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a href="../finance/cheque_clearing.php" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Tenant Cheque clearing</p>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    <li class="nav-item">
+                                        <a href="../finance/cheque_clearing_report.php" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Cheque Clearing Report</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
+
                         @if (Gate::any(['User', 'user.add', 'user.view', 'user.edit', 'user.delete']))
                             <li class="nav-item {{ request()->is('user') ? 'menu-open' : '' }}">
                                 <a href="{{ route('user.index') }}"
@@ -463,6 +498,21 @@
                     document.getElementById('logout-form').submit();
                 }
             });
+        }
+
+        function showLoader(title, msg) {
+            Swal.fire({
+                title: title, //'Processing upload...'
+                html: msg, //'Please wait while the documents are being uploaded.'
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        }
+
+        function hideLoader() {
+            Swal.close();
         }
     </script>
 

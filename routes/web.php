@@ -3,6 +3,7 @@
 use App\Http\Controllers\AgreementController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\BankController;
+use App\Http\Controllers\ChequeClearingController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
@@ -145,7 +146,7 @@ Route::middleware(['auth'])->group(function () {
         [ContractController::class, 'getTerminatedAgreementDetails']
     );
     Route::get('/contracts/{contract}/check-agreement', [ContractController::class, 'checkAgreement']);
-    Route::get('contract-approval/{id}', [ContractController::class, 'approveContract'])->name('contract.approve');
+    Route::get('contract-approval/{id}', [ContractController::class, 'contractApproval'])->name('contract.approve');
     Route::post('contract-reject', [ContractController::class, 'rejectContract'])->name('contract.reject');
     Route::post('contract-sendcomment', [ContractController::class, 'sendComments'])->name('contract.sendComment');
     Route::get('contract-approval-list', [ContractController::class, 'approvalListContract'])->name('contract.approve.list');
@@ -157,6 +158,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/save-signed-pdf', [PdfSignController::class, 'saveSignedPdf']);
     Route::get('/contracts/{id}/comments', [ContractController::class, 'getComments']);
+
+    Route::get('vendor-cheque-clearing', [ChequeClearingController::class, 'vendorChequeClearing'])->name('vendor.cheque.clearing');
 });
 
 // Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);

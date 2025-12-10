@@ -92,14 +92,7 @@
         // Sign & Send button
         $('#save-sign').on('click', function() {
 
-            Swal.fire({
-                title: 'Processing contract...',
-                html: 'Please wait while the PDF is converted, signed, and emailed.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+            showLoader('Processing contract...', 'Please wait while the PDF is converted, signed, and emailed.');
 
 
             $.ajax({
@@ -118,12 +111,12 @@
                 // contentType: false,
                 success: function(response) {
                     // console.log(response);
-                    Swal.close();
+                    hideLoader();
                     toastr.success(response.message);
                     window.location.href = "{{ route('contract.index') }}";
                 },
                 error: function(errors) {
-                    Swal.close();
+                    hideLoader();
                     toastr.error(errors.responseJSON.message);
                 }
             });
