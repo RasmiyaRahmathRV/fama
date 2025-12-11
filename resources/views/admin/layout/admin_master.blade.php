@@ -187,8 +187,7 @@
                             </a>
                         </li>
                         @php
-                            $master = 0;
-                            $project = 0;
+                            $master = $project = $finance = 0;
                             if (
                                 request()->is([
                                     'areas',
@@ -204,8 +203,12 @@
                             ) {
                                 $master = 1;
                             }
-                            if (request()->is(['contract', 'agreement'])) {
+                            if (request()->is(['contract*', 'agreement*'])) {
                                 $project = 1;
+                            }
+
+                            if (request()->is(['finance*'])) {
+                                $finance = 1;
                             }
                         @endphp
                         @if (auth()->user()->hasPermissionInRange(1, 45))
@@ -336,8 +339,8 @@
                         @endif
 
                         @if (auth()->user()->hasPermissionInRange(84, 86))
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
+                            <li class="nav-item {{ $finance ? 'menu-open' : '' }}">
+                                <a href="#" class="nav-link {{ $finance ? 'active' : '' }}">
                                     <i class="nav-icon fas fa-file-invoice"></i>
                                     <p>
                                         Finance
@@ -347,16 +350,17 @@
                                 <ul class="nav nav-treeview">
                                     @if (Gate::any(['finance.cheque_clearing']))
                                         <li class="nav-item">
-                                            <a href="{{ route('vendor.cheque.clearing') }}" class="nav-link">
+                                            <a href="{{ route('finance.payable.clearing') }}"
+                                                class="nav-link {{ request()->is('finance/payable*') ? 'active' : '' }}">
                                                 <i class="far fa-circle nav-icon"></i>
-                                                <p>Vendor Cheque clearing</p>
+                                                <p>Payables clearing</p>
                                             </a>
                                         </li>
 
                                         <li class="nav-item">
                                             <a href="../finance/cheque_clearing.php" class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
-                                                <p>Tenant Cheque clearing</p>
+                                                <p>Receivables clearing</p>
                                             </a>
                                         </li>
                                     @endif

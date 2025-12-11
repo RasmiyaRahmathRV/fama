@@ -159,7 +159,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/save-signed-pdf', [PdfSignController::class, 'saveSignedPdf']);
     Route::get('/contracts/{id}/comments', [ContractController::class, 'getComments']);
 
-    Route::get('vendor-cheque-clearing', [ChequeClearingController::class, 'vendorChequeClearing'])->name('vendor.cheque.clearing');
+    Route::get('finance/payable-cheque-clearing', [ChequeClearingController::class, 'payableChequeClearing'])->name('finance.payable.clearing');
 });
 
 // Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);
