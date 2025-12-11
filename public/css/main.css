@@ -165,6 +165,10 @@ select.is-invalid {
     cursor: pointer;
 }
 
+.fixed-top {
+    position: sticky !important;
+}
+
 
 /* Shrink circle and label on small devices */
 @media (max-width: 768px) {
