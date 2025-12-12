@@ -90,4 +90,9 @@ class Property extends Model
     {
         return $this->belongsTo(PropertySizeUnit::class);
     }
+
+    public function contracts()
+    {
+        return $this->hasMany(Contract::class);
+    }
 }
