@@ -72,4 +72,9 @@ class Vendor extends Model
     {
         return $this->belongsTo(VendorContractTemplate::class, 'contract_template_id');
     }
+
+    public function contracts()
+    {
+        return $this->hasMany(Contract::class);
+    }
 }

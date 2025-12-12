@@ -6,6 +6,9 @@ use App\Models\Contract;
 use App\Models\ContractSubunitDetail;
 use App\Models\ContractUnitDetail;
 use App\Models\Installment;
+use App\Models\PaymentMode;
+use App\Models\Property;
+use App\Models\Vendor;
 use App\Repositories\Contracts\ContractRepository;
 use App\Services\Contracts\ContractService;
 use Carbon\Carbon;
@@ -353,4 +356,31 @@ function getAgreementExpiringCounts()
         ->count();
 
     return $expiredCount;
+}
+
+function getVendorsHaveContract()
+{
+    $vendors = Vendor::where('status', 1)
+        ->whereHas('contracts')
+        ->get();
+
+    return $vendors;
+}
+
+function getPropertiesHaveContract()
+{
+    $properties = Property::where('status', 1)
+        ->whereHas('contracts')
+        ->get();
+
+    return $properties;
+}
+
+function getPaymentModeHaveContract()
+{
+    $paymentmodes = PaymentMode::where('status', 1)
+        ->whereHas('paymentDetails')
+        ->get();
+
+    return $paymentmodes;
 }
