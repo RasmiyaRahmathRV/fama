@@ -12,7 +12,7 @@ class AgreementStatusLogs extends Model
 {
     use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
 
-    protected $table = 'agreement_logs';
+    protected $table = 'agreement_status_logs';
 
     protected $fillable = [
         'agreement_id',

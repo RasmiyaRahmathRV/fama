@@ -2,6 +2,7 @@
 
 use App\Models\Agreement;
 use App\Models\AgreementPaymentDetail;
+use App\Models\ClearedReceivable;
 use App\Models\Contract;
 use App\Models\ContractSubunitDetail;
 use App\Models\ContractUnitDetail;
@@ -275,14 +276,26 @@ function getVacantUnits($id)
     $unit_count = ContractUnitDetail::where('contract_id', $id)->where('is_vacant', 0)->count();
     return $unit_count;
 }
+// function paymentStatus($agreementid)
+// {
+//     $paid = AgreementPaymentDetail::where('agreement_id', $agreementid)
+//         ->where('terminate_status', 0)
+//         ->SUM('paid_amount');
+//     // dd($paid);
+
+//     return $paid;
+// }
 function paymentStatus($agreementid)
 {
-    $paid = AgreementPaymentDetail::where('agreement_id', $agreementid)
+    $payment = AgreementPaymentDetail::where('agreement_id', $agreementid)
         ->where('terminate_status', 0)
-        ->SUM('paid_amount');
-    // dd($paid);
+        ->first();
 
-    return $paid;
+    if ($payment && in_array($payment->is_payment_received, [0, 3])) {
+        return true;
+    }
+
+    return false;
 }
 function makeContractAvailable($contract_id)
 {
@@ -383,4 +396,45 @@ function getPaymentModeHaveContract()
         ->get();
 
     return $paymentmodes;
+}
+function getUnitshaveAgreement()
+{
+    $units = ContractUnitDetail::with('contract')->whereHas('agreementUnits')
+        ->get();
+
+    return $units;
+}
+function getPaymentModeHaveAgreement()
+{
+    $paymentmodes = PaymentMode::where('status', 1)
+        ->whereHas('agreementPaymentDetails')
+        ->get();
+
+    return $paymentmodes;
+}
+function checkAgreementPayment($agreement_payment_id)
+{
+    $total = AgreementPaymentDetail::where('agreement_payment_id', $agreement_payment_id)
+        ->where('terminate_status', 0)
+        ->count();
+
+    $received = AgreementPaymentDetail::where('agreement_payment_id', $agreement_payment_id)
+        ->where('terminate_status', 0)
+        ->where('is_payment_received', 1)
+        ->count();
+    if ($total === $received) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function getReceivableAmount($agreement_payment_detail_id)
+{
+    // dd("test");
+    $received_amount = ClearedReceivable::where('agreement_payment_details_id', $agreement_payment_detail_id)->sum('paid_amount');
+    $receivable = AgreementPaymentDetail::where('id', $agreement_payment_detail_id)->first();
+
+    $receivable_amount = $receivable?->payment_amount;
+    $balance_to_pay = $receivable_amount - $received_amount;
+    return number_format($balance_to_pay, 2);
 }

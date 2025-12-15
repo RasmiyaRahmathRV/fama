@@ -157,4 +157,8 @@ class CompanyService
             ->with(['columns' => $columns]) // send columns too
             ->toJson();
     }
+    public function getWithIndustry()
+    {
+        return $this->companyRepository->getWithIndustry();
+    }
 }
