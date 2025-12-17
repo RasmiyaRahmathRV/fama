@@ -375,6 +375,41 @@
                                 </ul>
                             </li>
                         @endif
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-coins"></i>
+                                <p>
+                                    Investment
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="../investment/investor.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Investors</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('investment.index') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Investments</p>
+                                    </a>
+                                </li>
+                                {{-- <li class="nav-item">
+                                    <a href="../investment/investor_payout.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Investor Payout</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="../investment/investment_soa.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Investment SOA</p>
+                                    </a>
+                                </li> --}}
+                            </ul>
+                        </li>
 
                         @if (Gate::any(['User', 'user.add', 'user.view', 'user.edit', 'user.delete']))
                             <li class="nav-item {{ request()->is('user') ? 'menu-open' : '' }}">
