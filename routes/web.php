@@ -9,6 +9,7 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InstallmentController;
+use App\Http\Controllers\InvestmentController;
 use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NationalityController;
@@ -57,6 +58,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('company', CompanyController::class);
     Route::resource('contract', ContractController::class);
     Route::resource('agreement', AgreementController::class);
+    Route::resource('investment', InvestmentController::class);
+
 
 
 
@@ -183,6 +186,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('finance/cleared-data', [PayableClearingController::class, 'getClearedData'])->name('cleared.data');
     Route::get('finance/export-payables', [PayableClearingController::class, 'exportPayables'])->name('payables.report.export');
     Route::get('finance/export-payable-pending', [PayableClearingController::class, 'exportPayablePending'])->name('payables.pending.export');
+
+
+    // Route::get('investments/investment', [InvestmentController::class, ''])->name('finance.payable.clearing');
 });
 
 // Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);
