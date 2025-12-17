@@ -16,6 +16,7 @@ use App\Http\Controllers\PaymentModeController;
 use App\Http\Controllers\PdfSignController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyTypeController;
+use App\Http\Controllers\ReceivablesClearingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
 use Illuminate\Support\Facades\Route;
@@ -126,7 +127,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('agreement-terminate', [AgreementController::class, 'terminate'])->name('agreement.terminate');
     Route::post('agreement-invoice-upload', [AgreementController::class, 'invoice_upload'])->name('agreement.invoiceUpload');
     Route::post('/agreement-unit/delete/{unitId}', [AgreementController::class, 'delete_unit'])->name('agreement.deleteUnit');
-
+    Route::get('expiring-list', [AgreementController::class, 'getAgreementsExpiring'])->name('agreement.expiring-list');
+    Route::get('expiring-lists', [AgreementController::class, 'getAgreementsExpiringTable'])->name('agreement.expiringlisttable');
+    Route::get('agreement/{id}/renew', [AgreementController::class, 'renewAgreement'])->name('agreement.renew');
 
     // renewal
     Route::get('renewal-pending-list', [ContractController::class, 'getRenewalPendingContracts'])->name('contract.renewal_pending_list');
@@ -160,6 +163,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/contracts/{id}/comments', [ContractController::class, 'getComments']);
 
     Route::get('finance/payable-cheque-clearing', [ChequeClearingController::class, 'payableChequeClearing'])->name('finance.payable.clearing');
+
+
+
+    Route::get('finance/receivable-cheque-clearing', [ReceivablesClearingController::class, 'receivableChequeClearing'])->name('tenant.cheque.clearing');
+    Route::get('finance/receivable-cheque-clearing-list', [ReceivablesClearingController::class, 'receivableChequeClearingList'])->name('tenant.cheque.list');
+    Route::post('finance/receivable-cheque-clear', [ReceivablesClearingController::class, 'receivableChequeClearSubmit'])->name('receivable.cheque.clear.submit');
+    Route::post('finance/bounced_cheque', [ReceivablesClearingController::class, 'receivableChequeBounceSubmit'])->name('receivable.cheque.bounce.submit');
+    Route::post('finance/receivables/export', [ReceivablesClearingController::class, 'export'])->name('tanantReceivables.export');
+
+    Route::get('finance/receivable-report', [ReceivablesClearingController::class, 'receivableReport'])->name('finance.receivables.report');
+    Route::get('finance/receivable-report-list', [ReceivablesClearingController::class, 'receivableReportList'])->name('tenant.receivables.report.list');
+    Route::post('finance/receivable-report-export', [ReceivablesClearingController::class, 'receivableReportExport'])->name('receivableReport.export');
 });
 
 // Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);

@@ -118,10 +118,12 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell"></i>
-                        <span class="badge badge-warning navbar-badge">{{ renewalCount() + statusCount(4) }}</span>
+                        <span
+                            class="badge badge-warning navbar-badge">{{ renewalCount() + statusCount(4) + getAgreementExpiringCounts() }}</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-item dropdown-header">{{ renewalCount() + statusCount(4) }}
+                        <span
+                            class="dropdown-item dropdown-header">{{ renewalCount() + statusCount(4) + getAgreementExpiringCounts() }}
                             Notifications</span>
                         <div class="dropdown-divider"></div>
                         <a href="{{ route('contract.renewal_pending_list') }}" class="dropdown-item">
@@ -132,8 +134,14 @@
                         <a href="{{ route('contract.index') }}" class="dropdown-item">
                             <i class="fas fa-hourglass-half mr-2"></i>{{ statusCount(4) }} Approval Pending
                             {{-- <span class="float-right text-muted text-sm">Exp: 10-11-2025</span> --}}
+
                         </a>
+
                         <div class="dropdown-divider"></div>
+                        <a href="{{ route('agreement.expiring-list') }}" class="dropdown-item">
+                            <i class="fas fa-sync-alt mr-2"></i>{{ getAgreementExpiringCounts() }} Agreement Expiry
+                            {{-- <span class="float-right text-muted text-sm">Exp: 10-11-2025</span> --}}
+                        </a>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -151,7 +159,7 @@
         <!-- /.navbar -->
 
         <!-- Main Sidebar Container -->
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <aside class="main-sidebar sidebar-dark-primary elevation-4 position-fixed">
             <!-- Brand Logo -->
             <a href="{{ route('dashboard.index') }}" class="brand-link">
                 <img src="{{ asset('images/fg.png') }}" class="brand-image">
@@ -358,18 +366,12 @@
                                         </li>
 
                                         <li class="nav-item">
-                                            <a href="../finance/cheque_clearing.php" class="nav-link">
+                                            <a href="{{ route('tenant.cheque.clearing') }}" class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Receivables clearing</p>
                                             </a>
                                         </li>
                                     @endif
-                                    <li class="nav-item">
-                                        <a href="../finance/cheque_clearing_report.php" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Cheque Clearing Report</p>
-                                        </a>
-                                    </li>
                                 </ul>
                             </li>
                         @endif

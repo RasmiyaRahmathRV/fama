@@ -121,13 +121,15 @@
                                             - <span class="inst_mode">12 /
                                                 Bank</span></br> --}}
                                             @if ($agreement->agreement_status == 1)
-                                                <span class="badge badge-danger px-3 py-2">Terminated</span>
-                                                <span class="btn btn-warning btn-sm px-3 py-1 ml-2" data-toggle="modal"
+                                                <span class="badge badge-warning px-3 py-2">Terminated</span>
+                                                <span class="btn btn-success btn-sm px-3 py-1 ml-2" data-toggle="modal"
                                                     data-target="#terminationReasonModal"
                                                     data-reason="{{ $agreement->terminated_reason }}"
                                                     data-date="{{ $agreement->terminated_date }}">
                                                     <i class="fas fa-info-circle mr-1"></i> Reason
                                                 </span>
+                                            @elseif($agreement->agreement_status == 2)
+                                                <span class="badge badge-danger px-3 py-2">Expired</span>
                                             @else
                                                 <span class="badge badge-success px-3 py-2">Active</span>
                                             @endif
@@ -404,7 +406,8 @@
                                                                         @if ($detail->terminate_status == 0)
                                                                             <span class="badge bg-success">Active</span>
                                                                         @else
-                                                                            <span class="badge bg-danger">Terminated</span>
+                                                                            <span
+                                                                                class="badge bg-warning text-dark">Terminated</span>
                                                                         @endif
                                                                     </td>
 
