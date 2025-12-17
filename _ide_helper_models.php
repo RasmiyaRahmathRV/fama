@@ -470,6 +470,7 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property int $agreement_id
  * @property int $agreement_payment_details_id
  * @property string $paid_amount
  * @property string $pending_amount
@@ -483,10 +484,12 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\AgreementPaymentDetail|null $agreementPaymentDetail
  * @property-read \App\Models\Bank|null $paidBank
+ * @property-read \App\Models\User|null $paidBy
  * @property-read \App\Models\PaymentMode|null $paidMode
  * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable whereAgreementId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable whereAgreementPaymentDetailsId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable whereId($value)

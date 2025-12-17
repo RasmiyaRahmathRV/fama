@@ -76,6 +76,7 @@ class AgreementRepository
 
     public function getQuery(array $filters = []): Builder
     {
+        // dd("test");
         $query = Agreement::query()
             ->select([
                 'agreements.*',
@@ -359,7 +360,7 @@ class AgreementRepository
                 //     $q->where('contract_type', 'like', '%' . $filters['search'] . '%');
                 // })
 
-                ->orWhereRaw("CAST(contracts.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
+                ->orWhereRaw("CAST(agreements.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
 
 
@@ -384,6 +385,8 @@ class AgreementRepository
         // }
 
         $query->orderBy('agreements.id', 'desc');
+        // $result = $query->get();
+        // dd($result);
 
         return $query;
     }

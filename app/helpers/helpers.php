@@ -249,6 +249,10 @@ function getPaymentDetails($paymentId, $unitId)
     $payment_details = AgreementPaymentDetail::where('agreement_payment_id', $paymentId)
         ->where('contract_unit_id', $unitId)
         ->where('terminate_status', 0);
+    // $totalPaidAmount = 0;
+    // foreach ($payment_details as $detail) {
+    //     $totalPaidAmount += $payment_details->clearedReceivables->paid_amount;
+    // }
     $totalPaidAmount = $payment_details->sum('paid_amount');
     $totalPaymentAmount = $payment_details->sum('payment_amount');
     $pendingAmount = $totalPaymentAmount - $totalPaidAmount;
@@ -291,7 +295,7 @@ function paymentStatus($agreementid)
         ->where('terminate_status', 0)
         ->first();
 
-    if ($payment && in_array($payment->is_payment_received, [0, 3])) {
+    if ($payment && in_array($payment->is_payment_received, [0])) {
         return true;
     }
 
@@ -436,5 +440,19 @@ function getReceivableAmount($agreement_payment_detail_id)
 
     $receivable_amount = $receivable?->payment_amount;
     $balance_to_pay = $receivable_amount - $received_amount;
-    return number_format($balance_to_pay, 2);
+    return $balance_to_pay;
+}
+function updateContractUnitPayments($contract_unit_details_id, $paid_amount)
+{
+    $contract_unit_detail = ContractUnitDetail::find($contract_unit_details_id);
+
+    if (!$contract_unit_detail) {
+        return false;
+    }
+
+    $contract_unit_detail->total_payment_received += $paid_amount;
+    $contract_unit_detail->total_payment_pending -= $paid_amount;
+    $contract_unit_detail->save();
+
+    return $contract_unit_detail;
 }

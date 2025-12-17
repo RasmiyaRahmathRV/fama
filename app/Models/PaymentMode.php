@@ -23,4 +23,8 @@ class PaymentMode extends Model
     {
         return $this->hasMany(ContractPaymentDetail::class);
     }
+    public function agreementPaymentdetails()
+    {
+        return $this->hasMany(AgreementPaymentDetail::class);
+    }
 }
