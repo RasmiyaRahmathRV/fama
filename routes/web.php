@@ -3,7 +3,7 @@
 use App\Http\Controllers\AgreementController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\BankController;
-use App\Http\Controllers\ChequeClearingController;
+use App\Http\Controllers\PayableClearingController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
@@ -159,7 +159,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/save-signed-pdf', [PdfSignController::class, 'saveSignedPdf']);
     Route::get('/contracts/{id}/comments', [ContractController::class, 'getComments']);
 
-    Route::get('finance/payable-cheque-clearing', [ChequeClearingController::class, 'payableChequeClearing'])->name('finance.payable.clearing');
+    Route::get('finance/payable-cheque-clearing', [PayableClearingController::class, 'payableChequeClearing'])->name('finance.payable.clearing');
+    Route::get('finance/payable-list', [PayableClearingController::class, 'getPayables'])->name('payable.list');
+    Route::post('finance/payable-save', [PayableClearingController::class, 'submitPayables'])->name('payable.save');
+    Route::post('finance/retun-save', [PayableClearingController::class, 'submitReturns'])->name('return.save');
+    Route::get('finance/cleared-list', [PayableClearingController::class, 'crearedList'])->name('cleared.list');
+    Route::get('finance/cleared-data', [PayableClearingController::class, 'getClearedData'])->name('cleared.data');
+    Route::get('finance/export-payables', [PayableClearingController::class, 'exportPayables'])->name('payables.report.export');
+    Route::get('finance/export-payable-pending', [PayableClearingController::class, 'exportPayablePending'])->name('payables.pending.export');
 });
 
 // Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);

@@ -3,6 +3,8 @@
 namespace App\Repositories\Contracts;
 
 use App\Models\ContractPaymentDetail;
+use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class PaymentDetailRepository
 {

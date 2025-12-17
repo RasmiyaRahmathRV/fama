@@ -3,6 +3,7 @@
 use App\Models\Agreement;
 use App\Models\AgreementPaymentDetail;
 use App\Models\Contract;
+use App\Models\ContractPaymentDetail;
 use App\Models\ContractSubunitDetail;
 use App\Models\ContractUnitDetail;
 use App\Models\Installment;
@@ -28,6 +29,11 @@ if (!function_exists('toNumeric')) {
 
         return (float) $cleaned;
     }
+}
+
+function dateFormatChange($value, $format)
+{
+    return $value ? Carbon::parse($value)->format($format) : null;
 }
 
 
@@ -383,4 +389,24 @@ function getPaymentModeHaveContract()
         ->get();
 
     return $paymentmodes;
+}
+
+function totalPaidPayable($payables)
+{
+    $paid = 0;
+    foreach ($payables as $payable) {
+        $paid += $payable->paid_amount;
+    }
+
+    return $paid;
+}
+
+function getComposition($contractId, $detailId)
+{
+    $details = ContractPaymentDetail::where('contract_id', $contractId)->orderBy('id')->get();
+
+    $totalInstallments = $details->count();
+    $currentInstallmentIndex = $details->pluck('id')->search($detailId) + 1;
+
+    return $currentInstallmentIndex . '/' . $totalInstallments;
 }

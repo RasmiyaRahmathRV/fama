@@ -51,7 +51,7 @@ namespace App\Models{
  * @property int $is_visa_uploaded
  * @property int $is_signed_agreement_uploaded
  * @property int $is_trade_license_uploaded
- * @property int $agreement_status 0-Pending, 1-terminated
+ * @property int $agreement_status 0-Pending, 1-Processing, 2-Approved, 3-Rejected
  * @property string|null $terminated_date
  * @property string|null $terminated_reason
  * @property int|null $terminated_by
@@ -61,6 +61,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AgreementStatusLogs> $agreementStatusLogs
+ * @property-read int|null $agreement_status_logs_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AgreementDocument> $agreement_documents
  * @property-read int|null $agreement_documents_count
  * @property-read \App\Models\AgreementPayment|null $agreement_payment
@@ -253,6 +255,20 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail withoutTrashed()
  */
 	class AgreementPaymentDetail extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property-read \App\Models\Agreement|null $agreement
+ * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs withoutTrashed()
+ */
+	class AgreementStatusLogs extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -525,6 +541,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property string|null $approved_date
  * @property string|null $rejected_date
+ * @property int $is_processing
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Agreement> $agreements
  * @property-read int|null $agreements_count
  * @property-read \App\Models\Area|null $area
@@ -576,6 +593,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsAgreementAdded($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsAknowledgementUploaded($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsChequeCopyUploaded($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsProcessing($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsScopeGenerated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereIsVendorContractUploaded($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereLocalityId($value)
@@ -674,20 +692,21 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $contract_id
- * @property \App\Models\DocumentType|null $document_type
+ * @property int|null $document_type_id
  * @property string $original_document_path
- * @property string $original_documant_name
- * @property string $signed_document_path
- * @property string $signed_document_name
+ * @property string $original_document_name
+ * @property string|null $signed_document_path
+ * @property string|null $signed_document_name
  * @property int $signed_status 0-unsinged, 1-mr.muneer signed,2- mr.muneer and vendor signed
  * @property int $added_by
- * @property int $updated_by
- * @property int $deleted_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Contract $contract
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\DocumentType|null $document_type
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument onlyTrashed()
@@ -697,9 +716,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDeletedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDocumentType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereDocumentTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereOriginalDocumantName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereOriginalDocumentName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereOriginalDocumentPath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereSignedDocumentName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDocument whereSignedDocumentPath($value)
@@ -716,14 +735,14 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $contract_id
- * @property string $cost_of_development
- * @property string $cost_of_bed
- * @property string $cost_of_matress
- * @property string $appliances
- * @property string $decoration
- * @property string $dewa_deposit
- * @property string $ejari
- * @property string $cost_of_cabinets
+ * @property string|null $cost_of_development
+ * @property string|null $cost_of_bed
+ * @property string|null $cost_of_matress
+ * @property string|null $appliances
+ * @property string|null $decoration
+ * @property string|null $dewa_deposit
+ * @property string|null $ejari
+ * @property string|null $cost_of_cabinets
  * @property string $added_by
  * @property string|null $updated_by
  * @property string|null $deleted_by
@@ -762,6 +781,46 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $contract_id
+ * @property int $contract_payment_detail_id
+ * @property string $pending_amount
+ * @property string $paid_amount
+ * @property string $paid_date
+ * @property int $paid_mode
+ * @property int $paid_by
+ * @property int|null $paid_bank
+ * @property string|null $paid_cheque_number
+ * @property string|null $payment_remarks
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Contract|null $contract
+ * @property-read \App\Models\ContractPaymentDetail|null $contractPaymentDetail
+ * @property-read \App\Models\Bank|null $paidBank
+ * @property-read \App\Models\User|null $paidBy
+ * @property-read \App\Models\PaymentMode|null $paidMode
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear whereContractId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear whereContractPaymentDetailId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear wherePaidAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear wherePaidBank($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear wherePaidBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear wherePaidChequeNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear wherePaidDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear wherePaidMode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear wherePaymentRemarks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear wherePendingAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayableClear whereUpdatedAt($value)
+ */
+	class ContractPayableClear extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $contract_id
  * @property int $installment_id
  * @property int $interval
  * @property string|null $beneficiary
@@ -771,6 +830,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property int $has_payment_started
+ * @property int $has_fully_paid
  * @property-read \App\Models\Contract $contract
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractPaymentDetail> $contractPaymentDetails
  * @property-read int|null $contract_payment_details_count
@@ -786,6 +847,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereHasFullyPaid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereHasPaymentStarted($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereInstallmentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPayment whereInterval($value)
@@ -816,16 +879,20 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property string|null $paid_amount
- * @property string|null $paid_date
- * @property string|null $pending_amount
- * @property int|null $paid_by
  * @property int $paid_status 0-not paid, 1-paid,  2-half paid
+ * @property int $has_returned
+ * @property string|null $returned_date
+ * @property string|null $returned_reason
+ * @property int $returned_by
+ * @property-read \App\Models\User|null $addedBy
  * @property-read \App\Models\Bank|null $bank
  * @property-read \App\Models\Contract $contract
  * @property-read \App\Models\ContractPayment $contract_payment
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractPayableClear> $payables
+ * @property-read int|null $payables_count
  * @property-read \App\Models\PaymentMode|null $payment_mode
+ * @property-read \App\Models\User|null $updatedBy
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail onlyTrashed()
@@ -841,15 +908,15 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereHasReturned($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaidAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaidBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaidDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaidStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaymentAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaymentDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePaymentModeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail wherePendingAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereReturnedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereReturnedDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereReturnedReason($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractPaymentDetail withTrashed()
@@ -908,7 +975,7 @@ namespace App\Models{
  * @property string $expected_profit
  * @property string $profit_percentage
  * @property string|null $receivable_start_date
- * @property int|null $receivable_installments
+ * @property int $receivable_installments
  * @property string $total_payment_to_vendor
  * @property string|null $total_otc
  * @property string $final_cost
@@ -1051,7 +1118,7 @@ namespace App\Models{
  * @property int $contract_unit_id
  * @property int $contract_unit_detail_id
  * @property string $subunit_no
- * @property int $subunit_type 1-partition, 2-bedspace
+ * @property int $subunit_type 1-partition, 2-bedspace, 3-room, 4-full flat
  * @property string $subunit_code proj. no / company code / unit no / subunit no
  * @property int $added_by
  * @property int|null $updated_by
@@ -1460,6 +1527,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Company|null $company
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractPaymentDetail> $paymentDetails
+ * @property-read int|null $payment_details_count
  * @method static \Database\Factories\PaymentModeFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PaymentMode newQuery()
@@ -1555,6 +1624,8 @@ namespace App\Models{
  * @method static \Database\Factories\PropertyFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  * @property int|null $deleted_by
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Contract> $contracts
+ * @property-read int|null $contracts_count
  * @property-read \App\Models\User|null $deletedBy
  * @method static \Illuminate\Database\Eloquent\Builder|Property whereDeletedBy($value)
  */
@@ -1899,6 +1970,8 @@ namespace App\Models{
  * @property int|null $deleted_by
  * @property int $contract_template_id
  * @property-read \App\Models\VendorContractTemplate|null $contract_template
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Contract> $contracts
+ * @property-read int|null $contracts_count
  * @property-read \App\Models\User|null $deletedBy
  * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereContractTemplateId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereDeletedBy($value)
