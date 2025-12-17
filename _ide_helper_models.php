@@ -158,6 +158,8 @@ namespace App\Models{
  * @property string $beneficiary
  * @property string $total_rent_annum
  * @property int $added_by
+ * @property int $has_payment_fully_received
+ * @property int $has_payment_received
  * @property int|null $updated_by
  * @property int|null $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -178,6 +180,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereHasPaymentFullyReceived($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereHasPaymentReceived($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereInstallmentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPayment whereInterval($value)
@@ -196,6 +200,9 @@ namespace App\Models{
  * @property int $agreement_id
  * @property int $agreement_payment_id
  * @property int $payment_mode_id
+ * @property string|null $bounced_date
+ * @property string|null $bounced_reason
+ * @property int|null $bounced_by
  * @property int|null $contract_unit_id
  * @property int $agreement_unit_id
  * @property int|null $bank_id
@@ -206,9 +213,6 @@ namespace App\Models{
  * @property string $payment_date
  * @property string $payment_amount
  * @property int $is_payment_received 0-Pending, 1-Received, 2-Half Received,3-Bounced
- * @property int|null $paid_amount
- * @property string|null $pending_amount
- * @property string|null $paid_date
  * @property int $added_by
  * @property int|null $updated_by
  * @property int|null $deleted_by
@@ -218,10 +222,13 @@ namespace App\Models{
  * @property int $terminate_status
  * @property-read \App\Models\Agreement $agreement
  * @property-read \App\Models\AgreementPayment|null $agreementPayment
+ * @property-read \App\Models\AgreementUnit|null $agreementUnit
  * @property-read \App\Models\Bank|null $bank
+ * @property-read \App\Models\ClearedReceivable|null $clearedReceivables
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\TenantInvoice|null $invoice
  * @property-read \App\Models\PaymentMode|null $paymentMode
+ * @property-write mixed $paid_date
  * @property-write mixed $paymentdate
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail newQuery()
@@ -232,6 +239,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereAgreementPaymentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereAgreementUnitId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereBankId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereBouncedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereBouncedDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereBouncedReason($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereChequeIssuer($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereChequeIssuerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereChequeIssuerName($value)
@@ -242,12 +252,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereIsPaymentReceived($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail wherePaidAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail wherePaidDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail wherePaymentAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail wherePaymentDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail wherePaymentModeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail wherePendingAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereTerminateStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementPaymentDetail whereUpdatedBy($value)
@@ -265,6 +272,34 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs withoutTrashed()
+ */
+	class AgreementStatusLogs extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $agreement_id
+ * @property int $old_status
+ * @property int $new_status
+ * @property string $changed_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Agreement $agreement
+ * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs whereAgreementId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs whereChangedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs whereNewStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs whereOldStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs withoutTrashed()
  */
@@ -444,6 +479,42 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Bank withoutTrashed()
  */
 	class Bank extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $agreement_payment_details_id
+ * @property string $paid_amount
+ * @property string $pending_amount
+ * @property string $paid_date
+ * @property int $paid_mode_id
+ * @property int|null $paid_bank_id
+ * @property string|null $paid_cheque_number
+ * @property string|null $payment_remarks
+ * @property int|null $paid_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\AgreementPaymentDetail|null $agreementPaymentDetail
+ * @property-read \App\Models\Bank|null $paidBank
+ * @property-read \App\Models\PaymentMode|null $paidMode
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable whereAgreementPaymentDetailsId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePaidAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePaidBankId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePaidBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePaidChequeNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePaidDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePaidModeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePaymentRemarks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePendingAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable whereUpdatedAt($value)
+ */
+	class ClearedReceivable extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -1525,6 +1596,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AgreementPaymentDetail> $agreementPaymentdetails
+ * @property-read int|null $agreement_paymentdetails_count
  * @property-read \App\Models\Company|null $company
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractPaymentDetail> $paymentDetails

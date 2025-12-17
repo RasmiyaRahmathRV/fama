@@ -35,7 +35,14 @@ class AgreementPaymentDetail extends Model
         'added_by',
         'updated_by',
         'deleted_by',
-        'terminate_status'
+        'terminate_status',
+        'paid_mode_id',
+        'paid_bank_id',
+        'paid_cheque_number',
+        'mode_change_reason',
+        'bounced_date',
+        'bounced_reason',
+        'bounced_by'
     ];
 
     /**
@@ -68,5 +75,17 @@ class AgreementPaymentDetail extends Model
     public function invoice()
     {
         return $this->hasOne(TenantInvoice::class, 'agreement_payment_detail_id', 'id');
+    }
+    public function agreementUnit()
+    {
+        return $this->belongsTo(AgreementUnit::class, 'agreement_unit_id', 'id');
+    }
+    public function setpaidDateAttribute($value)
+    {
+        $this->attributes['paid_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+    public function clearedReceivables()
+    {
+        return $this->belongsTo(ClearedReceivable::class, 'agreement_payment_detail_id', 'id');
     }
 }

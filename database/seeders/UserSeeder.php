@@ -70,6 +70,7 @@ class UserSeeder extends Seeder
                     $subModule[] = 'invoice_upload';
                     $subModule[] = 'document_upload';
                     $subModule[] = 'manage_installments';
+                    $subModule[] = 'renew';
                 }
             }
 

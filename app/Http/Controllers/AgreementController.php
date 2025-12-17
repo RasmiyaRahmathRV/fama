@@ -10,6 +10,7 @@ use App\Models\Installment;
 use App\Models\PaymentMode;
 use App\Models\TenantIdentity;
 use App\Models\UnitType;
+use App\Repositories\Agreement\AgreementRepository;
 use App\Services\Agreement\AgreementDocumentService;
 use App\Services\Agreement\AgreementService;
 use App\Services\Agreement\AgreementUnitService;
@@ -38,7 +39,8 @@ class AgreementController extends Controller
         protected AgreementService $agreementService,
         protected AgreementDocumentService $agreementDocumentService,
         protected AgreementUnitService $agreementUnitService,
-        protected InvoiceService $invoiceService
+        protected InvoiceService $invoiceService,
+        protected AgreementRepository $agreementRepository
     ) {}
     public function index()
     {
@@ -67,17 +69,10 @@ class AgreementController extends Controller
     }
     public function store(Request $request)
     {
-        // dd($request->all());
-
         try {
-
             $agreement = $this->agreementService->createOrRestore($request->all());
-
-
             return response()->json(['success' => true, 'data' => $agreement, 'message' => 'Agreeament created successfully'], 201);
-            // }
         } catch (\Exception $e) {
-
             return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
         }
     }
@@ -105,18 +100,14 @@ class AgreementController extends Controller
         $filters = auth()->user()->company_id ? [
             'company_id' => auth()->user()->company_id,
         ] : null;
-
         return Excel::download(new AgreementExport($search, $filters), 'agreements.xlsx');
     }
     public function edit(Agreement $agreement)
     {
         $agreement = $this->agreementService->getById($agreement->id);
-        // dd($agreement);
-
         $companies = $this->companyService->getAll();
         $contracts = $this->contractService->getAllwithUnits();
         $fullContracts = $this->contractService->fullContracts();
-        // dd($fullContracts);
         $installments = $this->installmentService->getAll();
         $tenantIdentities = TenantIdentity::where('show_status', true)->get();
         $unitTypes = UnitType::all();
@@ -126,6 +117,7 @@ class AgreementController extends Controller
         $contractTypes = ContractType::all();
         $unitTypeList = $agreement->getVacantunitTypes();
         $vacantData = $agreement->getVacantUnits();
+        $tenant = $agreement->tenant;
         // dd($unitTypeList);
 
         return view('admin.projects.agreement.create-agreement', compact(
@@ -141,13 +133,12 @@ class AgreementController extends Controller
             'contractTypes',
             'fullContracts',
             'unitTypeList',
-            'vacantData'
+            'vacantData',
+            'tenant'
         ));
     }
     public function update(Request $request, $id)
     {
-        // dd($id);
-        // dd($request->all());
         try {
             $agreement = $this->agreementService->update($id, $request->all());
 
@@ -162,33 +153,24 @@ class AgreementController extends Controller
     {
         $agreement = $this->agreementService->getDetails($id);
         $page = 1;
-        // dd($agreement);
-
-        // View with admin layout (for on-screen preview)
         return view('admin.projects.agreement.printview-agreement', compact('agreement', 'page'));
     }
 
 
     public function print($id)
     {
-        // dd($id);
         $agreement = $this->agreementService->getDetails($id);
         $page = 0;
-
-        // Generate PDF (clean, print-friendly)
         $pdf = Pdf::loadView('admin.projects.agreement.pdf-agreement', compact('agreement', 'page'))
             ->setPaper([0, 0, 830, 1400]);
-
         return $pdf->stream('agreement-' . $agreement->id . '.pdf');
     }
     public function agreementDocuments($id)
     {
         $documents = $this->agreementDocumentService->getDocuments($id);
-        // dd($documents);
         $tenantIdentities = TenantIdentity::get();
         $agreementId = $id;
         $agreement = $this->agreementService->getDetails($id);
-        // dd($documents);
         return view('admin.projects.agreement.agreement_documents', compact('documents', 'tenantIdentities', 'agreementId', 'agreement'));
     }
     public function documentUpload(Request $request, $id)
@@ -249,5 +231,48 @@ class AgreementController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
         }
+    }
+
+    public function getAgreementsExpiring()
+    {
+        $title = 'Agreement Pendings';
+
+        return view("admin.projects.agreement.agreement-expiring-list", compact("title"));
+    }
+    public function getAgreementsExpiringTable(Request $request)
+    {
+        if ($request->ajax()) {
+            $filters = [
+                'company_id' => auth()->user()->company_id,
+                'search' => $request->search['value'] ?? null,
+                'end_date_from' => $request->end_date_from ?? null,
+                'end_date_to' => $request->end_date_to ?? null,
+            ];
+            return $this->agreementService->getExpired($filters);
+        }
+    }
+    public function renewAgreement($agreement_id)
+    {
+        // dd($agreement_id);
+        $companies = $this->companyService->getAll();
+        $contracts = $this->contractService->getAllwithUnits();
+        // dd($contracts);
+        $installments = $this->installmentService->getAll();
+        $tenantIdentities = TenantIdentity::where('show_status', true)->get();
+        $unitTypes = UnitType::all();
+        $paymentmodes = $this->paymentModeService->getAll();
+        $installments = $this->installmentService->getAll();
+        $banks = $this->bankService->getAll();
+        $nationalities = $this->nationalityService->getAll();
+        $contractTypes = ContractType::all();
+        $agreement = $this->agreementService->getById($agreement_id);
+        $tenant = $agreement->tenant;
+        $company_id = $agreement->company_id;
+        $contract = $this->contractService->getById($agreement->contract_id);
+        // dd($contract);
+        $renewalContractId = $contract->children[0]->id;
+        // dd($renewalContractId);
+        // $renewalContractId = 51;
+        return view('admin.projects.agreement.create-agreement', compact('companies', 'contracts', 'installments', 'unitTypes', 'tenantIdentities', 'paymentmodes', 'banks', 'nationalities', 'contractTypes', 'tenant', 'company_id', 'renewalContractId'));
     }
 }

@@ -33,6 +33,8 @@ class VendorService
         $this->validate($data);
         $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['vendor_code'] = $this->setVendorCode();
+        $data['contract_template_id'] = 1;
+
 
         $existing = $this->vendorRepository->checkIfExist($data);
 

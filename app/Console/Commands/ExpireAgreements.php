@@ -46,6 +46,6 @@ class ExpireAgreements extends Command
             $agreement->update(['agreement_status' => 2]);
         }
 
-        $this->info("Expired agreements updated: $agreements");
+        $this->info("Expired agreements updated:" . $agreements->count());
     }
 }
