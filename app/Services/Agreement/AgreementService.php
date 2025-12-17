@@ -180,10 +180,10 @@ class AgreementService
                     $this->subUnitDetailserv->allVacant(
                         $agreement->contract_id
                     );
-                    $this->subUnitDetailserv->Updatepaymentdetails(
-                        $payment->id,
-                        $createdUnit['contract_unit_details_id']
-                    );
+                    // $this->subUnitDetailserv->Updatepaymentdetails(
+                    //     $payment->id,
+                    //     $createdUnit['contract_unit_details_id']
+                    // );
                 }
             } else if ($data['contract_type'] == 1 && $ct->contract_unit->business_type == 1) {
                 // dd("test");
@@ -251,10 +251,10 @@ class AgreementService
                         $this->subUnitDetailserv->markUnitOccupied($unit['contract_unit_details_id']);
                     }
 
-                    $this->subUnitDetailserv->Updatepaymentdetails(
-                        $payment->id,
-                        $createdUnit['contract_unit_details_id']
-                    );
+                    // $this->subUnitDetailserv->Updatepaymentdetails(
+                    //     $payment->id,
+                    //     $createdUnit['contract_unit_details_id']
+                    // );
                 }
             } else {
                 // dd("test");
@@ -305,6 +305,7 @@ class AgreementService
                             'bank_id' => $detail['bank_id'] ?? null,
                             'cheque_number' => $detail['cheque_number'] ?? null,
                             'added_by' => $data['added_by'],
+                            'contract_unit_id' => $createdUnit['contract_unit_details_id']
                         ];
 
                         $this->agreementPaymentDetailService->create($detail_data);
@@ -313,10 +314,10 @@ class AgreementService
                     if ($ct->contract_unit->business_type == 1) {
                         $this->subUnitDetailserv->markUnitOccupied($unit['contract_unit_details_id']);
                     }
-                    $this->subUnitDetailserv->Updatepaymentdetails(
-                        $payment->id,
-                        $createdUnit['contract_unit_details_id']
-                    );
+                    // $this->subUnitDetailserv->Updatepaymentdetails(
+                    //     $payment->id,
+                    //     $createdUnit['contract_unit_details_id']
+                    // );
                 }
             }
 
@@ -479,10 +480,10 @@ class AgreementService
                         $unitData['contract_unit_details_id'],
                         $unitData['contract_subunit_details_id'] ?? null
                     );
-                    $this->subUnitDetailserv->Updatepaymentdetails(
-                        $payment->id,
-                        $createdUnit['contract_unit_details_id']
-                    );
+                    // $this->subUnitDetailserv->Updatepaymentdetails(
+                    //     $payment->id,
+                    //     $createdUnit['contract_unit_details_id']
+                    // );
                 }
             } else if ($data['contract_type'] == 1 && $ct->contract_unit->business_type == 1) {
                 foreach ($data['unit_detail'] as $index => $unit) {
@@ -544,10 +545,10 @@ class AgreementService
                     if ($ct->contract_unit->business_type == 1) {
                         $this->subUnitDetailserv->markUnitOccupied($unit['contract_unit_details_id']);
                     }
-                    $this->subUnitDetailserv->Updatepaymentdetails(
-                        $payment->id,
-                        $createdUnit->contract_unit_details_id
-                    );
+                    // $this->subUnitDetailserv->Updatepaymentdetails(
+                    //     $payment->id,
+                    //     $createdUnit->contract_unit_details_id
+                    // );
                 }
             } else {
                 // Default single insert (contract type != 2)
@@ -628,6 +629,7 @@ class AgreementService
                             'cheque_number' => $detail['cheque_number'] ?? null,
                             'updated_by' => $data['updated_by'],
                             'id' => $detail['id'] ?? null,
+                            'contract_unit_id' => $updatedUnit['contract_unit_details_id']
                         ];
 
                         // Update existing or create new
@@ -636,10 +638,10 @@ class AgreementService
 
 
                     $this->subUnitDetailserv->markSubunitOccupied($updatedUnit->contract_unit_details_id, $updatedUnit->contract_subunit_details_id ?? null);
-                    $this->subUnitDetailserv->Updatepaymentdetails(
-                        $payment->id,
-                        $updatedUnit['contract_unit_details_id']
-                    );
+                    // $this->subUnitDetailserv->Updatepaymentdetails(
+                    //     $payment->id,
+                    //     $updatedUnit['contract_unit_details_id']
+                    // );
                 }
             }
 
@@ -796,7 +798,7 @@ class AgreementService
                         class="fas fa-pencil-alt"></i></a>';
                 }
 
-                if (Gate::allows('agreement.delete') && (paymentStatus($row->id) == 0)) {
+                if (Gate::allows('agreement.delete') && paymentStatus($row->id)) {
 
                     $action .= '<a class="btn btn-danger  btn-sm m-1" onclick="deleteConf(' . $row->id . ')" title="delete"><i
                         class="fas fa-trash"></i></a>';
@@ -936,16 +938,10 @@ class AgreementService
             ->addColumn('action', function ($row) {
                 $renewUrl = route('agreement.renew', $row->id);
                 $action = '';
-
-
-
-                $action .= '<a href="' . $renewUrl . '" class="btn btn-info  btn-sm m-1" title="Renew agreement">Renew</a>';
-
-
-
-
-
-                return $action ?: '-';
+                if (Gate::allows('agreement.renew')) {
+                    $action .= '<a href="' . $renewUrl . '" class="btn btn-info  btn-sm m-1" title="Renew agreement"><i class="fas fa-sync-alt"></i></a>';
+                    return $action ?: '-';
+                }
             })
 
             ->rawColumns(['tenant_details', 'action', 'project_number', 'business_type'])

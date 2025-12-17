@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{{ asset('assets/bs-stepper/css/bs-stepper.min.css') }}">
 @endsection
 @section('content')
+    {{-- {{ dd($tenant) }} --}}
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -98,7 +99,7 @@
                                             {{-- Edit case --}}
                                             @isset($agreement)
                                                 <input type="hidden" name="agreement_id" value={{ $agreement->id }}>
-                                                <input type="hidden" name="tenant_id" value={{ $agreement->tenant->id }}>
+                                                <input type="hidden" name="tenant_id" value={{ $tenant->id }}>
                                                 <input type="hidden" name="payment_id"
                                                     value={{ $agreement->agreement_payment->id }}>
                                             @endisset
@@ -118,8 +119,14 @@
                                                                 </option>
                                                             @endforeach --}}
                                                             @foreach ($companies as $company)
-                                                                <option value="{{ $company->id }}"
+                                                                {{-- <option value="{{ $company->id }}"
                                                                     {{ isset($agreement) && $agreement->company_id == $company->id ? 'selected' : '' }}>
+                                                                    {{ $company->company_name }}
+                                                                </option> --}}
+                                                                <option value="{{ $company->id }}"
+                                                                    @if (
+                                                                        (isset($agreement) && $agreement->company_id == $company->id) ||
+                                                                            (isset($company_id) && $company_id == $company->id)) selected @endif>
                                                                     {{ $company->company_name }}
                                                                 </option>
                                                             @endforeach
@@ -153,7 +160,7 @@
                                                         <label for="exampleInputEmail1">Tenant Name</label>
                                                         <input type="text" class="form-control" id="tenant_name"
                                                             name="tenant_name" placeholder="Tenant Name"
-                                                            value="{{ old('tenant_name', $agreement->tenant->tenant_name ?? '') }}"
+                                                            value="{{ old('tenant_name', $tenant->tenant_name ?? '') }}"
                                                             required>
                                                     </div>
                                                 </div>
@@ -166,7 +173,7 @@
                                                                 or 971501234567)</small></label>
                                                         <input type="text" class="form-control" id="tenant_mobile"
                                                             name="tenant_mobile" placeholder="Tenant mobile"
-                                                            value="{{ old('tenant_mobile', $agreement->tenant->tenant_mobile ?? '') }}"
+                                                            value="{{ old('tenant_mobile', $tenant->tenant_mobile ?? '') }}"
                                                             required pattern="^\+?\d{1,4}\s?\d{7,12}$">
                                                         <div class="invalid-feedback">
                                                             Enter valid mobile with country code.
@@ -176,12 +183,13 @@
                                                         <label for="exampleInputEmail1">Tenant email</label>
                                                         <input type="email" class="form-control" id="tenant_email"
                                                             name="tenant_email" placeholder="Tenant email"
-                                                            value="{{ old('tenant_email', $agreement->tenant->tenant_email ?? '') }}"
+                                                            value="{{ old('tenant_email', $tenant->tenant_email ?? '') }}"
                                                             required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$">
                                                         <div class="invalid-feedback">
                                                             Please provide a valid email.
                                                         </div>
                                                     </div>
+                                                    {{-- @dump($tenant->nationality_id); --}}
                                                     <div class="col-md-4">
                                                         <label for="exampleInputEmail1">Nationality</label>
                                                         <select class="form-control select2" name="nationality_id"
@@ -189,7 +197,7 @@
                                                             <option value="">Select Nationality</option>
                                                             @foreach ($nationalities as $nationality)
                                                                 <option
-                                                                    value="{{ $nationality->id }}"{{ isset($agreement) && $agreement->tenant->nationality_id == $nationality->id ? 'selected' : '' }}>
+                                                                    value="{{ $nationality->id }}"{{ (isset($agreement) || isset($tenant)) && $tenant->nationality_id == $nationality->id ? 'selected' : '' }}>
                                                                     {{ $nationality->nationality_name }} </option>
                                                             @endforeach
 
@@ -205,7 +213,7 @@
                                                         <label for="exampleInputEmail1">Contact person</label>
                                                         <input type="text" class="form-control" id="contact_person"
                                                             name="contact_person" placeholder="Contact Person"
-                                                            value="{{ old('contact_person', $agreement->tenant->contact_person ?? '') }}"
+                                                            value="{{ old('contact_person', $tenant->contact_person ?? '') }}"
                                                             required>
 
                                                     </div>
@@ -213,7 +221,7 @@
                                                         <label for="exampleInputEmail1">Contact email</label>
                                                         <input type="email" class="form-control " id="contact_email"
                                                             name="contact_email" placeholder="Contact email"
-                                                            value="{{ old('contact_email', $agreement->tenant->contact_email ?? '') }}"
+                                                            value="{{ old('contact_email', $tenant->contact_email ?? '') }}"
                                                             required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$">
                                                         <div class="invalid-feedback">
                                                             Please provide a valid email.
@@ -225,7 +233,7 @@
                                                                 or 971501234567)</small> </label>
                                                         <input type="text" class="form-control" id="contact_number"
                                                             name="contact_number" placeholder="Contact number"
-                                                            value="{{ old('contact_number', $agreement->tenant->contact_number ?? '') }}"
+                                                            value="{{ old('contact_number', $tenant->contact_number ?? '') }}"
                                                             required pattern="^\+?\d{1,4}\s?\d{7,12}$">
                                                         <div class="invalid-feedback">
                                                             Enter valid mobile with country code.
@@ -238,7 +246,7 @@
 
                                                     <div class="col-md-4">
                                                         <label>Tenant Address</label>
-                                                        <textarea name="tenant_address" class="form-control" id="tenant_address" required>{{ old('tenant_address', $agreement->tenant->tenant_address ?? '') }}</textarea>
+                                                        <textarea name="tenant_address" class="form-control" id="tenant_address" required>{{ old('tenant_address', $tenant->tenant_address ?? '') }}</textarea>
                                                     </div>
                                                 </div>
 
@@ -679,6 +687,7 @@
     <script>
         $(document).ready(function() {
             hidePayments();
+            CompanyChange();
             // $('.subrnt0').hide();
         });
 
@@ -817,6 +826,11 @@
 
         function CompanyChange(contractId = null) {
             const companyId = $('#company_id').val();
+            let renewalContractId = "{{ $renewalContractId ?? '' }}";
+            console.log('test', renewalContractId);
+            if (renewalContractId) {
+                contractId = renewalContractId;
+            }
             if (editedUnit) {
                 $(this).on('select2:opening', function(e) {
                     e.preventDefault();
@@ -863,6 +877,7 @@
 
 
         function contractChange() {
+
             // alert("called");
             if (editedUnit) {
                 // $(this).prop('readonly', true);

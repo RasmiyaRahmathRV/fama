@@ -86,4 +86,8 @@ class CompanyRepository
 
         return $query;
     }
+    public function getWithIndustry()
+    {
+        return Company::where('industry_id', 1)->get();
+    }
 }

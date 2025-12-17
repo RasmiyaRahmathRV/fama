@@ -464,6 +464,42 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property int $agreement_payment_details_id
+ * @property string $paid_amount
+ * @property string $pending_amount
+ * @property string $paid_date
+ * @property int $paid_mode_id
+ * @property int|null $paid_bank_id
+ * @property string|null $paid_cheque_number
+ * @property string|null $payment_remarks
+ * @property int|null $paid_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\AgreementPaymentDetail|null $agreementPaymentDetail
+ * @property-read \App\Models\Bank|null $paidBank
+ * @property-read \App\Models\PaymentMode|null $paidMode
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable whereAgreementPaymentDetailsId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePaidAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePaidBankId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePaidBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePaidChequeNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePaidDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePaidModeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePaymentRemarks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable wherePendingAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClearedReceivable whereUpdatedAt($value)
+ */
+	class ClearedReceivable extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
  * @property string $company_code
  * @property string $company_name
  * @property string|null $industry

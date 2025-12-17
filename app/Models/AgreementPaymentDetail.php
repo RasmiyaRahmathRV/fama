@@ -42,7 +42,8 @@ class AgreementPaymentDetail extends Model
         'mode_change_reason',
         'bounced_date',
         'bounced_reason',
-        'bounced_by'
+        'bounced_by',
+        'has_bounced'
     ];
 
     /**
@@ -87,5 +88,9 @@ class AgreementPaymentDetail extends Model
     public function clearedReceivables()
     {
         return $this->belongsTo(ClearedReceivable::class, 'agreement_payment_detail_id', 'id');
+    }
+    public function bouncedBy()
+    {
+        return $this->belongsTo(User::class, 'bounced_by');
     }
 }

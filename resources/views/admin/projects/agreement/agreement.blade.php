@@ -64,12 +64,17 @@
                                             <input type="radio" name="agreementFilter" value="0" autocomplete="off">
                                             Active
                                         </label>
-                                        <label class="btn btn-outline-danger">
+                                        <label class="btn btn-outline-warning">
                                             <input type="radio" name="agreementFilter" value="1" autocomplete="off">
                                             Terminated
                                         </label>
+                                        <label class="btn btn-outline-danger">
+                                            <input type="radio" name="agreementFilter" value="2" autocomplete="off">
+                                            Expired
+                                        </label>
                                     </div>
                                 </div>
+
 
                                 <table id="agreementTable" class="table table-striped projects display nowrap">
                                     <thead>
@@ -267,6 +272,10 @@
                                 case 1:
                                     badgeClass = 'badge badge-warning text-black';
                                     text = 'Terminated';
+                                    break;
+                                case 2:
+                                    badgeClass = 'badge badge-danger text-white';
+                                    text = 'Expired';
                                     break;
 
                             }

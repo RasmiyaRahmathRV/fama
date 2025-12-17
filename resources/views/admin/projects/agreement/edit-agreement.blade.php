@@ -274,12 +274,6 @@
                     value="${pay.payment_amount ?? ''}"
                     placeholder="Payment Amount" />
                 </div>
-            //     <div class="col-md-1 text-end">
-            //                 <button type="button" class="btn btn-danger delete-row-edit-dfb2b ${showDelete ? 'd-block' : 'd-none'}">
-            //     <i class="fa fa-trash"></i>
-            // </button>
-            //             </div>
-
             </div>
              <div class="form-group row extra-fields" id="extra_fields_${uniqueId}">
                     <div class="col-md-4 bank" id="bank_${uniqueId}">
