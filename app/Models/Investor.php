@@ -64,4 +64,8 @@ class Investor extends Model
     {
         return $this->belongsTo(PayoutBatch::class, 'payout_batch_id', 'id');
     }
+    public function investorBanks()
+    {
+        return $this->hasMany(InvestorBank::class, 'investor_id');
+    }
 }
