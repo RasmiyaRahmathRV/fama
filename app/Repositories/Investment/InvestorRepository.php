@@ -2,34 +2,39 @@
 
 namespace App\Repositories\Investment;
 
-use App\Models\Area;
+use App\Models\Investor;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class InvestorRepository
 {
     public function all()
     {
-        return Area::all();
+        return Investor::all();
     }
+    public function allActive()
+    {
+        return Investor::where('status', 1)->get();
+    }
+
 
     public function find($id)
     {
-        return Area::findOrFail($id);
+        return Investor::findOrFail($id);
     }
 
     public function getByName($areaData)
     {
-        return Area::where($areaData)->first();
+        return Investor::where($areaData)->first();
     }
 
     public function create($data)
     {
-        return Area::create($data);
+        return Investor::create($data);
     }
 
     public function updateOrRestore(int $id, array $data)
     {
-        $area = Area::withTrashed()->findOrFail($id);
+        $area = Investor::withTrashed()->findOrFail($id);
 
         if ($area->trashed()) {
             $area->restore();
@@ -46,21 +51,21 @@ class InvestorRepository
         return $area->delete();
     }
 
-    public function uniqAreaName($area_name, $company_id)
+    public function uniqInvestorName($area_name, $company_id)
     {
-        return Area::where('area_name', $area_name)
+        return Investor::where('area_name', $area_name)
             ->where('company_id', $company_id)
             ->first();
     }
 
     public function getByCompany($company_id)
     {
-        return Area::where('company_id', $company_id)->get();
+        return Investor::where('company_id', $company_id)->get();
     }
 
     public function getQuery(array $filters = []): Builder
     {
-        $query = Area::query()
+        $query = Investor::query()
             ->select('areas.*', 'companies.company_name')
             ->join('companies', 'companies.id', '=', 'areas.company_id');
 
@@ -82,7 +87,7 @@ class InvestorRepository
 
     public function checkIfExist($data)
     {
-        $existing = Area::withTrashed()
+        $existing = Investor::withTrashed()
             ->where('company_id', $data['company_id'])
             ->where('area_name', $data['area_name'])
             ->first();
@@ -95,6 +100,15 @@ class InvestorRepository
 
     public function insertBulk(array $rows)
     {
-        return Area::insert($rows); // bulk insert
+        return Investor::insert($rows); // bulk insert
+    }
+
+    public function getInvestorsWithDetails()
+    {
+        $investors = Investor::with(['payoutBtch', 'investorBanks', 'hasReferrer'])
+            ->where('status', 1)
+            ->get();
+
+        return $investors;
     }
 }
