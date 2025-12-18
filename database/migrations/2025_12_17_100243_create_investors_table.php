@@ -37,7 +37,7 @@ return new class extends Migration
             $table->integer('status')->default(0)->comment('0-inactive, 1-active');
             $table->integer('total_no_of_investments')->default(0);
             $table->decimal('total_invested_amount', 12, 2)->default(0);
-            $table->decimal('total_profit_released', 12, 2)->default(0);
+            $table->decimal('total_profit_received', 12, 2)->default(0);
             $table->decimal('total_referal_commission_received', 12, 2)->default(0);
             $table->integer('total_terminated_investments')->default(0);
             $table->integer('created_by');
