@@ -34,7 +34,7 @@ return new class extends Migration
             $table->unsignedBigInteger('reference_id')->nullable();
             $table->unsignedBigInteger('payout_batch_id');
             $table->date('profit_release_date')->nullable();
-            $table->integer('status')->default(0)->comment('0-inactive, 1-active');
+            $table->integer('status')->default(1)->comment('0-inactive, 1-active');
             $table->integer('total_no_of_investments')->default(0);
             $table->decimal('total_invested_amount', 12, 2)->default(0);
             $table->decimal('total_profit_received', 12, 2)->default(0);
@@ -43,6 +43,7 @@ return new class extends Migration
             $table->integer('created_by');
             $table->integer('updated_by')->nullable();
             $table->integer('deleted_by')->nullable();
+            $table->integer('is_id_uploaded')->default(0);
             $table->integer('is_passport_uploaded')->default(0);
             $table->integer('is_supp_doc_uploaded')->default(0);
             $table->integer('is_ref_com_cont_uploaded')->default(0);
