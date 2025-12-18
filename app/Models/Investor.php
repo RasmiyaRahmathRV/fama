@@ -23,14 +23,14 @@ class Investor extends Model
         'payment_mode_id',
         'id_number',
         'passport_number',
-        'reference_id',
+        'referal_id',
         'payout_batch_id',
         'profit_release_date',
         'status',
         'total_no_of_investments',
         'total_invested_amount',
         'total_profit_received',
-        'total_referal_commission_received',
+        'total_referral_commission_received',
         'total_terminated_investments',
         'is_passport_uploaded',
         'is_supp_doc_uploaded',
@@ -55,9 +55,9 @@ class Investor extends Model
         return $this->belongsTo(PaymentMode::class, 'payment_mode_id', 'id');
     }
 
-    public function reference()
+    public function referral()
     {
-        return $this->belongsTo(Investor::class, 'reference_id', 'id');
+        return $this->belongsTo(Investor::class, 'referral_id', 'id');
     }
 
     public function payoutBatch()

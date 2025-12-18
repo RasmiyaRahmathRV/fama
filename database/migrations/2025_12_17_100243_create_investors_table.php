@@ -31,14 +31,14 @@ return new class extends Migration
             $table->unsignedBigInteger('payment_mode_id');
             $table->string('id_number');
             $table->string('passport_number');
-            $table->unsignedBigInteger('reference_id')->nullable();
+            $table->unsignedBigInteger('referral_id')->nullable();
             $table->unsignedBigInteger('payout_batch_id');
             $table->date('profit_release_date')->nullable();
             $table->integer('status')->default(1)->comment('0-inactive, 1-active');
             $table->integer('total_no_of_investments')->default(0);
             $table->decimal('total_invested_amount', 12, 2)->default(0);
             $table->decimal('total_profit_received', 12, 2)->default(0);
-            $table->decimal('total_referal_commission_received', 12, 2)->default(0);
+            $table->decimal('total_referral_commission_received', 12, 2)->default(0);
             $table->integer('total_terminated_investments')->default(0);
             $table->integer('created_by');
             $table->integer('updated_by')->nullable();
