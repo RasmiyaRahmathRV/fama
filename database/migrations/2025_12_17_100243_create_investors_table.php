@@ -43,6 +43,9 @@ return new class extends Migration
             $table->integer('created_by');
             $table->integer('updated_by')->nullable();
             $table->integer('deleted_by')->nullable();
+            $table->integer('is_passport_uploaded')->default(0);
+            $table->integer('is_supp_doc_uploaded')->default(0);
+            $table->integer('is_ref_com_cont_uploaded')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
