@@ -169,6 +169,12 @@ select.is-invalid {
     position: sticky !important;
 }
 
+.asterisk::after {
+  content: " *";
+  color: red;
+  font-weight: bold;
+}
+
 
 /* Shrink circle and label on small devices */
 @media (max-width: 768px) {
