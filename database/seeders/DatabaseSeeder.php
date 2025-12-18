@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             DocumentTypeSeeder::class,
             // DocumentTypeAcceptTypesSeeder::class,
             VendorContractTemplateSeeder::class,
+            PayoutBatchSeeder::class
         ]);
     }
 }
