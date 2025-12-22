@@ -8,6 +8,9 @@ use App\Models\ContractPaymentDetail;
 use App\Models\ContractSubunitDetail;
 use App\Models\ContractUnitDetail;
 use App\Models\Installment;
+use App\Models\Investment;
+use App\Models\InvestmentReceivedPayment;
+use App\Models\Investor;
 use App\Models\PaymentMode;
 use App\Models\Property;
 use App\Models\Vendor;
@@ -482,4 +485,56 @@ function updateContractUnitPayments($contract_unit_details_id, $paid_amount)
     $contract_unit_detail->save();
 
     return $contract_unit_detail;
+}
+function investmentStatus($invest_amount, $received_amount)
+{
+    if ($invest_amount == $received_amount) {
+        return 1;
+    } elseif ($invest_amount > $received_amount) {
+        return 2;
+    } else {
+        return 0;
+    }
+}
+function InvestmentTypestatus($investor_id)
+{
+    return Investment::where('investor_id', $investor_id)->exists() ? 1 : 0;
+}
+function updateInvestor($investorId, $investmentId)
+{
+    $investmentCount = Investment::where('investor_id', $investorId)->count();
+
+    $investedAmount = InvestmentReceivedPayment::where('investment_id', $investmentId)
+        ->sum('received_amount');
+
+    Investor::where('id', $investorId)->update([
+        'total_no_of_investments' => $investmentCount,
+        'total_invested_amount' => $investedAmount,
+    ]);
+}
+function parseDate($date)
+{
+    if (!$date) return null;
+    return Carbon::parse($date)->format('Y-m-d');
+}
+function paymentFullyReceived($investmentId)
+{
+    $investment = Investment::with('investmentReceivedPayments')->find($investmentId);
+
+    if (!$investment) {
+        return false;
+    }
+
+    $investmentAmount = (float) $investment->investment_amount;
+
+    // Sum only received payments
+    $totalReceived = (float) $investment->investmentReceivedPayments()
+        ->where('status', 1)
+        ->sum('received_amount');
+
+    if ($investmentAmount == $totalReceived) {
+        return true;
+    } else {
+        return false;
+    }
 }

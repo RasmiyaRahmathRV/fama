@@ -51,7 +51,7 @@ namespace App\Models{
  * @property int $is_visa_uploaded
  * @property int $is_signed_agreement_uploaded
  * @property int $is_trade_license_uploaded
- * @property int $agreement_status 0-Pending, 1-Processing, 2-Approved, 3-Rejected
+ * @property int $agreement_status 0-Pending, 1-terminated
  * @property string|null $terminated_date
  * @property string|null $terminated_reason
  * @property int|null $terminated_by
@@ -554,6 +554,8 @@ namespace App\Models{
  * @property int $industry_id
  * @property string $company_short_code
  * @property int|null $deleted_by
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Bank> $banks
+ * @property-read int|null $banks_count
  * @property-read \App\Models\User|null $deletedBy
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereCompanyShortCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereDeletedBy($value)
@@ -1528,12 +1530,269 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Nationality|null $countryOfResidence
  * @property-read \App\Models\User|null $deletedBy
+ * @property string $investment_code
+ * @property int $investor_id
+ * @property int $payout_batch_id
+ * @property int $company_id
+ * @property int $profit_interval_id
+ * @property string $investment_amount
+ * @property int $investment_type 0-New
+ * @property string $received_amount
+ * @property int $has_fully_received 0-Not Received,1-fully Received,2-Partially Received
+ * @property string $investment_date
+ * @property int $investment_tenure In Months
+ * @property int $grace_period In Days
+ * @property string $maturity_date
+ * @property string $profit_perc
+ * @property string $profit_amount
+ * @property string $profit_amount_per_interval
+ * @property string|null $profit_release_date
+ * @property string|null $last_profit_released_date
+ * @property string|null $next_profit_release_date
+ * @property string|null $next_referral_commission_release_date
+ * @property string|null $nominee_name
+ * @property string|null $nominee_email
+ * @property string|null $nominee_phone
+ * @property int $company_bank_id
+ * @property int $investor_bank_id
+ * @property int $investment_status 0-Inactive,1-Active
+ * @property int $terminate_status 0-Not Terminated, 1-Termination Requested,2-Terminated
+ * @property int $reinvestment_or_not 0-No,1-Yes
+ * @property int|null $parent_investment_id
+ * @property int $has_reinvestment 0-No,1-Yes
+ * @property int|null $reinvested_count
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property int $added_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Investment> $childInvestments
+ * @property-read int|null $child_investments_count
+ * @property-read \App\Models\Company|null $company
+ * @property-read \App\Models\Bank|null $companyBank
+ * @property-read \App\Models\User|null $deletedBy
+ * @property-read mixed $formatted_investment_amount
+ * @property-read mixed $is_active
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\InvestmentReceivedPayment> $investmentReceivedPayments
+ * @property-read int|null $investment_received_payments_count
+ * @property-read \App\Models\Investor|null $investor
+ * @property-read \App\Models\Bank|null $investorBank
+ * @property-read Investment|null $parentInvestment
+ * @property-read \App\Models\PayoutBatch|null $payoutBatch
+ * @property-read \App\Models\ProfitInterval|null $profitInterval
+ * @property-read \App\Models\ReferralCommissionFrequency|null $referralProfitFrequency
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereCompanyBankId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereGracePeriod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereHasFullyReceived($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereHasReinvestment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereInvestmentAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereInvestmentCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereInvestmentDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereInvestmentStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereInvestmentTenure($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereInvestmentType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereInvestorBankId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereInvestorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereLastProfitReleasedDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereMaturityDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereNextProfitReleaseDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereNextReferralCommissionReleaseDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereNomineeEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereNomineeName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereNomineePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereParentInvestmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment wherePayoutBatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereProfitAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereProfitAmountPerInterval($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereProfitIntervalId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereProfitPerc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereProfitReleaseDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereReceivedAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereReinvestedCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereReinvestmentOrNot($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereTerminateStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment withoutTrashed()
+ */
+	class Investment extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $investment_id
+ * @property int $investor_id
+ * @property string|null $investment_contract_file_name
+ * @property string|null $investment_contract_file_path
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property int $added_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument query()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereInvestmentContractFileName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereInvestmentContractFilePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereInvestmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereInvestorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument withoutTrashed()
+ */
+	class InvestmentDocument extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $investment_id
+ * @property int $investor_id
+ * @property string $received_amount
+ * @property string $balance_amount
+ * @property string $received_date
+ * @property int $status 0-Inactive,1-Active
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property int $added_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment query()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereBalanceAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereInvestmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereInvestorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereReceivedAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereReceivedDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment withoutTrashed()
+ */
+	class InvestmentReceivedPayment extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $investment_id
+ * @property int $investor_id
+ * @property int $investor_referror_id
+ * @property string $referral_commission_perc
+ * @property string $referral_commission_amount
+ * @property string $referral_commission_released_amount
+ * @property string $referral_commission_pending_amount
+ * @property int $referral_commission_frequency_id
+ * @property int $referral_commission_status 0-not released,1-released,2-partially released
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property int $added_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\ReferralCommissionFrequency|null $commissionFrequency
+ * @property-read \App\Models\User|null $deletedBy
+ * @property-read mixed $pending_amount
+ * @property-read \App\Models\Investor|null $investor
+ * @property-read \App\Models\Investor|null $referrer
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral query()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereInvestmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereInvestorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereInvestorReferrorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionFrequencyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionPendingAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionPerc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionReleasedAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral withoutTrashed()
+ */
+	class InvestmentReferral extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $investor_code
+ * @property string $investor_name
+ * @property string $investor_mobile
+ * @property string $investor_email
+ * @property string $investor_address
+ * @property int $nationality_id
+ * @property int $country_of_residence
+ * @property int $payment_mode_id
+ * @property string $id_number
+ * @property string $passport_number
+ * @property int|null $referral_id
+ * @property int $payout_batch_id
+ * @property string|null $profit_release_date
+ * @property int $status 0-inactive, 1-active
+ * @property int $total_no_of_investments
+ * @property string $total_invested_amount
+ * @property string $total_profit_received
+ * @property string $total_referral_commission_received
+ * @property int $total_terminated_investments
+ * @property int $created_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property int $is_id_uploaded
+ * @property int $is_passport_uploaded
+ * @property int $is_supp_doc_uploaded
+ * @property int $is_ref_com_cont_uploaded
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Nationality|null $countryOfReference
+ * @property-read \App\Models\User|null $deletedBy
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\InvestorBank> $investorBanks
  * @property-read int|null $investor_banks_count
  * @property-read \App\Models\Nationality|null $nationality
  * @property-read \App\Models\PaymentMode|null $paymentMode
  * @property-read \App\Models\PayoutBatch|null $payoutBatch
  * @property-read Investor|null $referral
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Investor> $referrals
+ * @property-read int|null $referrals_count
  * @method static \Illuminate\Database\Eloquent\Builder|Investor newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Investor newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Investor onlyTrashed()
@@ -1565,6 +1824,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereTotalNoOfInvestments($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereTotalProfitReceived($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereTotalReferalCommissionReceived($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investor whereTotalReferralCommissionReceived($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereTotalTerminatedInvestments($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereUpdatedBy($value)
@@ -1619,6 +1879,7 @@ namespace App\Models{
  * @property int $id
  * @property int $investor_id
  * @property int $document_type_id
+ * @property string $document_type
  * @property string $document_name
  * @property string $document_path
  * @property int $added_by
@@ -1638,6 +1899,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDocumentName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDocumentPath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDocumentTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDocumentType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereInvestorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereUpdatedAt($value)
@@ -1852,6 +2114,25 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property string $profit_interval_name
+ * @property int $status 1-Acive, 0-Inactive
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|ProfitInterval newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProfitInterval newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProfitInterval query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProfitInterval whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProfitInterval whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProfitInterval whereProfitIntervalName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProfitInterval whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProfitInterval whereUpdatedAt($value)
+ */
+	class ProfitInterval extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
  * @property int $company_id
  * @property int $area_id
  * @property int $locality_id
@@ -1961,6 +2242,27 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|PropertyType whereDeletedBy($value)
  */
 	class PropertyType extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $commission_frequency_name
+ * @property int $status 1-Acive, 0-Inactive
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\InvestmentReferral> $investmentReferrals
+ * @property-read int|null $investment_referrals_count
+ * @method static \Illuminate\Database\Eloquent\Builder|ReferralCommissionFrequency newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ReferralCommissionFrequency newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ReferralCommissionFrequency query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ReferralCommissionFrequency whereCommissionFrequencyName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReferralCommissionFrequency whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReferralCommissionFrequency whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReferralCommissionFrequency whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReferralCommissionFrequency whereUpdatedAt($value)
+ */
+	class ReferralCommissionFrequency extends \Eloquent {}
 }
 
 namespace App\Models{
