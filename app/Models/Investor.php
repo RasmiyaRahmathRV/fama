@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\HasActivityLog;
 use App\Models\Traits\HasDeletedBy;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -23,7 +24,7 @@ class Investor extends Model
         'payment_mode_id',
         'id_number',
         'passport_number',
-        'referal_id',
+        'referral_id',
         'payout_batch_id',
         'profit_release_date',
         'status',
@@ -45,7 +46,7 @@ class Investor extends Model
         return $this->belongsTo(Nationality::class);
     }
 
-    public function countryOfReference()
+    public function countryOfResidence()
     {
         return $this->belongsTo(Nationality::class, 'country_of_residence', 'id');
     }
@@ -68,16 +69,26 @@ class Investor extends Model
     {
         return $this->hasMany(InvestorBank::class, 'investor_id');
     }
-    public function referrer()
-    {
-        return $this->belongsTo(Investor::class, 'reference_id');
-    }
+    // public function referrer()
+    // {
+    //     return $this->belongsTo(Investor::class, 'reference_id');
+    // }
     public function hasReferrer(): bool
     {
         return !is_null($this->reference_id) && $this->reference_id > 0;
     }
-    public function referrals()
+    // public function referrals()
+    // {
+    //     return $this->hasMany(Investor::class, 'reference_id');
+    // }
+
+    public function setProfitReleaseDateAttribute($value)
     {
-        return $this->hasMany(Investor::class, 'reference_id');
+        $this->attributes['profit_release_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+
+    public function getProfitReleaseDateAttribute($value)
+    {
+        $this->attributes['profit_release_date'] = Carbon::parse($value)->format('d-m-Y');
     }
 }

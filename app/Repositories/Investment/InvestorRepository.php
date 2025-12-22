@@ -65,37 +65,99 @@ class InvestorRepository
 
     public function getQuery(array $filters = []): Builder
     {
+
         $query = Investor::query()
-            ->select('areas.*', 'companies.company_name')
-            ->join('companies', 'companies.id', '=', 'areas.company_id');
+            ->with([
+                'nationality',
+                'paymentMode',
+                'countryOfResidence',
+                'payoutBatch',
+                'referral',
+                'investorBanks'
+            ]);
+
+
+
+        // if (!empty($filters['filter'])) {
+        //     $filter = $filters['filter'];
+
+        //     // Vendor filter
+        //     if ($filter['vendor_id']) {
+        //         $query->whereHas('contract', function ($q) use ($filter) {
+        //             $q->where('vendor_id', $filter['vendor_id']);
+        //         });
+        //     }
+
+        //     // property filter
+        //     if ($filter['property_id']) {
+        //         $query->whereHas('contract', function ($q) use ($filter) {
+        //             $q->where('property_id', $filter['property_id']);
+        //         });
+        //     }
+
+        //     // payment mode filter
+        //     if ($filter['payment_mode']) {
+        //         $query->whereHas('payment_mode', function ($q) use ($filter) {
+        //             $q->where('payment_mode_id', $filter['payment_mode']);
+        //         });
+        //     }
+
+        //     if (!empty($filter['date_from'])) {
+        //         $fromDate = $filter['date_from'];
+        //     }
+
+        //     if (!empty($filter['date_to'])) {
+        //         $todate = $filter['date_to'];
+        //     }
+        // }
+
+        // if ($fromDate) {
+        //     $query->whereBetween('payment_date', [
+        //         $fromDate,
+        //         $todate
+        //     ]);
+        // } else {
+        //     $query->where(
+        //         'payment_date',
+        //         '<=',
+        //         $todate
+        //     );
+        // }
+
 
         if (!empty($filters['search'])) {
-            $query->orwhere('area_name', 'like', '%' . $filters['search'] . '%')
-                ->orWhere('area_code', 'like', '%' . $filters['search'] . '%')
-                ->orWhereHas('company', function ($q) use ($filters) {
-                    $q->where('company_name', 'like', '%' . $filters['search'] . '%');
-                })
-                ->orWhereRaw("CAST(areas.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
-        }
+            $search = trim($filters['search']);
+            $searchLike = str_replace('-', '%', $search);
 
-        if (!empty($filters['company_id'])) {
-            $query->Where('company_id', $filters['company_id']);
+            $query->where(function ($q) use ($search, $searchLike) {
+                $q->whereRaw('payment_date LIKE ?', ["%{$searchLike}%"])
+                    ->orWhereRaw("CAST(payment_amount AS CHAR) LIKE ?", ["%{$search}%"])
+
+
+                    ->orWhereHas('contract', function ($q) use ($search) {
+                        $q->orwhere('project_code', 'like', '%' . $search . '%')
+                            ->orWhere('project_number', 'like', '%' . $search . '%');
+                    })
+
+                    ->orWhereHas('contract.company', function ($q) use ($search) {
+                        $q->where('company_name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('contract.contract_type', function ($q) use ($search) {
+                        $q->where('contract_type', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('contract.property', function ($q) use ($search) {
+                        $q->where('property_name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('contract.vendor', function ($q) use ($search) {
+                        $q->where('vendor_name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('payment_mode', function ($q) use ($search) {
+                        $q->where('payment_mode_name', 'like', '%' . $search . '%');
+                    });
+            });
         }
 
         return $query;
-    }
-
-    public function checkIfExist($data)
-    {
-        $existing = Investor::withTrashed()
-            ->where('company_id', $data['company_id'])
-            ->where('area_name', $data['area_name'])
-            ->first();
-
-        if ($existing && $existing->trashed()) {
-            // $existing->restore();
-            return $existing;
-        }
     }
 
     public function insertBulk(array $rows)

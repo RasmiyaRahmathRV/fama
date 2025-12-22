@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('investor_documents', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('investor_id');
-            $table->string('document_type');
+            $table->unsignedBigInteger('document_type_id');
             $table->string('document_name');
             $table->string('document_path');
             $table->integer('added_by');

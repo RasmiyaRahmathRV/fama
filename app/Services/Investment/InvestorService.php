@@ -4,6 +4,7 @@ namespace App\Services\Investment;
 
 use App\Repositories\Investment\InvestorRepository;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -15,12 +16,19 @@ class InvestorService
 {
     public function __construct(
         protected InvestorRepository $investorRepo,
+        protected InvestorBankService $investorBankServ,
+        protected InvestorDocumentService $investorDocServ,
     ) {}
 
 
     public function getAll()
     {
         return $this->investorRepo->all();
+    }
+
+    public function getAllActive()
+    {
+        return $this->investorRepo->allActive();
     }
 
     public function getById($id)
@@ -35,11 +43,19 @@ class InvestorService
 
     public function create(array $data, $user_id = null)
     {
-        $this->validate($data);
-        $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
-        $data['investor_code'] = $this->setInvestorCode();
+        $this->validate($data['investor']);
 
-        return $this->investorRepo->create($data);
+        $dataArr = [];
+        return DB::transaction(function () use ($data, $dataArr) {
+            $dataArr = $data['investor'];
+            $dataArr['created_by'] = auth()->user()->id;
+            $dataArr['investor_code'] = $this->setInvestorCode();
+
+            $investor = $this->investorRepo->create($dataArr);
+
+            $this->investorBankServ->create($data['investor_bank'] ?? [], $investor->id);
+            $this->investorDocServ->create($data['inv_doc'] ?? [], $investor);
+        });
     }
 
     public function update($id, array $data)
@@ -62,22 +78,24 @@ class InvestorService
 
     private function validate(array $data, $id = null)
     {
-        // $validator = Validator::make($data, [
-        //     'company_id' => 'required|exists:companies,id',
-        //     'area_name' => [
-        //         'required',
-        //         'string',
-        //         Rule::unique('areas')->ignore($id)
-        //             ->where(fn($query) => $query->where('company_id', $data['company_id']))
-        //             ->whereNull('deleted_at'),
-        //     ],
-        // ], [
-        //     'area_name.unique' => 'This area name already exists. Please choose another.',
-        // ]);
+        $validator = Validator::make($data, [
+            'investor_name' => 'required',
+            'investor_mobile' => 'required|numeric',
+            'investor_email' => 'required',
+            'nationality_id' => 'required',
+            'id_number' => 'required',
+            'payment_mode_id' => 'required',
+            'investor_address' => 'required',
+            'payout_batch_id' => 'required',
+            'country_of_residence' => 'required',
+        ], [
+            'id_number.required' => 'Emirates ID/Other ID id required',
+            'payment_mode_id.required' => 'Payment Mode required'
+        ]);
 
-        // if ($validator->fails()) {
-        //     throw new ValidationException($validator);
-        // }
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
     }
 
     public function getDataTable(array $filters = [])
@@ -86,32 +104,55 @@ class InvestorService
 
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
-            ['data' => 'area_name', 'name' => 'area_name'],
-            ['data' => 'company_name', 'name' => 'company_name'],
+            ['data' => 'investor_name', 'name' => 'investor_name'],
+            ['data' => 'investor_mobile', 'name' => 'investor_mobile'],
+            ['data' => 'investor_email', 'name' => 'investor_email'],
+            ['data' => 'nationality_name', 'name' => 'nationality_name'],
+            ['data' => 'country_of_residence', 'name' => 'country_of_residence'],
+            ['data' => 'referral', 'name' => 'referral'],
+            ['data' => 'investor_address', 'name' => 'investor_address'],
+            ['data' => 'id_number', 'name' => 'id_number'],
+            ['data' => 'payment_mode', 'name' => 'payment_mode'],
+            ['data' => 'investor_bank_name', 'name' => 'investor_bank_name'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
         ];
 
         return datatables()
             ->of($query)
             ->addIndexColumn()
-            ->addColumn('area_name', fn($row) => $row->area_name ?? '-')
-            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
-            ->addColumn('action', function ($row) {
-                $action = '';
-                if (Gate::allows('area.edit')) {
-                    $action .= '<button class="btn btn-info" data-toggle="modal"
-                                                        data-target="#modal-area" data-id="' . $row->id . '"
-                                                        data-name="' . $row->area_name . '"
-                                                        data-company="' . $row->company_id . '">Edit</button>';
-                }
-                if (Gate::allows('area.delete')) {
-                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+            ->addColumn('investor_name', function ($row) {
+                $name = $row->investor_name ?? '-';
+                $email = $row->investor_email ?? '-';
+                $phone = $row->investor_mobile ?? '-';
+                $address = $row->investor_address ?? '-';
+
+                return "<strong class='text-capitalize'>{$name}</strong><p class='mb-0 text-primary'>{$email}</p>
+            <p class='text-muted small'><i class='fa fa-phone-alt text-danger'></i> 
+            <span class='font-weight-bold'>{$phone}</span> <span class='font-weight-bold'>{$address}</span></p>";
+            })
+            ->addColumn('nationality_name', fn($row) => $row->nationality->nationality_name ?? '-')
+            ->addColumn('country_of_residence', fn($row) => $row->countryOfResidence->nationality_name ?? '-')
+            ->addColumn('id_number', fn($row) => $row->id_number ?? '-')
+            ->addColumn('referral', fn($row) => $row->referral->investor_name ?? '-')
+            ->addColumn('payment_mode', function ($row) {
+                if (!$row->paymentMode) return '-';
+
+                if (in_array($row->paymentMode->id, [1, 4])) return $row->paymentMode->payment_mode_name;
+
+                if ($row->paymentMode->id == 2) {
+                    $primaryBank = $row->investorBanks->where('is_primary', 1)->first();
+                    $bankName = $primaryBank->investor_bank_name ?? '-';
+                    return $row->paymentMode->payment_mode_name . ' - ' . $bankName;
                 }
 
-                return $action ?: '-';
+                return '-';
             })
-            ->rawColumns(['action'])
-            ->with(['columns' => $columns]) // send columns too
+            ->addColumn('action', function ($row) {
+                return '<a href="' . route('investor.edit', $row->id) . '" class="btn btn-info" >Edit</a>
+                                                <button class="btn btn-danger" data-id="' . $row->id . '" onclick="deleteConf()">Delete</button>';
+            })
+            ->rawColumns(['investor_name', 'action'])
+            ->with(['columns' => $columns])
             ->toJson();
     }
 }

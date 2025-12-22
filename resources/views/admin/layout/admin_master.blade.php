@@ -195,7 +195,7 @@
                             </a>
                         </li>
                         @php
-                            $master = $project = $finance = 0;
+                            $master = $project = $finance = $invest = 0;
                             if (
                                 request()->is([
                                     'areas',
@@ -217,6 +217,10 @@
 
                             if (request()->is(['finance*'])) {
                                 $finance = 1;
+                            }
+
+                            if (request()->is(['invest*'])) {
+                                $invest = 1;
                             }
                         @endphp
                         @if (auth()->user()->hasPermissionInRange(1, 45))
@@ -375,28 +379,33 @@
                                 </ul>
                             </li>
                         @endif
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-coins"></i>
-                                <p>
-                                    Investment
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="../investment/investor.php" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Investors</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('investment.index') }}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Investments</p>
-                                    </a>
-                                </li>
-                                {{-- <li class="nav-item">
+
+                        @if (auth()->user()->hasPermissionInRange(74, 83))
+                            <li class="nav-item {{ $invest ? 'menu-open' : '' }}">
+                                <a href="#" class="nav-link {{ $invest ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-coins"></i>
+                                    <p>
+                                        Investment
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    @if (auth()->user()->hasPermissionInRange(74, 78))
+                                        <li class="nav-item ">
+                                            <a href="{{ route('investor.index') }}"
+                                                class="nav-link {{ request()->is('investor') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Investors</p>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    <li class="nav-item">
+                                        <a href="{{ route('investment.index') }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Investments</p>
+                                        </a>
+                                    </li>
+                                    {{-- <li class="nav-item">
                                     <a href="../investment/investor_payout.php" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Investor Payout</p>
@@ -408,8 +417,9 @@
                                         <p>Investment SOA</p>
                                     </a>
                                 </li> --}}
-                            </ul>
-                        </li>
+                                </ul>
+                            </li>
+                        @endif
 
                         @if (Gate::any(['User', 'user.add', 'user.view', 'user.edit', 'user.delete']))
                             <li class="nav-item {{ request()->is('user') ? 'menu-open' : '' }}">
