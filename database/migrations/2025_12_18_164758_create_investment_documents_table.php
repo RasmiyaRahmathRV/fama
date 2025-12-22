@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('deleted_by')->nullable();
             $table->integer('added_by');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
