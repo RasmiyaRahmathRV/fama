@@ -85,6 +85,6 @@ class Investor extends Model
 
     public function getProfitReleaseDateAttribute($value)
     {
-        $this->attributes['profit_release_date'] = Carbon::parse($value)->format('d-m-Y');
+        return $this->attributes['profit_release_date'] = Carbon::parse($value)->format('d-m-Y');
     }
 }

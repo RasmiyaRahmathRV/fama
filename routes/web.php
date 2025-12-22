@@ -191,6 +191,8 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('investor-list', [InvestorController::class, 'getInvestors'])->name('investor.list');
+    Route::get('investments/investments', [InvestmentController::class, 'getInvestments'])->name('investment.list');
+    Route::post('investments/investments', [InvestmentController::class, 'addpendingInvestment'])->name('investment.submit.pending');
 });
 
 // Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);

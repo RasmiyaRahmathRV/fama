@@ -1499,37 +1499,6 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property string $investor_code
- * @property string $investor_name
- * @property string $investor_mobile
- * @property string $investor_email
- * @property string $investor_address
- * @property int $nationality_id
- * @property int $country_of_residence
- * @property int $payment_mode_id
- * @property string $id_number
- * @property string $passport_number
- * @property int|null $referral_id
- * @property int $payout_batch_id
- * @property string|null $profit_release_date
- * @property int $status 0-inactive, 1-active
- * @property int $total_no_of_investments
- * @property string $total_invested_amount
- * @property string $total_profit_received
- * @property string $total_referal_commission_received
- * @property int $total_terminated_investments
- * @property int $created_by
- * @property int|null $updated_by
- * @property int|null $deleted_by
- * @property int $is_id_uploaded
- * @property int $is_passport_uploaded
- * @property int $is_supp_doc_uploaded
- * @property int $is_ref_com_cont_uploaded
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\Nationality|null $countryOfResidence
- * @property-read \App\Models\User|null $deletedBy
  * @property string $investment_code
  * @property int $investor_id
  * @property int $payout_batch_id
@@ -1783,7 +1752,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\Nationality|null $countryOfReference
+ * @property-read \App\Models\Nationality|null $countryOfResidence
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\InvestorBank> $investorBanks
  * @property-read int|null $investor_banks_count
@@ -1791,8 +1760,6 @@ namespace App\Models{
  * @property-read \App\Models\PaymentMode|null $paymentMode
  * @property-read \App\Models\PayoutBatch|null $payoutBatch
  * @property-read Investor|null $referral
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Investor> $referrals
- * @property-read int|null $referrals_count
  * @method static \Illuminate\Database\Eloquent\Builder|Investor newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Investor newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Investor onlyTrashed()
@@ -1823,7 +1790,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereTotalInvestedAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereTotalNoOfInvestments($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereTotalProfitReceived($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Investor whereTotalReferalCommissionReceived($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereTotalReferralCommissionReceived($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereTotalTerminatedInvestments($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereUpdatedAt($value)
@@ -1878,7 +1844,6 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $investor_id
- * @property int $document_type_id
  * @property string $document_type
  * @property string $document_name
  * @property string $document_path
@@ -1898,7 +1863,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDocumentName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDocumentPath($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDocumentTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDocumentType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereInvestorId($value)

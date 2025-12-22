@@ -1,0 +1,142 @@
+<?php
+
+namespace App\Models;
+
+use App\Models\Traits\HasActivityLog;
+use App\Models\Traits\HasDeletedBy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
+
+class Investment extends Model
+{
+    use HasFactory,  SoftDeletes, HasActivityLog, HasDeletedBy;
+
+    protected $table = 'investments';
+
+    /**
+     * Mass assignable attributes
+     */
+    protected $fillable = [
+        'investment_code',
+        'investor_id',
+        'payout_batch_id',
+        'company_id',
+        'profit_interval_id',
+
+        'investment_amount',
+        'investment_type',
+        'received_amount',
+        'has_fully_received',
+
+        'investment_date',
+        'investment_tenure',
+        'grace_period',
+        'maturity_date',
+
+        'profit_perc',
+        'referral_profit_perc',
+        'profit_amount',
+        'profit_amount_per_interval',
+
+        'profit_release_date',
+        'last_profit_released_date',
+        'next_profit_release_date',
+        'next_referral_commission_release_date',
+
+        'nominee_name',
+        'nominee_email',
+        'nominee_phone',
+
+        'company_bank_id',
+        'investor_bank_id',
+
+        'investment_status',
+        'terminate_status',
+
+        'reinvestment_or_not',
+        'parent_investment_id',
+        'has_reinvestment',
+        'reinvested_count',
+
+        'added_by',
+        'updated_by',
+        'deleted_by',
+    ];
+
+    public function investor()
+    {
+        return $this->belongsTo(Investor::class);
+    }
+
+    public function payoutBatch()
+    {
+        return $this->belongsTo(PayoutBatch::class);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function profitInterval()
+    {
+        return $this->belongsTo(ProfitInterval::class);
+    }
+
+    public function referralProfitFrequency()
+    {
+        return $this->belongsTo(ReferralCommissionFrequency::class);
+    }
+
+    public function companyBank()
+    {
+        return $this->belongsTo(Bank::class, 'company_bank_id');
+    }
+
+    public function investorBank()
+    {
+        return $this->belongsTo(Bank::class, 'investor_bank_id');
+    }
+
+    public function parentInvestment()
+    {
+        return $this->belongsTo(self::class, 'parent_investment_id');
+    }
+
+    public function childInvestments()
+    {
+        return $this->hasMany(self::class, 'parent_investment_id');
+    }
+
+
+
+    public function getFormattedInvestmentAmountAttribute()
+    {
+        return number_format($this->investment_amount, 2);
+    }
+
+    public function getIsActiveAttribute()
+    {
+        return $this->investment_status === 1;
+    }
+    public function setInvestmentDate($date)
+    {
+        $this->attributes['investment_date'] = Carbon::parse($date)->format('Y-m-d H:i:s');
+    }
+
+    public function setMaturityDate($date)
+    {
+        $this->attributes['maturity_date'] = Carbon::parse($date)->format('Y-m-d H:i:s');
+    }
+
+    public function setProfitReleaseDate($date)
+    {
+        $this->attributes['profit_release_date'] = Carbon::parse($date)->format('Y-m-d H:i:s');
+    }
+    public function investmentReceivedPayments()
+    {
+        return $this->hasMany(InvestmentReceivedPayment::class, 'investment_id');
+    }
+}

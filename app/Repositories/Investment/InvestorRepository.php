@@ -167,7 +167,7 @@ class InvestorRepository
 
     public function getInvestorsWithDetails()
     {
-        $investors = Investor::with('payoutBatch', 'investorBanks')
+        $investors = Investor::with('payoutBatch', 'investorBanks', 'referral')
             ->where('status', 1)
             ->get();
 
