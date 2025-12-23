@@ -1759,6 +1759,7 @@ namespace App\Models{
  * @property-read \App\Models\Nationality|null $nationality
  * @property-read \App\Models\PaymentMode|null $paymentMode
  * @property-read \App\Models\PayoutBatch|null $payoutBatch
+ * @property-read \App\Models\InvestorBank|null $primaryBank
  * @property-read Investor|null $referral
  * @method static \Illuminate\Database\Eloquent\Builder|Investor newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Investor newQuery()
@@ -1852,6 +1853,7 @@ namespace App\Models{
  * @property int|null $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\Investor|null $investor
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument newModelQuery()
@@ -1860,6 +1862,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument query()
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereAddedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDocumentName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDocumentPath($value)

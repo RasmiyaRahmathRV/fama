@@ -60,7 +60,7 @@ class InvestorDocumentService
         $dataArr = [];
         foreach ($data as $value) {
 
-            $documentExist = $this->getByName(['document_type_id' => $value['document_type_id']]);
+            $documentExist = $this->getByName(['document_type_id' => $value['document_type_id'], 'investor_id' => $investor->id]);
 
             if ($value['document_type_id'] == 4 && empty($documentExist)) {
                 // dump(isset($value['file']));

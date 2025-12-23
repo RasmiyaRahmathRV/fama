@@ -181,6 +181,7 @@ class VendorService
                     'accountant_name' => $row['vendor_accountant_name'],
                     'accountant_phone' => $row['vendor_accountant_number'],
                     'accountant_email' => $row['vendor_accountant_email'],
+                    'contract_template_id' => $row['contract_template'],
                     'created_at' => now(),
                     'updated_at' => now(),
                     'added_by' => $user_id,

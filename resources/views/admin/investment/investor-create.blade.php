@@ -139,7 +139,7 @@
                                                         <option value="">Select Referral</option>
                                                         @foreach ($investorsLists as $investorsList)
                                                             <option value="{{ $investorsList->id }}"
-                                                                {{ $investorsList->id == $investor->referral_id ? 'selected' : '' }}>
+                                                                {{ $investorsList->id == $investor?->referral_id ? 'selected' : '' }}>
                                                                 {{ $investorsList->investor_name }}
                                                             </option>
                                                         @endforeach
@@ -159,7 +159,7 @@
                                                         <option value="">Select Batch</option>
                                                         @foreach ($payoutbatches as $payoutbatch)
                                                             <option value="{{ $payoutbatch->id }}"
-                                                                {{ $payoutbatch->id == $investor->payout_batch_id ? 'selected' : '' }}>
+                                                                {{ $payoutbatch->id == $investor?->payout_batch_id ? 'selected' : '' }}>
                                                                 {{ $payoutbatch->batch_name }}</option>
                                                         @endforeach
                                                     </select>
@@ -437,17 +437,14 @@
         function submitForm(e) {
             let investorId = $('#investor_id').val();
 
-            let url, method;
 
-            if (investorId) {
-                // UPDATE
-                url = "{{ route('investor.update', $investor->id) }}";
-                method = 'PUT';
-            } else {
-                // CREATE
-                url = "{{ route('investor.store') }}";
-                method = 'POST';
-            }
+            let url = investorId ?
+                `/investor/${investorId}` :
+                `/investor`;
+
+            let method = investorId ? 'PUT' : 'POST';
+
+
 
             var form = document.getElementById('investorForm');
             var fdata = new FormData(form);
