@@ -82,7 +82,7 @@
                                                         <option value="">Select Nationality</option>
                                                         @foreach ($nationalities as $nationality)
                                                             <option value="{{ $nationality->id }}"
-                                                                {{ $nationality->id == $investor->nationality_id ? 'selected' : '' }}>
+                                                                {{ $nationality->id == $investor?->nationality_id ? 'selected' : '' }}>
                                                                 {{ $nationality->nationality_name }}
                                                             </option>
                                                         @endforeach
@@ -96,7 +96,7 @@
                                                         <option value="">Select Country</option>
                                                         @foreach ($nationalities as $nationality)
                                                             <option value="{{ $nationality->id }}"
-                                                                {{ $nationality->id == $investor->country_of_residence ? 'selected' : '' }}>
+                                                                {{ $nationality->id == $investor?->country_of_residence ? 'selected' : '' }}>
                                                                 {{ $nationality->nationality_name }}
                                                             </option>
                                                         @endforeach
@@ -111,7 +111,7 @@
                                                         <option value="">Select Payment Method</option>
                                                         @foreach ($paymentModes as $paymentMode)
                                                             <option value="{{ $paymentMode->id }}"
-                                                                {{ $paymentMode->id == $investor->payment_mode_id ? 'selected' : '' }}>
+                                                                {{ $paymentMode->id == $investor?->payment_mode_id ? 'selected' : '' }}>
                                                                 {{ $paymentMode->payment_mode_name }}</option>
                                                         @endforeach
                                                     </select>
@@ -173,7 +173,7 @@
                                                         <option value="">Select Day</option>
                                                         @for ($i = 1; $i < 32; $i++)
                                                             <option value="{{ $i }}"
-                                                                {{ $i == $investor->profit_release_date ? 'selected' : '' }}>
+                                                                {{ $i == $investor?->profit_release_date ? 'selected' : '' }}>
                                                                 {{ $i }}
                                                             </option>
                                                         @endfor
@@ -200,7 +200,7 @@
                                             <h4>Investor Bank details</h4>
                                             <hr>
                                             <input type="hidden" name="investor_bank[bank_id]"
-                                                value="{{ $investor->primaryBank->id }}">
+                                                value="{{ $investor->primaryBank->id ?? '' }}">
                                             <div class="form-group row">
                                                 <div class="col-md-4">
                                                     <label for="inputEmail3" class="asterisk">Benenficiary
@@ -208,7 +208,7 @@
                                                     <input type="text" name="investor_bank[investor_beneficiary]"
                                                         id="investor_beneficiary" class="form-control"
                                                         placeholder="Benenficiary Name"
-                                                        value="{{ $investor->primaryBank->investor_beneficiary }}"
+                                                        value="{{ $investor?->primaryBank->investor_beneficiary ?? '' }}"
                                                         required>
                                                 </div>
                                                 <div class="col-md-4">
@@ -217,14 +217,16 @@
                                                     <input type="text" name="investor_bank[investor_bank_name]"
                                                         id="investor_bank_name" class="form-control"
                                                         placeholder="Bank Name"
-                                                        value="{{ $investor->primaryBank->investor_bank_name }}" required>
+                                                        value="{{ $investor->primaryBank->investor_bank_name ?? '' }}"
+                                                        required>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="inputEmail3" class="asterisk">IBAN</label>
                                                     <input type="text" name="investor_bank[investor_iban]"
                                                         id="investor_iban" class="form-control" id="inputEmail3"
                                                         placeholder="IBAN"
-                                                        value="{{ $investor->primaryBank->investor_iban }}" required>
+                                                        value="{{ $investor->primaryBank->investor_iban ?? '' }}"
+                                                        required>
                                                 </div>
                                                 <input type="hidden" name="investor_bank[is_primary]" value="1">
                                             </div>
