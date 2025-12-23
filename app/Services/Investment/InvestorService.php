@@ -60,9 +60,18 @@ class InvestorService
 
     public function update($id, array $data)
     {
-        // $this->validate($data, $id);
-        // $data['updated_by'] = auth()->user()->id;
-        // return $this->investorRepo->update($id, $data);
+        $this->validate($data['investor'], $id);
+
+        $dataArr = [];
+        return DB::transaction(function () use ($data, $dataArr, $id) {
+            $dataArr = $data['investor'];
+            $dataArr['updated_by'] = auth()->user()->id;
+
+            $investor = $this->investorRepo->update($id, $dataArr);
+
+            $this->investorBankServ->update($data['investor_bank']['bank_id'], $data['investor_bank'] ?? []);
+            $this->investorDocServ->update($data['inv_doc'] ?? [], $investor);
+        });
     }
 
     public function delete($id)
@@ -127,8 +136,7 @@ class InvestorService
                 $address = $row->investor_address ?? '-';
 
                 return "<strong class='text-capitalize'>{$name}</strong><p class='mb-0 text-primary'>{$email}</p>
-            <p class='text-muted small'><i class='fa fa-phone-alt text-danger'></i> 
-            <span class='font-weight-bold'>{$phone}</span> <span class='font-weight-bold'>{$address}</span></p>";
+            <p class='text-muted small'><i class='fa fa-phone-alt text-danger'></i> <span class='font-weight-bold'>{$phone}</span> </p><p class='text-muted small'><i class='fas fa-home text-danger'></i> <span class='font-weight-bold'>{$address}</span></p>";
             })
             ->addColumn('nationality_name', fn($row) => $row->nationality->nationality_name ?? '-')
             ->addColumn('country_of_residence', fn($row) => $row->countryOfResidence->nationality_name ?? '-')
@@ -140,16 +148,18 @@ class InvestorService
                 if (in_array($row->paymentMode->id, [1, 4])) return $row->paymentMode->payment_mode_name;
 
                 if ($row->paymentMode->id == 2) {
-                    $primaryBank = $row->investorBanks->where('is_primary', 1)->first();
-                    $bankName = $primaryBank->investor_bank_name ?? '-';
+                    // $primaryBank = $row->investorBanks->where('is_primary', 1)->first();
+                    $bankName = $row->primaryBank->investor_bank_name ?? '-';
                     return $row->paymentMode->payment_mode_name . ' - ' . $bankName;
                 }
 
                 return '-';
             })
             ->addColumn('action', function ($row) {
-                return '<a href="' . route('investor.edit', $row->id) . '" class="btn btn-info" >Edit</a>
-                                                <button class="btn btn-danger" data-id="' . $row->id . '" onclick="deleteConf()">Delete</button>';
+                return '<a href="' . route('investor.edit', $row->id) . '" class="btn btn-info btn-sm" ><i class="fas fa-pencil-alt"></i></a>
+                <a href="' . route('investor.show', $row->id) . '" class="btn btn-primary btn-sm" ><i class="fas fa-eye"></i></a>
+                        <button class="btn btn-danger btn-sm" data-id="' . $row->id . '" onclick="deleteConf()"><i class="fas fa-trash-alt"></i></button>
+                        <button class="btn btn-warning btn-sm" data-investor-id="' . $row->id . '" data-target="#modal-add-bank" data-toggle="modal" title="Add Bank"><i class="fas fa-university"></i></button>';
             })
             ->rawColumns(['investor_name', 'action'])
             ->with(['columns' => $columns])

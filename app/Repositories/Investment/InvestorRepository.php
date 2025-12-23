@@ -16,15 +16,14 @@ class InvestorRepository
         return Investor::where('status', 1)->get();
     }
 
-
     public function find($id)
     {
         return Investor::findOrFail($id);
     }
 
-    public function getByName($areaData)
+    public function getByName($investorData)
     {
-        return Investor::where($areaData)->first();
+        return Investor::where($investorData)->first();
     }
 
     public function create($data)
@@ -32,28 +31,23 @@ class InvestorRepository
         return Investor::create($data);
     }
 
-    public function updateOrRestore(int $id, array $data)
+    public function update(int $id, array $data)
     {
-        $area = Investor::withTrashed()->findOrFail($id);
+        $investor = Investor::findOrFail($id);
+        $investor->update($data);
 
-        if ($area->trashed()) {
-            $area->restore();
-        }
-
-        $area->update($data);
-
-        return $area;
+        return $investor;
     }
 
     public function delete($id)
     {
-        $area = $this->find($id);
-        return $area->delete();
+        $investor = $this->find($id);
+        return $investor->delete();
     }
 
-    public function uniqInvestorName($area_name, $company_id)
+    public function uniqInvestorName($investor_name, $company_id)
     {
-        return Investor::where('area_name', $area_name)
+        return Investor::where('area_name', $investor_name)
             ->where('company_id', $company_id)
             ->first();
     }
@@ -77,84 +71,39 @@ class InvestorRepository
             ]);
 
 
-
-        // if (!empty($filters['filter'])) {
-        //     $filter = $filters['filter'];
-
-        //     // Vendor filter
-        //     if ($filter['vendor_id']) {
-        //         $query->whereHas('contract', function ($q) use ($filter) {
-        //             $q->where('vendor_id', $filter['vendor_id']);
-        //         });
-        //     }
-
-        //     // property filter
-        //     if ($filter['property_id']) {
-        //         $query->whereHas('contract', function ($q) use ($filter) {
-        //             $q->where('property_id', $filter['property_id']);
-        //         });
-        //     }
-
-        //     // payment mode filter
-        //     if ($filter['payment_mode']) {
-        //         $query->whereHas('payment_mode', function ($q) use ($filter) {
-        //             $q->where('payment_mode_id', $filter['payment_mode']);
-        //         });
-        //     }
-
-        //     if (!empty($filter['date_from'])) {
-        //         $fromDate = $filter['date_from'];
-        //     }
-
-        //     if (!empty($filter['date_to'])) {
-        //         $todate = $filter['date_to'];
-        //     }
-        // }
-
-        // if ($fromDate) {
-        //     $query->whereBetween('payment_date', [
-        //         $fromDate,
-        //         $todate
-        //     ]);
-        // } else {
-        //     $query->where(
-        //         'payment_date',
-        //         '<=',
-        //         $todate
-        //     );
-        // }
-
-
         if (!empty($filters['search'])) {
             $search = trim($filters['search']);
             $searchLike = str_replace('-', '%', $search);
 
             $query->where(function ($q) use ($search, $searchLike) {
-                $q->whereRaw('payment_date LIKE ?', ["%{$searchLike}%"])
-                    ->orWhereRaw("CAST(payment_amount AS CHAR) LIKE ?", ["%{$search}%"])
+                $q->where('investor_name LIKE ?', '%' . $search . '%')
+                    ->orWhere("investor_mobile  LIKE ?", '%' . $search . '%')
+                    ->orWhere('investor_email  LIKE ?', '%' . $search . '%')
+                    ->orWhere('id_number LIKE ?', '%' . $search . '%')
+                    ->orWhere('passport_number LIKE ?', '%' . $search . '%')
+                    ->orWhereRaw('profit_release_date  LIKE ?', '%' . $searchLike . '%')
 
-
-                    ->orWhereHas('contract', function ($q) use ($search) {
-                        $q->orwhere('project_code', 'like', '%' . $search . '%')
-                            ->orWhere('project_number', 'like', '%' . $search . '%');
+                    ->orWhereHas('nationality', function ($q) use ($search) {
+                        $q->orwhere('nationality_name', 'like', '%' . $search . '%');
                     })
 
-                    ->orWhereHas('contract.company', function ($q) use ($search) {
-                        $q->where('company_name', 'like', '%' . $search . '%');
+                    ->orWhereHas('payoutBatch', function ($q) use ($search) {
+                        $q->where('batch_name', 'like', '%' . $search . '%');
                     })
-                    ->orWhereHas('contract.contract_type', function ($q) use ($search) {
-                        $q->where('contract_type', 'like', '%' . $search . '%');
-                    })
-                    ->orWhereHas('contract.property', function ($q) use ($search) {
-                        $q->where('property_name', 'like', '%' . $search . '%');
-                    })
-                    ->orWhereHas('contract.vendor', function ($q) use ($search) {
-                        $q->where('vendor_name', 'like', '%' . $search . '%');
-                    })
-                    ->orWhereHas('payment_mode', function ($q) use ($search) {
+                    ->orWhereHas('paymentMode', function ($q) use ($search) {
                         $q->where('payment_mode_name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('investorBanks', function ($q) use ($search) {
+                        $q->where('investor_beneficiary', 'like', '%' . $search . '%')
+                            ->where('investor_bank_name', 'like', '%' . $search . '%')
+                            ->where('investor_iban', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('referral', function ($q) use ($search) {
+                        $q->where('investor_name', 'like', '%' . $search . '%');
                     });
             });
+
+            $query = '';
         }
 
         return $query;

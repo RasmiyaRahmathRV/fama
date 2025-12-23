@@ -65,6 +65,7 @@ class Investor extends Model
     {
         return $this->belongsTo(PayoutBatch::class, 'payout_batch_id', 'id');
     }
+
     public function investorBanks()
     {
         return $this->hasMany(InvestorBank::class, 'investor_id');
@@ -78,13 +79,19 @@ class Investor extends Model
     //     return $this->hasMany(Investor::class, 'referral_id');
     // }
 
-    public function setProfitReleaseDateAttribute($value)
-    {
-        $this->attributes['profit_release_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
-    }
+    // public function setProfitReleaseDateAttribute($value)
+    // {
+    //     $this->attributes['profit_release_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    // }
 
-    public function getProfitReleaseDateAttribute($value)
+    // public function getProfitReleaseDateAttribute($value)
+    // {
+    //     return $this->attributes['profit_release_date'] = Carbon::parse($value)->format('d-m-Y');
+    // }
+
+    public function primaryBank()
     {
-        return $this->attributes['profit_release_date'] = Carbon::parse($value)->format('d-m-Y');
+        return $this->hasOne(InvestorBank::class, 'investor_id')
+            ->where('is_primary', 1);
     }
 }
