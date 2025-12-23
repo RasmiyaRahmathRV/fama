@@ -43,6 +43,8 @@
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <form action="" id="investorForm" enctype="multipart/form-data">
+                                    <input type="hidden" id="investor_id" name="investor[investor_id]"
+                                        value="{{ $investor->id ?? '' }}">
                                     <div class="modal-body">
                                         <div class="card card-outline card-info p-4">
                                             <h4>Basic Details</h4>
@@ -51,23 +53,24 @@
                                                 <div class="col-sm-4">
                                                     <label class="asterisk">Investor Name</label>
                                                     <input type="text" name="investor[investor_name]"
-                                                        class="form-control" placeholder="Investor Name" required>
+                                                        class="form-control" placeholder="Investor Name"
+                                                        value="{{ $investor->investor_name ?? '' }}" required>
                                                 </div>
 
                                                 <div class="col-sm-4">
                                                     <label for="inputEmail3" class="asterisk">Investor
                                                         Mobile</label>
-                                                    <input type="text" pattern="^\+[1-9]\d{7,14}$"
+                                                    <input type="number" pattern="^\+[1-9]\d{7,14}$"
                                                         name="investor[investor_mobile]" id="investor_mobile"
                                                         class="form-control" id="inputEmail3" placeholder="Investor Mobile"
-                                                        required>
+                                                        value="{{ $investor->investor_mobile ?? '' }}" required>
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <label for="inputEmail3" class="asterisk">Investor
                                                         Email</label>
                                                     <input type="text" class="form-control"
                                                         name="investor[investor_email]" placeholder="Investor Email"
-                                                        required>
+                                                        value="{{ $investor->investor_email ?? '' }}" required>
                                                 </div>
                                             </div>
 
@@ -78,7 +81,8 @@
                                                         required>
                                                         <option value="">Select Nationality</option>
                                                         @foreach ($nationalities as $nationality)
-                                                            <option value="{{ $nationality->id }}">
+                                                            <option value="{{ $nationality->id }}"
+                                                                {{ $nationality->id == $investor->nationality_id ? 'selected' : '' }}>
                                                                 {{ $nationality->nationality_name }}
                                                             </option>
                                                         @endforeach
@@ -91,7 +95,8 @@
                                                         class="form-control select2" required>
                                                         <option value="">Select Country</option>
                                                         @foreach ($nationalities as $nationality)
-                                                            <option value="{{ $nationality->id }}">
+                                                            <option value="{{ $nationality->id }}"
+                                                                {{ $nationality->id == $investor->country_of_residence ? 'selected' : '' }}>
                                                                 {{ $nationality->nationality_name }}
                                                             </option>
                                                         @endforeach
@@ -105,7 +110,8 @@
                                                         required>
                                                         <option value="">Select Payment Method</option>
                                                         @foreach ($paymentModes as $paymentMode)
-                                                            <option value="{{ $paymentMode->id }}">
+                                                            <option value="{{ $paymentMode->id }}"
+                                                                {{ $paymentMode->id == $investor->payment_mode_id ? 'selected' : '' }}>
                                                                 {{ $paymentMode->payment_mode_name }}</option>
                                                         @endforeach
                                                     </select>
@@ -117,21 +123,24 @@
                                                         Other
                                                         ID</label>
                                                     <input type="text" name="investor[id_number]" id="id_number"
-                                                        class="form-control" placeholder="Emirates ID/ Other ID" required>
+                                                        class="form-control" placeholder="Emirates ID/ Other ID"
+                                                        value="{{ $investor->id_number ?? '' }}" required>
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <label for="inputEmail3" class="">Passport Number</label>
                                                     <input type="text" name="investor[passport_number]"
                                                         id="passport_number" class="form-control"
-                                                        placeholder="Passport Number">
+                                                        placeholder="Passport Number"
+                                                        value="{{ $investor->passport_number ?? '' }}">
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <label for="inputEmail3" class="">Referral</label>
                                                     <select class="form-control select2" name="investor[referral_id]">
                                                         <option value="">Select Referral</option>
-                                                        @foreach ($investors as $investor)
-                                                            <option value="{{ $investor->id }}">
-                                                                {{ $investor->investor_name }}
+                                                        @foreach ($investorsLists as $investorsList)
+                                                            <option value="{{ $investorsList->id }}"
+                                                                {{ $investorsList->id == $investor->referral_id ? 'selected' : '' }}>
+                                                                {{ $investorsList->investor_name }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -140,7 +149,7 @@
                                             <div class="form-group row">
                                                 <div class="col-sm-4">
                                                     <label for="inputEmail3" class="asterisk">Address</label>
-                                                    <textarea class="form-control" name="investor[investor_address]" id="" required></textarea>
+                                                    <textarea class="form-control" name="investor[investor_address]" id="" required>{{ $investor->investor_address ?? '' }}</textarea>
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <label for="inputEmail3" class="asterisk">Payout
@@ -149,7 +158,8 @@
                                                         required>
                                                         <option value="">Select Batch</option>
                                                         @foreach ($payoutbatches as $payoutbatch)
-                                                            <option value="{{ $payoutbatch->id }}">
+                                                            <option value="{{ $payoutbatch->id }}"
+                                                                {{ $payoutbatch->id == $investor->payout_batch_id ? 'selected' : '' }}>
                                                                 {{ $payoutbatch->batch_name }}</option>
                                                         @endforeach
                                                     </select>
@@ -157,18 +167,31 @@
 
                                                 <div class="col-sm-4">
                                                     <label for="inputEmail3" class="col-form-label">Profit Release
-                                                        Date</label>
-                                                    <div class="input-group date" id="profitReleaseDate"
+                                                        Date </label>
+                                                    <select name="investor[profit_release_date]" id="profitReleaseDate"
+                                                        class="form-control select2">
+                                                        <option value="">Select Day</option>
+                                                        @for ($i = 1; $i < 32; $i++)
+                                                            <option value="{{ $i }}"
+                                                                {{ $i == $investor->profit_release_date ? 'selected' : '' }}>
+                                                                {{ $i }}
+                                                            </option>
+                                                        @endfor
+                                                    </select>
+                                                    {{-- <div class="input-group date" id="profitReleaseDate"
                                                         data-target-input="nearest">
                                                         <input type="text" name="investor[profit_release_date]"
                                                             class="form-control datetimepicker-input"
-                                                            data-target="#profitReleaseDate" placeholder="dd-mm-YYYY" />
+                                                            data-target="#profitReleaseDate"
+                                                            value="{{ $investor->profit_release_date ?? '' }}"
+                                                            placeholder="dd-mm-YYYY" />
+
                                                         <div class="input-group-append" data-target="#profitReleaseDate"
                                                             data-toggle="datetimepicker">
                                                             <div class="input-group-text"><i class="fa fa-calendar"></i>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                             </div>
                                         </div>
@@ -176,26 +199,32 @@
                                         <div class="card card-outline card-info p-4">
                                             <h4>Investor Bank details</h4>
                                             <hr>
+                                            <input type="hidden" name="investor_bank[bank_id]"
+                                                value="{{ $investor->primaryBank->id }}">
                                             <div class="form-group row">
                                                 <div class="col-md-4">
                                                     <label for="inputEmail3" class="asterisk">Benenficiary
                                                         Name</label>
                                                     <input type="text" name="investor_bank[investor_beneficiary]"
                                                         id="investor_beneficiary" class="form-control"
-                                                        placeholder="Benenficiary Name" required>
+                                                        placeholder="Benenficiary Name"
+                                                        value="{{ $investor->primaryBank->investor_beneficiary }}"
+                                                        required>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="inputEmail3" class="asterisk">Bank
                                                         Name</label>
                                                     <input type="text" name="investor_bank[investor_bank_name]"
                                                         id="investor_bank_name" class="form-control"
-                                                        placeholder="Bank Name" required>
+                                                        placeholder="Bank Name"
+                                                        value="{{ $investor->primaryBank->investor_bank_name }}" required>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="inputEmail3" class="asterisk">IBAN</label>
                                                     <input type="text" name="investor_bank[investor_iban]"
                                                         id="investor_iban" class="form-control" id="inputEmail3"
-                                                        placeholder="IBAN" required>
+                                                        placeholder="IBAN"
+                                                        value="{{ $investor->primaryBank->investor_iban }}" required>
                                                 </div>
                                                 <input type="hidden" name="investor_bank[is_primary]" value="1">
                                             </div>
@@ -299,7 +328,7 @@
     <script src="{{ asset('assets/moment/moment.min.js') }}"></script>
     <script src="{{ asset('assets/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
     <script src="{{ asset('assets/daterangepicker/daterangepicker.js') }}"></script>
-    <!-- DataTables  & Plugins -->
+    <!-- DataTables & Plugins -->
     <script src="{{ asset('assets/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
@@ -324,11 +353,22 @@
 
             let isValid = true;
             $(".error-text").remove(); // clear old errors
+            let investorId = $('#investor_id').val();
 
 
             // validate ALL required fields
             $("#investorForm").find("[required]:visible").each(function() {
                 const value = $(this).val()?.trim();
+
+
+                // 🔹 Skip file validation during edit
+                if (
+                    investorId &&
+                    $(this).attr('type') === 'file'
+                ) {
+                    return; // skip this field
+                }
+
 
                 if (!value) {
                     isValid = false;
@@ -393,16 +433,30 @@
         }
 
         function submitForm(e) {
+            let investorId = $('#investor_id').val();
+
+            let url, method;
+
+            if (investorId) {
+                // UPDATE
+                url = "{{ route('investor.update', $investor->id) }}";
+                method = 'PUT';
+            } else {
+                // CREATE
+                url = "{{ route('investor.store') }}";
+                method = 'POST';
+            }
 
             var form = document.getElementById('investorForm');
             var fdata = new FormData(form);
 
             fdata.append('_token', $('meta[name="csrf-token"]').attr('content'));
+            fdata.append('_method', method);
 
 
             $.ajax({
                 type: "POST",
-                url: "{{ route('investor.store') }}",
+                url: url,
                 data: fdata,
                 dataType: "json",
                 processData: false,

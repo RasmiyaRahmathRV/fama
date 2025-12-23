@@ -32,9 +32,9 @@ class InvestorBankRepository
         return InvestorBank::create($data);
     }
 
-    public function updateOrRestore(int $id, array $data)
+    public function update(int $id, array $data)
     {
-        $investor = InvestorBank::withTrashed()->findOrFail($id);
+        $investor = InvestorBank::findOrFail($id);
         $investor->update($data);
 
         return $investor;

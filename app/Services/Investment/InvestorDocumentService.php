@@ -43,9 +43,26 @@ class InvestorDocumentService
 
     public function create(array $data, $investor = null)
     {
+        $dataArr = $this->documentArr($data, $investor);
+
+        return $this->investorDocRepo->createMany($dataArr);
+    }
+
+    public function update(array $data, $investor = null)
+    {
+        $dataArr = $this->documentArr($data, $investor);
+        $data['updated_by'] = auth()->user()->id;
+        return $this->investorDocRepo->updateMany($dataArr);
+    }
+
+    public function documentArr($data, $investor)
+    {
         $dataArr = [];
         foreach ($data as $value) {
-            if ($value['document_type_id'] == 4) {
+
+            $documentExist = $this->getByName(['document_type_id' => $value['document_type_id']]);
+
+            if ($value['document_type_id'] == 4 && empty($documentExist)) {
                 // dump(isset($value['file']));
                 if (!isset($value['file'])) {
                     throw ValidationException::withMessages([
@@ -63,22 +80,21 @@ class InvestorDocumentService
                     'document_type_id' => $value['document_type_id'],
                     'document_name' => $filename,
                     'document_path' => $path,
-                    'added_by' => auth()->user()->id,
                 );
+
+                if ($documentExist) {
+                    $Arr['doc_id'] = $documentExist->id;
+                    $Arr['updated_by'] = auth()->user()->id;
+                } else {
+                    $Arr['added_by'] = auth()->user()->id;
+                }
 
                 // $this->validate($Arr);
                 $dataArr[] = $Arr;
             }
         }
 
-        return $this->investorDocRepo->createMany($dataArr);
-    }
-
-    public function update($id, array $data)
-    {
-        // $this->validate($data, $id);
-        // $data['updated_by'] = auth()->user()->id;
-        // return $this->investorDocRepo->update($id, $data);
+        return $dataArr;
     }
 
     public function delete($id)

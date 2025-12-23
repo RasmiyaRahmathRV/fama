@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('passport_number');
             $table->unsignedBigInteger('referral_id')->nullable();
             $table->unsignedBigInteger('payout_batch_id');
-            $table->date('profit_release_date')->nullable();
+            $table->integer('profit_release_date')->nullable();
             $table->integer('status')->default(1)->comment('0-inactive, 1-active');
             $table->integer('total_no_of_investments')->default(0);
             $table->decimal('total_invested_amount', 12, 2)->default(0);

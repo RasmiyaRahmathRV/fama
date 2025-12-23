@@ -52,9 +52,9 @@ class InvestorBankService
 
     public function update($id, array $data)
     {
-        // $this->validate($data, $id);
-        // $data['updated_by'] = auth()->user()->id;
-        // return $this->investorBankrepo->update($id, $data);
+        $this->validate($data, $id);
+        $data['updated_by'] = auth()->user()->id;
+        return $this->investorBankrepo->update($id, $data);
     }
 
     public function delete($id)

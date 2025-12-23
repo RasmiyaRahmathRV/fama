@@ -41,6 +41,23 @@ class InvestorDocumentRepository
         return  $detId;
     }
 
+    public function updateMany(array $dataArray)
+    {
+        $detId = [];
+        foreach ($dataArray as $data) {
+
+            if (isset($data['doc_id'])) {
+                $investorDoc = InvestorDocument::findOrFail($data['doc_id']);
+                $investorDoc->update($data);
+            } else {
+                $investorDoc = $this->create($data);
+            }
+
+            $detId[] = $investorDoc->id;
+        }
+        return  $detId;
+    }
+
     public function updateOrRestore(int $id, array $data)
     {
         $investorDoc = InvestorDocument::withTrashed()->findOrFail($id);
