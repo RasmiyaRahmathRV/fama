@@ -302,7 +302,6 @@ class SubUnitDetailService
     public function markUnitOccupied($unitId)
     {
         $unit = ContractUnitDetail::find($unitId);
-
         if (!$unit) {
             return;
         }
@@ -314,5 +313,11 @@ class SubUnitDetailService
             $subunit->is_vacant = 1;
             $subunit->save();
         }
+
+
+        $details = getOccupiedDetails($unitId);
+        $unit->subunit_occupied_count = $details['occupied'];
+        $unit->subunit_vacant_count = $details['vacant'];
+        $unit->save();
     }
 }

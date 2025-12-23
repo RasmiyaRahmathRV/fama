@@ -311,9 +311,9 @@ class AgreementService
                         $this->agreementPaymentDetailService->create($detail_data);
                     }
                     $this->subUnitDetailserv->markSubunitOccupied($unit['contract_unit_details_id'], $unit['contract_subunit_details_id'] ?? null);
-                    if ($ct->contract_unit->business_type == 1) {
-                        $this->subUnitDetailserv->markUnitOccupied($unit['contract_unit_details_id']);
-                    }
+                    // if ($ct->contract_unit->business_type == 1) {
+                    //     $this->subUnitDetailserv->markUnitOccupied($unit['contract_unit_details_id']);
+                    // }
                     // $this->subUnitDetailserv->Updatepaymentdetails(
                     //     $payment->id,
                     //     $createdUnit['contract_unit_details_id']
@@ -809,8 +809,8 @@ class AgreementService
                 // ';
                 if (Gate::allows('agreement.terminate') && ($row->agreement_status == 0)) {
                     $action .= '<a href="#" class="btn btn-danger btn-sm m-1 open-terminate-modal" title="Terminate" data-id="' . $row->id . '">
-                <i class="fas fa-file-signature"></i>
-            </a>';
+                        <i class="fas fa-file-signature"></i>
+                    </a>';
                 }
 
 
