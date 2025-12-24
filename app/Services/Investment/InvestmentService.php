@@ -185,6 +185,7 @@ class InvestmentService
                 ];
                 // dd($investorReferraldata);
                 $this->investmentReferralService->create($investorReferraldata);
+                UpdateReferralCommission($data['referral_id']);
             }
 
 
@@ -282,6 +283,7 @@ class InvestmentService
             if (!empty($data['referral_commission_perc']) && $data['referral_commission_perc'] > 0) {
                 $existingReferral = $this->investmentReferralService->getById($data['investment_referral_id']);
                 // dd($existingReferral);
+                // dd($data['investment_referral_id']);
                 $investorReferralData = [
                     // 'investment_id' => $investment->id,
                     'investor_id' => $data['investor_id'],
@@ -296,10 +298,12 @@ class InvestmentService
                 ];
                 // dd($investorReferralData);
 
+
                 if ($existingReferral) {
                     // $existingReferral->update($investorReferralData);
                     $this->investmentReferralService->update($data['investment_referral_id'], $investorReferralData);
                 }
+                updateReferralCommission($data['investment_referral_id']);
             }
 
             $receivedPaymentData = [
