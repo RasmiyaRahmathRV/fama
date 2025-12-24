@@ -93,6 +93,7 @@
                                     <li class="nav-item"><a class="nav-link" href="#received-history"
                                             data-toggle="tab">Received History</a>
                                     </li>
+                                    {{-- {{ dd() }} --}}
 
                                     @if (isset($investment->investmentReferral) && $investment->investmentReferral != null)
                                         <li class="nav-item"><a class="nav-link" href="#referral" data-toggle="tab">Referral
@@ -133,12 +134,14 @@
                                         ])
                                     </div> --}}
                                     <!-- /.tab-pane -->
-
-                                    <div class="tab-pane" id="referral">
-                                        @include('admin.investment.investment.partials.view-referral', [
-                                            'received' => $investment->investmentReceivedPayments,
-                                        ])
-                                    </div>
+                                    @if (isset($investment->investmentReferral) && $investment->investmentReferral != null)
+                                        <div class="tab-pane" id="referral">
+                                            @include('admin.investment.investment.partials.view-referral', [
+                                                'referral' => $investment->investmentReferral,
+                                                'referrer' => $investment->investmentReferral->referrer,
+                                            ])
+                                        </div>
+                                    @endif
                                     <!-- /.tab-pane -->
 
                                     <!-- /.tab-pane -->

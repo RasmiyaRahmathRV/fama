@@ -274,7 +274,7 @@
                                                 </div> --}}
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label class="asterisk">Profit Release Date</label>
+                                                        <label>Profit Release Date</label>
                                                         <select name="profit_release_date" id="profit_release_date"
                                                             class="form-control">
                                                             <option value="">Select Date</option>

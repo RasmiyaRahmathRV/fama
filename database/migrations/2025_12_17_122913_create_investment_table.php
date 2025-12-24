@@ -52,7 +52,7 @@ return new class extends Migration
 
             // Release Dates
             // $table->date('profit_release_date')->nullable();
-            $table->integer('profit_release_date');
+            $table->integer('profit_release_date')->nullable();
 
             $table->string('initial_profit_release_month');
 
