@@ -504,8 +504,8 @@ function updateInvestor($investorId, $investmentId)
 {
     $investmentCount = Investment::where('investor_id', $investorId)->count();
 
-    $investedAmount = InvestmentReceivedPayment::where('investment_id', $investmentId)
-        ->sum('received_amount');
+    $investedAmount = Investment::where('investment_id', $investmentId)
+        ->sum('investment_amount');
 
     Investor::where('id', $investorId)->update([
         'total_no_of_investments' => $investmentCount,
