@@ -16,11 +16,15 @@ class InvestmentReferralRepository
     {
         return InvestmentReferral::findOrFail($id);
     }
-
-
-
     public function create($data)
     {
         return InvestmentReferral::create($data);
+    }
+    public function update(int $id, array $data)
+    {
+        $investment = InvestmentReferral::findOrFail($id);
+        $investment->update($data);
+
+        return $investment;
     }
 }

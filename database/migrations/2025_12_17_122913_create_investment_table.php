@@ -34,6 +34,8 @@ return new class extends Migration
             $table->decimal('investment_amount', 12, 2);
             $table->integer('investment_type')->comment('0-New', '1-Existing');
             $table->decimal('received_amount', 12, 2)->default(0);
+            $table->decimal('total_received_amount', 12, 2)->default(0);
+            $table->decimal('balance_amount', 12, 2)->default(0);
             $table->integer('has_fully_received')->comment('0-Not Received,1-fully Received,2-Partially Received');
             $table->date('investment_date');
 
@@ -48,7 +50,9 @@ return new class extends Migration
 
 
             // Release Dates
-            $table->date('profit_release_date')->nullable();
+            // $table->date('profit_release_date')->nullable();
+            $table->integer('profit_release_date')->nullable();
+
             $table->date('last_profit_released_date')->nullable();
             $table->date('next_profit_release_date')->nullable();
             $table->date('next_referral_commission_release_date')->nullable();

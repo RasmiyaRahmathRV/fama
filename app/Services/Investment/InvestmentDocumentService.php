@@ -3,6 +3,7 @@
 namespace App\Services\Investment;
 
 use App\Repositories\Investment\InvestmentDocumentRepository;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -30,17 +31,24 @@ class InvestmentDocumentService
 
     public function create(array $data, $user_id = null)
     {
-        // dd($data);
-        // $this->validate($data);
+        $data['added_by'] = auth()->user()->id;
         $record = $this->investmentDocumentRepository->create($data);
         return $record;
     }
 
     public function update($id, array $data)
     {
-        // $this->validate($data, $id);
-        // $data['updated_by'] = auth()->user()->id;
-        // return $this->investmentDocumentRepository->update($id, $data);
+        // dd($data);
+        $this->validate($data);
+        $data['updated_by'] = auth()->user()->id;
+        $existingDoc = $this->investmentDocumentRepository->find($id);
+        if ($existingDoc && $existingDoc->investment_contract_file_path) {
+            if (Storage::disk('public')->exists($existingDoc->investment_contract_file_path)) {
+                Storage::disk('public')->delete($existingDoc->investment_contract_file_path);
+            }
+
+            $this->investmentDocumentRepository->update($id, $data);
+        }
     }
 
     // public function delete($id)

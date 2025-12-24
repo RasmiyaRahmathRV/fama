@@ -14,6 +14,7 @@ use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -64,10 +65,13 @@ class InvestmentService
                 $data['investment_amount'],
                 $data['received_amount']
             );
+            $next_profit_release_date = calculateNextProfitReleaseDate($data['grace_period'], $data['profit_interval_id'], $data['investment_date']);
 
             // dd("test");
 
             $investmentType = InvestmentTypestatus($data['investor_id']);
+            $balance_amount = $data['investment_amount'] - $data['received_amount'];
+
             // dd("test");
             // ---------------- Investment ----------------
             $investmentData = [
@@ -75,6 +79,8 @@ class InvestmentService
                 'investor_id' => $data['investor_id'],
                 'investment_amount' => $data['investment_amount'],
                 'received_amount' => $data['received_amount'],
+                'total_received_amount' => $data['received_amount'],
+                'balance_amount' => $balance_amount,
                 'investment_date' => parseDate($data['investment_date']),
                 'investment_tenure' => $data['investment_tenure'],
                 'grace_period' => $data['grace_period'],
@@ -83,7 +89,8 @@ class InvestmentService
                 'profit_amount' => $data['profit_amount'],
                 'profit_interval_id' => $data['profit_interval_id'],
                 'profit_amount_per_interval' => $data['profit_amount_per_interval'],
-                'profit_release_date' => parseDate($data['profit_release_date']),
+                // 'profit_release_date' => parseDate($data['profit_release_date']),
+                'profit_release_date' => $data['profit_release_date'],
                 'payout_batch_id' => $data['payout_batch_id'],
                 'investor_bank_id' => $data['investor_bank_id'],
                 'nominee_name' => $data['nominee_name'],
@@ -94,7 +101,9 @@ class InvestmentService
                 'added_by' => $userId,
                 'has_fully_received' => $has_fully_received,
                 'reinvestment_or_not' => $data['reinvestment_or_not'],
-                'investment_type' => $investmentType
+                'investment_type' => $investmentType,
+                'next_profit_release_date' => $next_profit_release_date,
+                'next_referral_commission_release_date' => $next_profit_release_date,
             ];
             $this->validate($investmentData);
             // dd($investmentData);
@@ -103,19 +112,17 @@ class InvestmentService
             $investment = $this->investmentRepository->create($investmentData);
 
             // ---------------- Investment Received Payment ----------------
-            $balance_amount = $investment->investment_amount - $investment->received_amount;
 
             $investment_received_payments = [
                 'investment_id' => $investment->id,
                 'investor_id' => $investment->investor_id,
                 'received_amount' => $investment->received_amount,
-                'balance_amount' => $balance_amount,
                 'received_date' => $investment->investment_date,
                 'status' => 1,
                 'added_by' => $userId,
+                'is_initial_payment' => 1
             ];
 
-            // If you have repository for this, call create here
             $this->investmentReceivedPaymentService->create($investment_received_payments);
 
             // ---------------- Update Investor Totals ----------------
@@ -142,7 +149,7 @@ class InvestmentService
                 $fileName = uniqid() . '_' . $file->getClientOriginalName();
 
                 $path = $file->storeAs(
-                    'uploads/investments/' . $investor->investor_code . '/investments/' . $investment_code,
+                    'investments/' . $investor->investor_code . '/investments/' . $investment_code,
                     $fileName,
                     'public'
                 );
@@ -178,16 +185,131 @@ class InvestmentService
                 $this->investmentReferralService->create($investorReferraldata);
             }
 
+
+
             return $investment;
         });
     }
 
     public function update($id, array $data)
     {
-        // $this->validate($data, $id);
-        // $data['updated_by'] = auth()->user()->id;
-        // return $this->investmentRepository->update($id, $data);
+        return DB::transaction(function () use ($id, $data) {
+
+            $investment = $this->investmentRepository->find($id);
+            $userId = auth()->user()->id;
+
+            $has_fully_received = investmentStatus(
+                $data['investment_amount'],
+                $data['received_amount']
+            );
+
+            $investmentType = InvestmentTypestatus($data['investor_id']);
+            $next_profit_release_date = calculateNextProfitReleaseDate($data['grace_period'], $data['profit_interval_id'], $data['investment_date']);
+
+            $investmentData = [
+                'investor_id' => $data['investor_id'],
+                'investment_amount' => $data['investment_amount'],
+                'received_amount' => $data['received_amount'],
+                // 'balance_amount' => $balance_amount,
+                'investment_date' => parseDate($data['investment_date']),
+                'investment_tenure' => $data['investment_tenure'],
+                'grace_period' => $data['grace_period'],
+                'maturity_date' => parseDate($data['maturity_date']),
+                'profit_perc' => $data['profit_perc'],
+                'profit_amount' => $data['profit_amount'],
+                'profit_interval_id' => $data['profit_interval_id'],
+                'profit_amount_per_interval' => $data['profit_amount_per_interval'],
+                // 'profit_release_date' => parseDate($data['profit_release_date']),
+                'profit_release_date' => $data['profit_release_date'],
+                'payout_batch_id' => $data['payout_batch_id'],
+                'investor_bank_id' => $data['investor_bank_id'],
+                'nominee_name' => $data['nominee_name'],
+                'nominee_email' => $data['nominee_email'],
+                'nominee_phone' => $data['nominee_phone'],
+                'company_id' => $data['company_id'],
+                'company_bank_id' => $data['company_bank_id'],
+                'updated_by' => $userId,
+                'has_fully_received' => $has_fully_received,
+                'reinvestment_or_not' => $data['reinvestment_or_not'],
+                'investment_type' => $investmentType,
+                'next_profit_release_date' => $next_profit_release_date,
+                'next_referral_commission_release_date' => $next_profit_release_date,
+            ];
+
+            $this->validate($investmentData);
+
+            $investment = $this->investmentRepository->update($id, $investmentData);
+
+            // Update Investment Documents
+            if (!empty($data['contract_file'])) {
+                $file = $data['contract_file'];
+
+                $validator = Validator::make(['file' => $file], [
+                    'file' => 'required|file|mimes:pdf|max:10240',
+                ]);
+
+                if ($validator->fails()) {
+                    throw new ValidationException($validator);
+                }
+
+                $fileName = uniqid() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs(
+                    'investments/' . $investment->investor->investor_code . '/investments/' . $investment->investment_code,
+                    $fileName,
+                    'public'
+                );
+
+                $investorDocData = [
+                    'investment_id' => $investment->id,
+                    'investor_id' => $investment->investor_id,
+                    'investment_contract_file_name' => $fileName,
+                    'investment_contract_file_path' => $path,
+                    // 'updated_by' => $userId,
+                ];
+                // dd($data['document_id']);
+                if (isset($data['document_id']) && $data['document_id']) {
+                    $this->investmentDocumentService->update($data['document_id'], $investorDocData);
+                } else {
+                    $this->investmentDocumentService->create($investorDocData);
+                }
+            }
+
+            // Update Referral
+            if (!empty($data['referral_commission_perc']) && $data['referral_commission_perc'] > 0) {
+                $existingReferral = $this->investmentReferralService->getById($data['investment_referral_id']);
+                // dd($existingReferral);
+                $investorReferralData = [
+                    // 'investment_id' => $investment->id,
+                    'investor_id' => $data['investor_id'],
+                    'investor_referror_id' => $data['referral_id'],
+                    'referral_commission_perc' => $data['referral_commission_perc'],
+                    'referral_commission_amount' => $data['referral_commission_amount'],
+                    'referral_commission_pending_amount' => $data['referral_commission_amount'],
+                    'referral_commission_frequency_id' => $data['referral_commission_frequency_id'],
+                    'referral_commission_status' => 0,
+                    'updated_by' => $userId,
+                ];
+
+                if ($existingReferral) {
+                    // $existingReferral->update($investorReferralData);
+                    $this->investmentReferralService->update($data['investment_referral_id'], $investorReferralData);
+                }
+            }
+
+            $receivedPaymentData = [
+                'received_amount' => $investment->received_amount,
+                'received_date' => $investment->investment_date,
+                'updated_by' => $userId,
+            ];
+            $this->investmentReceivedPaymentService->updateInitial($investment->id, $receivedPaymentData);
+
+            updateInvestor($data['investor_id'], $investment->id);
+            updateInvestmentBalance($investment->id);
+
+            return $investment;
+        });
     }
+
 
     public function delete($id)
     {
@@ -215,7 +337,8 @@ class InvestmentService
             'profit_amount' => 'required|numeric|min:0',
             'profit_interval_id' => 'required|exists:profit_intervals,id',
             'profit_amount_per_interval' => 'required|numeric|min:0',
-            'profit_release_date' => 'nullable|date|after_or_equal:investment_date',
+            // 'profit_release_date' => 'nullable|date|after_or_equal:investment_date',
+            'profit_release_date' => 'nullable|integer|min:1',
             'payout_batch_id' => 'nullable|exists:payout_batches,id',
             'investor_bank_id' => 'required|exists:investor_banks,id',
             'nominee_name' => 'nullable|string|max:255',
@@ -253,8 +376,9 @@ class InvestmentService
             'profit_amount_per_interval.required' => 'Profit amount per interval is required.',
             'profit_amount_per_interval.numeric' => 'Profit amount per interval must be a number.',
             'profit_amount_per_interval.min' => 'Profit amount per interval cannot be negative.',
-            'profit_release_date.date' => 'Profit release date must be a valid date.',
-            'profit_release_date.after_or_equal' => 'Profit release date must be after or equal to the investment date.',
+            // 'profit_release_date.date' => 'Profit release date must be a valid date.',
+            // 'profit_release_date.after_or_equal' => 'Profit release date must be after or equal to the investment date.',
+            'profit_release_date.integer' => 'Profit release date must be between 1 and 31.',
             'payout_batch_id.exists' => 'Selected payout batch is invalid.',
             'investor_bank_id.required' => 'Investor bank is required.',
             'investor_bank_id.exists' => 'Selected investor bank is invalid.',
@@ -283,10 +407,12 @@ class InvestmentService
             ['data' => 'DT_RowIndex', 'name' => 'id'],
             ['data' => 'investor_name', 'name' => 'investor.investor_name'],
             ['data' => 'investment_amount', 'name' => 'investment_amount'],
+            ['data' => 'total_received_amount', 'name' => 'total_received_amount'],
             ['data' => 'investment_date', 'name' => 'investment_date'],
             ['data' => 'profit_interval', 'name' => 'profitInterval.profit_interval_name'],
             ['data' => 'profit_perc', 'name' => 'profit_perc'],
             ['data' => 'maturity_date', 'name' => 'maturity_date'],
+            ['data' => 'profit_release_date', 'name' => 'profit_release_date'],
             ['data' => 'grace_period', 'name' => 'grace_period'],
             ['data' => 'payout_batch', 'name' => 'payoutBatch.batch_name'],
             ['data' => 'nominee_name', 'name' => 'nominee_name'],
@@ -295,21 +421,15 @@ class InvestmentService
 
         return datatables()
             ->of($query)
-            ->addIndexColumn() // For DT_RowIndex
-            ->addColumn('investor_name', fn($row) => $row->investor->investor_name ?? '-')
+            ->addIndexColumn()
+            ->addColumn('investor_name', fn($row) => $row->investor->investor_name . " - " . $row->investor->investor_code ?? '-')
             ->addColumn('investment_amount', fn($row) => number_format($row->investment_amount, 2))
-            ->addColumn('investment_date', function ($row) {
-                return $row->investment_date
-                    ? \Carbon\Carbon::parse($row->investment_date)->format('d-m-Y')
-                    : '-';
-            })
+            ->addColumn('received_amount', fn($row) => number_format($row->total_received_amount, 2))
+            ->addColumn('investment_date', fn($row) => getFormattedDate($row->investment_date))
             ->addColumn('profit_interval', fn($row) => $row->profitInterval->profit_interval_name ?? '-')
             ->addColumn('profit_perc', fn($row) => $row->profit_perc . '%')
-            ->addColumn('maturity_date', function ($row) {
-                return $row->maturity_date
-                    ? \Carbon\Carbon::parse($row->maturity_date)->format('d-m-Y')
-                    : '-';
-            })
+            ->addColumn('maturity_date', fn($row) => getFormattedDate($row->maturity_date))
+            ->addColumn('profit_release_date', fn($row) => $row->profit_release_date)
 
             ->addColumn('grace_period', fn($row) => $row->grace_period ?? '-')
             ->addColumn('batch_name', fn($row) => $row->payoutBatch->batch_name ?? '-')
@@ -339,6 +459,13 @@ class InvestmentService
                         <i class="fas fa-edit"></i>
                     </a>';
                 }
+                if (Gate::allows('investment.view')) {
+                    $action .= '<a href="' . route('investment.show', $row->id) . '"
+                        class="btn btn-sm btn-primary m-1"
+                        title="View Investment">
+                        <i class="fas fa-eye"></i>
+                    </a>';
+                }
 
                 if (Gate::allows('investment.delete')) {
                     $action .= '<button
@@ -351,7 +478,7 @@ class InvestmentService
                 if (!paymentFullyReceived($row->id)) {
                     $action .= '
                     <button class="btn btn-sm btn-success m-1 openPendingModal"
-                        data-id="' . $row->id . '"
+                        data-id="' . $row->id . '" data-balance="' . $row->balance_amount . '"
                         title="Submit Pending Investment">
                         <i class="fas fa-money-check-alt"></i>
                     </button>
@@ -389,21 +516,20 @@ class InvestmentService
                 throw new \Exception("Investment not found");
             }
 
-            // Calculate balance
             $totalReceived = $this->investmentRepository->getTotalReceivedAmount($investment);
             $balanceAmount = $investment->investment_amount - $totalReceived;
-            // $received_amount = $investment->received_amount + $data['received_amount'];
 
             $userId = auth()->id();
+            $balance_amount = $balanceAmount - $data['received_amount'];
 
             $insertData = [
                 'investment_id'  => $investment->id,
                 'investor_id'    => $investment->investor_id,
                 'received_amount' => $data['received_amount'],
-                'balance_amount' => $balanceAmount - $data['received_amount'],
-                'received_date'  => $data['received_date'],
+                'received_date'  => parseDate($data['received_date']),
                 'status'         => 1,
                 'added_by'       => $userId,
+                'is_initial_payment' => 0
             ];
             $this->investmentReceivedPaymentService->create($insertData);
 
@@ -413,8 +539,10 @@ class InvestmentService
                 $newTotalReceived
             );
             $this->investmentRepository->updateById($investment->id, [
-                'received_amount' => $newTotalReceived,
-                'has_fully_received' => $has_fully_received
+                'total_received_amount' => $newTotalReceived,
+                'has_fully_received' => $has_fully_received,
+                'balance_amount' => $balance_amount,
+
             ]);
         });
     }
@@ -435,5 +563,9 @@ class InvestmentService
             'profitInterval' => $profitInterval,
             'frequency' => $referralFrequency
         ];
+    }
+    public function getDetails($id)
+    {
+        return $this->investmentRepository->getDetails($id);
     }
 }

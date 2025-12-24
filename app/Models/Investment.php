@@ -28,6 +28,9 @@ class Investment extends Model
         'investment_amount',
         'investment_type',
         'received_amount',
+        'total_received_amount',
+        'balance_amount',
+
         'has_fully_received',
 
         'investment_date',
@@ -131,12 +134,24 @@ class Investment extends Model
         $this->attributes['maturity_date'] = Carbon::parse($date)->format('Y-m-d H:i:s');
     }
 
-    public function setProfitReleaseDate($date)
-    {
-        $this->attributes['profit_release_date'] = Carbon::parse($date)->format('Y-m-d H:i:s');
-    }
+    // public function setProfitReleaseDate($date)
+    // {
+    //     $this->attributes['profit_release_date'] = Carbon::parse($date)->format('Y-m-d H:i:s');
+    // }
     public function investmentReceivedPayments()
     {
         return $this->hasMany(InvestmentReceivedPayment::class, 'investment_id');
+    }
+    public function investmentReferral()
+    {
+        return $this->hasOne(InvestmentReferral::class, 'investment_id');
+    }
+    // public function getProfitReleaseDateAttribute($value)
+    // {
+    //     return $this->attributes['profit_release_date'] = Carbon::parse($value)->format('d-m-Y');
+    // }
+    public function investmentDocument()
+    {
+        return $this->hasOne(InvestmentDocument::class, 'investment_id');
     }
 }

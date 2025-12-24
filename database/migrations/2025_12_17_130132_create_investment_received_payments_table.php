@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('investment_id');
             $table->unsignedBigInteger('investor_id');
+            $table->boolean('is_initial_payment')->default(false)->comment('0-False,1-True');
             $table->decimal('received_amount', 12, 2);
-            $table->decimal('balance_amount', 12, 2);
+            // $table->decimal('balance_amount', 12, 2);
             $table->date('received_date');
             $table->integer('status')->default(1)->comment('0-Inactive,1-Active');
             $table->integer('updated_by')->nullable();

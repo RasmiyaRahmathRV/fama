@@ -538,3 +538,50 @@ function paymentFullyReceived($investmentId)
         return false;
     }
 }
+function getFormattedDate($date)
+{
+    if (!$date) return null;
+    return Carbon::parse($date)->format('d-m-Y');
+}
+function updateInvestmentBalance($investmentId)
+{
+    $investment = Investment::find($investmentId);
+
+    $totalReceived = InvestmentReceivedPayment::where('investment_id', $investmentId)
+        ->sum('received_amount');
+
+    $balanceAmount = $investment->investment_amount - $totalReceived;
+
+
+    $investment->balance_amount = $balanceAmount;
+    $investment->total_received_amount = $totalReceived;
+    if ($totalReceived == $investment->investment_amount) {
+        $investment->has_fully_received = 1;
+    }
+    $investment->save();
+
+    return $investment;
+}
+function calculateNextProfitReleaseDate($grace_period, $profit_interval_id, $investment_date)
+{
+    $investmentDate = Carbon::parse($investment_date);
+    $investmentDateWithGrace = $investmentDate->copy()->addDays($grace_period);
+
+    $nextProfitReleaseDate = null;
+    switch ($profit_interval_id) {
+        case 1: // Monthly
+            $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addMonth();
+            break;
+        case 2: // Quarterly
+            $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addMonths(3);
+            break;
+        case 3: // Half-Yearly
+            $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addMonths(6);
+            break;
+        case 4: // Yearly
+            $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addYear();
+            break;;
+    }
+
+    return $nextProfitReleaseDate->format('Y-m-d');
+}

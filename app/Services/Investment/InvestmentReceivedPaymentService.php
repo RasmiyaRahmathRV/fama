@@ -23,9 +23,9 @@ class InvestmentReceivedPaymentService
         return $this->investmentReceivedPaymentRepository->find($id);
     }
 
-    public function getByName($name)
+    public function updateInitial($id, $data)
     {
-        return $this->investmentReceivedPaymentRepository->getByName($name);
+        return $this->investmentReceivedPaymentRepository->updateInitial($id, $data);
     }
 
     public function create(array $data, $user_id = null)
@@ -42,10 +42,10 @@ class InvestmentReceivedPaymentService
         // return $this->$nvestmentReceivedPaymentRepository->update($id, $data);
     }
 
-    public function delete($id)
-    {
-        return $this->investmentReceivedPaymentRepository->delete($id);
-    }
+    // public function delete($id)
+    // {
+    //     return $this->investmentReceivedPaymentRepository->delete($id);
+    // }
 
 
 

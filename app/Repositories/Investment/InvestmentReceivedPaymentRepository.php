@@ -21,4 +21,15 @@ class InvestmentReceivedPaymentRepository
     {
         return InvestmentReceivedPayment::create($data);
     }
+    public function updateInitial($id, $data)
+    {
+        $payment = InvestmentReceivedPayment::where('investment_id', $id)
+            ->where('is_initial_payment', 1)
+            ->first();
+        if ($payment) {
+
+            $payment->update($data);
+            return $payment;
+        }
+    }
 }

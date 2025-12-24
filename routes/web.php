@@ -202,6 +202,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('investments/investments', [InvestmentController::class, 'getInvestments'])->name('investment.list');
     Route::post('investments/investments', [InvestmentController::class, 'addpendingInvestment'])->name('investment.submit.pending');
+    Route::post('investments/export-investment', [InvestmentController::class, 'exportInvestment'])->name('investment.export');
 });
 
 // Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);

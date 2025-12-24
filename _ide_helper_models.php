@@ -276,6 +276,7 @@ namespace App\Models{
  * @property string $changed_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Agreement $agreement
  * @property-read \App\Models\User|null $deletedBy
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs newModelQuery()
@@ -285,6 +286,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs whereAgreementId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs whereChangedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs whereNewStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementStatusLogs whereOldStatus($value)
@@ -1507,6 +1509,8 @@ namespace App\Models{
  * @property string $investment_amount
  * @property int $investment_type 0-New
  * @property string $received_amount
+ * @property string $total_received_amount
+ * @property string $balance_amount
  * @property int $has_fully_received 0-Not Received,1-fully Received,2-Partially Received
  * @property string $investment_date
  * @property int $investment_tenure In Months
@@ -1515,7 +1519,7 @@ namespace App\Models{
  * @property string $profit_perc
  * @property string $profit_amount
  * @property string $profit_amount_per_interval
- * @property string|null $profit_release_date
+ * @property int|null $profit_release_date
  * @property string|null $last_profit_released_date
  * @property string|null $next_profit_release_date
  * @property string|null $next_referral_commission_release_date
@@ -1543,8 +1547,10 @@ namespace App\Models{
  * @property-read \App\Models\User|null $deletedBy
  * @property-read mixed $formatted_investment_amount
  * @property-read mixed $is_active
+ * @property-read \App\Models\InvestmentDocument|null $investmentDocument
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\InvestmentReceivedPayment> $investmentReceivedPayments
  * @property-read int|null $investment_received_payments_count
+ * @property-read \App\Models\InvestmentReferral|null $investmentReferral
  * @property-read \App\Models\Investor|null $investor
  * @property-read \App\Models\Bank|null $investorBank
  * @property-read Investment|null $parentInvestment
@@ -1556,6 +1562,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Investment onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Investment query()
  * @method static \Illuminate\Database\Eloquent\Builder|Investment whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereBalanceAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investment whereCompanyBankId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investment whereCompanyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investment whereCreatedAt($value)
@@ -1591,6 +1598,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Investment whereReinvestedCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investment whereReinvestmentOrNot($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investment whereTerminateStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investment whereTotalReceivedAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investment whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investment withTrashed()
@@ -1611,6 +1619,7 @@ namespace App\Models{
  * @property int $added_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\User|null $deletedBy
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument newQuery()
@@ -1618,6 +1627,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument query()
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereAddedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentDocument whereInvestmentContractFileName($value)
@@ -1637,8 +1647,8 @@ namespace App\Models{
  * @property int $id
  * @property int $investment_id
  * @property int $investor_id
+ * @property int $is_initial_payment 0-False,1-True
  * @property string $received_amount
- * @property string $balance_amount
  * @property string $received_date
  * @property int $status 0-Inactive,1-Active
  * @property int|null $updated_by
@@ -1647,19 +1657,21 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\User|null $addedBy
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\User|null $updatedBy
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment query()
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereAddedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereBalanceAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereInvestmentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereInvestorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereIsInitialPayment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereReceivedAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereReceivedDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReceivedPayment whereStatus($value)
@@ -1735,7 +1747,7 @@ namespace App\Models{
  * @property string $passport_number
  * @property int|null $referral_id
  * @property int $payout_batch_id
- * @property string|null $profit_release_date
+ * @property int|null $profit_release_date
  * @property int $status 0-inactive, 1-active
  * @property int $total_no_of_investments
  * @property string $total_invested_amount
@@ -1845,7 +1857,7 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $investor_id
- * @property string $document_type
+ * @property int $document_type_id
  * @property string $document_name
  * @property string $document_path
  * @property int $added_by
@@ -1866,7 +1878,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDocumentName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDocumentPath($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDocumentType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereDocumentTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereInvestorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorDocument whereUpdatedAt($value)

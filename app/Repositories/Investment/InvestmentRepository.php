@@ -24,6 +24,9 @@ class InvestmentRepository
             'company.banks',
             'profitInterval',
             'payoutBatch',
+            'investmentReferral',
+            'investmentDocument',
+            'investmentReceivedPayments'
         ])->findOrFail($id);
     }
 
@@ -43,17 +46,12 @@ class InvestmentRepository
         return $investment->update($data);
     }
 
-    public function updateOrRestore(int $id, array $data)
+    public function update(int $id, array $data)
     {
-        $area = Investment::withTrashed()->findOrFail($id);
+        $investment = Investment::findOrFail($id);
+        $investment->update($data);
 
-        if ($area->trashed()) {
-            $area->restore();
-        }
-
-        $area->update($data);
-
-        return $area;
+        return $investment;
     }
 
     public function delete($id)
@@ -104,5 +102,17 @@ class InvestmentRepository
     public function insertBulk(array $rows)
     {
         return Investment::insert($rows);
+    }
+    public function getDetails($id)
+    {
+        return Investment::with([
+            'investor',
+            'company',
+            'profitInterval',
+            'payoutBatch',
+            'investmentReferral',
+            'investmentDocument',
+            'investmentReceivedPayments'
+        ])->findOrFail($id);
     }
 }

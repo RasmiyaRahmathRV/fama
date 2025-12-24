@@ -22,4 +22,9 @@ class InvestmentDocumentRepository
     {
         return InvestmentDocument::create($data);
     }
+    public function update(int $id, array $data)
+    {
+        $investmentDocument = InvestmentDocument::findOrFail($id);
+        return $investmentDocument->update($data);
+    }
 }
