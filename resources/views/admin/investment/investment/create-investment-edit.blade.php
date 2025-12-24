@@ -326,6 +326,7 @@
 
                                     <!-- ================== Referral ================= -->
                                     @if (isset($investment) && $investment->investmentReferral)
+                                        {{-- @dd($investment->investmentReferral); --}}
                                         <input type="hidden" name="investment_referral_id"
                                             value="{{ $investment->investmentReferral->id }}">
                                         <div class="card card-outline card-info ">
@@ -347,7 +348,8 @@
                                                                 placeholder="Referral Commission Percentage">
                                                         </div>
                                                     </div>
-                                                    <input type="hidden" name="referral_id" id="referral_id">
+                                                    <input type="hidden" name="referral_id" id="referral_id"
+                                                        value="{{ $investment->investmentReferral->investor_referror_id }}">
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label class="asterisk">Referral Commission Amount</label>

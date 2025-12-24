@@ -207,7 +207,7 @@ class InvestmentService
                 $data['received_amount']
             );
 
-            $investmentType = InvestmentTypestatus($data['investor_id']);
+            // $investmentType = InvestmentTypestatus($data['investor_id']);
             $next_profit_release_date = calculateNextProfitReleaseDate($data['grace_period'], $data['profit_interval_id'], $data['investment_date']);
 
             $investmentData = [
@@ -235,7 +235,7 @@ class InvestmentService
                 'updated_by' => $userId,
                 'has_fully_received' => $has_fully_received,
                 'reinvestment_or_not' => $data['reinvestment_or_not'],
-                'investment_type' => $investmentType,
+                // 'investment_type' => $investmentType,
                 'next_profit_release_date' => $next_profit_release_date,
                 'next_referral_commission_release_date' => $next_profit_release_date,
                 'initial_profit_release_month' => Carbon::parse($next_profit_release_date)->format('M Y')
@@ -287,7 +287,7 @@ class InvestmentService
                 $investorReferralData = [
                     // 'investment_id' => $investment->id,
                     'investor_id' => $data['investor_id'],
-                    'investor_referror_id' => $data['investment_referral_id'],
+                    'investor_referror_id' => $data['referral_id'],
                     'referral_commission_perc' => $data['referral_commission_perc'],
                     'referral_commission_amount' => $data['referral_commission_amount'],
                     'referral_commission_pending_amount' => $data['referral_commission_amount'],
@@ -303,7 +303,7 @@ class InvestmentService
                     // $existingReferral->update($investorReferralData);
                     $this->investmentReferralService->update($data['investment_referral_id'], $investorReferralData);
                 }
-                updateReferralCommission($data['investment_referral_id']);
+                updateReferralCommission($data['referral_id']);
             }
 
             $receivedPaymentData = [
@@ -415,11 +415,12 @@ class InvestmentService
 
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
+            ['data' => 'company_name', 'name' => 'company.company_name'],
             ['data' => 'investor_name', 'name' => 'investor.investor_name'],
             ['data' => 'investment_amount', 'name' => 'investment_amount'],
             ['data' => 'total_received_amount', 'name' => 'total_received_amount'],
             ['data' => 'investment_date', 'name' => 'investment_date'],
-            ['data' => 'profit_interval', 'name' => 'profitInterval.profit_interval_name'],
+            ['data' => 'profit_interval', 'name' => 'profit_interval_name'],
             ['data' => 'profit_perc', 'name' => 'profit_perc'],
             ['data' => 'maturity_date', 'name' => 'maturity_date'],
             ['data' => 'profit_release_date', 'name' => 'profit_release_date'],
@@ -435,7 +436,9 @@ class InvestmentService
         return datatables()
             ->of($query)
             ->addIndexColumn()
+            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('investor_name', fn($row) => $row->investor->investor_name . " - " . $row->investor->investor_code ?? '-')
+
             ->addColumn('investment_amount', fn($row) => number_format($row->investment_amount, 2))
             ->addColumn('received_amount', fn($row) => number_format($row->total_received_amount, 2))
             ->addColumn('investment_date', fn($row) => getFormattedDate($row->investment_date))
@@ -460,6 +463,9 @@ class InvestmentService
                     </p>
                 ";
             })
+            ->addColumn('referral_commission_amount', fn($row) => $row->investmentReferral->referral_commission_amount ?? '-')
+            ->addColumn('referral_commission_perc', fn($row) => $row->investmentReferral->referral_commission_perc ?? '-')
+
             ->addColumn('action', function ($row) use ($filters) {
                 $action = '';
 
