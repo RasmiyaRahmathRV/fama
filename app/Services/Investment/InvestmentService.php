@@ -454,43 +454,53 @@ class InvestmentService
                     </p>
                 ";
             })
-            ->addColumn('action', function ($row) {
+            ->addColumn('action', function ($row) use ($filters) {
                 $action = '';
 
+                if (!empty($filters['investor_id'])) {
+                    if (Gate::allows('investment.view')) {
+                        $action .= '<a href="' . route('investment.show', $row->id) . '"
+                            class="btn btn-sm btn-primary m-1"
+                            title="View Investment" target="_blank">
+                            <i class="fas fa-eye"></i>
+                        </a>';
+                    }
+                } else {
+                    if (Gate::allows('investment.edit')) {
+                        $action .= '<a href="' . route('investment.edit', $row->id) . '"
+                            class="btn btn-sm btn-info m-1 editInvestment"
+                            title="Edit Investment">
+                            <i class="fas fa-edit"></i>
+                        </a>';
+                    }
+                    if (Gate::allows('investment.view')) {
+                        $action .= '<a href="' . route('investment.show', $row->id) . '"
+                            class="btn btn-sm btn-primary m-1"
+                            title="View Investment">
+                            <i class="fas fa-eye"></i>
+                        </a>';
+                    }
+
+                    if (Gate::allows('investment.delete')) {
+                        $action .= '<button
+                            class="btn btn-sm btn-danger m-1"
+                            title="Delete Investment"
+                            onclick="confirmDelete(' . $row->id . ')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>';
+                    }
+                    if (!paymentFullyReceived($row->id)) {
+                        $action .= '
+                            <button class="btn btn-sm btn-success m-1 openPendingModal"
+                                data-id="' . $row->id . '" data-balance="' . $row->balance_amount . '"
+                                title="Submit Pending Investment">
+                                <i class="fas fa-money-check-alt"></i>
+                            </button>
+                        ';
+                    }
+                }
 
 
-                if (Gate::allows('investment.edit')) {
-                    $action .= '<a href="' . route('investment.edit', $row->id) . '"
-                        class="btn btn-sm btn-info m-1 editInvestment"
-                        title="Edit Investment">
-                        <i class="fas fa-edit"></i>
-                    </a>';
-                }
-                if (Gate::allows('investment.view')) {
-                    $action .= '<a href="' . route('investment.show', $row->id) . '"
-                        class="btn btn-sm btn-primary m-1"
-                        title="View Investment">
-                        <i class="fas fa-eye"></i>
-                    </a>';
-                }
-
-                if (Gate::allows('investment.delete')) {
-                    $action .= '<button
-                        class="btn btn-sm btn-danger m-1"
-                        title="Delete Investment"
-                        onclick="confirmDelete(' . $row->id . ')">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>';
-                }
-                if (!paymentFullyReceived($row->id)) {
-                    $action .= '
-                    <button class="btn btn-sm btn-success m-1 openPendingModal"
-                        data-id="' . $row->id . '" data-balance="' . $row->balance_amount . '"
-                        title="Submit Pending Investment">
-                        <i class="fas fa-money-check-alt"></i>
-                    </button>
-                ';
-                }
 
                 return $action;
             })
