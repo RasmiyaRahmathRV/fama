@@ -20,7 +20,6 @@ class InvestorDocumentService
         protected InvestorDocumentRepository $investorDocRepo,
     ) {}
 
-
     public function getAll()
     {
         return $this->investorDocRepo->all();
@@ -39,6 +38,11 @@ class InvestorDocumentService
     public function getByName($name)
     {
         return $this->investorDocRepo->getByName($name);
+    }
+
+    public function getByInvestor($data)
+    {
+        return $this->investorDocRepo->getByInvestor($data);
     }
 
     public function create(array $data, $investor = null)

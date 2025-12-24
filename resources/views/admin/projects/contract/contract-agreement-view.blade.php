@@ -77,18 +77,40 @@
                                 <div class="card-header bg-gradient-olive">
                                     <h4 class="card-title w-100">
                                         {{ $agreementUnit->agreement->agreement_code }}
-                                        -
-                                        {{ $agreementUnit->agreement->tenant->tenant_name . '(' . $agreementUnit->agreement->tenant->nationality->nationality_name . ')' }}
                                     </h4>
                                 </div>
-                                <div class="card-body">
-                                    <table class="table">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Document name</th>
-                                            <th>view</th>
-                                        </tr>
-                                        @if ($agreementUnit->agreement->agreement_documents->isNotEmpty())
+                                <div class="card-body text-muted">
+
+                                    {{-- <div class="col-sm-6"> --}}
+                                    <address>
+                                        <span>Tenant Name :
+                                            {{ $agreementUnit->agreement->tenant->tenant_name }}</span></br>
+                                        <span>Nationality :
+                                            {{ $agreementUnit->agreement->tenant->nationality->nationality_name }}</span></br>
+                                        <span>Mobile :
+                                            {{ $agreementUnit->agreement->tenant->tenant_mobile }}</span></br>
+                                        <span>Email :
+                                            {{ $agreementUnit->agreement->tenant->tenant_email }}</span></br>
+                                        <span>Contact Person :
+                                            {{ $agreementUnit->agreement->tenant->contact_person }}</span></br>
+                                        <span>Contact No :
+                                            {{ $agreementUnit->agreement->tenant->contact_number }}</span></br>
+                                        <span>Contact Email :
+                                            {{ $agreementUnit->agreement->tenant->contact_email }}</span></br>
+                                        {{-- <span>{{ strtoupper($contract->company->company_name) }}</span></br> --}}
+
+                                        </br>
+                                    </address>
+                                    {{-- </div> --}}
+
+                                    @if ($agreementUnit->agreement->agreement_documents->isNotEmpty())
+                                        <table class="table">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Document name</th>
+                                                <th>view</th>
+                                            </tr>
+
                                             @foreach ($agreementUnit->agreement->agreement_documents as $agreement_document)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
@@ -101,12 +123,11 @@
                                                         </a></td>
                                                 </tr>
                                             @endforeach
-                                        @else
-                                            <tr>
-                                                <td colspan="3">No documents uploaded...</td>
-                                            </tr>
-                                        @endif
-                                    </table>
+
+                                        </table>
+                                    @else
+                                        <span class="text-red">No documents uploaded...</span>
+                                    @endif
                                 </div>
                             </div>
                         </div>

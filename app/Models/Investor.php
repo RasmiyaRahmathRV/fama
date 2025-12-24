@@ -31,6 +31,7 @@ class Investor extends Model
         'total_no_of_investments',
         'total_invested_amount',
         'total_profit_received',
+        'total_referal_commission',
         'total_referral_commission_received',
         'total_terminated_investments',
         'is_passport_uploaded',

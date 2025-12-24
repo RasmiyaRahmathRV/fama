@@ -27,6 +27,11 @@ class InvestorBankRepository
         return InvestorBank::where($investorData)->first();
     }
 
+    public function getByInvestor($investorData)
+    {
+        return InvestorBank::where($investorData)->get();
+    }
+
     public function create($data)
     {
         return InvestorBank::create($data);

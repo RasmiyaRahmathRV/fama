@@ -7,6 +7,7 @@ use App\Models\DocumentType;
 use App\Models\PaymentMode;
 use App\Models\PayoutBatch;
 use App\Services\Investment\InvestorBankService;
+use App\Services\Investment\InvestorDocumentService;
 use App\Services\Investment\InvestorService;
 use App\Services\NationalityService;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ class InvestorController extends Controller
         protected InvestorService $investorService,
         protected InvestorBankService $investorBankSer,
         protected NationalityService $nationalityService,
+        protected InvestorDocumentService $investorDocSer,
     ) {}
 
     public function index()
@@ -110,26 +112,46 @@ class InvestorController extends Controller
     public function show($id)
     {
         $title = 'Investor Details';
-        return view("admin.investment.view-investor", compact("title"));
+
+        $investorBanks = $this->investorBankSer->getByInvestor(['investor_id' => $id]);
+        $investorDocuments = $this->investorDocSer->getByInvestor(['investor_id' => $id]);
+        $investor = $this->investorService->getById($id);
+
+        return view("admin.investment.view-investor", compact("title", "investorBanks", "investor", "investorDocuments"));
     }
 
-    public function addInvestorBank(Request $request)
+    public function addorUpdateInvestorBank(Request $request)
     {
         try {
-            $investor = $this->investorBankSer->create($request->all(), $request->investor_id);
 
-            return response()->json(['success' => true, 'data' => $investor, 'message' => 'Investor bank created successfully'], 200);
+            if ($request->investor_bank_id) {
+                $investor = $this->investorBankSer->update($request->investor_bank_id, $request->all());
+                $msg = 'Investor bank updated successfully';
+            } else {
+                $investor = $this->investorBankSer->create($request->all(), $request->investor_id);
+                $msg = 'Investor bank created successfully';
+            }
+
+            return response()->json(['success' => true, 'data' => $investor, 'message' => $msg], 200);
         } catch (\Exception $e) {
 
             return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
         }
     }
 
+    public function getInvestorBankDetails($id)
+    {
+        $InvBank = $this->investorBankSer->getById($id);
+        return response()->json($InvBank);
+    }
+
     public function exportInvestors()
     {
+        $search = request('search');
 
-        $search = request('search') ?? null;
-
-        return Excel::download(new InvestorExport($search), 'investors.xlsx');
+        return Excel::download(
+            new InvestorExport($search),
+            'investors.xlsx'
+        );
     }
 }

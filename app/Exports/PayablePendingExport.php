@@ -86,11 +86,11 @@ class PayablePendingExport implements FromCollection, WithHeadings
                         2 => 'Half Paid'
                     },
                     'Cheque Returned' => match ($payable->has_returned) {
-                        0 => 'Not Returned',
+                        0 => '-',
                         1 => 'Returned',
                     },
-                    'Cheque Returned Date' => $payable->returned_date,
-                    'Cheque Returned By' => $payable->returnedBy->first_name . ' ' . $payable->returnedBy->last_name,
+                    'Cheque Returned Date' => $payable->returned_date ?? '-',
+                    'Cheque Returned By' => $payable->returnedBy?->first_name . ' ' . $payable->returnedBy?->last_name,
                     'Payment Mode' => $payable->payment_mode->payment_mode_name,
                     'Bank Name' => $payable->bank?->bank_name,
                     'Cheque Number' => $payable->cheque_no,

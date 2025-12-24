@@ -27,6 +27,11 @@ class InvestorDocumentRepository
         return InvestorDocument::where($investorDocData)->first();
     }
 
+    public function getByInvestor($investorDocData)
+    {
+        return InvestorDocument::where($investorDocData)->get();
+    }
+
     public function create($data)
     {
         return InvestorDocument::create($data);
