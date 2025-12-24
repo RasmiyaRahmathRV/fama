@@ -104,6 +104,7 @@ class InvestmentService
                 'investment_type' => $investmentType,
                 'next_profit_release_date' => $next_profit_release_date,
                 'next_referral_commission_release_date' => $next_profit_release_date,
+                'initial_profit_release_month' => Carbon::parse($next_profit_release_date)->format('M Y')
             ];
             $this->validate($investmentData);
             // dd($investmentData);
@@ -179,6 +180,7 @@ class InvestmentService
                     'referral_commission_pending_amount' => $data['referral_commission_amount'],
                     'referral_commission_frequency_id' => $data['referral_commission_frequency_id'],
                     'referral_commission_status' => 0,
+                    'total_commission_pending' => $data['referral_commission_amount'],
                     'added_by' => $userId,
                 ];
                 // dd($investorReferraldata);
@@ -234,6 +236,7 @@ class InvestmentService
                 'investment_type' => $investmentType,
                 'next_profit_release_date' => $next_profit_release_date,
                 'next_referral_commission_release_date' => $next_profit_release_date,
+                'initial_profit_release_month' => Carbon::parse($next_profit_release_date)->format('M Y')
             ];
 
             $this->validate($investmentData);
@@ -288,6 +291,7 @@ class InvestmentService
                     'referral_commission_frequency_id' => $data['referral_commission_frequency_id'],
                     'referral_commission_status' => 0,
                     'updated_by' => $userId,
+                    'total_commission_pending' => $data['referral_commission_amount'],
                 ];
 
                 if ($existingReferral) {

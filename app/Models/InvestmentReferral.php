@@ -24,9 +24,14 @@ class InvestmentReferral extends Model
         'referral_commission_pending_amount',
         'referral_commission_frequency_id',
         'referral_commission_status',
+        'last_referral_commission_released_date',
         'added_by',
         'updated_by',
         'deleted_by',
+        'total_commission_pending',
+        'total_commission_released',
+        'current_month_commission_released',
+        'commission_released_perc'
     ];
 
     public function investor()

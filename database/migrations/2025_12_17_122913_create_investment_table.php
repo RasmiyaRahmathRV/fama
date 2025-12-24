@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('profit_intervals', function (Blueprint $table) {
             $table->id();
             $table->string('profit_interval_name');
+            $table->integer('no_of_installments');
             $table->boolean('status')->comment('1-Acive, 0-Inactive');
             $table->timestamps();
         });
@@ -51,10 +52,16 @@ return new class extends Migration
 
             // Release Dates
             // $table->date('profit_release_date')->nullable();
-            $table->integer('profit_release_date')->nullable();
+            $table->integer('profit_release_date');
+
+            $table->string('initial_profit_release_month');
+
+            $table->decimal('total_profit_released', 12, 2)->default(0);
+            $table->decimal('current_month_released', 12, 2)->default(0);
+            $table->decimal('current_month_pending', 12, 2)->default(0);
 
             $table->date('last_profit_released_date')->nullable();
-            $table->date('next_profit_release_date')->nullable();
+            $table->date('next_profit_release_date');
             $table->date('next_referral_commission_release_date')->nullable();
 
             // Nominee

@@ -14,19 +14,28 @@ class ProfitIntervalSeeder extends Seeder
     public function run(): void
     {
         ProfitInterval::updateOrCreate([
-            'profit_interval_name' => 'Monthly',
+            'profit_interval_name' => 'Every Month',
+            'no_of_installments' => 12,
             'status' => 1
         ]);
         ProfitInterval::updateOrCreate([
-            'profit_interval_name' => 'Quarterly',
+            'profit_interval_name' => 'Every 3 Month',
+            'no_of_installments' => 4,
             'status' => 1
         ]);
         ProfitInterval::updateOrCreate([
-            'profit_interval_name' => 'Halfyearly',
+            'profit_interval_name' => 'Every 6 Month',
+            'no_of_installments' => 2,
             'status' => 1
         ]);
         ProfitInterval::updateOrCreate([
-            'profit_interval_name' => 'Yearly',
+            'profit_interval_name' => 'Every 12 Month',
+            'no_of_installments' => 1,
+            'status' => 1
+        ]);
+        ProfitInterval::updateOrCreate([
+            'profit_interval_name' => 'Every 2 Month',
+            'no_of_installments' => 6,
             'status' => 1
         ]);
     }

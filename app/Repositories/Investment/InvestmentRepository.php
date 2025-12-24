@@ -113,7 +113,7 @@ class InvestmentRepository
             'company',
             'profitInterval',
             'payoutBatch',
-            'investmentReferral',
+            'investmentReferral.referrer',
             'investmentDocument',
             'investmentReceivedPayments'
         ])->findOrFail($id);

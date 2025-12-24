@@ -66,6 +66,11 @@ class Investment extends Model
         'added_by',
         'updated_by',
         'deleted_by',
+
+        'initial_profit_release_month',
+        'total_profit_released',
+        'current_month_released',
+        'current_month_pending',
     ];
 
     public function investor()
