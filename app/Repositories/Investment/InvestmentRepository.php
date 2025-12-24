@@ -75,6 +75,9 @@ class InvestmentRepository
     public function getQuery(array $filters = []): Builder
     {
         $query = Investment::with('investor', 'payoutBatch');
+        if (!empty($filters['investor_id'])) {
+            $query->where('investor_id', $filters['investor_id']);
+        }
         $result = $query->get();
         // dd($result);
         // if (!empty($filters['search'])) {
