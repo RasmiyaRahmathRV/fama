@@ -195,6 +195,7 @@ class InvestmentService
 
     public function update($id, array $data)
     {
+        // dd($data);
         return DB::transaction(function () use ($id, $data) {
 
             $investment = $this->investmentRepository->find($id);
@@ -284,7 +285,7 @@ class InvestmentService
                 $investorReferralData = [
                     // 'investment_id' => $investment->id,
                     'investor_id' => $data['investor_id'],
-                    'investor_referror_id' => $data['referral_id'],
+                    'investor_referror_id' => $data['investment_referral_id'],
                     'referral_commission_perc' => $data['referral_commission_perc'],
                     'referral_commission_amount' => $data['referral_commission_amount'],
                     'referral_commission_pending_amount' => $data['referral_commission_amount'],
@@ -293,6 +294,7 @@ class InvestmentService
                     'updated_by' => $userId,
                     'total_commission_pending' => $data['referral_commission_amount'],
                 ];
+                // dd($investorReferralData);
 
                 if ($existingReferral) {
                     // $existingReferral->update($investorReferralData);
