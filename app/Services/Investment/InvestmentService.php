@@ -432,7 +432,7 @@ class InvestmentService
             ->addColumn('profit_release_date', fn($row) => $row->profit_release_date)
 
             ->addColumn('grace_period', fn($row) => $row->grace_period ?? '-')
-            ->addColumn('batch_name', fn($row) => $row->payoutBatch->batch_name ?? '-')
+            ->addColumn('batch_name', fn($row) => 'Batch ' . $row->payout_batch_id . ' (' . $row->payoutBatch->batch_name . ')' ?? '-')
             ->addColumn('nominee_details', function ($row) {
                 $name  = $row->nominee_name ?? '-';
                 $email = $row->nominee_email ?? '-';
