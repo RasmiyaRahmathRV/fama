@@ -420,6 +420,9 @@ class InvestmentService
             ['data' => 'grace_period', 'name' => 'grace_period'],
             ['data' => 'payout_batch', 'name' => 'payoutBatch.batch_name'],
             ['data' => 'nominee_name', 'name' => 'nominee_name'],
+            ['data' => 'total_profit_released', 'name' => 'total_profit_released'],
+            ['data' => 'current_month_released', 'name' => 'current_month_released'],
+            ['data' => 'current_month_pending', 'name' => 'current_month_pending'],
             ['data' => 'action', 'name' => 'action', 'orderable' => false, 'searchable' => false],
         ];
 
