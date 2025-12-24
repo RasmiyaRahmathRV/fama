@@ -191,8 +191,15 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('investor-list', [InvestorController::class, 'getInvestors'])->name('investor.list');
-    Route::post('investor/add-investor-bank', [InvestorController::class, 'addInvestorBank'])->name('investor.bank.save');
-    Route::get('finance/export-investors', [InvestorController::class, 'exportInvestors'])->name('investor.export');
+    Route::post('investor/add-investor-bank', [InvestorController::class, 'addorUpdateInvestorBank'])->name('investor.bank.save');
+    Route::prefix('admin')->group(function () {
+        Route::get(
+            'investor/export-investors',
+            [InvestorController::class, 'exportInvestors']
+        )->name('investor.export');
+    });
+    Route::get('investor/get-investor-bank/{id}', [InvestorController::class, 'getInvestorBankDetails'])->name('investor.bank');
+
 
 
 

@@ -118,7 +118,7 @@ class PayableExport implements FromCollection, WithHeadings
                     'Payment Mode' => $payable->paidMode?->payment_mode_name,
                     'Bank Name' => $payable->paidBank?->bank_name,
                     'Cheque Number' => $payable->paid_cheque_number,
-                    'Payable Cleared By' => $payable->paidBy->first_name . ' ' . $payable->paidBy->last_name,
+                    'Payable Cleared By' => $payable->paidBy?->first_name . ' ' . $payable->paidBy?->last_name,
                     'Project Status' => match ($payable->contractPaymentDetail->contract->contract_renewal_status) {
                         0 => 'New',
                         1 => 'Renewal (' . ($payable->contractPaymentDetail->contract->renewal_count ?? 0) . ')',

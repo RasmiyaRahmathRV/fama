@@ -585,3 +585,14 @@ function calculateNextProfitReleaseDate($grace_period, $profit_interval_id, $inv
 
     return $nextProfitReleaseDate->format('Y-m-d');
 }
+
+function currMonthProfit($colname, $investor_id)
+{
+    $investment = Investment::where('investor_id', $investor_id)
+        ->selectRaw('
+        SUM(' . $colname . ') as total
+    ')
+        ->first();
+
+    return $investment->total;
+}

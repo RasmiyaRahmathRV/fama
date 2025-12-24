@@ -199,6 +199,7 @@
                                         <div class="card card-outline card-info p-4">
                                             <h4>Investor Bank details</h4>
                                             <hr>
+
                                             <input type="hidden" name="investor_bank[bank_id]"
                                                 value="{{ $investor->primaryBank->id ?? '' }}">
                                             <div class="form-group row">
@@ -208,7 +209,7 @@
                                                     <input type="text" name="investor_bank[investor_beneficiary]"
                                                         id="investor_beneficiary" class="form-control"
                                                         placeholder="Benenficiary Name"
-                                                        value="{{ $investor?->primaryBank->investor_beneficiary ?? '' }}"
+                                                        value="{{ $investor->primaryBank->investor_beneficiary ?? '' }}"
                                                         required>
                                                 </div>
                                                 <div class="col-md-4">

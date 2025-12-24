@@ -133,50 +133,7 @@
             </div>
 
 
-            <div class="modal fade" id="modal-add-bank">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Investor Bank Details</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form action="" id="addInvestorBank" method="POST" enctype="multipart/form-data">
-                            <input type="hidden" name="investor_id" id="investor_id">
-                            <div class="modal-body">
-                                <div class="card-body">
-                                    <div class="form-group row">
-                                        <label for="inputEmail3" class="asterisk">Benenficiary
-                                            Name</label>
-                                        <input type="text" name="investor_beneficiary" id="investor_beneficiary"
-                                            class="form-control" placeholder="Benenficiary Name" required>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="inputEmail3" class="asterisk">Bank
-                                            Name</label>
-                                        <input type="text" name="investor_bank_name" id="investor_bank_name"
-                                            class="form-control" placeholder="Bank Name" required>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="inputEmail3" class="asterisk">IBAN</label>
-                                        <input type="text" name="investor_iban" id="investor_iban"
-                                            class="form-control" id="inputEmail3" placeholder="IBAN" required>
-                                    </div>
-                                    <input type="hidden" name="is_primary" value="0">
-                                </div>
-                                <!-- /.card-body -->
-                            </div>
-                            <div class="modal-footer justify-content-between">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" id="submitBank" class="btn btn-info">Submit</button>
-                            </div>
-                        </form>
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+
             <!-- /.modal -->
             <!-- /.modal -->
 
@@ -208,6 +165,7 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
+    @include('admin.investment.investor-bank-modal')
 
     <script>
         $(function() {
@@ -294,15 +252,17 @@
                 ],
                 dom: 'Bfrtip', // This is important for buttons
                 buttons: [{
-                    extend: 'excelHtml5',
                     text: 'Export Excel',
-                    title: 'Contract Data',
                     action: function(e, dt, node, config) {
-                        // redirect to your Laravel export route
+
                         let searchValue = dt.search();
-                        let url = "{{ route('investor.export') }}" + "?search=" +
-                            encodeURIComponent(searchValue);
-                        window.location.href = url;
+                        let url = "{{ route('investor.export') }}";
+
+                        if (searchValue) {
+                            url += '?search=' + encodeURIComponent(searchValue);
+                        }
+
+                        window.location.href = url; // THIS triggers the route
                     }
                 }]
             });
@@ -313,85 +273,6 @@
                 table.ajax.reload();
             });
 
-        });
-
-
-        $('#submitBank').click(function(e) {
-            e.preventDefault();
-
-
-            let isValid = true;
-            $(".error-text").remove(); // clear old errors
-
-            // validate ALL required fields
-            $("#addInvestorBank").find("[required]:visible").each(function() {
-                const value = $(this).val()?.trim();
-
-                if (!value) {
-                    isValid = false;
-                    setInvalid(this, "This field is required");
-                } else {
-                    setValid(this);
-                }
-            });
-            if (!isValid) return;
-
-            submitForm(); // everything passed
-
-        });
-
-
-        // helper: invalid
-        function setInvalid(input, message) {
-            $(input).addClass("is-invalid").removeClass("is-valid");
-        }
-
-        // helper: valid
-        function setValid(input) {
-            $(input).addClass("is-valid").removeClass("is-invalid");
-        }
-
-        function submitForm(e) {
-            // CREATE
-            url = "{{ route('investor.bank.save') }}";
-            method = 'POST';
-
-            var form = document.getElementById('addInvestorBank');
-            var fdata = new FormData(form);
-
-            fdata.append('_token', $('meta[name="csrf-token"]').attr('content'));
-            fdata.append('_method', method);
-
-
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: fdata,
-                dataType: "json",
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    // console.log(response);
-                    toastr.success(response.message);
-                    window.location.href = "{{ route('investor.index') }}";
-                },
-                error: function(errors) {
-                    toastr.error(errors.responseJSON.message);
-                }
-            });
-        }
-
-
-        $('#modal-add-bank').on('show.bs.modal', function(event) {
-            var button = event.relatedTarget;
-
-            // values from button
-            var id = button.getAttribute('data-investor-id');
-
-            // set to modal fields
-            $('#investor_id').val(id);
-            $('#approval_token').val($('meta[name="csrf-token"]').attr('content'));
-            $('#approval_status').val(4);
         });
     </script>
 @endsection

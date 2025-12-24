@@ -159,7 +159,7 @@ class InvestorService
                 return '<a href="' . route('investor.edit', $row->id) . '" class="btn btn-info btn-sm" ><i class="fas fa-pencil-alt"></i></a>
                 <a href="' . route('investor.show', $row->id) . '" class="btn btn-primary btn-sm" ><i class="fas fa-eye"></i></a>
                         <button class="btn btn-danger btn-sm" data-id="' . $row->id . '" onclick="deleteConf()"><i class="fas fa-trash-alt"></i></button>
-                        <button class="btn btn-warning btn-sm" data-investor-id="' . $row->id . '" data-target="#modal-add-bank" data-toggle="modal" title="Add Bank"><i class="fas fa-university"></i></button>';
+                        <button class="btn btn-warning btn-sm" data-id="" data-investor-id="' . $row->id . '" data-target="#modal-add-bank" data-toggle="modal" title="Add Bank"><i class="fas fa-university"></i></button>';
             })
             ->rawColumns(['investor_name', 'action'])
             ->with(['columns' => $columns])

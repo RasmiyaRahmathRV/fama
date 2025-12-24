@@ -41,6 +41,11 @@ class InvestorBankService
         return $this->investorBankrepo->getByName($name);
     }
 
+    public function getByInvestor($data)
+    {
+        return $this->investorBankrepo->getByInvestor($data);
+    }
+
     public function create(array $data, $investor_id = null)
     {
         $this->validate($data);
@@ -73,13 +78,14 @@ class InvestorBankService
         $validator = Validator::make($data, [
             'investor_beneficiary' => 'required',
             'investor_bank_name' => 'required',
-            'investor_iban' => 'required',
+            'investor_iban' => 'required'
         ], []);
 
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
     }
+
 
     // public function getDataTable(array $filters = [])
     // {

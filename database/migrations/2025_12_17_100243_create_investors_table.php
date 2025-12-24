@@ -18,7 +18,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-
         Schema::create('investors', function (Blueprint $table) {
             $table->id();
             $table->string('investor_code');
@@ -38,6 +37,7 @@ return new class extends Migration
             $table->integer('total_no_of_investments')->default(0);
             $table->decimal('total_invested_amount', 12, 2)->default(0);
             $table->decimal('total_profit_received', 12, 2)->default(0);
+            $table->decimal('total_referal_commission', 12, 2)->default(0);
             $table->decimal('total_referral_commission_received', 12, 2)->default(0);
             $table->integer('total_terminated_investments')->default(0);
             $table->integer('created_by');
