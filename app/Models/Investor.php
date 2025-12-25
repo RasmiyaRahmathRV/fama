@@ -71,6 +71,12 @@ class Investor extends Model
     {
         return $this->hasMany(InvestorBank::class, 'investor_id');
     }
+
+    public function investorDocuments()
+    {
+        return $this->hasMany(InvestorDocument::class, 'investor_id');
+    }
+
     public function hasReferrer(): bool
     {
         return !is_null($this->referral_id) && $this->referral_id > 0;
@@ -94,5 +100,54 @@ class Investor extends Model
     {
         return $this->hasOne(InvestorBank::class, 'investor_id')
             ->where('is_primary', 1);
+    }
+
+    protected static function booted()
+    {
+        /**
+         * When Investor is deleted
+         */
+        static::deleting(function ($investor) {
+
+            $userId = auth()->id();
+
+            // hasMany / hasOne relations that must be soft deleted
+            $relations = [
+                'investorBanks',
+                'investorDocuments',
+            ];
+
+            if (!$investor->isForceDeleting()) {
+
+                foreach ($relations as $relation) {
+                    $investor->$relation->each(function ($item) use ($userId) {
+                        if ($userId) {
+                            $item->update(['deleted_by' => $userId]);
+                        }
+                        $item->delete(); // soft delete
+                    });
+                }
+            } else {
+                // Force delete
+                foreach ($relations as $relation) {
+                    $investor->$relation()->withTrashed()->forceDelete();
+                }
+            }
+        });
+
+        /**
+         * When Investor is restored
+         */
+        static::restoring(function ($investor) {
+
+            $relations = [
+                'investorBanks',
+                'investorDocuments',
+            ];
+
+            foreach ($relations as $relation) {
+                $investor->$relation()->withTrashed()->restore();
+            }
+        });
     }
 }

@@ -18,6 +18,7 @@ class InvestorDocumentService
 {
     public function __construct(
         protected InvestorDocumentRepository $investorDocRepo,
+        protected InvestorRepository $investorRepo,
     ) {}
 
     public function getAll()
@@ -93,12 +94,20 @@ class InvestorDocumentService
                     $Arr['added_by'] = auth()->user()->id;
                 }
 
+                $this->investorFlagUpdate($investor->id, $value['status_change']);
                 // $this->validate($Arr);
                 $dataArr[] = $Arr;
             }
         }
 
         return $dataArr;
+    }
+
+    public function investorFlagUpdate($investorId, $flag)
+    {
+        $investor = $this->investorRepo->find($investorId);
+        $investor->{$flag} = 1;
+        $investor->save();
     }
 
     public function delete($id)

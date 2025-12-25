@@ -18,6 +18,7 @@ class InvestorService
         protected InvestorRepository $investorRepo,
         protected InvestorBankService $investorBankServ,
         protected InvestorDocumentService $investorDocServ,
+        protected InfobipWhatsAppService $infobipService,
     ) {}
 
 
@@ -55,6 +56,12 @@ class InvestorService
 
             $this->investorBankServ->create($data['investor_bank'] ?? [], $investor->id);
             $this->investorDocServ->create($data['inv_doc'] ?? [], $investor);
+
+            // $response = $this->infobipService->sendTemplateMessage(
+            //     '971507376124',
+            //     "first_purchase_thank_you",
+            //     ['Rasmiya']
+            // );
         });
     }
 
@@ -156,10 +163,16 @@ class InvestorService
                 return '-';
             })
             ->addColumn('action', function ($row) {
-                return '<a href="' . route('investor.edit', $row->id) . '" class="btn btn-info btn-sm" ><i class="fas fa-pencil-alt"></i></a>
-                <a href="' . route('investor.show', $row->id) . '" class="btn btn-primary btn-sm" ><i class="fas fa-eye"></i></a>
-                        <button class="btn btn-danger btn-sm" data-id="' . $row->id . '" onclick="deleteConf()"><i class="fas fa-trash-alt"></i></button>
-                        <button class="btn btn-warning btn-sm" data-id="" data-investor-id="' . $row->id . '" data-target="#modal-add-bank" data-toggle="modal" title="Add Bank"><i class="fas fa-university"></i></button>';
+                $action = '<a href="' . route('investor.edit', $row->id) . '" class="btn btn-info btn-sm" ><i class="fas fa-pencil-alt"></i></a>
+                <a href="' . route('investor.show', $row->id) . '" class="btn btn-primary btn-sm" ><i class="fas fa-eye"></i></a>';
+
+                if ($row->total_no_of_investments == 0) {
+                    $action .= ' <button class="btn btn-danger btn-sm" data-id="' . $row->id . '" onclick="deleteConf(' . $row->id . ')"><i class="fas fa-trash-alt"></i></button>';
+                }
+
+                $action .= ' <button class="btn btn-warning btn-sm" data-id="" data-investor-id="' . $row->id . '" data-target="#modal-add-bank" data-toggle="modal" title="Add Bank"><i class="fas fa-university"></i></button>';
+
+                return $action;
             })
             ->rawColumns(['investor_name', 'action'])
             ->with(['columns' => $columns])

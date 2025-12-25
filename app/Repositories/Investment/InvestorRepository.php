@@ -42,6 +42,7 @@ class InvestorRepository
     public function delete($id)
     {
         $investor = $this->find($id);
+        $investor->deleted_by = auth()->user()->id;
         return $investor->delete();
     }
 

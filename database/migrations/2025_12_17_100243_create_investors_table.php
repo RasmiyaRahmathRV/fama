@@ -33,7 +33,7 @@ return new class extends Migration
             $table->unsignedBigInteger('referral_id')->nullable();
             $table->unsignedBigInteger('payout_batch_id');
             $table->integer('profit_release_date')->nullable();
-            $table->integer('status')->default(1)->comment('0-inactive, 1-active');
+            $table->integer('status')->default(0)->comment('0-inactive, 1-active');
             $table->integer('total_no_of_investments')->default(0);
             $table->decimal('total_invested_amount', 12, 2)->default(0);
             $table->decimal('total_profit_received', 12, 2)->default(0);

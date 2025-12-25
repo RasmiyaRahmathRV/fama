@@ -274,5 +274,36 @@
             });
 
         });
+
+
+
+        function deleteConf(id) {
+            Swal.fire({
+                title: "Are you sure?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: '/investor/' + id,
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            toastr.success(response.message);
+                            $('#InvestorList').DataTable().ajax.reload();
+                        }
+                    });
+
+                } else {
+                    toastr.error(errors.responseJSON.message);
+                }
+            });
+        }
     </script>
 @endsection

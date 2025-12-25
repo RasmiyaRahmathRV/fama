@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\InvestorExport;
 use App\Models\DocumentType;
+use App\Models\Investor;
 use App\Models\PaymentMode;
 use App\Models\PayoutBatch;
 use App\Services\Investment\InvestorBankService;
@@ -153,5 +154,11 @@ class InvestorController extends Controller
             new InvestorExport($search),
             'investors.xlsx'
         );
+    }
+
+    public function destroy(Investor $investor)
+    {
+        $this->investorService->delete($investor->id);
+        return response()->json(['success' => true, 'message' => 'Investor deleted successfully']);
     }
 }

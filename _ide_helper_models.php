@@ -1787,6 +1787,8 @@ namespace App\Models{
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\InvestorBank> $investorBanks
  * @property-read int|null $investor_banks_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\InvestorDocument> $investorDocuments
+ * @property-read int|null $investor_documents_count
  * @property-read \App\Models\Nationality|null $nationality
  * @property-read \App\Models\PaymentMode|null $paymentMode
  * @property-read \App\Models\PayoutBatch|null $payoutBatch
@@ -1913,31 +1915,44 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property int $message_setting_id
  * @property int $investor_id
- * @property int $investment_id
- * @property string $total_payout_amount
- * @property int $type_of_payout
- * @property string $total_payout_date
- * @property int $payout_by
- * @property string|null $remarks
+ * @property int|null $investment_id
+ * @property string $investor_mobile
+ * @property string $investor_message_body
+ * @property int $send_status
+ * @property string $api_return
+ * @property int $send_by
+ * @property string $send_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage query()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereApiReturn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereInvestmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereInvestorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereInvestorMessageBody($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereInvestorMobile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereMessageSettingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereSendAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereSendBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereSendStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereUpdatedAt($value)
+ */
+	class InvestorMessage extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\Investor|null $investor
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout query()
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout whereInvestmentId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout whereInvestorId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout wherePayoutBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout whereRemarks($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout whereTotalPayoutAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout whereTotalPayoutDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout whereTypeOfPayout($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPayout withoutTrashed()
  */
@@ -1984,6 +1999,27 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Locality whereDeletedBy($value)
  */
 	class Locality extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $message_type 1-invitation, 2- profit release
+ * @property string $message_body
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting query()
+ * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting whereMessageBody($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting whereMessageType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting whereUpdatedAt($value)
+ */
+	class MessageSetting extends \Eloquent {}
 }
 
 namespace App\Models{
