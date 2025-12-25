@@ -54,6 +54,47 @@
 <div class="card card-outline card-info">
     <div class="card-header">
         <h3 class="card-title text-teal text-bold">
+            <i class="fas fa-file-invoice-dollar mr-2"></i> Profit Release Details
+        </h3>
+    </div>
+
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped ">
+                <thead class="bg-light">
+                    <tr>
+                        {{-- <th>#</th> --}}
+                        <th>Profit Release Due on</th>
+                        <th>Current Month Pending</th>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="badge badge-light text-sm">
+                                {{ getFormattedDate($investment->next_profit_release_date) }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge badge-light text-sm text-danger">
+                                {{ number_format($investment->current_month_pending, 2) }}
+                            </span>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+<div class="card card-outline card-info">
+    <div class="card-header">
+        <h3 class="card-title text-teal text-bold">
             <i class="fas fa-user mr-2"></i> Nominee Details
         </h3>
     </div>
@@ -136,6 +177,6 @@
                     @endif
                 </tbody>
             </table>
-        </div>s
+        </div>
     </div>
 </div>

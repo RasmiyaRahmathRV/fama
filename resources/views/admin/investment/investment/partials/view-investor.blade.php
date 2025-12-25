@@ -14,7 +14,7 @@
                  </h3>
 
                  <div class="ml-auto">
-                     <a href="{{ route('investor.show', $investment->investor->id) }}"
+                     <a href="{{ route('investor.show', $investment->investor->id) }}" title="View Investor"
                          class="btn btn-sm btn-info bg-teal">
                          <i class="fas fa-eye mr-1"></i> View More
                      </a>

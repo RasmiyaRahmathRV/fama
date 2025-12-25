@@ -13,8 +13,7 @@
                          <th>#</th>
                          <th>Received Amount</th>
                          <th>Received Date</th>
-                         {{-- <th>Added By</th>
-                     <th>Updated By</th> --}}
+
                          <th>Action</th>
                      </tr>
                  </thead>
@@ -29,32 +28,25 @@
                              </td>
 
                              <td>
-                                 <span class="badge badge-light">
+                                 <span class="badge badge-light text-sm">
                                      {{ getFormattedDate($payment->received_date) }}
                                  </span>
                              </td>
 
-                             {{-- <td>
-                             <span class="text-primary">
-                                 {{ $payment->addedBy->first_name . ' ' . $payment->addedBy->last_name }}
-                             </span>
-                         </td>
 
-                         <td>
-                             @if ($payment->updatedBy)
-                                 <span class="text-warning">
-                                     {{ $payment->updatedBy->first_name . ' ' . $payment->updatedBy->last_name }}
-                                 </span>
-                             @else
-                                 <span class="text-muted">—</span>
-                             @endif
-                         </td> --}}
                              <td class="text-center">
-                                 <button type="button" class="btn btn-sm btn-info editPaymentBtn"
-                                     data-id="{{ $payment->id }}" data-amount="{{ $payment->received_amount }}"
-                                     data-date="{{ $payment->received_date }}">
-                                     <i class="fas fa-edit"></i>
-                                 </button>
+                                 @if ($loop->last)
+                                     <button type="button" class="btn btn-sm btn-info openPendingModal"
+                                         data-id="{{ $payment->id }}"
+                                         data-amount="{{ $payment->received_amount }}"data-date="{{ $payment->received_date ? \Carbon\Carbon::parse($payment->received_date)->format('d-m-Y') : '' }}"
+                                         data-balance="{{ $investment->balance_amount }}"
+                                         data-investment-id="{{ $investment->id }}"
+                                         data-investor-id="{{ $investment->investor_id }}">
+                                         <i class="fas fa-edit"></i>
+                                     </button>
+                                 @else
+                                     —
+                                 @endif
                              </td>
                          </tr>
                      @empty
@@ -70,4 +62,56 @@
      </div>
 
 
+ </div>
+
+ <div class="modal fade" id="pendingInvestmentModal" tabindex="-1">
+     <div class="modal-dialog">
+         <form id="pendingInvestmentForm">
+             @csrf
+             <input type="hidden" name="payment_id" id="payment_id">
+             <input type="hidden" name="investment_id" id="investment_id">
+             <input type="hidden" name="investor_id" id="investor_id">
+
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <h5 class="modal-title">Submit Pending Investment</h5>
+                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+                 </div>
+
+                 <div class="modal-body">
+                     <div class="form-group">
+                         <label>Pending Balance Amount</label>
+                         <input type="text" id="pending_balance" class="form-control font-weight-bold text-danger"
+                             readonly>
+                     </div>
+                     <div class="form-group">
+                         <label>Received Date</label>
+                         {{-- <input type="date" name="received_date" class="form-control" required>
+                                    <label class="asterisk">Investment Date</label> --}}
+                         <div class="input-group date" id="receiveddate" data-target-input="nearest">
+                             <input type="text" class="form-control datetimepicker-input" name="received_date"
+                                 id="received_date" data-target="#receiveddate" placeholder="DD-MM-YYYY" required>
+                             <div class="input-group-append" data-target="#receiveddate" data-toggle="datetimepicker">
+                                 <div class="input-group-text">
+                                     <i class="fa fa-calendar"></i>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+
+                     <div class="form-group">
+                         <label>Received Amount</label>
+                         <input type="number" name="received_amount" id="received_amount" class="form-control"
+                             step="0.01" min="0" required>
+                     </div>
+                 </div>
+
+                 <div class="modal-footer">
+                     <button type="submit" class="btn btn-success">
+                         <i class="fas fa-check-circle"></i> Submit
+                     </button>
+                 </div>
+             </div>
+         </form>
+     </div>
  </div>

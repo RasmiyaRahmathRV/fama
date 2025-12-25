@@ -45,6 +45,7 @@ class InvestmentController extends Controller
     public function getInvestments(Request $request)
     {
         // dd("test");
+        // dd($request->all());
 
         if ($request->ajax()) {
             $filters = [
@@ -90,7 +91,10 @@ class InvestmentController extends Controller
     }
     public function exportInvestment()
     {
-
+        // $filters = [
+        //     'investor_id' => $request->investorid,
+        //     'company_id' => auth()->user()->company_id,
+        // ];
         $search = request('search') ?? null;
 
         return Excel::download(new InvestmentExport($search), 'investments.xlsx');
@@ -100,5 +104,19 @@ class InvestmentController extends Controller
         $investment = $this->investmentService->getDetails($investment->id);
         // dd($investment);
         return view('admin.investment.investment.view-investment', compact('investment'));
+    }
+    public function destroy(Investment $investment)
+    {
+        $this->investmentService->delete($investment->id);
+        return response()->json(['success' => true, 'message' => 'Investment deleted successfully']);
+    }
+    public function updatePendingInvestment(Request $request)
+    {
+        try {
+            $payment = $this->investmentService->updatePending($request->all());
+            return response()->json(['success' => true, 'data' => $payment, 'message' => 'Pending Investment updated successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 422);
+        }
     }
 }

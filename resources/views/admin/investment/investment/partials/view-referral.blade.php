@@ -14,8 +14,8 @@
                          <th class="text-center">Commission %</th>
                          <th class="text-center">Commission Amount</th>
                          <th class="text-center">Frequency</th>
-                         <th>Referrer Details</th>
-                         <th>Status</th>
+                         <th class="text-center">Referrer Details</th>
+                         <th class="text-center">Status</th>
                      </tr>
                  </thead>
                  <tbody>
@@ -24,21 +24,21 @@
                              <td class="text-center text-success font-weight-bold">
                                  {{ number_format($referral->referral_commission_perc, 2) }}%
                              </td>
-                             <td class="text-end">
-                                 <span>
+                             <td class="text-center">
+                                 <span class="badge badge-light text-blue text-sm">
                                      {{ number_format($referral->referral_commission_amount, 2) }}
                                  </span>
                              </td>
-                             <td class="text-info">
+                             <td class="text-info text-bold text-center">
                                  {{ $referral->commissionFrequency->commission_frequency_name }}
                              </td>
-                             <td>
+                             <td class="text-center">
                                  <a href="{{ route('investor.show', $referrer->id) }}"
                                      class="text-decoration-none text-primary font-weight-bold" title="View Referrer">
                                      {{ $referrer->investor_name }} ({{ $referrer->investor_email }})
                                  </a>
                              </td>
-                             <td>
+                             <td class="text-center">
                                  @if ($referral->referral_commission_status == 1)
                                      <span class="badge badge-success">Fully Released</span>
                                  @elseif ($referral->referral_commission_status == 2)
@@ -74,37 +74,41 @@
              <table class="table table-bordered table-striped table-hover mb-0">
                  <thead>
                      <tr>
-                         <th class="text-end">Total Released</th>
-                         <th class="text-end">Total Pending</th>
+                         <th class="text-center">Total Released</th>
+                         <th class="text-center">Total Pending</th>
                          <th class="text-center">Last Released Date</th>
-                         <th class="text-end">Current Month Released</th>
+                         <th class="text-center">Current Month Released</th>
                          <th class="text-center">Released %</th>
                      </tr>
                  </thead>
                  <tbody>
                      @if ($referral)
                          <tr>
-                             <td class="text-end">
+                             <td class="text-center text-bold text-success">
                                  <span>{{ number_format($referral->total_commission_released, 2) }}</span>
                              </td>
 
-                             <td class="text-end">
+                             <td class="text-center text-bold text-danger">
                                  <span>
                                      {{ number_format($referral->total_commission_pending, 2) }}
                                  </span>
                              </td>
 
                              <td class="text-center">
-                                 {{ getFormattedDate($referral->last_referral_commission_released_date) ?? '-' }}
+                                 <span class="text-sm badge badge-light">
+                                     {{ getFormattedDate($referral->last_referral_commission_released_date) ?? '-' }}
+
+                                 </span>
                              </td>
 
-                             <td class="text-end">
+                             <td class="text-center text-bold text-info">
                                  {{ number_format($referral->current_month_released, 2) }}
                              </td>
 
-                             <td>
-
-                                 {{ number_format($referral->commission_released_perc, 2) }}%
+                             <td class="text-center text-bold text-primary">
+                                 <span class="text-sm badge badge-light">
+                                     {{ number_format($referral->commission_released_perc, 2) }}%
+                                 </span>
 
                              </td>
                          </tr>
