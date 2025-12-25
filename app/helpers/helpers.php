@@ -10,6 +10,7 @@ use App\Models\ContractUnitDetail;
 use App\Models\Installment;
 use App\Models\Investment;
 use App\Models\InvestmentReceivedPayment;
+use App\Models\InvestmentReferral;
 use App\Models\Investor;
 use App\Models\PaymentMode;
 use App\Models\Property;
@@ -504,13 +505,24 @@ function updateInvestor($investorId, $investmentId)
 {
     $investmentCount = Investment::where('investor_id', $investorId)->count();
 
-    $investedAmount = Investment::where('investment_id', $investmentId)
-        ->sum('investment_amount');
+    $investedAmount = Investment::where('investor_id', $investorId)->sum('investment_amount');
+
 
     Investor::where('id', $investorId)->update([
         'total_no_of_investments' => $investmentCount,
         'total_invested_amount' => $investedAmount,
     ]);
+}
+function updateReferralCommission($referrorId)
+{
+    $investor = Investor::find($referrorId);
+    $totalPending = InvestmentReferral::where('investor_referror_id', $referrorId)
+        ->sum('referral_commission_amount');
+
+    $investor->total_referal_commission = $totalPending;
+    $investor->save();
+
+    return $investor;
 }
 function parseDate($date)
 {

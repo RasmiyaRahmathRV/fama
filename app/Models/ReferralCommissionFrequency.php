@@ -14,6 +14,7 @@ class ReferralCommissionFrequency extends Model
 
     protected $fillable = [
         'commission_frequency_name',
+        'no_of_installments',
         'status',
     ];
 

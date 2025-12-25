@@ -185,6 +185,7 @@ class InvestmentService
                 ];
                 // dd($investorReferraldata);
                 $this->investmentReferralService->create($investorReferraldata);
+                UpdateReferralCommission($data['referral_id']);
             }
 
 
@@ -195,6 +196,7 @@ class InvestmentService
 
     public function update($id, array $data)
     {
+        // dd($data);
         return DB::transaction(function () use ($id, $data) {
 
             $investment = $this->investmentRepository->find($id);
@@ -205,7 +207,7 @@ class InvestmentService
                 $data['received_amount']
             );
 
-            $investmentType = InvestmentTypestatus($data['investor_id']);
+            // $investmentType = InvestmentTypestatus($data['investor_id']);
             $next_profit_release_date = calculateNextProfitReleaseDate($data['grace_period'], $data['profit_interval_id'], $data['investment_date']);
 
             $investmentData = [
@@ -233,7 +235,7 @@ class InvestmentService
                 'updated_by' => $userId,
                 'has_fully_received' => $has_fully_received,
                 'reinvestment_or_not' => $data['reinvestment_or_not'],
-                'investment_type' => $investmentType,
+                // 'investment_type' => $investmentType,
                 'next_profit_release_date' => $next_profit_release_date,
                 'next_referral_commission_release_date' => $next_profit_release_date,
                 'initial_profit_release_month' => Carbon::parse($next_profit_release_date)->format('M Y')
@@ -281,6 +283,7 @@ class InvestmentService
             if (!empty($data['referral_commission_perc']) && $data['referral_commission_perc'] > 0) {
                 $existingReferral = $this->investmentReferralService->getById($data['investment_referral_id']);
                 // dd($existingReferral);
+                // dd($data['investment_referral_id']);
                 $investorReferralData = [
                     // 'investment_id' => $investment->id,
                     'investor_id' => $data['investor_id'],
@@ -293,11 +296,14 @@ class InvestmentService
                     'updated_by' => $userId,
                     'total_commission_pending' => $data['referral_commission_amount'],
                 ];
+                // dd($investorReferralData);
+
 
                 if ($existingReferral) {
                     // $existingReferral->update($investorReferralData);
                     $this->investmentReferralService->update($data['investment_referral_id'], $investorReferralData);
                 }
+                updateReferralCommission($data['referral_id']);
             }
 
             $receivedPaymentData = [
@@ -409,11 +415,12 @@ class InvestmentService
 
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
+            ['data' => 'company_name', 'name' => 'company.company_name'],
             ['data' => 'investor_name', 'name' => 'investor.investor_name'],
             ['data' => 'investment_amount', 'name' => 'investment_amount'],
             ['data' => 'total_received_amount', 'name' => 'total_received_amount'],
             ['data' => 'investment_date', 'name' => 'investment_date'],
-            ['data' => 'profit_interval', 'name' => 'profitInterval.profit_interval_name'],
+            ['data' => 'profit_interval', 'name' => 'profit_interval_name'],
             ['data' => 'profit_perc', 'name' => 'profit_perc'],
             ['data' => 'maturity_date', 'name' => 'maturity_date'],
             ['data' => 'profit_release_date', 'name' => 'profit_release_date'],
@@ -429,7 +436,9 @@ class InvestmentService
         return datatables()
             ->of($query)
             ->addIndexColumn()
+            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('investor_name', fn($row) => $row->investor->investor_name . " - " . $row->investor->investor_code ?? '-')
+
             ->addColumn('investment_amount', fn($row) => number_format($row->investment_amount, 2))
             ->addColumn('received_amount', fn($row) => number_format($row->total_received_amount, 2))
             ->addColumn('investment_date', fn($row) => getFormattedDate($row->investment_date))
@@ -454,6 +463,9 @@ class InvestmentService
                     </p>
                 ";
             })
+            ->addColumn('referral_commission_amount', fn($row) => $row->investmentReferral->referral_commission_amount ?? '-')
+            ->addColumn('referral_commission_perc', fn($row) => $row->investmentReferral->referral_commission_perc ?? '-')
+
             ->addColumn('action', function ($row) use ($filters) {
                 $action = '';
 

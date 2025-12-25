@@ -1,20 +1,21 @@
  <!-- Post -->
  <div class="row">
      <div class="col-md-12">
-         <div class="card card-maroon">
+         <div class="card card-info card-outline">
 
              {{-- <div class="card card-maroon"> --}}
              <div class="card-header d-flex align-items-center">
 
-                 <h3 class="card-title mb-0">
-                     <a href="">
-                         {{ $investment->investor->investor_name }} -
-                         {{ $investment->investor->investor_code }}
-                     </a>
+                 <h3 class="card-title mb-0 text-teal text-bold">
+                     <i class="fas fa-user mr-1"></i>
+                     {{ $investment->investor->investor_name }} -
+                     {{ $investment->investor->investor_code }}
+
                  </h3>
 
                  <div class="ml-auto">
-                     <a href="{{ route('investor.show', $investment->investor->id) }}" class="btn btn-sm btn-info">
+                     <a href="{{ route('investor.show', $investment->investor->id) }}"
+                         class="btn btn-sm btn-info bg-teal">
                          <i class="fas fa-eye mr-1"></i> View More
                      </a>
                  </div>

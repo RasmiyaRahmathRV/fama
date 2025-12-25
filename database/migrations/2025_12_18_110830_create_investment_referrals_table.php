@@ -18,8 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('investor_referror_id');
             $table->decimal('referral_commission_perc', 8, 2);
             $table->decimal('referral_commission_amount', 12, 2)->default(0);
-            $table->decimal('referral_commission_released_amount', 12, 2)->default(0);
-            $table->decimal('referral_commission_pending_amount', 12, 2)->default(0);
+            // $table->decimal('referral_commission_released_amount', 12, 2)->default(0);
+            // $table->decimal('referral_commission_pending_amount', 12, 2)->default(0);
             $table->unsignedBigInteger('referral_commission_frequency_id');
             $table->integer('referral_commission_status')->default(0)->comment('0-not released,1-released,2-partially released');
 

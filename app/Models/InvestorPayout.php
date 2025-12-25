@@ -11,15 +11,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class InvestorPayout extends Model
 {
     use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
+    protected $table = 'investor_payouts';
 
     protected $fillable = [
-        'investor_id',
         'investment_id',
-        'total_payout_amount',
-        'type_of_payout',
-        'total_payout_date',
-        'payout_by',
-        'remarks',
+        'investor_id',
+        'investment_referral_id',
+        'payout_type',
+        'payout_release_month',
+        'payout_amount',
+        'amount_paid',
+        'amount_pending',
+        'updated_by',
+        'deleted_by',
     ];
 
     public function investor()

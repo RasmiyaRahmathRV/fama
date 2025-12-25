@@ -197,6 +197,7 @@
             table = $('#investmentsTable').DataTable({
                 processing: true,
                 serverSide: true,
+                responsive: true,
                 pageLength: 5,
                 ajax: {
                     url: "{{ route('investment.list') }}",

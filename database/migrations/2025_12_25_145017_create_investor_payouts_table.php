@@ -13,14 +13,18 @@ return new class extends Migration
     {
         Schema::create('investor_payouts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('investor_id');
             $table->unsignedBigInteger('investment_id');
-            $table->decimal('total_payout_amount', 12, 2);
-            $table->integer('type_of_payout')->default(1)->comments('1-profit release,2-investment amount release, 3-referal commission release');
-            $table->date('total_payout_date');
-            $table->unsignedBigInteger('payout_by');
-            $table->text('remarks')->nullable();
+            $table->unsignedBigInteger('investor_id');
+            $table->unsignedBigInteger('investment_referral_id')->nullable();
+            $table->integer('payout_type');
+            $table->date('payout_release_month');
+            $table->decimal('payout_amount', 12, 2);
+            $table->decimal('amount_paid', 12, 2)->default(0);
+            $table->decimal('amount_pending', 12, 2);
+            $table->integer('updated_by')->nullable();
+            $table->integer('deleted_by');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

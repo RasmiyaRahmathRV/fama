@@ -20,8 +20,8 @@ class InvestmentReferral extends Model
         'investor_referror_id',
         'referral_commission_perc',
         'referral_commission_amount',
-        'referral_commission_released_amount',
-        'referral_commission_pending_amount',
+        // 'referral_commission_released_amount',
+        // 'referral_commission_pending_amount',
         'referral_commission_frequency_id',
         'referral_commission_status',
         'last_referral_commission_released_date',
@@ -50,8 +50,8 @@ class InvestmentReferral extends Model
     }
 
 
-    public function getPendingAmountAttribute()
-    {
-        return $this->referral_commission_amount - $this->referral_commission_released_amount;
-    }
+    //     public function getPendingAmountAttribute()
+    //     {
+    //         return $this->referral_commission_amount - $this->referral_commission_released_amount;
+    //     }
 }
