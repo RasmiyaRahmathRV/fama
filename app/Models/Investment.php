@@ -70,7 +70,8 @@ class Investment extends Model
         'initial_profit_release_month',
         'total_profit_released',
         'current_month_released',
-        'current_month_pending',
+        'outstanding_profit',
+        'is_profit_processed',
     ];
 
     public function investor()
@@ -158,5 +159,70 @@ class Investment extends Model
     public function investmentDocument()
     {
         return $this->hasOne(InvestmentDocument::class, 'investment_id');
+    }
+    public function getType()
+    {
+        return match ($this->investment_type) {
+            0 => 'New',
+            1 => 'Renew'
+        };
+    }
+    protected static function booted()
+    {
+        // dd("test");
+        static::deleting(function ($agreement) {
+
+            $userId = auth()->user()->id;
+            // dd($userId);
+
+            // hasOne relations
+            $hasOneRelations = [
+                'investmentDocument',
+                'investmentReferral',
+            ];
+
+            // hasMany relations
+            $hasManyRelations = [
+                'investmentReceivedPayments',
+            ];
+
+            if (!$agreement->isForceDeleting()) {
+                // dd("test");
+
+                // Soft delete hasOne
+                foreach ($hasOneRelations as $relation) {
+                    $related = $agreement->$relation;
+                    if ($related) {
+                        $related->update(['deleted_by' => $userId]);
+                        $related->delete();
+                    }
+                }
+
+                // Soft delete hasMany
+                foreach ($hasManyRelations as $relation) {
+                    foreach ($agreement->$relation as $related) {
+                        $related->update(['deleted_by' => $userId]);
+                        $related->delete();
+                    }
+                }
+            } else {
+                // Force delete
+                foreach (array_merge($hasOneRelations, $hasManyRelations) as $relation) {
+                    $agreement->$relation()->withTrashed()->forceDelete();
+                }
+            }
+        });
+
+        static::restoring(function ($agreement) {
+            $relations = [
+                'investmentDocument',
+                'investmentReferral',
+                'investmentReceivedPayments',
+            ];
+
+            foreach ($relations as $relation) {
+                $agreement->$relation()->withTrashed()->restore();
+            }
+        });
     }
 }

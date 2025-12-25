@@ -19,6 +19,7 @@ class ProfitInterval extends Model
     protected $fillable = [
         'profit_interval_name',
         'no_of_installments',
+        'interval',
         'status'
     ];
 }

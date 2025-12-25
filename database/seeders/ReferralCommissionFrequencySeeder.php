@@ -16,14 +16,17 @@ class ReferralCommissionFrequencySeeder extends Seeder
     {
         ReferralCommissionFrequency::updateOrCreate([
             'commission_frequency_name' => 'Single',
+            'no_of_installments' => 1,
             'status' => 1
         ]);
         ReferralCommissionFrequency::updateOrCreate([
             'commission_frequency_name' => 'Twice',
+            'no_of_installments' => 2,
             'status' => 1
         ]);
         ReferralCommissionFrequency::updateOrCreate([
             'commission_frequency_name' => 'Multiple',
+            'no_of_installments' => 12,
             'status' => 1
         ]);
     }

@@ -15,12 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('profit_interval_name');
             $table->integer('no_of_installments');
+            $table->integer('interval');
             $table->boolean('status')->comment('1-Acive, 0-Inactive');
             $table->timestamps();
         });
         Schema::create('referral_commission_frequencies', function (Blueprint $table) {
             $table->id();
             $table->string('commission_frequency_name');
+            $table->integer('no_of_installments');
             $table->boolean('status')->comment('1-Acive, 0-Inactive');
 
             $table->timestamps();
@@ -58,7 +60,8 @@ return new class extends Migration
 
             $table->decimal('total_profit_released', 12, 2)->default(0);
             $table->decimal('current_month_released', 12, 2)->default(0);
-            $table->decimal('current_month_pending', 12, 2)->default(0);
+            $table->decimal('outstanding_profit', 12, 2)->default(0);
+            $table->boolean('is_profit_processed')->default(0)->comment('0-No,1-Yes');
 
             $table->date('last_profit_released_date')->nullable();
             $table->date('next_profit_release_date');
