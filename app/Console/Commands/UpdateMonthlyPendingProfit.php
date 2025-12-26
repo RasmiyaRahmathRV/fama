@@ -165,8 +165,10 @@ class UpdateMonthlyPendingProfit extends Command
                         $investorId = $referral->investor_referror_id;
                         $payoutReferrenceId = $referral->id;
 
+
                         // Adjust based on frequency
                         switch ($referral->referral_commission_frequency_id) {
+
                             case 1: // Full payout at once
                                 $amount = $amount / 1; // basically unchanged
                                 break;
@@ -187,7 +189,7 @@ class UpdateMonthlyPendingProfit extends Command
             }
 
 
-            InvestorPayout::firstOrCreate(
+            return InvestorPayout::firstOrCreate(
                 [
 
                     'investment_id'        => $investment->id,
