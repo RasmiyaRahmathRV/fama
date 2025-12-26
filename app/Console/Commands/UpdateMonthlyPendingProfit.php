@@ -154,10 +154,32 @@ class UpdateMonthlyPendingProfit extends Command
                     $investorId = $investment->investor_id;
                     break;
                 case 2: // REFERRAL
-                    $amount = $investment->investmentReferral?->referral_commission_amount ?? 0;
-                    $investorId = $investment->investmentReferral?->investor_referror_id;
-                    $payoutReferrenceId = $investment->investmentReferral?->id;
+                    $referral = $investment->investmentReferral;
+
+                    $amount = 0;
+                    $investorId = null;
+                    $payoutReferrenceId = null;
+
+                    if ($referral) {
+                        $amount = $referral->referral_commission_amount;
+                        $investorId = $referral->investor_referror_id;
+                        $payoutReferrenceId = $referral->id;
+
+                        // Adjust based on frequency
+                        switch ($referral->referral_commission_frequency_id) {
+                            case 1: // Full payout at once
+                                $amount = $amount / 1; // basically unchanged
+                                break;
+                            case 2: // Twice
+                                $amount = $amount / 2;
+                                break;
+                            case 3: // Monthly
+                                $amount = $amount / 12;
+                                break;
+                        }
+                    }
                     break;
+
                 case 3: // TERMINATION
                     $amount = ($investment->investment_amount) + ($investment->outstanding_profit);
                     $investorId = $investment->investor_id;
