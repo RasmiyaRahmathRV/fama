@@ -16,9 +16,8 @@ class InvestorPayout extends Model
     protected $fillable = [
         'investment_id',
         'investor_id',
-        'investor_referrence_id',
-        'investment_referral_id',
         'payout_type',
+        'payout_reference_id',
         'payout_release_month',
         'payout_amount',
         'amount_paid',
