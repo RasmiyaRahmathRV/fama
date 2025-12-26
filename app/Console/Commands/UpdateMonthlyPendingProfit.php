@@ -80,7 +80,7 @@ class UpdateMonthlyPendingProfit extends Command
 
         Investment::with('profitInterval', 'investmentReferral')
             ->where('investment_status', 1)
-            ->where('terminate_status', 0)
+            ->where('terminate_status', '!=', 2)
             ->chunkById(100, function ($investments) use ($currentMonthStart, $currentMonthEnd, $currentMonth) {
 
                 foreach ($investments as $investment) {
@@ -128,7 +128,7 @@ class UpdateMonthlyPendingProfit extends Command
                     // ----------------------------
                     // TERMINATION PAYOUT
                     // ----------------------------
-                    if ($investment->terminate_status == 2 && $investment->termination_date) {
+                    if ($investment->terminate_status == 1 && $investment->termination_date) {
                         $terminationDate = Carbon::parse($investment->termination_date);
 
                         // Check if termination date is **within current month**
