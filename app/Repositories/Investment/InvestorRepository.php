@@ -4,6 +4,7 @@ namespace App\Repositories\Investment;
 
 use App\Models\Investor;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class InvestorRepository
 {
@@ -122,5 +123,37 @@ class InvestorRepository
             ->get();
 
         return $investors;
+    }
+    public function updateOnInvestmentDelete($id, $investment)
+    {
+        DB::transaction(function () use ($id, $investment) {
+
+            $investor = Investor::find($id);
+
+            // Decrement total investments
+            if ($investor->total_no_of_investments > 0) {
+                $investor->total_no_of_investments -= 1;
+            }
+
+            // Decrement invested amount
+            if ($investor->total_invested_amount > 0) {
+                $investor->total_invested_amount -= $investment->investment_amount;
+            }
+
+            $investor->save();
+
+            // Handle referral
+            if ($investment->investmentReferral) {
+                $investor_referrer_id = $investment->investmentReferral->investor_referror_id;
+                $commission_amount    = $investment->investmentReferral->referral_commission_amount;
+
+                $referrer = Investor::find($investor_referrer_id);
+
+                if ($referrer && $referrer->total_referal_commission > 0) {
+                    $referrer->total_referal_commission -= $commission_amount;
+                    $referrer->save();
+                }
+            }
+        });
     }
 }

@@ -330,6 +330,8 @@ class InvestmentService
 
     public function delete($id)
     {
+        $investment = $this->investmentRepository->find($id);
+        $this->investorRepository->updateOnInvestmentDelete($investment->investor_id, $investment);
         return $this->investmentRepository->delete($id);
     }
 
@@ -712,7 +714,6 @@ class InvestmentService
 
         // Update investment
         $investment =  $this->investmentRepository->update($data['investment_id'], $terminationData);
-        $investment->investor()->increment('total_terminated_investments');
 
         return $investment;
     }
