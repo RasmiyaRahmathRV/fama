@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('investment_id');
             $table->unsignedBigInteger('investor_id')->comment('receiver');
             $table->integer('payout_type')->comment('1-profit, 2-commission, 3-principal');
-            $table->integer('payout_reference_id')->comment('type profit or principal - investment id, commission - referal table id');
+            $table->integer('payout_reference_id')->comment('type commission - referal table id')->nullable();
             $table->string('payout_release_month');
             $table->decimal('payout_amount', 12, 2);
             $table->decimal('amount_paid', 12, 2)->default(0);
