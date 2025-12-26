@@ -25,7 +25,7 @@ return new class extends Migration
             $table->boolean('is_processed')->default(0);
 
             $table->integer('updated_by')->nullable();
-            $table->integer('deleted_by');
+            $table->integer('deleted_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
