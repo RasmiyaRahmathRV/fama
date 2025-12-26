@@ -305,6 +305,28 @@
                                                         </select>
                                                     </div>
                                                 </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">First Profit Release Date</label>
+                                                        <div class="input-group date" id="firstprofitreleasedate"
+                                                            data-target-input="nearest">
+                                                            <input type="text"
+                                                                class="form-control datetimepicker-input"
+                                                                name="next_profit_release_date"
+                                                                id="first_profit_release_date"
+                                                                value="{{ old('next_profit_release_date', isset($investment->next_profit_release_date) ? \Carbon\Carbon::parse($investment->next_profit_release_date)->format('d-m-Y') : '') }}"
+                                                                data-target="#firstprofitreleasedate"
+                                                                placeholder="DD-MM-YYYY">
+                                                            <div class="input-group-append"
+                                                                data-target="#firstprofitreleasedate"
+                                                                data-toggle="datetimepicker">
+                                                                <div class="input-group-text">
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
 
                                                 <div class="col-md-4">
@@ -338,7 +360,7 @@
 
                                             <div class="card-body">
                                                 <div class="row">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="asterisk">Referral Commission %</label>
                                                             <input type="text" class="form-control"
@@ -350,7 +372,7 @@
                                                     </div>
                                                     <input type="hidden" name="referral_id" id="referral_id"
                                                         value="{{ $investment->investmentReferral->investor_referror_id }}">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="asterisk">Referral Commission Amount</label>
                                                             <input type="text" class="form-control"
@@ -360,7 +382,7 @@
                                                                 placeholder="Referral Commission Amount">
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="asterisk">Referral Commission Frequency</label>
                                                             <select class="form-control select2"
@@ -372,6 +394,30 @@
                                                                         {{ $freq->commission_frequency_name }}</option>
                                                                 @endforeach
                                                             </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="asterisk">First Referral Commission Release
+                                                                Date</label>
+                                                            <div class="input-group date"
+                                                                id="firstreferralcommissionreleasedate"
+                                                                data-target-input="nearest">
+                                                                <input type="text"
+                                                                    class="form-control datetimepicker-input"
+                                                                    name="next_referral_commission_release_date"
+                                                                    id="first_referral_commission_release_date"
+                                                                    value="{{ old('next_referral_commission_release_date', isset($investment->next_referral_commission_release_date) ? \Carbon\Carbon::parse($investment->next_referral_commission_release_date)->format('d-m-Y') : '') }}"
+                                                                    data-target="#firstreferralcommissionreleasedate"
+                                                                    placeholder="DD-MM-YYYY">
+                                                                <div class="input-group-append"
+                                                                    data-target="#firstreferralcommissionreleasedate"
+                                                                    data-toggle="datetimepicker">
+                                                                    <div class="input-group-text">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -386,7 +432,7 @@
 
                                             <div class="card-body">
                                                 <div class="row">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="asterisk">Referral Commission %</label>
                                                             <input type="text" class="form-control"
@@ -396,7 +442,7 @@
                                                         </div>
                                                     </div>
                                                     <input type="hidden" name="referral_id" id="referral_id">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="asterisk">Referral Commission Amount</label>
                                                             <input type="text" class="form-control"
@@ -405,7 +451,7 @@
                                                                 placeholder="Referral Commission Amount">
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="asterisk">Referral Commission Frequency</label>
                                                             <select class="form-control select2"
@@ -416,6 +462,29 @@
                                                                         {{ $freq->commission_frequency_name }}</option>
                                                                 @endforeach
                                                             </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="asterisk">First Referral Commission Release
+                                                                Date</label>
+                                                            <div class="input-group date"
+                                                                id="firstreferralcommissionreleasedate"
+                                                                data-target-input="nearest">
+                                                                <input type="text"
+                                                                    class="form-control datetimepicker-input"
+                                                                    name="next_referral_commission_release_date"
+                                                                    id="first_referral_commission_release_date"
+                                                                    data-target="#firstreferralcommissionreleasedate"
+                                                                    placeholder="DD-MM-YYYY">
+                                                                <div class="input-group-append"
+                                                                    data-target="#firstreferralcommissionreleasedate"
+                                                                    data-toggle="datetimepicker">
+                                                                    <div class="input-group-text">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -595,8 +664,9 @@
             $('#profitreleasedate').datetimepicker({
                 format: 'DD-MM-YYYY'
             });
-
-
+            $('#firstprofitreleasedate').datetimepicker({
+                format: 'DD-MM-YYYY'
+            });
             $('#maturityDate').datetimepicker({
                 format: 'DD-MM-YYYY'
             });
@@ -643,6 +713,9 @@
                     break;
                 case '4':
                     divisor = 1;
+                    break;
+                case '5':
+                    divisor = 6;
                     break;
             }
 
@@ -764,6 +837,62 @@
         $('#investor_id').on('change', function() {
             investorChange();
         });
+        $('#investment_date, #grace_period, #profit_interval_id').on('change keyup', function() {
+            calculateFirstProfitReleaseDate();
+        });
+
+        function calculateFirstProfitReleaseDate() {
+
+            let investmentDate = $('#investment_date').val();
+            let gracePeriod = parseInt($('#grace_period').val()) || 0;
+            let profitIntervalId = $('#profit_interval_id').val();
+            // let releaseDay = parseInt($('#profit_release_day').val()) || null;
+
+            if (!investmentDate || !profitIntervalId) {
+                $('#first_profit_release_date').val('');
+                return;
+            }
+
+            let parts = investmentDate.split('-');
+            let date = new Date(parts[2], parts[1] - 1, parts[0]);
+
+            if (isNaN(date.getTime())) {
+                $('#first_profit_release_date').val('');
+                return;
+            }
+
+            date.setDate(date.getDate() + gracePeriod);
+
+            switch (profitIntervalId) {
+                case '1':
+                    date.setMonth(date.getMonth() + 1);
+                    break;
+                case '2':
+                    date.setMonth(date.getMonth() + 3);
+                    break;
+                case '3':
+                    date.setMonth(date.getMonth() + 6);
+                    break;
+                case '4':
+                    date.setFullYear(date.getFullYear() + 1);
+                    break;
+                case '5':
+                    date.setMonth(date.getMonth() + 2);
+                    break;
+            }
+
+
+            let d = String(date.getDate()).padStart(2, '0');
+            let m = String(date.getMonth() + 1).padStart(2, '0');
+            let y = date.getFullYear();
+
+
+            $('#first_profit_release_date').val(`${d}-${m}-${y}`);
+            $('#first_referral_commission_release_date').val(`${d}-${m}-${y}`);
+        }
+
+
+
 
         // On page load for edit
         let selectedInvestorBankId = "{{ old('investor_bank_id', $investment->investor_bank_id ?? '') }}";

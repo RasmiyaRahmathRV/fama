@@ -16,12 +16,14 @@ class InvestorPayout extends Model
     protected $fillable = [
         'investment_id',
         'investor_id',
+        'investor_referrence_id',
         'investment_referral_id',
         'payout_type',
         'payout_release_month',
         'payout_amount',
         'amount_paid',
         'amount_pending',
+        'is_processed',
         'updated_by',
         'deleted_by',
     ];
@@ -29,5 +31,17 @@ class InvestorPayout extends Model
     public function investor()
     {
         return $this->belongsTo(Investor::class);
+    }
+    public function investment()
+    {
+        return $this->belongsTo(Investment::class);
+    }
+    public function investmentReferral()
+    {
+        return $this->belongsTo(InvestmentReferral::class, 'investment_referral_id');
+    }
+    public function investorReference()
+    {
+        return $this->belongsTo(Investor::class, 'investor_referrence_id');
     }
 }

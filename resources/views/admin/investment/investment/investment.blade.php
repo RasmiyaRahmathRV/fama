@@ -44,8 +44,8 @@
                                 <span class="float-right">
                                     <a class="btn btn-info float-right m-1" href="{{ route('investment.create') }}">Add
                                         Investment</a>
-                                    <button class="btn btn-secondary float-right m-1" data-toggle="modal"
-                                        data-target="#modal-import">Import</button>
+                                    {{-- <button class="btn btn-secondary float-right m-1" data-toggle="modal"
+                                        data-target="#modal-import">Import</button> --}}
                                 </span>
                             </div>
                             <!-- /.card-header -->
@@ -55,6 +55,7 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Action</th>
+                                            <th>Company Name</th>
                                             <th>Investor Name</th>
                                             <th>Investment Amount</th>
                                             <th>Received Amount</th>
@@ -66,6 +67,8 @@
                                             <th>Grace Period </th>
                                             <th>Payout Batch</th>
                                             <th>Nominee Details</th>
+                                            <th>Commission Amount</th>
+                                            <th>Commission %</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -86,7 +89,7 @@
 
 
 
-            <div class="modal fade" id="modal-import">
+            {{-- <div class="modal fade" id="modal-import">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -114,7 +117,7 @@
                     <!-- /.modal-content -->
                 </div>
                 <!-- /.modal-dialog -->
-            </div>
+            </div> --}}
             <!-- /.modal -->
 
             <div class="modal fade" id="pendingInvestmentModal" tabindex="-1">
@@ -153,8 +156,8 @@
 
                                 <div class="form-group">
                                     <label>Received Amount</label>
-                                    <input type="number" name="received_amount" id="received_amount"
-                                        class="form-control" step="0.01" min="0" required>
+                                    <input type="number" name="received_amount" id="received_amount" class="form-control"
+                                        step="0.01" min="0" required>
                                 </div>
                             </div>
 
@@ -216,6 +219,10 @@
                         searchable: false
                     },
                     {
+                        data: 'company_name',
+                        name: 'company.company_name'
+                    },
+                    {
                         data: 'investor_name',
                         name: 'investor.investor_name'
                     },
@@ -259,6 +266,15 @@
                         data: 'nominee_details',
                         name: 'nominee_name'
                     },
+                    {
+                        data: 'referral_commission_amount',
+                        name: 'investmentReferral.referral_commission_amount'
+                    },
+
+                    {
+                        data: 'referral_commission_perc',
+                        name: 'investmentReferral.referral_commission_perc'
+                    },
 
                 ],
 
@@ -272,21 +288,9 @@
                     title: 'Investments Data',
                     action: function(e, dt, node, config) {
                         let searchValue = dt.search();
-                        let form = $('<form>', {
-                            action: "{{ route('tanantReceivables.export') }}",
-                            method: 'POST'
-                        });
-                        form.append($('<input>', {
-                            type: 'hidden',
-                            name: '_token',
-                            value: '{{ csrf_token() }}'
-                        }));
-                        form.append($('<input>', {
-                            type: 'hidden',
-                            name: 'search',
-                            value: searchValue
-                        }));
-                        form.appendTo('body').submit();
+                        let url = "{{ route('investment.export') }}" + "?search=" +
+                            encodeURIComponent(searchValue);
+                        window.location.href = url;
                     }
                 }]
             });
@@ -375,5 +379,34 @@
                 }
             });
         });
+
+        function confirmDelete(id) {
+            Swal.fire({
+                title: "Are you sure?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: '/investment/' + id,
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            toastr.success(response.message);
+                            $('#investmentsTable').DataTable().ajax.reload();
+                        }
+                    });
+
+                } else {
+                    toastr.error(errors.responseJSON.message);
+                }
+            });
+        }
     </script>
 @endsection

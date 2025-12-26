@@ -592,7 +592,10 @@ function calculateNextProfitReleaseDate($grace_period, $profit_interval_id, $inv
             break;
         case 4: // Yearly
             $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addYear();
-            break;;
+            break;
+        case 5: // every 2 months
+            $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addMonths(2);
+            break;
     }
 
     return $nextProfitReleaseDate->format('Y-m-d');

@@ -15,12 +15,16 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('investment_id');
             $table->unsignedBigInteger('investor_id');
+            $table->unsignedBigInteger('investor_referrence_id');
             $table->unsignedBigInteger('investment_referral_id')->nullable();
             $table->integer('payout_type');
-            $table->date('payout_release_month');
+            $table->string('payout_release_month');
             $table->decimal('payout_amount', 12, 2);
             $table->decimal('amount_paid', 12, 2)->default(0);
-            $table->decimal('amount_pending', 12, 2);
+            $table->decimal('amount_pending', 12, 2)->default(0);
+
+            $table->boolean('is_processed')->default(0);
+
             $table->integer('updated_by')->nullable();
             $table->integer('deleted_by');
             $table->timestamps();

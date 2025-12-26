@@ -24,10 +24,15 @@
                         <h1>Investment</h1>
                     </div>
                     <div class="col-sm-6">
+
+
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="../dashboard.php">Home</a></li>
                             <li class="breadcrumb-item active">Investment</li>
                         </ol>
+                        <a href="{{ route('investment.index') }}" class="btn btn-info float-sm-right mx-2 btn-sm ml-2">
+                            <i class="fa fa-arrow-left"></i> Back to List
+                        </a>
                     </div>
                 </div>
             </div><!-- /.container-fluid -->
@@ -37,6 +42,7 @@
             <div class="container-fluid">
                 <h5 class="mb-2">Info Box</h5>
                 <div class="row">
+
                     <div class="col-md-3 col-sm-6 col-12">
                         <div class="info-box">
                             <span class="info-box-icon bg-info"><i class="fas fa-money-bill-wave"></i></span>
@@ -123,17 +129,11 @@
                                     <div class="tab-pane" id="received-history">
                                         @include('admin.investment.investment.partials.view-received', [
                                             'received' => $investment->investmentReceivedPayments,
+                                            'investment' => $investment,
                                         ])
                                     </div>
                                     <!-- /.tab-pane -->
 
-
-                                    {{-- <div class="tab-pane" id="document">
-                                        @include('admin.investment.investment.partials.view-document', [
-                                            'document' => $investment->investmentDocument,
-                                        ])
-                                    </div> --}}
-                                    <!-- /.tab-pane -->
                                     @if (isset($investment->investmentReferral) && $investment->investmentReferral != null)
                                         <div class="tab-pane" id="referral">
                                             @include('admin.investment.investment.partials.view-referral', [
@@ -175,4 +175,58 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+    <script>
+        $(document).on('click', '.openPendingModal', function() {
+            let paymentId = $(this).data('id');
+            let investmentId = $(this).data('investment-id');
+            let investorId = $(this).data('investor-id');
+            let pendingBalance = parseFloat($(this).data('balance')) || 0;
+            let receivedAmount = parseFloat($(this).data('amount')) || 0;
+            let receivedDate = $(this).data('date');
+
+
+            $('#payment_id').val(paymentId);
+            $('#investment_id').val(investmentId);
+            $('#investor_id').val(investorId);
+            $('#pending_balance').val(pendingBalance.toFixed(2));
+            $('#received_amount')
+                .attr('max', pendingBalance.toFixed(2))
+                .attr('min', 1)
+                .val(receivedAmount);
+            $('#received_date').val(receivedDate);
+            $('#pendingInvestmentModal').modal('show');
+        });
+        $('#pendingInvestmentForm').on('submit', function(e) {
+            alert('here');
+            e.preventDefault();
+
+            $.ajax({
+                url: "{{ route('investment.submit.pending.update') }}",
+                method: "POST",
+                data: $(this).serialize(),
+                beforeSend: function() {
+                    $('#pendingInvestmentForm button[type="submit"]').attr('disabled', true);
+                },
+                success: function(res) {
+                    $('#pendingInvestmentModal').modal('hide');
+                    // $('#investmentsTable').DataTable().ajax.reload(null, false);
+                    toastr.success(res.message);
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 2000);
+                },
+                error: function(xhr) {
+                    // Handle error
+                    let errMsg = 'Something went wrong!';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errMsg = xhr.responseJSON.message;
+                    }
+                    toastr.error(errMsg);
+                },
+                complete: function() {
+                    $('#pendingInvestmentForm button[type="submit"]').attr('disabled', false);
+                }
+            });
+        });
+    </script>
 @endsection

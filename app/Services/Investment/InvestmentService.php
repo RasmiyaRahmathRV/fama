@@ -65,7 +65,7 @@ class InvestmentService
                 $data['investment_amount'],
                 $data['received_amount']
             );
-            $next_profit_release_date = calculateNextProfitReleaseDate($data['grace_period'], $data['profit_interval_id'], $data['investment_date']);
+            // $next_profit_release_date = calculateNextProfitReleaseDate($data['grace_period'], $data['profit_interval_id'], $data['investment_date']);
 
             // dd("test");
 
@@ -102,9 +102,9 @@ class InvestmentService
                 'has_fully_received' => $has_fully_received,
                 'reinvestment_or_not' => $data['reinvestment_or_not'],
                 'investment_type' => $investmentType,
-                'next_profit_release_date' => $next_profit_release_date,
-                'next_referral_commission_release_date' => $next_profit_release_date,
-                'initial_profit_release_month' => Carbon::parse($next_profit_release_date)->format('M Y')
+                'next_profit_release_date' => parseDate($data['next_profit_release_date']),
+                // 'next_referral_commission_release_date' => $next_profit_release_date,
+                'initial_profit_release_month' => Carbon::parse($data['next_profit_release_date'])->format('M Y')
             ];
             $this->validate($investmentData);
             // dd($investmentData);
@@ -177,7 +177,7 @@ class InvestmentService
                     'investor_referror_id' => $data['referral_id'],
                     'referral_commission_perc' => $data['referral_commission_perc'],
                     'referral_commission_amount' => $data['referral_commission_amount'],
-                    'referral_commission_pending_amount' => $data['referral_commission_amount'],
+                    // 'referral_commission_pending_amount' => $data['referral_commission_amount'],
                     'referral_commission_frequency_id' => $data['referral_commission_frequency_id'],
                     'referral_commission_status' => 0,
                     'total_commission_pending' => $data['referral_commission_amount'],
@@ -185,6 +185,10 @@ class InvestmentService
                 ];
                 // dd($investorReferraldata);
                 $this->investmentReferralService->create($investorReferraldata);
+                $this->investmentRepository->update($investment->id, [
+                    'next_referral_commission_release_date' => $investment['next_profit_release_date'],
+                ]);
+
                 UpdateReferralCommission($data['referral_id']);
             }
 
@@ -208,7 +212,7 @@ class InvestmentService
             );
 
             // $investmentType = InvestmentTypestatus($data['investor_id']);
-            $next_profit_release_date = calculateNextProfitReleaseDate($data['grace_period'], $data['profit_interval_id'], $data['investment_date']);
+            // $next_profit_release_date = calculateNextProfitReleaseDate($data['grace_period'], $data['profit_interval_id'], $data['investment_date']);
 
             $investmentData = [
                 'investor_id' => $data['investor_id'],
@@ -236,9 +240,9 @@ class InvestmentService
                 'has_fully_received' => $has_fully_received,
                 'reinvestment_or_not' => $data['reinvestment_or_not'],
                 // 'investment_type' => $investmentType,
-                'next_profit_release_date' => $next_profit_release_date,
-                'next_referral_commission_release_date' => $next_profit_release_date,
-                'initial_profit_release_month' => Carbon::parse($next_profit_release_date)->format('M Y')
+                'next_profit_release_date' => parseDate($data['next_profit_release_date']),
+                // 'next_referral_commission_release_date' => $data['next_profit_release_date'],
+                'initial_profit_release_month' => Carbon::parse($data['next_profit_release_date'])->format('M Y')
             ];
 
             $this->validate($investmentData);
@@ -290,7 +294,7 @@ class InvestmentService
                     'investor_referror_id' => $data['referral_id'],
                     'referral_commission_perc' => $data['referral_commission_perc'],
                     'referral_commission_amount' => $data['referral_commission_amount'],
-                    'referral_commission_pending_amount' => $data['referral_commission_amount'],
+                    // 'referral_commission_pending_amount' => $data['referral_commission_amount'],
                     'referral_commission_frequency_id' => $data['referral_commission_frequency_id'],
                     'referral_commission_status' => 0,
                     'updated_by' => $userId,
@@ -303,6 +307,9 @@ class InvestmentService
                     // $existingReferral->update($investorReferralData);
                     $this->investmentReferralService->update($data['investment_referral_id'], $investorReferralData);
                 }
+                $this->investmentRepository->update($investment->id, [
+                    'next_referral_commission_release_date' => $investment['next_profit_release_date'],
+                ]);
                 updateReferralCommission($data['referral_id']);
             }
 
@@ -545,6 +552,7 @@ class InvestmentService
                 throw new \Exception("Investment not found");
             }
 
+
             $totalReceived = $this->investmentRepository->getTotalReceivedAmount($investment);
             $balanceAmount = $investment->investment_amount - $totalReceived;
 
@@ -596,5 +604,58 @@ class InvestmentService
     public function getDetails($id)
     {
         return $this->investmentRepository->getDetails($id);
+    }
+
+    public function updatePending($data)
+    {
+        // dd($data);
+        return DB::transaction(function () use ($data) {
+            $investment = $this->investmentRepository->find($data['investment_id']);
+            $payment = $this->investmentReceivedPaymentService->getById($data['payment_id']);
+            // dd($payment);
+            if (!$investment) {
+                throw new \Exception("Investment not found");
+            }
+            $totalReceived = $investment->total_received_amount;
+            $balanceAmount = $investment->balance_amount;
+
+
+            if ($payment->received_amount > $data['received_amount']) {
+                $balance_amount = $balanceAmount + ($payment->received_amount - $data['received_amount']);
+                $newTotalReceived = $totalReceived - ($payment->received_amount - $data['received_amount']);
+            } else if ($payment->received_amount < $data['received_amount']) {
+                $balance_amount = $balanceAmount - ($data['received_amount'] - $payment->received_amount);
+                $newTotalReceived = $totalReceived + ($data['received_amount'] - $payment->received_amount);
+            } else {
+                $balance_amount = $balanceAmount;
+                $newTotalReceived = $totalReceived;
+            }
+            // dd($balanceAmount, $balance_amount);
+
+
+
+            $userId = auth()->id();
+            // $balance_amount = $balanceAmount - $data['received_amount'];
+
+            $updatedData = [
+                'received_amount' => $data['received_amount'],
+                'received_date'  => parseDate($data['received_date']),
+                'updated_by'       => $userId,
+            ];
+            $this->investmentReceivedPaymentService->update($data['payment_id'], $updatedData);
+
+            $has_fully_received = investmentStatus(
+                $investment->investment_amount,
+                $newTotalReceived
+            );
+            $this->investmentRepository->updateById($investment
+                ->id, [
+                'total_received_amount' => $newTotalReceived,
+                'has_fully_received' => $has_fully_received,
+                'balance_amount' => $balance_amount,
+
+            ]);
+            return $payment;
+        });
     }
 }

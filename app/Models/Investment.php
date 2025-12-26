@@ -72,6 +72,11 @@ class Investment extends Model
         'current_month_released',
         'outstanding_profit',
         'is_profit_processed',
+
+        'termination_requested_date',
+        'termination_date',
+        'termination_duration',
+        'termination_document',
     ];
 
     public function investor()

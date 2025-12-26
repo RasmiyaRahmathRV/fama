@@ -32,4 +32,11 @@ class InvestmentReceivedPaymentRepository
             return $payment;
         }
     }
+    public function update($id, $data)
+    {
+        $payment = InvestmentReceivedPayment::findOrFail($id);
+        $payment->update($data);
+
+        return $payment;
+    }
 }
