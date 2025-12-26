@@ -211,6 +211,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('investments/investments', [InvestmentController::class, 'addpendingInvestment'])->name('investment.submit.pending');
     Route::get('investments/export-investment', [InvestmentController::class, 'exportInvestment'])->name('investment.export');
     Route::post('investments/investments/update', [InvestmentController::class, 'updatePendingInvestment'])->name(('investment.submit.pending.update'));
+    Route::post('investments/investments/terminate-request', [InvestmentController::class, 'terminateRequestSubmit'])->name(('investment.submit.termination'));
 });
 
 // Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);

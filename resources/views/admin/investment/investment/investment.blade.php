@@ -89,35 +89,93 @@
 
 
 
-            {{-- <div class="modal fade" id="modal-import">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Import</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form action="" id="PropertyImportForm" method="POST" enctype="multipart/form-data">
+            <div class="modal fade" id="terminationModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-md" role="document">
+                    <form id="terminationForm" method="POST" enctype="multipart/form-data">
+                        @csrf
+
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger">
+                                <h5 class="modal-title text-white">
+                                    <i class="fas fa-ban"></i> Terminate Investment
+                                </h5>
+                                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                            </div>
+
                             <div class="modal-body">
-                                <div class="card-body">
-                                    <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Import excel</label>
-                                        <input type="file" name="file" class="col-sm-9 form-control">
+
+                                <input type="hidden" name="investment_id" id="termination_investment_id">
+
+                                <!-- Requested Date -->
+                                <div class="form-group">
+                                    <label class="asterisk">Requested Date</label>
+                                    <div class="input-group date" id="requesteddate" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input"
+                                            name="termination_requested_date" id="termination_requested_date"
+                                            data-target="#requesteddate" placeholder="DD-MM-YYYY"
+                                            value="{{ old('termination_requested_date', isset($investment->termination_requested_date) ? \Carbon\Carbon::parse($investment->termination_requested_date)->format('d-m-Y') : '') }}"
+                                            required>
+                                        <div class="input-group-append" data-target="#requesteddate"
+                                            data-toggle="datetimepicker">
+                                            <div class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <!-- /.card-body -->
+
+                                <!-- Duration -->
+                                <div class="form-group">
+                                    <label class="asterisk">Duration (Days)</label>
+                                    <input type="number" name="duration" id="termination_duration" class="form-control"
+                                        min="1" required>
+                                </div>
+
+                                <!-- Termination Date -->
+                                <div class="form-group">
+                                    <label class="asterisk">Termination Date</label>
+                                    {{-- <input type="date" name="termination_date" id="termination_date"
+                                        class="form-control"> --}}
+                                    <div class="input-group date" id="terminationdate" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input"
+                                            name="termination_date" id="termination_date" data-target="#terminationdate"
+                                            placeholder="DD-MM-YYYY"
+                                            value="{{ old('termination_date', isset($investment->termination_date) ? \Carbon\Carbon::parse($investment->termination_date)->format('d-m-Y') : '') }}"
+                                            required>
+                                        <div class="input-group-append" data-target="#terminationdate"
+                                            data-toggle="datetimepicker">
+                                            <div class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- File Upload -->
+                                <div class="form-group">
+                                    <label>Upload Document</label>
+                                    <input type="file" name="termination_file" class="form-control-file"
+                                        accept=".pdf,.jpg,.jpeg,.png">
+                                    <small class="text-muted">PDF / JPG / PNG allowed</small>
+                                    <div id="existingFileContainer" style="margin-top:5px;"></div>
+                                </div>
+
                             </div>
-                            <div class="modal-footer justify-content-between">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" id="importBtn" class="btn btn-info">Import</button>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-check"></i> Confirm Termination
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                    Cancel
+                                </button>
                             </div>
-                        </form>
-                    </div>
-                    <!-- /.modal-content -->
+
+                        </div>
+                    </form>
                 </div>
-                <!-- /.modal-dialog -->
-            </div> --}}
+            </div>
+
             <!-- /.modal -->
 
             <div class="modal fade" id="pendingInvestmentModal" tabindex="-1">
@@ -143,8 +201,9 @@
                                     {{-- <input type="date" name="received_date" class="form-control" required>
                                     <label class="asterisk">Investment Date</label> --}}
                                     <div class="input-group date" id="receiveddate" data-target-input="nearest">
-                                        <input type="text" class="form-control datetimepicker-input" name="received_date"
-                                            data-target="#receiveddate" placeholder="DD-MM-YYYY" required>
+                                        <input type="text" class="form-control datetimepicker-input"
+                                            name="received_date" data-target="#receiveddate" placeholder="DD-MM-YYYY"
+                                            required>
                                         <div class="input-group-append" data-target="#receiveddate"
                                             data-toggle="datetimepicker">
                                             <div class="input-group-text">
@@ -156,8 +215,8 @@
 
                                 <div class="form-group">
                                     <label>Received Amount</label>
-                                    <input type="number" name="received_amount" id="received_amount" class="form-control"
-                                        step="0.01" min="0" required>
+                                    <input type="number" name="received_amount" id="received_amount"
+                                        class="form-control" step="0.01" min="0" required>
                                 </div>
                             </div>
 
@@ -300,6 +359,13 @@
         $('#receiveddate').datetimepicker({
             format: 'DD-MM-YYYY'
         });
+
+        $('#requesteddate').datetimepicker({
+            format: 'DD-MM-YYYY'
+        });
+        $('#terminationdate').datetimepicker({
+            format: 'DD-MM-YYYY'
+        });
     </script>
     <script>
         $(document).on('click', '.openPendingModal', function() {
@@ -408,5 +474,106 @@
                 }
             });
         }
+        $(document).on('click', '.openTerminationModal', function() {
+            let investmentId = $(this).data('id');
+
+            $('#termination_investment_id').val(investmentId);
+            $('#requested_date').val('');
+            $('#termination_duration').val('');
+            $('#termination_date').val('');
+
+            if ($(this).data('status')) {
+                $status = $(this).data('status');
+                if ($status == 1) {
+                    let requestedDate = $(this).data('requested-date') || '';
+                    let duration = $(this).data('duration') || '';
+                    let terminationDate = $(this).data('termination-date') || '';
+                    let filePath = $(this).data('file-path');
+                    console.log(filePath);
+
+
+                    $('#termination_investment_id').val(investmentId);
+                    $('#termination_requested_date').val(requestedDate);
+                    $('#termination_duration').val(duration);
+                    $('#termination_date').val(terminationDate);
+                    if (filePath) {
+                        $('#existingFileContainer').html(
+                            '<a style="text-decoration:underline;" class="text-blue" href="' + filePath +
+                            '" target="_blank">Click here </a>to view Existing File'
+                        );
+                    } else {
+                        $('#existingFileContainer').html('');
+                    }
+                }
+            }
+
+            $('#terminationModal').modal('show');
+        });
+        $('#requesteddate').on('change.datetimepicker', function() {
+            calculateTerminationDate();
+        });
+        $('#termination_duration').on('change keyup', function() {
+            calculateTerminationDate();
+        });
+
+        function calculateTerminationDate() {
+            let requestedDate = $('#termination_requested_date').val();
+            let duration = parseInt($('#termination_duration').val(), 10);
+
+            if (!requestedDate || isNaN(duration) || duration <= 0) {
+                $('#termination_date').val('');
+                return;
+            }
+
+            // Convert DD-MM-YYYY to YYYY-MM-DD
+            let parts = requestedDate.split('-');
+            if (parts.length !== 3) return;
+
+            let date = new Date(parts[2], parts[1] - 1, parts[0]); // year, monthIndex, day
+            if (isNaN(date.getTime())) return;
+
+            date.setDate(date.getDate() + duration);
+
+            let day = String(date.getDate()).padStart(2, '0');
+            let month = String(date.getMonth() + 1).padStart(2, '0');
+            let year = date.getFullYear();
+
+            $('#termination_date').val(`${day}-${month}-${year}`);
+        }
+        $('#terminationForm').on('submit', function(e) {
+            e.preventDefault();
+
+            let form = $(this)[0];
+            let formData = new FormData(form);
+
+            $.ajax({
+                url: "{{ route('investment.submit.termination') }}",
+                method: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                beforeSend: function() {
+                    $('#terminationForm button[type="submit"]').attr('disabled', true);
+                },
+                success: function(res) {
+                    $('#terminationModal').modal('hide');
+                    $('#investmentsTable').DataTable().ajax.reload(null, false);
+                    toastr.success(res.message);
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 2000);
+                },
+                error: function(xhr) {
+                    let errMsg = 'Something went wrong!';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errMsg = xhr.responseJSON.message;
+                    }
+                    toastr.error(errMsg);
+                },
+                complete: function() {
+                    $('#terminationForm button[type="submit"]').attr('disabled', false);
+                }
+            });
+        });
     </script>
 @endsection

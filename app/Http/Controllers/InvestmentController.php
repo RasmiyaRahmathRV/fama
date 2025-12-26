@@ -119,4 +119,14 @@ class InvestmentController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 422);
         }
     }
+    public function terminateRequestSubmit(Request $request)
+    {
+        // dd($request);
+        try {
+            $termination = $this->investmentService->terminateRequest($request->all());
+            return response()->json(['success' => true, 'data' => $termination, 'message' => 'Termination request submittedsuccessfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 422);
+        }
+    }
 }

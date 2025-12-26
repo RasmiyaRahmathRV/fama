@@ -111,7 +111,7 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label>Received Amount</label>
-                                                        <input type="text" class="form-control" name="received_amount"
+                                                        <input type="number" class="form-control" name="received_amount"
                                                             id="received_amount" placeholder="Enter Received Amount"
                                                             value="{{ old('received_amount', $investment->received_amount ?? '') }}"
                                                             {{ $paymentsCount > 1 ? 'readonly' : '' }}>
@@ -209,7 +209,8 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label class="asterisk">Profit %</label>
-                                                        <input type="text" class="form-control" name="profit_perc"
+                                                        <input type="number" step="0.01" class="form-control"
+                                                            name="profit_perc"
                                                             value="{{ old('profit_perc', $investment->profit_perc ?? '') }}"
                                                             id="profit_perc" placeholder="Profit Percentage" required>
                                                     </div>
@@ -750,8 +751,12 @@
             }
         }
 
-        $('#investment_date, #investment_tenure, #grace_period').on('change keyup', function() {
+        $('#investment_tenure, #grace_period').on('change keyup', function() {
             calculateMaturityDate();
+        });
+        $('#investmentdate').on('change.datetimepicker', function() {
+            calculateMaturityDate();
+            calculateFirstProfitReleaseDate();
         });
 
         function calculateReferralCommission() {
@@ -837,7 +842,7 @@
         $('#investor_id').on('change', function() {
             investorChange();
         });
-        $('#investment_date, #grace_period, #profit_interval_id').on('change keyup', function() {
+        $('#grace_period, #profit_interval_id').on('change keyup', function() {
             calculateFirstProfitReleaseDate();
         });
 

@@ -77,6 +77,8 @@ class Investment extends Model
         'termination_date',
         'termination_duration',
         'termination_document',
+        'termination_requested_by',
+        'terminated_by'
     ];
 
     public function investor()

@@ -79,7 +79,7 @@
                         </td>
                         <td>
                             <span class="badge badge-light text-sm text-danger">
-                                {{ number_format($investment->current_month_pending, 2) }}
+                                {{ number_format($investment->outstanding_profit, 2) }}
                             </span>
                         </td>
 

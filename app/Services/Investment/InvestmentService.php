@@ -485,7 +485,7 @@ class InvestmentService
                         </a>';
                     }
                 } else {
-                    if (Gate::allows('investment.edit')) {
+                    if (Gate::allows('investment.edit') && $row->is_profit_processed == 0) {
                         $action .= '<a href="' . route('investment.edit', $row->id) . '"
                             class="btn btn-sm btn-info m-1 editInvestment"
                             title="Edit Investment">
@@ -500,7 +500,7 @@ class InvestmentService
                         </a>';
                     }
 
-                    if (Gate::allows('investment.delete')) {
+                    if (Gate::allows('investment.delete') && $row->is_profit_processed == 0) {
                         $action .= '<button
                             class="btn btn-sm btn-danger m-1"
                             title="Delete Investment"
@@ -514,6 +514,29 @@ class InvestmentService
                                 data-id="' . $row->id . '" data-balance="' . $row->balance_amount . '"
                                 title="Submit Pending Investment">
                                 <i class="fas fa-money-check-alt"></i>
+                            </button>
+                        ';
+                    }
+                    if ($row->terminate_status == 1) {
+                        $action .= '
+                                <button class="btn btn-sm btn-danger m-1 openTerminationModal"
+                                data-status = "' . $row->terminate_status . '"
+                                    data-id="' . $row->id . '"
+                                    data-requested-date="' . ($row->termination_requested_date ? \Carbon\Carbon::parse($row->termination_requested_date)->format('d-m-Y') : '') . '"
+                                    data-duration="' . ($row->termination_duration ?? '') . '"
+                                    data-termination-date="' . ($row->termination_date ? \Carbon\Carbon::parse($row->termination_date)->format('d-m-Y') : '') . '"
+                                   data-file-path="' . ($row->termination_document ? Storage::url($row->termination_document) : '') . '"
+                                    title="Terminate Investment">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+                            ';
+                    } else {
+                        $action .= '
+                            <button class="btn btn-sm btn-danger m-1 openTerminationModal"
+                                data-id="' . $row->id . '"
+                                data-balance="' . $row->balance_amount . '"
+                                title="Terminate Investment">
+                                <i class="fas fa-ban"></i>
                             </button>
                         ';
                     }
@@ -657,5 +680,70 @@ class InvestmentService
             ]);
             return $payment;
         });
+    }
+    public function terminateRequest($data)
+    {
+        // dd($data);
+        // Validate the request
+        $this->validateTermination($data);
+        $investment = $this->investmentRepository->getWithDetails($data['investment_id']);
+
+        // Find the investment
+
+        // Prepare termination data
+        $terminationData = [
+            'terminate_status' => 1,
+            'termination_requested_date' => Carbon::createFromFormat('d-m-Y', $data['termination_requested_date']),
+            'termination_date' => Carbon::createFromFormat('d-m-Y', $data['termination_date']),
+            'termination_duration' => $data['duration'],
+            'termination_requested_by' => auth()->id(),
+        ];
+
+        // Handle file upload if exists
+        if (isset($data['termination_file'])) {
+            $fileName = uniqid() . '_' . $investment->investment_code . $data['termination_file']->getClientOriginalName();
+            $path = $data['termination_file']->storeAs(
+                'investments/' . $investment->investor->investor_code . '/terminations/' . $investment->investment_code,
+                $fileName,
+                'public'
+            );
+            $terminationData['termination_document'] = $path;
+        }
+
+        // Update investment
+        $investment =  $this->investmentRepository->update($data['investment_id'], $terminationData);
+        $investment->investor()->increment('total_terminated_investments');
+
+        return $investment;
+    }
+
+    public function validateTermination($data)
+    {
+        // dd($data);
+        $validator = Validator::make($data, [
+            'termination_requested_date' => 'required|date',
+            'duration' => 'required|integer|min:1',
+            'termination_date' => 'required|date|after:termination_requested_date',
+            'termination_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
+        ], [
+            'termination_requested_date.required' => 'Requested date is required.',
+            'termination_requested_date.date' => 'Requested date must be a valid date.',
+            'duration.required' => 'Duration is required.',
+            'duration.integer' => 'Duration must be a number.',
+            'duration.min' => 'Duration must be at least 1 day.',
+            'termination_date.required' => 'Termination date is required.',
+            'termination_date.date' => 'Termination date must be a valid date.',
+            'termination_date.after' => 'Termination date must be after the requested date.',
+            // 'termination_file.required' => 'Termination document is required.',
+            'termination_file.file' => 'The uploaded file must be a valid file.',
+            'termination_file.mimes' => 'Allowed file types: PDF, JPG, JPEG, PNG.',
+            // 'termination_file.max' => 'File size must not exceed 2MB.',
+        ]);
+
+
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
     }
 }

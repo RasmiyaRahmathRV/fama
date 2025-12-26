@@ -165,18 +165,23 @@ class UpdateMonthlyPendingProfit extends Command
             }
 
 
-            return InvestorPayout::firstOrCreate(
+            InvestorPayout::firstOrCreate(
                 [
-                    'investment_id' => $investment->id,
-                    'investor_id' => $investorId,
-                    'payout_reference_id' => $payoutReferrenceId ?? null,
-                    'payout_type' => $payout_type,
+
+                    'investment_id'        => $investment->id,
+                    'investor_id'          => $investorId,
+                    'payout_reference_id'  => $payoutReferrenceId ?? null,
+                    'payout_type'          => $payout_type,
                     'payout_release_month' => $currentMonth->format('Y-m'),
-                    'payout_amount' => $amount,
+                ],
+                [
+
+                    'payout_amount'  => $amount,
                     'amount_pending' => $amount,
-                    'is_processed' => 0,
+                    'is_processed'   => 0,
                 ]
             );
+
             // return $payout;
         });
     }
