@@ -115,7 +115,7 @@ class UpdateMonthlyPendingProfit extends Command
                     // ----------------------------
                     // REFERRAL PAYOUT
                     // ----------------------------
-                    if ($investment->investmentReferral && $investment->next_referral_commission_release_date) {
+                    if ($investment->investmentReferral && $investment->next_referral_commission_release_date && ($investment->investmentReferral->referral_commission_status !== 1)) {
                         // dd('text');
                         $nextReferralRelease = Carbon::parse($investment->next_referral_commission_release_date);
 
