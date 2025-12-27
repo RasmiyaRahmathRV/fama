@@ -338,7 +338,7 @@ class InvestmentService
     public function setInvestmentCode($addval = 1)
     {
         $codeService = new \App\Services\CodeGeneratorService();
-        return $codeService->generateNextCode('investors', 'investor_code', 'INVM', 5, $addval);
+        return $codeService->generateNextCode('investments', 'investment_code', 'INVM', 5, $addval);
     }
 
     private function validate(array $data, $id = null)
