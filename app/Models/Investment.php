@@ -232,4 +232,15 @@ class Investment extends Model
             }
         });
     }
+
+
+    public function getNextProfitReleaseDateAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format('d-m-Y') : null;
+    }
+
+    public function getNextReferralCommissionReleaseDateAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format('d-m-Y') : null;
+    }
 }

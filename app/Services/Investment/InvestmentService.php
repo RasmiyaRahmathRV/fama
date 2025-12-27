@@ -438,7 +438,7 @@ class InvestmentService
             ['data' => 'nominee_name', 'name' => 'nominee_name'],
             ['data' => 'total_profit_released', 'name' => 'total_profit_released'],
             ['data' => 'current_month_released', 'name' => 'current_month_released'],
-            ['data' => 'current_month_pending', 'name' => 'current_month_pending'],
+            ['data' => 'outstanding_profit', 'name' => 'outstanding_profit'],
             ['data' => 'action', 'name' => 'action', 'orderable' => false, 'searchable' => false],
         ];
 

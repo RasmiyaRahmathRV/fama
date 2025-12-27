@@ -611,3 +611,23 @@ function currMonthProfit($colname, $investor_id)
 
     return $investment->total;
 }
+
+
+function getPayoutDate($row)
+{
+    return match ($row->payout_type) {
+        1 => optional($row->investment)->next_profit_release_date,
+        2 => optional($row->investment)->next_referral_commission_release_date,
+        default => null,
+    };
+}
+
+function getPayoutTypeLabel(int $type): string
+{
+    return match ($type) {
+        1 => 'Profit',
+        2 => 'Referral Commission',
+        3 => 'Principal',
+        default => 'Unknown',
+    };
+}
