@@ -1709,8 +1709,6 @@ namespace App\Models{
  * @property int $investor_referror_id
  * @property string $referral_commission_perc
  * @property string $referral_commission_amount
- * @property string $referral_commission_released_amount
- * @property string $referral_commission_pending_amount
  * @property int $referral_commission_frequency_id
  * @property int $referral_commission_status 0-not released,1-released,2-partially released
  * @property string|null $last_referral_commission_released_date
@@ -1745,9 +1743,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereLastReferralCommissionReleasedDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionFrequencyId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionPendingAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionPerc($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionReleasedAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereTotalCommissionPending($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereTotalCommissionReleased($value)
@@ -1928,6 +1924,52 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage query()
  */
 	class InvestorMessage extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $investment_id
+ * @property int $investor_id receiver
+ * @property int $payout_type 1-profit, 2-commission, 3-principal
+ * @property int|null $payout_reference_id type commission - referal table id
+ * @property string $payout_release_month
+ * @property string $payout_amount
+ * @property string $amount_paid
+ * @property string $amount_pending
+ * @property int $is_processed
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
+ * @property int $payout_id
+ * @property int $investor_id
+ * @property string $amount_paid
+ * @property string $paid_date
+ * @property int $paid_by
+ * @property int $updated_by
+ * @property int $deleted_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\User|null $deletedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution query()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereAmountPaid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereInvestorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePayoutId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution withoutTrashed()
+ */
+	class InvestorPaymentDistribution extends \Eloquent {}
 }
 
 namespace App\Models{
