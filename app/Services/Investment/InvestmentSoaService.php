@@ -30,86 +30,9 @@ class InvestmentSoaService
 
     ) {}
 
-    // public function getDataTable(array $filters = [])
-    // {
-    //     // SOA returns a COLLECTION (because of UNION ALL)
-    //     $rows = $this->investmentSoaRepository->getQuery($filters);
-    //     $columns = [
-    //         ['data' => 'DT_RowIndex', 'name' => 'DT_RowIndex'],
-    //         ['data' => 'date', 'name' => 'date'],
-    //         ['data' => 'account_name', 'name' => 'account_name'],
-    //         ['data' => 'investor_name', 'name' => 'investor_name'],
-    //         ['data' => 'credit', 'name' => 'credit'],
-    //         ['data' => 'debit', 'name' => 'debit'],
-    //     ];
-
-    //     return datatables()
-    //         ->collection($rows)
-    //         ->addIndexColumn()
-
-    //         ->addColumn(
-    //             'date',
-    //             fn($row) =>
-    //             \Carbon\Carbon::parse($row->date)->format('d-m-Y')
-    //         )
-
-    //         ->addColumn('account_name', fn($row) => $row->account_name)
-
-    //         ->addColumn('investor_name', fn($row) => $row->investor_name)
-
-    //         ->addColumn(
-    //             'credit',
-    //             fn($row) =>
-    //             number_format((float) $row->credit, 2)
-    //         )
-
-    //         ->addColumn(
-    //             'debit',
-    //             fn($row) =>
-    //             number_format((float) $row->debit, 2)
-    //         )
-    //         ->rawColumns(['date', 'account_name', 'investor_name', 'credit', 'debit'])
-    //         ->with(['columns' => $columns])
-    //         // ->make(true)
-    //         ->toJson();
-    // }
-
-    // public function getDataTable(array $filters = [])
-    // {
-    //     // SOA returns a COLLECTION (unionAll)
-    //     $rows = $this->investmentSoaRepository->getSoa($filters);
-
-    //     return datatables()
-    //         ->collection($rows)
-    //         ->addIndexColumn()
-
-    //         ->addColumn(
-    //             'date',
-    //             fn($row) =>
-    //             \Carbon\Carbon::parse($row->date)->format('d-m-Y')
-    //         )
-
-    //         ->addColumn('account_name', fn($row) => $row->account_name)
-
-    //         ->addColumn('investor_name', fn($row) => $row->investor_name)
-
-    //         ->addColumn(
-    //             'credit',
-    //             fn($row) =>
-    //             number_format((float) $row->credit, 2)
-    //         )
-
-    //         ->addColumn(
-    //             'debit',
-    //             fn($row) =>
-    //             number_format((float) $row->debit, 2)
-    //         )
-
-    //         ->toJson();
-    // }
     public function getDataTable(array $filters = [])
     {
-        // Get merged collection of investments + payouts
+
         $rows = $this->investmentSoaRepository->getQuery($filters);
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'DT_RowIndex'],
@@ -122,7 +45,7 @@ class InvestmentSoaService
 
         return datatables()
             ->collection($rows)
-            ->addIndexColumn() // adds DT_RowIndex for table numbering
+            ->addIndexColumn()
             ->editColumn('date', function ($row) {
                 return \Carbon\Carbon::parse($row['date'])->format('d-m-Y');
             })
