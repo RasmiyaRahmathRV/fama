@@ -214,6 +214,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('investments/investments/terminate-request', [InvestmentController::class, 'terminateRequestSubmit'])->name(('investment.submit.termination'));
 
     Route::get('investments/investment-soa', [InvesmentSOAController::class, 'index'])->name('investment-soa.list');
+    Route::get('investments/investment-soa/data', [InvesmentSOAController::class, 'getData'])->name('investment-soa.data');
 });
 
 
