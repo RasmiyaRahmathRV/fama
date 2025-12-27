@@ -9,6 +9,7 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InstallmentController;
+use App\Http\Controllers\InvesmentSOAController;
 use App\Http\Controllers\InvestmentController;
 use App\Http\Controllers\InvestorController;
 use App\Http\Controllers\InvestorPaymentDistributionController;
@@ -211,6 +212,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('investments/export-investment', [InvestmentController::class, 'exportInvestment'])->name('investment.export');
     Route::post('investments/investments/update', [InvestmentController::class, 'updatePendingInvestment'])->name(('investment.submit.pending.update'));
     Route::post('investments/investments/terminate-request', [InvestmentController::class, 'terminateRequestSubmit'])->name(('investment.submit.termination'));
+
+    Route::get('investments/investment-soa', [InvesmentSOAController::class, 'index'])->name('investment-soa.list');
 });
+
+
+
 
 // Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);

@@ -414,7 +414,7 @@
                                         </li>
                                     @endif
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link">
+                                        <a href="{{ route('investment-soa.list') }}" class="nav-link">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Investment SOA</p>
                                         </a>
