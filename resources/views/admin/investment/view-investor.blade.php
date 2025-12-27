@@ -224,7 +224,7 @@
                                                     <th>Profit Release Date</th>
                                                     <th>Tot. Profit Released</th>
                                                     <th>Active Month Release</th>
-                                                    <th>Active month Pending</th>
+                                                    <th>Outstanding Profit</th>
                                                     <th>Grace Period </th>
                                                     <th>Payout Batch</th>
                                                     <th>Nominee Details</th>
@@ -327,8 +327,8 @@
                         name: 'current_month_released'
                     },
                     {
-                        data: 'current_month_pending',
-                        name: 'current_month_pending'
+                        data: 'outstanding_profit',
+                        name: 'outstanding_profit'
                     },
                     {
                         data: 'grace_period',

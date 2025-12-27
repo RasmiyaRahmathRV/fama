@@ -11,6 +11,7 @@ use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\InvestmentController;
 use App\Http\Controllers\InvestorController;
+use App\Http\Controllers\InvestorPaymentDistributionController;
 use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NationalityController;
@@ -61,6 +62,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('agreement', AgreementController::class);
     Route::resource('investment', InvestmentController::class);
     Route::resource('investor', InvestorController::class);
+    Route::resource('investorPayout', InvestorPaymentDistributionController::class);
 
 
 
@@ -201,10 +203,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('investor/get-investor-bank/{id}', [InvestorController::class, 'getInvestorBankDetails'])->name('investor.bank');
 
 
-
-
-
-
+    Route::get('payout-pending-list', [InvestorPaymentDistributionController::class, 'getPayouts'])->name('payout.pending.list');
 
 
     Route::get('investments/investments', [InvestmentController::class, 'getInvestments'])->name('investment.list');
