@@ -299,6 +299,16 @@ color: white;
         flex-direction: column;
     }
 } */
+.linkhover {
+    color: #212529;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+.linkhover:hover {
+    color: #007bff; /* Bootstrap primary blue */
+    text-decoration: underline; /* optional */
+}
 
 
 

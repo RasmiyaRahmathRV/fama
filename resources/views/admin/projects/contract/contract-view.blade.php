@@ -40,10 +40,18 @@
                                     <h5 class="fw-bold text-primary mb-2">Vendor Details</h5>
                                     <address>
                                         <span>{{ 'P - ' . $contract->project_number }}</span></br>
-                                        <span>{{ strtoupper($contract->vendor->vendor_name) }}</span></br>
+                                        {{-- <span>{{ strtoupper($contract->vendor->vendor_name) }}</span></br> --}}
+                                        <a href="{{ route('vendors.show', $contract->vendor_id) }}" class="linkhover"
+                                            target="_blank">
+                                            {{ strtoupper($contract->vendor->vendor_name) }}
+                                        </a><br>
                                         <span>{{ strtoupper($contract->company->company_name) }}</span></br>
                                         <span>{!! strtoupper($contract->contact_person) . ' - ' . $contract->contact_number ?? ' - ' !!}</span><br>
-                                        <span>{{ strtoupper($contract->property->property_name) }}</span></br>
+                                        {{-- <span>{{ strtoupper($contract->property->property_name) }}</span></br> --}}
+                                        <a href="{{ route('property.show', $contract->property->id) }}" class="linkhover"
+                                            target="_blank">
+                                            {{ strtoupper($contract->property->property_name) }}
+                                        </a><br>
                                         <span>{{ strtoupper($contract->area->area_name) }}</span>,
                                         <span>{{ strtoupper($contract->locality->locality_name) }}</span></br>
                                         <span>{{ $contract->contract_detail->start_date }}</span>
