@@ -2677,14 +2677,23 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Vendor withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Vendor withoutTrashed()
  * @mixin \Eloquent
+ * @property string|null $landline_number
+ * @property string|null $location
+ * @property string|null $remarks
  * @property int|null $deleted_by
  * @property int $contract_template_id
+ * @property-read \App\Models\User|null $addedBy
+ * @property-read \App\Models\VendorContractTemplate|null $contractTemplate
  * @property-read \App\Models\VendorContractTemplate|null $contract_template
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Contract> $contracts
  * @property-read int|null $contracts_count
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\User|null $updatedBy
  * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereContractTemplateId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereLandlineNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereRemarks($value)
  */
 	class Vendor extends \Eloquent {}
 }

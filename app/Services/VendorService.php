@@ -33,7 +33,7 @@ class VendorService
         $this->validate($data);
         $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['vendor_code'] = $this->setVendorCode();
-        $data['contract_template_id'] = 1;
+        // $data['contract_template_id'] = 1;
 
 
         $existing = $this->vendorRepository->checkIfExist($data);
@@ -74,10 +74,20 @@ class VendorService
             'vendor_name' => [
                 'required',
                 Rule::unique('vendors')->ignore($id)
-                    ->where(fn($q) => $q->where('company_id', $data['company_id'])
+                    ->where(fn($q) => $q
+                        // ->where('company_id', $data['company_id'])
                         ->whereNull('deleted_at'))
             ],
-            'company_id' => 'required|exists:companies,id',
+            'vendor_phone' => 'required',
+            'vendor_email' => 'required|email',
+            'vendor_address' => 'required|string',
+            'contact_person' => 'required|string',
+            'contact_person_phone' => 'required',
+            'contact_person_email' => 'required|email',
+            'contract_template_id' => 'required|exists:vendor_contract_templates,id',
+            'status' => 'required|in:0,1',
+
+            // 'company_id' => 'required|exists:companies,id',
         ]);
 
         if ($validator->fails()) {
@@ -96,7 +106,9 @@ class VendorService
 
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
-            ['data' => 'company_name', 'name' => 'company_name'],
+            // ['data' => 'company_name', 'name' => 'company_name'],
+            ['data' => 'vendor_code', 'name' => 'vendor_code'],
+
             ['data' => 'vendor_name', 'name' => 'vendor_name'],
             ['data' => 'vendor_phone', 'name' => 'vendor_phone'],
             ['data' => 'vendor_email', 'name' => 'vendor_email'],
@@ -109,7 +121,9 @@ class VendorService
         return datatables()
             ->of($query)
             ->addIndexColumn()
-            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            // ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            ->addColumn('vendor_code', fn($row) => $row->vendor_code ?? '-')
+
             ->addColumn('vendor_name', fn($row) => $row->vendor_name ?? '-')
             ->addColumn('vendor_phone', fn($row) => $row->vendor_phone ?? '-')
             ->addColumn('vendor_email', fn($row) => $row->vendor_email ?? '-')
@@ -123,7 +137,9 @@ class VendorService
                                                         data-target="#modal-vendor"
                                                         data-row=\'' .  json_encode($row)  . '\'>Edit</button>';
                 }
-                if (Gate::allows('vendor.delete')) {
+                $action .= '<a href="' . route('vendors.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
+
+                if (Gate::allows('vendors.delete')) {
                     $action .= '<button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
 

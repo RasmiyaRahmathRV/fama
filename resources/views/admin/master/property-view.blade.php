@@ -155,8 +155,8 @@
                                 </p>
                                 <p class="text-sm">
                                     Location
-                                    <a href="{{ $property->location }}"
-                                        class="d-block text-blue">{{ $property->location }}</a>
+                                    <a href="{{ $property->location }}" class="d-block text-blue"
+                                        target="_blank">{{ $property->location }}</a>
                                 </p>
                             </div>
 

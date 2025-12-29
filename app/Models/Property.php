@@ -101,6 +101,6 @@ class Property extends Model
     }
     public function updatedBy()
     {
-        return $this->belongsTo(User::class, 'added_by');
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

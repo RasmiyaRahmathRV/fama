@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\VendorExport;
 use App\Models\Vendor;
+use App\Models\VendorContractTemplate;
 use App\Services\CompanyService;
 use App\Services\VendorService;
 use Illuminate\Http\Request;
@@ -23,8 +24,9 @@ class VendorController extends Controller
     {
         $title = 'Vendors';
         $companies = $this->companyService->getAll();
+        $contractTemplates = VendorContractTemplate::all();
 
-        return view("admin.master.vendor", compact("title", "companies"));
+        return view("admin.master.vendor", compact("title", "companies", "contractTemplates"));
     }
 
     /**
@@ -67,6 +69,7 @@ class VendorController extends Controller
     public function show(Vendor $vendor)
     {
         //
+        return view('admin.master.vendor-view', compact('vendor'));
     }
 
     /**

@@ -98,8 +98,19 @@ class PropertyService
                         ->whereNull('deleted_at');
                 }),
             ],
+
+            // Property Size and Unit
+            'property_size' => 'required|numeric|min:0',
+            'property_size_unit' => 'required|exists:property_size_units,id',
+            'status' => 'required|in:0,1',
         ], [
             'property_name.unique' => 'This property name already exists. Please choose another.',
+            'area_id.required' => 'Please select an area.',
+            'locality_id.required' => 'Please select a locality.',
+            'plot_no.required' => 'Plot number is required.',
+            'property_size.required' => 'Property size is required.',
+            'property_size_unit.required' => 'Please select a property size unit.',
+            'status.required' => 'Please select a status.',
             // 'property_type_id.required' => 'Please select a propert type.',
 
 

@@ -289,10 +289,10 @@
 
             if (!id) {
                 $(this).find('form')[0].reset();
-                $('#company_id').prop('disabled', false);
-                $('#company_id').val('').trigger('change');
+                // $('#company_id').prop('disabled', false);
+                // $('#company_id').val('').trigger('change');
 
-                companyChange(null, null);
+                // companyChange(null, null);
             } else {
                 // $('#company_id').val(company_id).trigger('change');
                 // companyChange(company_id, area_id, $(e.relatedTarget).data(

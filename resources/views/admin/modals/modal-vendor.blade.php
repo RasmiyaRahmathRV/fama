@@ -12,90 +12,125 @@
                  <input type="hidden" name="id" id="vendor_id">
                  <div class="modal-body">
                      <div class="card-body">
-                         <div class="form-group row">
 
-                             <div class="col-sm-5">
-                                 <label>Vendor Name</label>
+                         {{-- Vendor Basic Info --}}
+                         <div class="form-group row">
+                             <div class="col-sm-4">
+                                 <label class="asterisk">Vendor Name</label>
                                  <input type="text" name="vendor_name" id="vendor_name" class="form-control"
-                                     id="inputEmail3" placeholder="Vendor Name">
-                             </div>
-                             <div class="col-sm-3">
-                                 <label>Vendor Phone</label>
-                                 <input type="number" name="vendor_phone" pattern="[0-9]{9}" id="vendor_phone"
-                                     class="form-control" id="inputEmail3" placeholder="0551234567">
+                                     placeholder="Vendor Name" required>
                              </div>
                              <div class="col-sm-4">
-                                 <label>Vendor Email</label>
+                                 <label class="asterisk">Vendor Phone</label>
+                                 <input type="number" name="vendor_phone" pattern="[0-9]{9}" id="vendor_phone"
+                                     class="form-control" placeholder="0551234567" required>
+                             </div>
+                             <div class="col-sm-4">
+                                 <label class="asterisk">Vendor Email</label>
                                  <input type="email" name="vendor_email" id="vendor_email" class="form-control"
-                                     id="inputEmail3" placeholder="Vendor email">
+                                     placeholder="Vendor Email" required>
                              </div>
                          </div>
 
+                         {{-- Company / Landline / Accountant --}}
                          <div class="form-group row">
-                             {{-- @if (auth()->user()->company_id)
-                                 <input type="hidden" name="company_id" id="company_id"
-                                     value="{{ auth()->user()->company_id }}">
-                             @else --}}
+                             {{-- Uncomment if company selection needed --}}
+                             {{-- <div class="col-sm-3">
+                    <label>Company</label>
+                    <select class="form-control select2" name="company_id" id="company_id">
+                        <option value="">Select Company</option>
+                        {{ $company_dropdown }}
+                    </select>
+                </div> --}}
                              <div class="col-sm-3">
-                                 <label>Company</label>
-                                 <select class="form-control select2" name="company_id" id="company_id">
-                                     <option value="">Select Company</option>
-                                     {{ $company_dropdown }}
-                                 </select>
+                                 <label>Landline Number</label>
+                                 <input type="number" name="landline_number" pattern="[0-9]{9}" id="landline_number"
+                                     class="form-control" placeholder="04-1234567">
                              </div>
-                             {{-- @endif --}}
-
                              <div class="col-sm-3">
                                  <label>Accountant Name</label>
                                  <input type="text" name="accountant_name" id="accountant_name" class="form-control"
-                                     id="inputEmail3" placeholder="Accountant name">
+                                     placeholder="Accountant Name">
                              </div>
                              <div class="col-sm-3">
                                  <label>Accountant Phone</label>
                                  <input type="number" name="accountant_phone" pattern="[0-9]{9}" id="accountant_phone"
-                                     class="form-control" id="inputEmail3" placeholder="0551234567">
+                                     class="form-control" placeholder="0551234567">
                              </div>
                              <div class="col-sm-3">
                                  <label>Accountant Email</label>
                                  <input type="email" name="accountant_email" id="accountant_email"
-                                     class="form-control" id="inputEmail3" placeholder="Accountant Email">
+                                     class="form-control" placeholder="Accountant Email">
                              </div>
                          </div>
 
+                         {{-- Vendor Address & Contact Person --}}
+                         <div class="form-group row">
+                             <div class="col-sm-6">
+                                 <label class="asterisk">Vendor Address</label>
+                                 <textarea name="vendor_address" id="vendor_address" class="form-control" rows="2" placeholder="Vendor Address"
+                                     required></textarea>
+                             </div>
+                             <div class="col-sm-6">
+                                 <div class="row">
+                                     <div class="col-sm-4">
+                                         <label class="asterisk">Contact Person</label>
+                                         <input type="text" name="contact_person" id="contact_person"
+                                             class="form-control" placeholder="Contact Person" required>
+                                     </div>
+                                     <div class="col-sm-4">
+                                         <label class="asterisk">Contact Phone</label>
+                                         <input type="number" name="contact_person_phone" pattern="[0-9]{9}"
+                                             id="contact_person_phone" class="form-control" placeholder="0551234567"
+                                             required>
+                                     </div>
+                                     <div class="col-sm-4">
+                                         <label class="asterisk">Contact Email</label>
+                                         <input type="email" name="contact_person_email" id="contact_person_email"
+                                             class="form-control" placeholder="Contact Email" required>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+
+                         {{-- Contract Template / Location / Remarks / Status --}}
                          <div class="form-group row">
                              <div class="col-sm-3">
-                                 <label>Vendor Address</label>
-                                 <textarea name="vendor_address" id="vendor_address" class="form-control"></textarea>
+                                 <label class="asterisk">Contract Template</label>
+                                 <select class="form-control select2" name="contract_template_id"
+                                     id="contract_template_id" required>
+                                     <option value="">Select Template</option>
+                                     {{ $contract_templates_dropdown }}
+                                 </select>
                              </div>
                              <div class="col-sm-3">
-                                 <label>Contact person</label>
-                                 <input type="text" name="contact_person" id="contact_person" class="form-control"
-                                     id="inputEmail3" placeholder="Contact person">
+                                 <label>Location</label>
+                                 <textarea name="location" id="location" class="form-control" rows="2" placeholder="Enter location details"></textarea>
                              </div>
-                             <div class="col-sm-3">
-                                 <label>Contact phone</label>
-                                 <input type="number" name="contact_person_phone" pattern="[0-9]{9}"
-                                     id="contact_person_phone" class="form-control" id="inputEmail3"
-                                     placeholder="0551234567">
+                             <div class="col-sm-4">
+                                 <label>Remarks</label>
+                                 <textarea name="remarks" id="remarks" class="form-control" rows="2"
+                                     placeholder="Any additional notes or remarks"></textarea>
                              </div>
-                             <div class="col-sm-3">
-                                 <label>Contact email</label>
-                                 <input type="email" name="contact_person_email" id="contact_person_email"
-                                     class="form-control" id="inputEmail3" placeholder="Contact Email">
+                             <div class="col-sm-2">
+                                 <label class="asterisk">Status</label>
+                                 <select name="status" id="status" class="form-control" required>
+                                     <option value="1" default>Active</option>
+                                     <option value="0">Inactive
+                                     </option>
+                                 </select>
                              </div>
                          </div>
 
-                         <div class="form-group row">
-
-                         </div>
                      </div>
-                     <!-- /.card-body -->
                  </div>
+
                  <div class="modal-footer justify-content-between">
                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                      <button type="submit" class="btn btn-info">Save changes</button>
                  </div>
              </form>
+
          </div>
          <!-- /.modal-content -->
      </div>
