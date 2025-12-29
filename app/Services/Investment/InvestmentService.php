@@ -510,7 +510,7 @@ class InvestmentService
                             <i class="fas fa-trash-alt"></i>
                         </button>';
                     }
-                    if (!paymentFullyReceived($row->id)) {
+                    if (!paymentFullyReceived($row->id) && Gate::allows('investment.submit_pending')) {
                         $action .= '
                             <button class="btn btn-sm btn-success m-1 openPendingModal"
                                 data-id="' . $row->id . '" data-balance="' . $row->balance_amount . '"
@@ -519,7 +519,7 @@ class InvestmentService
                             </button>
                         ';
                     }
-                    if ($row->terminate_status == 1) {
+                    if (($row->terminate_status == 1) && Gate::allows('investment.terminate')) {
                         $action .= '
                                 <button class="btn btn-sm btn-danger m-1 openTerminationModal"
                                 data-status = "' . $row->terminate_status . '"
@@ -532,7 +532,7 @@ class InvestmentService
                                     <i class="fas fa-ban"></i>
                                 </button>
                             ';
-                    } else {
+                    } elseif (Gate::allows('investment.terminate')) {
                         $action .= '
                             <button class="btn btn-sm btn-danger m-1 openTerminationModal"
                                 data-id="' . $row->id . '"

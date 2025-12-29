@@ -72,6 +72,10 @@ class UserSeeder extends Seeder
                     $subModule[] = 'manage_installments';
                     $subModule[] = 'renew';
                 }
+                if (in_array($module, ['investment'])) {
+                    $subModule[] = 'terminate';
+                    $subModule[] = 'submit_pending';
+                }
             }
 
             foreach ($subModule as $action) {

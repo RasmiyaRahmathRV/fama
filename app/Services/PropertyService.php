@@ -171,8 +171,9 @@ class PropertyService
 
                                                         >Edit</button>';  //data-property_type="' . $row->property_type_id . '"
                 }
-                $action .= '<a href="' . route('property.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
-
+                if (Gate::allows('property.view')) {
+                    $action .= '<a href="' . route('property.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
+                }
                 if (Gate::allows('property.delete')) {
                     $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }

@@ -137,8 +137,9 @@ class VendorService
                                                         data-target="#modal-vendor"
                                                         data-row=\'' .  json_encode($row)  . '\'>Edit</button>';
                 }
-                $action .= '<a href="' . route('vendors.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
-
+                if (Gate::allows('vendor.view')) {
+                    $action .= '<a href="' . route('vendors.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
+                }
                 if (Gate::allows('vendors.delete')) {
                     $action .= '<button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
@@ -146,7 +147,7 @@ class VendorService
                 return $action ?: '-';
             })
             ->rawColumns(['action'])
-            ->with(['columns' => $columns]) // send columns too
+            ->with(['columns' => $columns])
             ->toJson();
     }
 
