@@ -22,7 +22,7 @@ class PropertyExport implements FromCollection, WithHeadings
         $query = Property::with([
             'locality.area.company',
             'propertyType.company'
-        ]);
+        ])->where('status', 1);
 
         if ($this->search) {
             $search = $this->search;
