@@ -18,27 +18,28 @@
                                  <input type="hidden" name="company_id" id="company_id"
                                      value="{{ auth()->user()->company_id }}">
                              @else --}}
-                             <div class="col-sm-4">
+                             {{-- <div class="col-sm-4">
                                  <label>Company</label>
                                  <select class="form-control select2" name="company_id" id="company_id">
                                      <option value="">Select Company</option>
                                      {{ $company_dropdown }}
                                  </select>
-                             </div>
+                             </div> --}}
                              {{-- @endif --}}
-                             <div class="col-sm-4">
+                             <div class="col-sm-6">
                                  <label>Area</label>
                                  <select class="form-control select2" name="area_id" id="area_id">
                                      <option value="">Select Area</option>
-
+                                     {{ $area_dropdown }}
                                  </select>
                              </div>
-                             <div class="col-sm-4">
+                             <div class="col-sm-6">
                                  <label>Locality</label>
                                  <select class="form-control select2" name="locality_id" id="locality_id">
                                      <option value="">Select Locality</option>
                                  </select>
                              </div>
+
                          </div>
 
                          <div class="form-group row">
@@ -53,6 +54,7 @@
                                  <input type="text" name="property_name" id="property_name" class="form-control"
                                      id="inputEmail3" placeholder="Property Name">
                              </div>
+
                              <div class="col-sm-6">
                                  <label>Property Size</label>
                                  <div class="input-group input-group">
@@ -68,16 +70,67 @@
                                          placeholder="Property Size">
                                  </div>
                              </div>
+
                          </div>
 
                          <div class="form-group row">
 
-                             <div class="col-sm-6">
+
+                         </div>
+                         <div class="form-group row">
+                             <div class="col-sm-4">
                                  <label>Plot No</label>
                                  <input type="text" name="plot_no" id="plot_no" class="form-control"
                                      placeholder="Plot No">
                              </div>
+                             <div class="col-sm-4">
+                                 <label>Latitude</label>
+                                 <input type="number" name="latitude" id="latitude" class="form-control"
+                                     placeholder="e.g. 25.204849" step="0.00000001" min="-90" max="90">
+                             </div>
+
+                             <div class="col-sm-4">
+                                 <label>Longitude</label>
+                                 <input type="number" name="longitude" id="longitude" class="form-control"
+                                     placeholder="e.g. 55.270783" step="0.00000001" min="-180" max="180">
+                             </div>
                          </div>
+                         <div class="form-group row">
+                             <div class="col-sm-6">
+                                 <label>Location</label>
+                                 <textarea name="location" id="location" class="form-control" rows="2"
+                                     placeholder="Enter location details (landmark, building, etc.)"></textarea>
+                             </div>
+
+                             <div class="col-sm-6">
+                                 <label>Address</label>
+                                 <textarea name="address" id="address" class="form-control" rows="2" placeholder="Full property address"></textarea>
+                             </div>
+                         </div>
+
+                         <div class="form-group row">
+                             <div class="col-sm-6">
+                                 <label>Remarks</label>
+                                 <textarea name="remarks" id="remarks" class="form-control" rows="3"
+                                     placeholder="Any additional notes or remarks"></textarea>
+                             </div>
+                             {{-- @dump($property->status) --}}
+                             <div class="col-sm-6">
+                                 <label>Status</label>
+                                 <select name="status" id="status" class="form-control">
+                                     <option value="1">
+                                         Active
+                                     </option>
+                                     <option value="0">
+                                         Inactive
+                                     </option>
+                                 </select>
+                             </div>
+
+
+                         </div>
+
+
                      </div>
                      <!-- /.card-body -->
                  </div>
@@ -93,7 +146,6 @@
  </div>
  <!-- /.modal -->
  <script>
-     let Areas = @json($areas);
      let allLocalities = @json($localities);
      let allpropertytypes = @json($property_types);
 

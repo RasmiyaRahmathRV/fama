@@ -188,7 +188,6 @@
                         d.to = $('#dateTo input').val();
                     },
                     dataSrc: function(json) {
-                        // console.log for debugging
                         console.log('Full JSON:', json);
                         console.log('Rows:', json.data.original.data);
                         return json.data.original.data;

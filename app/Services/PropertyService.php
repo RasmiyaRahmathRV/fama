@@ -41,6 +41,7 @@ class PropertyService
 
     public function createOrRestore(array $data, $user_id = null)
     {
+        // dd($data);
         $this->validate($data);
         $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['property_code'] = $this->setPropertyCode();
@@ -61,6 +62,7 @@ class PropertyService
 
     public function update($id, array $data)
     {
+        // dd($data);
         $this->validate($data, $id);
         $data['updated_by'] = auth()->user()->id;
         return $this->propertyRepository->update($id, $data);
@@ -81,7 +83,7 @@ class PropertyService
     {
         // dd($data);
         $validator = Validator::make($data, [
-            'company_id' => 'required|exists:companies,id',
+            // 'company_id' => 'required|exists:companies,id',
             'area_id' => 'required|exists:areas,id',
             'locality_id' => 'required|exists:localities,id',
             // 'property_type_id' => 'required|exists:property_types,id',
@@ -91,7 +93,7 @@ class PropertyService
                 'string',
                 Rule::unique('properties')->ignore($id)->where(function ($query) use ($data) {
                     $query->where('area_id', $data['area_id'] ?? null)
-                        ->where('company_id', $data['company_id'] ?? null)
+                        // ->where('company_id', $data['company_id'] ?? null)
                         ->where('locality_id', $data['locality_id'] ?? null)
                         ->whereNull('deleted_at');
                 }),
@@ -116,7 +118,7 @@ class PropertyService
 
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
-            ['data' => 'company_name', 'name' => 'company_name'],
+            // ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'area_name', 'name' => 'area_name'],
             ['data' => 'locality_name', 'name' => 'locality_name'],
             // ['data' => 'property_type', 'name' => 'property_type'],
@@ -131,7 +133,7 @@ class PropertyService
             ->of($query)
             ->addIndexColumn()
             ->addColumn('property_name', fn($row) => $row->property_name ?? '-')
-            ->addColumn('company_name', fn($row) => $row->company_name ?? '-')
+            // ->addColumn('company_name', fn($row) => $row->company_name ?? '-')
             ->addColumn('area_name', fn($row) => $row->area_name ?? '-')
             ->addColumn('locality_name', fn($row) => $row->locality_name ?? '-')
             // ->addColumn('property_type', fn($row) => $row->property_type ?? '-')
@@ -142,14 +144,24 @@ class PropertyService
                     $action .= '<button class="btn btn-info" data-toggle="modal"
                                                         data-target="#modal-property" data-id="' . $row->id . '"
                                                         data-name="' . $row->property_name . '"
-                                                        data-company="' . $row->company_id . '" 
-                                                        data-area="' . $row->area_id . '" 
+                                                        data-company="' . $row->company_id . '"
+                                                        data-area="' . $row->area_id . '"
                                                         data-locality="' . $row->locality_id . '"
-                                                        
+
                                                         data-property_size="' . $row->property_size . '"
                                                         data-property_size_unit="' . $row->property_size_unit . '"
-                                                        data-plot_no="' . $row->plot_no . '">Edit</button>';  //data-property_type="' . $row->property_type_id . '"
+                                                        data-plot_no="' . $row->plot_no . '"
+                                                        data-lat="' . $row->latitude . '"
+                                                        data-long="' . $row->longitude . '"
+                                                        data-address="' . $row->address . '"
+                                                        data-remarks="' . $row->remarks . '"
+                                                        data-location="' . $row->location . '"
+                                                        data-status="' . $row->status . '"
+
+                                                        >Edit</button>';  //data-property_type="' . $row->property_type_id . '"
                 }
+                $action .= '<a href="' . route('property.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
+
                 if (Gate::allows('property.delete')) {
                     $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }

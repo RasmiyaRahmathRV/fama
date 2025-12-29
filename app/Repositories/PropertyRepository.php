@@ -29,6 +29,7 @@ class PropertyRepository
 
     public function update($id, array $data)
     {
+        // dd($data);
         $area = $this->find($id);
         $area->update($data);
         return $area;
@@ -43,8 +44,8 @@ class PropertyRepository
     public function getQuery(array $filters = []): Builder
     {
         $query = Property::query()
-            ->select('properties.*', 'companies.company_name', 'areas.area_name', 'localities.locality_name', 'property_size_units.id as unit_id', 'property_size_units.unit_name as unit_name')  //, 'property_types.property_type'
-            ->join('companies', 'companies.id', '=', 'properties.company_id')
+            ->select('properties.*', 'areas.area_name', 'localities.locality_name', 'property_size_units.id as unit_id', 'property_size_units.unit_name as unit_name')  //, 'property_types.property_type'
+            // ->join('companies', 'companies.id', '=', 'properties.company_id')
             ->join('areas', 'areas.id', '=', 'properties.area_id')
             ->join('localities', 'localities.id', '=', 'properties.locality_id')
             // ->join('property_types', 'property_types.id', '=', 'properties.property_type_id')
@@ -58,9 +59,9 @@ class PropertyRepository
                 ->orWhere('property_code', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('property_size', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('plot_no', 'like', '%' . $filters['search'] . '%')
-                ->orWhereHas('company', function ($q) use ($filters) {
-                    $q->where('company_name', 'like', '%' . $filters['search'] . '%');
-                })
+                // ->orWhereHas('company', function ($q) use ($filters) {
+                //     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
+                // })
                 ->orWhereHas('area', function ($q) use ($filters) {
                     $q->where('area_name', 'like', '%' . $filters['search'] . '%');
                 })
@@ -73,9 +74,9 @@ class PropertyRepository
                 ->orWhereRaw("CAST(properties.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
 
-        if (!empty($filters['company_id'])) {
-            $query->Where('properties.company_id', $filters['company_id']);
-        }
+        // if (!empty($filters['company_id'])) {
+        //     $query->Where('properties.company_id', $filters['company_id']);
+        // }
 
         return $query;
     }
@@ -88,7 +89,7 @@ class PropertyRepository
     public function checkIfExist($data)
     {
         $existing = Property::withTrashed()
-            ->where('company_id', $data['company_id'])
+            // ->where('company_id', $data['company_id'])
             ->where('area_id', $data['area_id'])
             ->where('locality_id', $data['locality_id'])
             ->where('property_name', $data['property_name'])
