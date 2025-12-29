@@ -81,7 +81,7 @@ class LocalityService
     private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
-            'company_id' => 'required|exists:companies,id',
+            // 'company_id' => 'required|exists:companies,id',
             'area_id' => 'required|exists:areas,id',
             'locality_name' => [
                 'required',
@@ -91,14 +91,14 @@ class LocalityService
                     ->where(
                         fn($query) =>
                         $query->where('area_id', $data['area_id'] ?? null)
-                            ->where('company_id', $data['company_id'] ?? null)
+                            // ->where('company_id', $data['company_id'] ?? null)
                             ->whereNull('deleted_at'),
                     )
             ],
         ], [
             'locality_name.unique' => 'This locality name already exists. Please choose another.',
             'area_id.unique' => 'This area already exists. Please choose another.',
-            'company_id.unique' => 'This company already exists. Please choose another.',
+            // 'company_id.unique' => 'This company already exists. Please choose another.',
         ]);
 
         if ($validator->fails()) {
@@ -114,7 +114,7 @@ class LocalityService
             ['data' => 'DT_RowIndex', 'name' => 'id'],
             ['data' => 'locality_name', 'name' => 'locality_name'],
             ['data' => 'area_name', 'name' => 'area_name'],
-            ['data' => 'company_name', 'name' => 'company_name'],
+            // ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
         ];
 
@@ -123,7 +123,7 @@ class LocalityService
             ->addIndexColumn()
             ->addColumn('locality_name', fn($row) => $row->locality_name ?? '-')
             ->addColumn('area_name', fn($row) => $row->area->area_name ?? '-')
-            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            // ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('action', function ($row) {
                 $action = '';
                 if (Gate::allows('locality.edit')) {

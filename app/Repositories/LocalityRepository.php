@@ -45,25 +45,25 @@ class LocalityRepository
     public function getQuery(array $filters = []): Builder
     {
         $query = Locality::query()
-            ->select('localities.*', 'companies.company_name', 'areas.area_name')
-            ->join('areas', 'areas.id', '=', 'localities.area_id')
-            ->join('companies', 'companies.id', '=', 'localities.company_id');
+            ->select('localities.*', 'areas.area_name')
+            ->join('areas', 'areas.id', '=', 'localities.area_id');
+        // ->join('companies', 'companies.id', '=', 'localities.company_id');
 
         if (!empty($filters['search'])) {
             $query->orwhere('locality_name', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('locality_code', 'like', '%' . $filters['search'] . '%')
-                ->orWhereHas('company', function ($q) use ($filters) {
-                    $q->where('company_name', 'like', '%' . $filters['search'] . '%');
-                })
+                // ->orWhereHas('company', function ($q) use ($filters) {
+                //     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
+                // })
                 ->orWhereHas('area', function ($q) use ($filters) {
                     $q->where('area_name', 'like', '%' . $filters['search'] . '%');
                 })
                 ->orWhereRaw("CAST(localities.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
 
-        if (!empty($filters['company_id'])) {
-            $query->Where('localities.company_id', $filters['company_id']);
-        }
+        // if (!empty($filters['company_id'])) {
+        //     $query->Where('localities.company_id', $filters['company_id']);
+        // }
 
         if (!empty($filters['area_id'])) {
             $query->Where('area_id', $filters['area_id']);
@@ -85,7 +85,7 @@ class LocalityRepository
     public function checkIfExist($data)
     {
         $existing = Locality::withTrashed()
-            ->where('company_id', $data['company_id'])
+            // ->where('company_id', $data['company_id'])
             ->where('area_id', $data['area_id'])
             ->where('locality_name', $data['locality_name'])
             ->first();

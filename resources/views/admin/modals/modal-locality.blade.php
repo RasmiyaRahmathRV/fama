@@ -16,25 +16,26 @@
                              <input type="hidden" name="company_id" id="company_id"
                                  value="{{ auth()->user()->company_id }}">
                          @else --}}
-                         <div class="form-group row">
+                         {{-- <div class="form-group row">
                              <label for="inputEmail3" class="col-sm-4 col-form-label">Company</label>
                              <select class="form-control select2 col-sm-8" name="company_id" id="company_id">
                                  <option value="">Select Company</option>
                                  {{ $company_dropdown }}
                              </select>
-                         </div>
+                         </div> --}}
                          {{-- @endif --}}
                          <div class="form-group row">
-                             <label for="inputEmail3" class="col-sm-4 col-form-label">Area</label>
-                             <select class="form-control select2 col-sm-8" name="area_id" id="area_select">
+                             <label for="inputEmail3" class="col-sm-4 col-form-label asterisk">Area</label>
+                             <select class="form-control select2 col-sm-8" name="area_id" id="area_select" required>
                                  <option value="">Select Area</option>
+                                 {{ $area_dropdown }}
                              </select>
                          </div>
 
                          <div class="form-group row">
-                             <label for="inputEmail3" class="col-sm-4 col-form-label">Locality Name</label>
+                             <label for="inputEmail3" class="col-sm-4 col-form-label asterisk">Locality Name</label>
                              <input type="text" name="locality_name" id="locality_name" class="col-sm-8 form-control"
-                                 id="inputEmail3" placeholder="Locality Name">
+                                 id="inputEmail3" placeholder="Locality Name" required>
                          </div>
                      </div>
                      <!-- /.card-body -->
@@ -53,28 +54,28 @@
  <script>
      let allAreas = @json($areas);
 
-     $('#company_id').on('change', function() {
-         let companyId = $(this).val();
-         companyChange(companyId, null);
-     });
+     //  $('#company_id').on('change', function() {
+     //      let companyId = $(this).val();
+     //      companyChange(companyId, null);
+     //  });
 
-     function companyChange(companyId, areaVal) {
-         let options = '<option value="">Select Area</option>';
+     //  function companyChange(companyId, areaVal) {
+     //      let options = '<option value="">Select Area</option>';
 
-         allAreas
-             .filter(a => a.company_id == companyId)
-             .forEach(a => {
-                 options += `<option value="${a.id}" ${(a.id == areaVal) ? 'selected' : ''}>${a.area_name}</option>`;
-             });
-         $('#area_select').html(options).trigger('change');
-     }
+     //      allAreas
+     //          .filter(a => a.company_id == companyId)
+     //          .forEach(a => {
+     //              options += `<option value="${a.id}" ${(a.id == areaVal) ? 'selected' : ''}>${a.area_name}</option>`;
+     //          });
+     //      $('#area_select').html(options).trigger('change');
+     //  }
 
 
      $('#localityForm').submit(function(e) {
          e.preventDefault();
          //  $('#company_id').prop('disabled', false);
          const locform = $(this);
-         locform.find('select[name="company_id"]').prop('disabled', false);
+         //  locform.find('select[name="company_id"]').prop('disabled', false);
          locform.find('select[name="area_id"]').prop('disabled', false);
 
 
@@ -139,16 +140,17 @@
 
          $form[0].reset();
 
-         $form.find(
-             'select[name="company_id"], select[name="area_id"]]'
-         ).each(function() {
-             const $select = $(this);
+         //  $form.find(
+         //      'select[name="company_id"], select[name="area_id"]]'
+         //  ).each(function() {
+         //      const $select = $(this);
 
-             $select.empty();
+         //      $select.empty();
 
-             $select.val(null).trigger('change');
+         //      $select.val(null).trigger('change');
 
-             $select.prop('disabled', false);
-         });
+         //      $select.prop('disabled', false);
+         //  });
+
      });
  </script>

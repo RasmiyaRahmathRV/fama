@@ -50,7 +50,7 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Company Name</th>
+                                            {{-- <th>Company Name</th> --}}
                                             <th>Area Name</th>
                                             <th>Locality Name</th>
                                             <th>Action</th>
@@ -187,6 +187,12 @@
                 </option>
             @endforeach
         @endslot
+        @slot('area_dropdown')
+            @foreach ($areas as $area)
+                <option value="{{ $area->id }}">{{ $area->area_name }}
+                </option>
+            @endforeach
+        @endslot
     @endcomponent
 
 
@@ -208,10 +214,10 @@
                         orderable: true,
                         searchable: false
                     },
-                    {
-                        data: 'company_name',
-                        name: 'companies.company_name',
-                    },
+                    // {
+                    //     data: 'company_name',
+                    //     name: 'companies.company_name',
+                    // },
                     {
                         data: 'area_name',
                         name: 'areas.area_name'
@@ -301,6 +307,7 @@
             var id = $(e.relatedTarget).data('id');
             var name = $(e.relatedTarget).data('name');
             var company_id = $(e.relatedTarget).data('company');
+            var area_id = $(e.relatedTarget).data('area');
 
             if (id) {
                 //     $(this).find('form')[0].reset();
@@ -308,10 +315,11 @@
 
                 //     companyChange(null, null);
                 // } else {
-                $('#company_id').val(company_id).trigger('change');
-                companyChange(company_id, $(e.relatedTarget).data('area'));
+                // $('#company_id').val(company_id).trigger('change');
+                // companyChange(company_id, $(e.relatedTarget).data('area'));
 
                 // $('#company_id').prop('disabled', true);
+                $('#area_select').val(area_id).trigger('change');
                 $('#locality_id').val(id);
                 $('#locality_name').val(name);
 

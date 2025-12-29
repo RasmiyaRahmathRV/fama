@@ -20,16 +20,18 @@ class LocalityExport implements FromCollection, WithHeadings
 
     public function collection()
     {
-        $query = Locality::with('area.company');
+        // $query = Locality::with('area.company');
+        $query = Locality::with('area');
+
 
         if ($this->search) {
             $search = $this->search;
             $query->where(function ($q) use ($search) {
                 $q->where('locality_name', 'like', "%{$search}%")
                     ->orWhere('locality_code', 'like', "%{$search}%")
-                    ->orWhereHas('company', function ($q2) use ($search) {
-                        $q2->where('company_name', 'like', "%{$search}%");
-                    })
+                    // ->orWhereHas('company', function ($q2) use ($search) {
+                    //     $q2->where('company_name', 'like', "%{$search}%");
+                    // })
                     ->orWhereHas('area', function ($q2) use ($search) {
                         $q2->where('area_name', 'like', "%{$search}%");
                     })
@@ -37,9 +39,9 @@ class LocalityExport implements FromCollection, WithHeadings
             });
         }
 
-        if ($this->filter) {
-            $query->where('company_id', $this->filter);
-        }
+        // if ($this->filter) {
+        //     $query->where('company_id', $this->filter);
+        // }
 
 
         return $query->get()
@@ -47,7 +49,7 @@ class LocalityExport implements FromCollection, WithHeadings
                 return [
                     'ID' => $locality->id,
                     'Locality Code' => $locality->locality_code,
-                    'Company' => $locality->company->company_name ?? '',
+                    // 'Company' => $locality->company->company_name ?? '',
                     'Area' => $locality->area->area_name ?? '',
                     'Locality Name' => $locality->locality_name,
                 ];
@@ -56,6 +58,12 @@ class LocalityExport implements FromCollection, WithHeadings
 
     public function headings(): array
     {
-        return ['ID', 'Locality Code', 'Company', 'Area', 'Locality Name'];
+        return [
+            'ID',
+            'Locality Code',
+            // 'Company',
+            'Area',
+            'Locality Name'
+        ];
     }
 }
