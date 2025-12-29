@@ -556,9 +556,11 @@ namespace App\Models{
  * @property int $industry_id
  * @property string $company_short_code
  * @property int|null $deleted_by
+ * @property-read \App\Models\User|null $addedBy
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Bank> $banks
  * @property-read int|null $banks_count
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\User|null $updatedBy
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereCompanyShortCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereIndustryId($value)

@@ -147,6 +147,9 @@ class CompanyService
                                                        data-target="#modal-company"
                                                          data-row=\'' .  json_encode($row)  . '\'>Edit</button>';
                 }
+                if (Gate::allows('company.view')) {
+                    $action .= '<a href="' . route('company.show', $row->id) . '" class="btn btn-warning mx-1">View</a>';
+                }
                 if (Gate::allows('company.delete')) {
                     $action .= '<button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }

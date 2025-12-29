@@ -61,6 +61,14 @@
                                 <textarea name="address" class="form-control" id="address"></textarea>
 
                             </div>
+                            <div class="col-sm-6">
+                                <label class="asterisk">Status</label>
+                                <select name="status" id="status" class="form-control" required>
+                                    <option value="1" default>Active</option>
+                                    <option value="0">Inactive
+                                    </option>
+                                </select>
+                            </div>
                         </div>
 
                     </div>
