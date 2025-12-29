@@ -81,12 +81,12 @@ class AreaService
     private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
-            'company_id' => 'required|exists:companies,id',
+            // 'company_id' => 'required|exists:companies,id',
             'area_name' => [
                 'required',
                 'string',
                 Rule::unique('areas')->ignore($id)
-                    ->where(fn($query) => $query->where('company_id', $data['company_id']))
+                    // ->where(fn($query) => $query->where('company_id', $data['company_id']))
                     ->whereNull('deleted_at'),
             ],
         ], [
@@ -105,7 +105,7 @@ class AreaService
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
             ['data' => 'area_name', 'name' => 'area_name'],
-            ['data' => 'company_name', 'name' => 'company_name'],
+            // ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
         ];
 
@@ -113,7 +113,7 @@ class AreaService
             ->of($query)
             ->addIndexColumn()
             ->addColumn('area_name', fn($row) => $row->area_name ?? '-')
-            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            // ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('action', function ($row) {
                 $action = '';
                 if (Gate::allows('area.edit')) {

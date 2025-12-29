@@ -54,7 +54,7 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Area Name</th>
-                                            <th>Company Name</th>
+                                            {{-- <th>Company Name</th> --}}
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -196,10 +196,10 @@
                         data: 'area_name',
                         name: 'areas.area_name'
                     },
-                    {
-                        data: 'company_name',
-                        name: 'companies.company_name',
-                    },
+                    // {
+                    //     data: 'company_name',
+                    //     name: 'companies.company_name',
+                    // },
                     {
                         data: 'action',
                         name: 'action',

@@ -16,20 +16,20 @@
                             <input type="hidden" name="company_id" id="company_id"
                                 value="{{ auth()->user()->company_id }}">
                         @else --}}
-                        <div class="form-group row">
+                        {{-- <div class="form-group row">
                             <label for="inputEmail3" class="col-sm-4 col-form-label">Company</label>
                             <select class="form-control select2 col-sm-8" name="company_id" id="company_id">
                                 <option value="">Select Company</option>
 
                                 {{ $company_dropdown }}
                             </select>
-                        </div>
+                        </div> --}}
                         {{-- @endif --}}
 
                         <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-4 col-form-label">Area Name</label>
+                            <label for="inputEmail3" class="col-sm-4 col-form-label asterisk">Area Name</label>
                             <input type="text" name="area_name" id="area_name" class="col-sm-8 form-control"
-                                id="inputEmail3" placeholder="Area Name">
+                                id="inputEmail3" placeholder="Area Name" required>
                         </div>
                     </div>
                     <!-- /.card-body -->
@@ -51,7 +51,7 @@
         e.preventDefault();
         // $('#company_id').prop('disabled', false);
         const areaform = $(this);
-        areaform.find('select[name="company_id"]').prop('disabled', false);
+        // areaform.find('select[name="company_id"]').prop('disabled', false);
 
         var form = document.getElementById('areaForm');
         var fdata = new FormData(form);
@@ -96,7 +96,7 @@
                     window.lastAddedAreaNameCopy = newArea.name;
 
                     areaform[0].reset();
-                    areaform.find('select[name="company_id"]').prop('disabled', true);
+                    // areaform.find('select[name="company_id"]').prop('disabled', true);
                     $('#modal-area').modal('hide');
                 @endif
 

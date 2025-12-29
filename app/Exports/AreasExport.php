@@ -19,16 +19,17 @@ class AreasExport implements FromCollection, WithHeadings
 
     public function collection()
     {
-        $query = Area::with('company');
+        // $query = Area::with('company');
+        $query = Area::query();
 
         if ($this->search) {
             $search = $this->search;
             $query->where(function ($q) use ($search) {
                 $q->where('area_name', 'like', "%{$search}%")
                     ->orWhere('area_code', 'like', "%{$search}%")
-                    ->orWhereHas('company', function ($q2) use ($search) {
-                        $q2->where('company_name', 'like', "%{$search}%");
-                    })
+                    // ->orWhereHas('company', function ($q2) use ($search) {
+                    //     $q2->where('company_name', 'like', "%{$search}%");
+                    // })
                     ->orWhereRaw("CAST(areas.id AS CHAR) LIKE ?", ["%{$search}%"]);
             });
         }
@@ -42,7 +43,7 @@ class AreasExport implements FromCollection, WithHeadings
                 return [
                     'ID' => $area->id,
                     'Area Code' => $area->area_code,
-                    'Company' => $area->company->company_name ?? '',
+                    // 'Company' => $area->company->company_name ?? '',
                     'Area Name' => $area->area_name,
 
                 ];
@@ -51,6 +52,11 @@ class AreasExport implements FromCollection, WithHeadings
 
     public function headings(): array
     {
-        return ['ID', 'Area Code', 'Company', 'Area Name'];
+        return [
+            'ID',
+            'Area Code',
+            //   'Company',
+            'Area Name'
+        ];
     }
 }
