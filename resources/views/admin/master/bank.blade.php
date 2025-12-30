@@ -53,6 +53,7 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
+                                            <th>Company Name</th>
                                             <th>Bank Name</th>
                                             <th>Short Code</th>
                                             <th>Action</th>
@@ -130,12 +131,12 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
     @component('admin.modals.modal-bank')
-        {{-- @slot('company_dropdown')
+        @slot('company_dropdown')
             @foreach ($companies as $company)
                 <option value="{{ $company->id }}">{{ $company->company_name }}
                 </option>
             @endforeach
-        @endslot --}}
+        @endslot
     @endcomponent
     <script>
         $(function() {
@@ -155,10 +156,10 @@
                         orderable: true,
                         searchable: false
                     },
-                    // {
-                    //     data: 'company_name',
-                    //     name: 'companies.company_name',
-                    // },
+                    {
+                        data: 'company_name',
+                        name: 'companies.company_name',
+                    },
                     {
                         data: 'bank_name',
                         name: 'banks.bank_name',

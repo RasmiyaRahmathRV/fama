@@ -438,7 +438,7 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property int|null $company_id
+ * @property int $company_id
  * @property string $bank_code
  * @property string $bank_name
  * @property string $bank_short_code
@@ -449,8 +449,10 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\User|null $addedBy
  * @property-read \App\Models\Company|null $company
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\User|null $updatedBy
  * @method static \Database\Factories\BankFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Bank newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Bank newQuery()

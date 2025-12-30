@@ -26,10 +26,12 @@
                          {{-- @endif --}}
                          <div class="form-group row">
                              <label for="inputEmail3" class="col-sm-4 col-form-label asterisk">Area</label>
-                             <select class="form-control select2 col-sm-8" name="area_id" id="area_select" required>
-                                 <option value="">Select Area</option>
-                                 {{ $area_dropdown }}
-                             </select>
+                             <div class="col-sm-8 p-0">
+                                 <select class="form-control select2 " name="area_id" id="area_select" required>
+                                     <option value="">Select Area</option>
+                                     {{ $area_dropdown }}
+                                 </select>
+                             </div>
                          </div>
 
                          <div class="form-group row">
