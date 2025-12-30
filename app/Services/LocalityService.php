@@ -153,10 +153,12 @@ class LocalityService
         foreach ($rows as $key => $row) {
             // dd($row);
             $area = $this->areaService->getByName(['area_name' => $row['area']]);
-            $company_id = $this->companyService->getIdByCompanyname($row['company']);
+            // $company_id = $this->companyService->getIdByCompanyname($row['company']);
 
             if (empty($area)) {
-                $existing = $this->areaService->checkIfExist(array('company_id' => $company_id, 'area_name' => $row['area']));
+                // $existing = $this->areaService->checkIfExist(array('company_id' => $company_id, 'area_name' => $row['area']));
+                $existing = $this->areaService->checkIfExist(array('area_name' => $row['area']));
+
 
                 if (!empty($existing)) {
                     // echo "exist";
@@ -165,14 +167,14 @@ class LocalityService
                     $area = $existing;
                 } else {
                     $area = $this->areaService->createOrRestore([
-                        'company_id' => $company_id,
+                        // 'company_id' => $company_id,
                         'area_name' => $row['area'],
                     ], $user_id);
                 }
             }
 
             $insertData[] = [
-                'company_id' => $area->company_id,
+                // 'company_id' => $area->company_id,
                 'area_id' => $area->id,
                 'locality_code' => $this->setLocalityCode($key + 1),
                 'locality_name' => $row['locality'],

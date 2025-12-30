@@ -206,22 +206,44 @@ class PropertyService
             // print_r($row);
 
 
-            $company_id = $this->existCheck(
-                'companyService',
-                'getByData',
-                'checkIfExist',
-                array('company_name' => $row['company_name']),
-                ['company_name' => $row['company_name'], 'email' => 'company@demo.com', 'industry_id' => '1', 'phone' => 0000000, 'company_short_code' => $row['company_name']],
-                $user_id
-            );
+            // $company_id = $this->existCheck(
+            //     'companyService',
+            //     'getByData',
+            //     'checkIfExist',
+            //     array('company_name' => $row['company_name']),
+            //     ['company_name' => $row['company_name'], 'email' => 'company@demo.com', 'industry_id' => '1', 'phone' => 0000000, 'company_short_code' => $row['company_name']],
+            //     $user_id
+            // );
 
+            // $area_id = $this->existCheck(
+            //     'areaService',
+            //     'getByName',
+            //     'checkIfExist',
+            //     array('company_id' => $company_id, 'area_name' => $row['area']),
+            //     [
+            //         'company_id' => $company_id,
+            //         'area_name' => $row['area']
+            //     ],
+            //     $user_id
+            // );
+            //  $locality_id = $this->existCheck(
+            //     'localityService',
+            //     'getByData',
+            //     'checkIfExist',
+            //     array('company_id' => $company_id, 'area_id' => $area_id, 'locality_name' => $row['location']),
+            //     [
+            //         'company_id' => $company_id,
+            //         'area_id' => $area_id,
+            //         'locality_name' => $row['location']
+            //     ],
+            //     $user_id
+            // );
             $area_id = $this->existCheck(
                 'areaService',
                 'getByName',
                 'checkIfExist',
-                array('company_id' => $company_id, 'area_name' => $row['area']),
+                array('area_name' => $row['area']),
                 [
-                    'company_id' => $company_id,
                     'area_name' => $row['area']
                 ],
                 $user_id
@@ -231,9 +253,8 @@ class PropertyService
                 'localityService',
                 'getByData',
                 'checkIfExist',
-                array('company_id' => $company_id, 'area_id' => $area_id, 'locality_name' => $row['location']),
+                array('area_id' => $area_id, 'locality_name' => $row['location']),
                 [
-                    'company_id' => $company_id,
                     'area_id' => $area_id,
                     'locality_name' => $row['location']
                 ],
@@ -253,12 +274,14 @@ class PropertyService
             // );
 
 
-            $seenKey = $company_id . '-' . $area_id . '-' . $locality_id . '-' . strtolower($row['building_name']);
+            // $seenKey = $company_id . '-' . $area_id . '-' . $locality_id . '-' . strtolower($row['building_name']);
+            $seenKey = $area_id . '-' . $locality_id . '-' . strtolower($row['building_name']);
+
 
 
             if (!isset($seen[$seenKey])) {
                 $insertData[] = [
-                    'company_id' => $company_id,
+                    // 'company_id' => $company_id,
                     'area_id' => $area_id,
                     'locality_id' => $locality_id,
                     // 'property_type_id' => $property_type_id,

@@ -151,17 +151,17 @@ class AreaService
         $insertData = [];
         foreach ($rows as $rowindx => $row) {
             // dd($row);
-            $company_id = $this->existCheck(
-                'companyService',
-                'getByData',
-                'checkIfExist',
-                array('company_name' => $row['company_name']),
-                ['company_name' => $row['company_name'], 'email' => 'company@demo.com', 'industry_id' => '1', 'phone' => 0000000, 'company_short_code' => $row['company_name']],
-                $user_id
-            );
+            // $company_id = $this->existCheck(
+            //     'companyService',
+            //     'getByData',
+            //     'checkIfExist',
+            //     array('company_name' => $row['company_name']),
+            //     ['company_name' => $row['company_name'], 'email' => 'company@demo.com', 'industry_id' => '1', 'phone' => 0000000, 'company_short_code' => $row['company_name']],
+            //     $user_id
+            // );
 
             $insertData[] = [
-                'company_id' => $company_id,
+                // 'company_id' => $company_id,
                 'area_name' => $row['area_name'],
                 'area_code' => $this->setAreacode($rowindx + 1),
                 'added_by' => $user_id,
