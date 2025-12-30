@@ -28,14 +28,14 @@
 
 
                           <div class="form-group row">
-                              <label for="inputEmail3" class="col-sm-3 col-form-label">Installment</label>
+                              <label for="inputEmail3" class="col-sm-3 col-form-label asterisk">Installment</label>
                               <input type="number" name="installment_name" id="installment_name"
-                                  class="col-sm-9 form-control" id="inputEmail3" placeholder="Installment">
+                                  class="col-sm-9 form-control" id="inputEmail3" placeholder="Installment" required>
                           </div>
                           <div class="form-group row">
-                              <label for="inputEmail3" class="col-sm-3 col-form-label">Interval</label>
+                              <label for="inputEmail3" class="col-sm-3 col-form-label asterisk">Interval</label>
                               <input type="number" name="interval" id="interval" min="1" step="1"
-                                  class="col-sm-9 form-control" id="inputEmail3" placeholder="Interval">
+                                  class="col-sm-9 form-control" id="inputEmail3" placeholder="Interval" required>
                           </div>
                       </div>
                       <!-- /.card-body -->

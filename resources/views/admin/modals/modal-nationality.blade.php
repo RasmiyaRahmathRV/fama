@@ -25,15 +25,15 @@
                         {{-- @endif --}}
                         {{-- </div> --}}
                         <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-4 col-form-label">Nationality Name</label>
+                            <label for="inputEmail3" class="col-sm-4 col-form-label asterisk">Nationality Name</label>
                             <input type="text" name="nationality_name" id="nationality_name"
-                                class="col-sm-8 form-control" id="inputEmail3" placeholder="Nationality Name">
+                                class="col-sm-8 form-control" id="inputEmail3" placeholder="Nationality Name" required>
                         </div>
 
                         <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-4 col-form-label">Short Code</label>
+                            <label for="inputEmail3" class="col-sm-4 col-form-label asterisk">Short Code</label>
                             <input type="text" name="nationality_short_code" id="nationality_short_code"
-                                class="col-sm-8 form-control" id="inputEmail3" placeholder="Short Code">
+                                class="col-sm-8 form-control" id="inputEmail3" placeholder="Short Code" required>
                         </div>
                     </div>
                     <!-- /.card-body -->

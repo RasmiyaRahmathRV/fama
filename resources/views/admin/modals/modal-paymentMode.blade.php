@@ -25,15 +25,15 @@
                          {{-- @endif --}}
                          {{-- </div> --}}
                          <div class="form-group row">
-                             <label for="inputEmail3" class="col-sm-4 col-form-label">Payment mode</label>
+                             <label for="inputEmail3" class="col-sm-4 col-form-label asterisk">Payment mode</label>
                              <input type="text" name="payment_mode_name" id="payment_mode_name"
-                                 class="col-sm-8 form-control" id="inputEmail3" placeholder="Payment mode">
+                                 class="col-sm-8 form-control" id="inputEmail3" placeholder="Payment mode" required>
                          </div>
 
                          <div class="form-group row">
-                             <label for="inputEmail3" class="col-sm-4 col-form-label">Short code</label>
+                             <label for="inputEmail3" class="col-sm-4 col-form-label asterisk">Short code</label>
                              <input type="text" name="payment_mode_short_code" id="payment_mode_short_code"
-                                 class="col-sm-8 form-control" id="inputEmail3" placeholder="Short code">
+                                 class="col-sm-8 form-control" id="inputEmail3" placeholder="Short code" required>
                          </div>
                      </div>
                      <!-- /.card-body -->
@@ -83,7 +83,7 @@
                      // Automatically select it in the select that opened the modal
                      if (currentSelectModeId) {
                          $(`#${currentSelectModeId}`).val(response.data.id).trigger(
-                         'change.select2');
+                             'change.select2');
                      }
                      if (document.activeElement) {
                          document.activeElement.blur();
