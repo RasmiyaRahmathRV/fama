@@ -286,6 +286,7 @@
             var location = $(e.relatedTarget).data('location');
             var remarks = $(e.relatedTarget).data('remarks');
             var status = $(e.relatedTarget).data('status');
+            var makani = $(e.relatedTarget).data('makani');
 
             if (!id) {
                 $(this).find('form')[0].reset();
@@ -311,6 +312,7 @@
                 $('#address').val(address);
                 $('#location').val(location);
                 $('#remarks').val(remarks);
+                $('#makani_number').val(makani);
                 $('#status').val(status).trigger('change');
 
             }

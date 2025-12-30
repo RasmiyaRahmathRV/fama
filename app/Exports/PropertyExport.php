@@ -19,10 +19,11 @@ class PropertyExport implements FromCollection, WithHeadings
 
     public function collection()
     {
-        $query = Property::with([
-            'locality.area.company',
-            'propertyType.company'
-        ])->where('status', 1);
+        // $query = Property::with([
+        //     'locality.area.company',
+        //     'propertyType.company'
+        // ])->where('status', 1);
+        $query = Property::query();
 
         if ($this->search) {
             $search = $this->search;
@@ -49,9 +50,9 @@ class PropertyExport implements FromCollection, WithHeadings
             });
         }
 
-        if ($this->filter) {
-            $query->where('company_id', $this->filter);
-        }
+        // if ($this->filter) {
+        //     $query->where('company_id', $this->filter);
+        // }
 
 
         return $query->get()
@@ -68,6 +69,7 @@ class PropertyExport implements FromCollection, WithHeadings
                     'Plot No' => $property->plot_no,
                     'Latitude' => $property->latitude ?? '-',
                     'Longitude' => $property->longitude ?? '-',
+                    'Makani Number' => $property->makani_number ?? '-',
 
                 ];
             });
@@ -75,6 +77,6 @@ class PropertyExport implements FromCollection, WithHeadings
 
     public function headings(): array
     {
-        return ['ID', 'Property Code',  'Area', 'Locality', 'Property name', 'Property Size', 'Plot No', 'Latitude', 'Longitude',];
+        return ['ID', 'Property Code',  'Area', 'Locality', 'Property name', 'Property Size', 'Plot No', 'Latitude', 'Longitude', 'Makani Number'];
     }
 }

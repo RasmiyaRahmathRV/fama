@@ -168,6 +168,7 @@ class PropertyService
                                                         data-remarks="' . $row->remarks . '"
                                                         data-location="' . $row->location . '"
                                                         data-status="' . $row->status . '"
+                                                        data-makani="' . $row->makani_number . '"
 
                                                         >Edit</button>';  //data-property_type="' . $row->property_type_id . '"
                 }

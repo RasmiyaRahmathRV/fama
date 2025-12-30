@@ -111,9 +111,9 @@
 
                          <div class="form-group row">
                              <div class="col-sm-6">
-                                 <label>Remarks</label>
-                                 <textarea name="remarks" id="remarks" class="form-control" rows="3"
-                                     placeholder="Any additional notes or remarks"></textarea>
+                                 <label>Makani Number</label>
+                                 <input type="text" name="makani_number" id="makani_number" class="form-control"
+                                     placeholder="e.g. 1234567890" maxlength="10" pattern="\d{10}">
                              </div>
                              {{-- @dump($property->status) --}}
                              <div class="col-sm-6">
@@ -129,6 +129,13 @@
                              </div>
 
 
+                         </div>
+                         <div class="form-group row">
+                             <div class="col-sm-6">
+                                 <label>Remarks</label>
+                                 <textarea name="remarks" id="remarks" class="form-control" rows="3"
+                                     placeholder="Any additional notes or remarks"></textarea>
+                             </div>
                          </div>
 
 
