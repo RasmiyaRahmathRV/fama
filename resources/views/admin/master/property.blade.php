@@ -57,6 +57,7 @@
                                             <th>Property Name</th>
                                             <th>Property size</th>
                                             <th>Plot no</th>
+                                            <th>Makani Numbet</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -219,6 +220,10 @@
                     {
                         data: 'plot_no',
                         name: 'properties.plot_no'
+                    },
+                    {
+                        data: 'makani_number',
+                        name: 'properties.makani_number'
                     },
                     {
                         data: 'action',
