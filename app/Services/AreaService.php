@@ -122,6 +122,9 @@ class AreaService
                                                         data-name="' . $row->area_name . '"
                                                         data-company="' . $row->company_id . '">Edit</button>';
                 }
+                if (Gate::allows('area.view')) {
+                    $action .= '<a href="' . route('areas.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
+                }
                 if (Gate::allows('area.delete')) {
                     $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }

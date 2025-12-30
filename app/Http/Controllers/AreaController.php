@@ -120,4 +120,8 @@ class AreaController extends Controller
 
         return Excel::download(new AreasExport($search, $filters), 'areas.xlsx');
     }
+    public function show(Area $area)
+    {
+        return view('admin.master.area-view', compact('area'));
+    }
 }

@@ -427,7 +427,9 @@ namespace App\Models{
  * @method static \Database\Factories\AreaFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  * @property int|null $deleted_by
+ * @property-read \App\Models\User|null $addedBy
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\User|null $updatedBy
  * @method static \Illuminate\Database\Eloquent\Builder|Area whereDeletedBy($value)
  */
 	class Area extends \Eloquent {}
