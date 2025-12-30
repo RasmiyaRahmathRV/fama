@@ -2080,7 +2080,9 @@ namespace App\Models{
  * @method static \Database\Factories\LocalityFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  * @property int|null $deleted_by
+ * @property-read \App\Models\User|null $addedBy
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\User|null $updatedBy
  * @method static \Illuminate\Database\Eloquent\Builder|Locality whereDeletedBy($value)
  */
 	class Locality extends \Eloquent {}

@@ -130,7 +130,13 @@ class LocalityService
                     $action .= '<button class="btn btn-info" data-toggle="modal"
                                                         data-target="#modal-locality" data-id="' . $row->id . '"
                                                         data-name="' . $row->locality_name . '"
-                                                        data-company="' . $row->company_id . '" data-area="' . $row->area_id . '">Edit</button>';
+                                                        data-company="' . $row->company_id . '"
+                                                         data-area="' . $row->area_id . '"
+                                                         data-status="' . $row->status . '"
+                                                         >Edit</button>';
+                }
+                if (Gate::allows('locality.view')) {
+                    $action .= '<a href="' . route('locality.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
                 }
                 if (Gate::allows('locality.delete')) {
                     $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';

@@ -70,6 +70,7 @@ class LocalityController extends Controller
     public function show(Locality $locality)
     {
         //
+        return view('admin.master.locality-view', compact('locality'));
     }
 
     /**

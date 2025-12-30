@@ -120,7 +120,9 @@ class AreaService
                     $action .= '<button class="btn btn-info" data-toggle="modal"
                                                         data-target="#modal-area" data-id="' . $row->id . '"
                                                         data-name="' . $row->area_name . '"
-                                                        data-company="' . $row->company_id . '">Edit</button>';
+                                                        data-company="' . $row->company_id . '"
+                                                         data-status="' . $row->status . '"
+                                                        >Edit</button>';
                 }
                 if (Gate::allows('area.view')) {
                     $action .= '<a href="' . route('areas.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';

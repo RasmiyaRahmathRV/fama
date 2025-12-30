@@ -118,8 +118,8 @@
                              {{-- @dump($property->status) --}}
                              <div class="col-sm-6">
                                  <label class="asterisk">Status</label>
-                                 <select name="status" id="status" class="form-control">
-                                     <option value="1" default>
+                                 <select name="status" id="status" class="form-control" required>
+                                     <option value="1" selected>
                                          Active
                                      </option>
                                      <option value="0">

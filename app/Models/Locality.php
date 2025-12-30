@@ -69,4 +69,12 @@ class Locality extends Model
     {
         $this->attributes['added_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
+    public function addedBy()
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

@@ -308,6 +308,8 @@
             var name = $(e.relatedTarget).data('name');
             var company_id = $(e.relatedTarget).data('company');
             var area_id = $(e.relatedTarget).data('area');
+            var status = $(e.relatedTarget).data('status');
+            // alert(status);
 
             if (id) {
                 //     $(this).find('form')[0].reset();
@@ -322,7 +324,10 @@
                 $('#area_select').val(area_id).trigger('change');
                 $('#locality_id').val(id);
                 $('#locality_name').val(name);
+                $('#status').val(status).trigger(change);
 
+            } else {
+                $('#localityForm').trigger("reset");
             }
         });
 

@@ -37,6 +37,14 @@
                              <input type="text" name="locality_name" id="locality_name" class="col-sm-8 form-control"
                                  id="inputEmail3" placeholder="Locality Name" required>
                          </div>
+                         <div class="form-group row">
+                             <label for="inputEmail3" class="col-sm-4 col-form-label asterisk">Status</label>
+                             <select name="status" id="status" class="col-sm-8 form-control" required>
+                                 <option value="1" selected>Active</option>
+                                 <option value="0">Inactive
+                                 </option>
+                             </select>
+                         </div>
                      </div>
                      <!-- /.card-body -->
                  </div>
@@ -139,6 +147,8 @@
          const $form = $modal.find('form#localityForm');
 
          $form[0].reset();
+         // Set status default value to 1
+         //  $form.find('select[name="status"]').val('1').trigger('change');
 
          //  $form.find(
          //      'select[name="company_id"], select[name="area_id"]]'

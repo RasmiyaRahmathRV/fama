@@ -141,6 +141,7 @@
         $("#modal-area").on('shown.bs.modal', function(e) {
             var id = $(e.relatedTarget).data('id');
             var name = $(e.relatedTarget).data('name');
+            var status = $(e.relatedTarget).data('status');
 
             if (!id) {
                 $('#areaForm').trigger("reset");
@@ -149,6 +150,7 @@
                 // $('#company_id').prop('disabled', true);
                 $('#area_id').val(id);
                 $('#area_name').val(name);
+                $('#status').val(status).trigger(change);
             }
         });
 

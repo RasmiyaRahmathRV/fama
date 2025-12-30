@@ -115,7 +115,7 @@
                              <div class="col-sm-2">
                                  <label class="asterisk">Status</label>
                                  <select name="status" id="status" class="form-control" required>
-                                     <option value="1" default>Active</option>
+                                     <option value="1" selected>Active</option>
                                      <option value="0">Inactive
                                      </option>
                                  </select>
