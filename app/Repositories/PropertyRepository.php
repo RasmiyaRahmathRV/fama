@@ -59,6 +59,7 @@ class PropertyRepository
                 ->orWhere('property_code', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('property_size', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('plot_no', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('makani_number', 'like', '%' . $filters['search'] . '%')
                 // ->orWhereHas('company', function ($q) use ($filters) {
                 //     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
                 // })

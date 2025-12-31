@@ -10,11 +10,13 @@
              <form action="" id="VendorForm">
                  @csrf
                  <input type="hidden" name="id" id="vendor_id">
+
                  <div class="modal-body">
                      <div class="card-body">
 
-                         {{-- Vendor Basic Info --}}
-                         <div class="form-group row">
+                         <!-- Vendor Basic Info -->
+                         <h6 class="vendorformh6 text-lightblue">Vendor Basic Info</h6>
+                         <div class="form-row mb-3">
                              <div class="col-sm-4">
                                  <label class="asterisk">Vendor Name</label>
                                  <input type="text" name="vendor_name" id="vendor_name" class="form-control"
@@ -30,18 +32,41 @@
                                  <input type="email" name="vendor_email" id="vendor_email" class="form-control"
                                      placeholder="Vendor Email" required>
                              </div>
+                             {{-- <div class="col-sm-3">
+                                <label>Company</label>
+                                <select class="form-control select2" name="company_id" id="company_id">
+                                    <option value="">Select Company</option>
+                                    {{ $company_dropdown }}
+                                </select>
+                            </div> --}}
+                         </div>
+                         <hr>
+
+                         <!-- Contact Person Info -->
+                         <h6 class="vendorformh6 text-lightblue">Contact Person Info</h6>
+                         <div class="form-row mb-3">
+                             <div class="col-sm-4">
+                                 <label class="asterisk">Contact Person</label>
+                                 <input type="text" name="contact_person" id="contact_person" class="form-control"
+                                     placeholder="Contact Person" required>
+                             </div>
+                             <div class="col-sm-4">
+                                 <label class="asterisk">Contact Phone</label>
+                                 <input type="number" name="contact_person_phone" pattern="[0-9]{9}"
+                                     id="contact_person_phone" class="form-control" placeholder="0551234567" required>
+                             </div>
+                             <div class="col-sm-4">
+                                 <label class="asterisk">Contact Email</label>
+                                 <input type="email" name="contact_person_email" id="contact_person_email"
+                                     class="form-control" placeholder="Contact Email" required>
+                             </div>
                          </div>
 
-                         {{-- Company / Landline / Accountant --}}
-                         <div class="form-group row">
-                             {{-- Uncomment if company selection needed --}}
-                             {{-- <div class="col-sm-3">
-                    <label>Company</label>
-                    <select class="form-control select2" name="company_id" id="company_id">
-                        <option value="">Select Company</option>
-                        {{ $company_dropdown }}
-                    </select>
-                </div> --}}
+                         <hr>
+
+                         <!-- Company / Landline / Accountant -->
+                         <h6 class="vendorformh6 text-lightblue">Company / Accountant Info</h6>
+                         <div class="form-row mb-3">
                              <div class="col-sm-3">
                                  <label>Landline Number</label>
                                  <input type="number" name="landline_number" pattern="[0-9]{9}" id="landline_number"
@@ -64,37 +89,27 @@
                              </div>
                          </div>
 
-                         {{-- Vendor Address & Contact Person --}}
-                         <div class="form-group row">
+                         <hr>
+
+
+                         <!-- Vendor Address & Location -->
+                         <h6 class="vendorformh6 text-lightblue">Address & Location</h6>
+                         <div class="form-row mb-3">
                              <div class="col-sm-6">
                                  <label class="asterisk">Vendor Address</label>
                                  <textarea name="vendor_address" id="vendor_address" class="form-control" rows="2" placeholder="Vendor Address"
                                      required></textarea>
                              </div>
                              <div class="col-sm-6">
-                                 <div class="row">
-                                     <div class="col-sm-4">
-                                         <label class="asterisk">Contact Person</label>
-                                         <input type="text" name="contact_person" id="contact_person"
-                                             class="form-control" placeholder="Contact Person" required>
-                                     </div>
-                                     <div class="col-sm-4">
-                                         <label class="asterisk">Contact Phone</label>
-                                         <input type="number" name="contact_person_phone" pattern="[0-9]{9}"
-                                             id="contact_person_phone" class="form-control" placeholder="0551234567"
-                                             required>
-                                     </div>
-                                     <div class="col-sm-4">
-                                         <label class="asterisk">Contact Email</label>
-                                         <input type="email" name="contact_person_email" id="contact_person_email"
-                                             class="form-control" placeholder="Contact Email" required>
-                                     </div>
-                                 </div>
+                                 <label>Location</label>
+                                 <textarea name="location" id="location" class="form-control" rows="2" placeholder="Enter location details"></textarea>
                              </div>
                          </div>
+                         <hr>
 
-                         {{-- Contract Template / Location / Remarks / Status --}}
-                         <div class="form-group row">
+                         <!-- Contract / Remarks / Status -->
+                         <h6 class="vendorformh6 text-lightblue">Contract & Status</h6>
+                         <div class="form-row mb-3">
                              <div class="col-sm-3">
                                  <label class="asterisk">Contract Template</label>
                                  <select class="form-control select2" name="contract_template_id"
@@ -102,10 +117,6 @@
                                      <option value="">Select Template</option>
                                      {{ $contract_templates_dropdown }}
                                  </select>
-                             </div>
-                             <div class="col-sm-3">
-                                 <label>Location</label>
-                                 <textarea name="location" id="location" class="form-control" rows="2" placeholder="Enter location details"></textarea>
                              </div>
                              <div class="col-sm-4">
                                  <label>Remarks</label>
@@ -116,8 +127,7 @@
                                  <label class="asterisk">Status</label>
                                  <select name="status" id="status" class="form-control" required>
                                      <option value="1" selected>Active</option>
-                                     <option value="0">Inactive
-                                     </option>
+                                     <option value="0">Inactive</option>
                                  </select>
                              </div>
                          </div>
@@ -130,6 +140,7 @@
                      <button type="submit" class="btn btn-info">Save changes</button>
                  </div>
              </form>
+
 
          </div>
          <!-- /.modal-content -->

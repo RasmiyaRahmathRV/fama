@@ -57,6 +57,7 @@
                                             <th>Property Name</th>
                                             <th>Property size</th>
                                             <th>Plot no</th>
+                                            <th>Makani Numbet</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -221,6 +222,10 @@
                         name: 'properties.plot_no'
                     },
                     {
+                        data: 'makani_number',
+                        name: 'properties.makani_number'
+                    },
+                    {
                         data: 'action',
                         name: 'action',
                         orderable: false,
@@ -286,6 +291,7 @@
             var location = $(e.relatedTarget).data('location');
             var remarks = $(e.relatedTarget).data('remarks');
             var status = $(e.relatedTarget).data('status');
+            var makani = $(e.relatedTarget).data('makani');
 
             if (!id) {
                 $(this).find('form')[0].reset();
@@ -311,6 +317,7 @@
                 $('#address').val(address);
                 $('#location').val(location);
                 $('#remarks').val(remarks);
+                $('#makani_number').val(makani);
                 $('#status').val(status).trigger('change');
 
             }

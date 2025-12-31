@@ -137,6 +137,7 @@ class PropertyService
             ['data' => 'property_size_unit', 'name' => 'property_size_unit'],
             ['data' => 'property_size', 'name' => 'property_size'],
             ['data' => 'plot_no', 'name' => 'plot_no'],
+            ['data' => 'makani_number', 'name' => 'makani_number'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
         ];
 
@@ -168,6 +169,7 @@ class PropertyService
                                                         data-remarks="' . $row->remarks . '"
                                                         data-location="' . $row->location . '"
                                                         data-status="' . $row->status . '"
+                                                        data-makani="' . $row->makani_number . '"
 
                                                         >Edit</button>';  //data-property_type="' . $row->property_type_id . '"
                 }

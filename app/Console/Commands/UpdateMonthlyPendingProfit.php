@@ -76,6 +76,7 @@ class UpdateMonthlyPendingProfit extends Command
 
 
         $currentMonthStart = $now->copy()->startOfMonth();
+        // dd($currentMonthStart);
         $currentMonthEnd = $now->copy()->endOfMonth();
 
         Investment::with('profitInterval', 'investmentReferral')
@@ -90,10 +91,13 @@ class UpdateMonthlyPendingProfit extends Command
                     // ----------------------------
                     if ($investment->profitInterval && $investment->next_profit_release_date) {
                         $nextProfitRelease = Carbon::parse($investment->next_profit_release_date);
-                        $monthsGap = 12 / $investment->profitInterval->no_of_installments;
-                        $monthsDiff = $nextProfitRelease->diffInMonths($currentMonth);
+                        // $monthsGap = 12 / $investment->profitInterval->no_of_installments;
+                        // $monthsDiff = $nextProfitRelease->diffInMonths($currentMonth);
 
-                        if ($monthsDiff % $monthsGap !== 0) continue;
+                        // if ($monthsDiff % $monthsGap !== 0) continue;
+                        if (!$nextProfitRelease->isSameMonth($currentMonth)) {
+                            continue;
+                        }
 
                         // Check if next profit release is **within current month**
                         // if ($nextProfitRelease->between($currentMonthStart, $currentMonthEnd)) {
@@ -183,7 +187,8 @@ class UpdateMonthlyPendingProfit extends Command
                     break;
 
                 case 3: // TERMINATION
-                    $amount = ($investment->investment_amount) + ($investment->outstanding_profit);
+                    // $amount = ($investment->investment_amount) + ($investment->outstanding_profit);
+                    $amount = $investment->investment_amount;
                     $investorId = $investment->investor_id;
                     break;
             }

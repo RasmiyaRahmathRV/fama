@@ -93,6 +93,11 @@
                                             <th width="30%">Plot No</th>
                                             <td>{{ $property->plot_no ?? '-' }}</td>
                                         </tr>
+                                        <tr>
+                                            <th width="30%">Makani Number</th>
+                                            <td>{{ $property->makani_number ?? '-' }}</td>
+                                        </tr>
+
 
                                         <tr>
                                             <th>Area</th>
