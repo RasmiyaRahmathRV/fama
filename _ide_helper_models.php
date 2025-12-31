@@ -1971,9 +1971,13 @@ namespace App\Models{
  * @property int $investor_id
  * @property string $amount_paid
  * @property string $paid_date
+ * @property int $paid_mode_id
+ * @property int|null $paid_bank
+ * @property string|null $paid_cheque_number
+ * @property string|null $payment_remarks
  * @property int $paid_by
- * @property int $updated_by
- * @property int $deleted_by
+ * @property int|null $updated_by
+ * @property int|null $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -1988,8 +1992,12 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereInvestorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidBank($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidChequeNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidModeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaymentRemarks($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePayoutId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereUpdatedBy($value)
