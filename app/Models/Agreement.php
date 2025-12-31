@@ -82,10 +82,10 @@ class Agreement extends Model
     {
         return $this->hasMany(AgreementPaymentDetail::class, 'agreement_id');
     }
-    public function agreementUnit()
-    {
-        return $this->hasOne(AgreementUnit::class, 'agreement_id');
-    }
+    // public function agreementUnit()
+    // {
+    //     return $this->hasOne(AgreementUnit::class, 'agreement_id');
+    // }
     public function agreement_units()
     {
         return $this->hasMany(AgreementUnit::class, 'agreement_id', 'id');
@@ -93,25 +93,33 @@ class Agreement extends Model
 
     protected static function booted()
     {
+        // dd("test");
         static::deleting(function ($agreement) {
 
-            $userId = auth()->id();
+            $userId = auth()->user()->id;
+            // dd($userId);
 
             // hasOne relations
             $hasOneRelations = [
                 'tenant',
-                'agreement_documents',
                 'agreement_payment',
-                'agreemantUnit'
 
             ];
 
             // hasMany relations
             $hasManyRelations = [
                 'agreement_payment_details',
+                'agreement_documents',
+                'agreement_units',
+                'tenant_invoices',
+                'agreementStatusLogs'
+
+
             ];
 
             if (!$agreement->isForceDeleting()) {
+                // dd("test");
+
                 // Soft delete hasOne
                 foreach ($hasOneRelations as $relation) {
                     $related = $agreement->$relation;
@@ -141,8 +149,10 @@ class Agreement extends Model
                 'tenant',
                 'agreement_documents',
                 'agreement_payment',
-                'agreemantUnit',
+                'agreement_units',
                 'agreement_payment_details',
+                'tenant_invoices',
+                'agreementStatusLogs'
             ];
 
             foreach ($relations as $relation) {
@@ -163,5 +173,51 @@ class Agreement extends Model
     public function getCreatedAtAttribute($value)
     {
         return Carbon::parse($value)->format('d-m-Y');
+    }
+    public function setTerminatedDateAttribute($value)
+    {
+        $this->attributes['terminated_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+    public function getVacantUnitTypes()
+    {
+        $vacantUnitTypes = $this->contract->contract_unit_details
+            ->where('is_vacant', 0)
+            ->pluck('unit_type_id')
+            ->unique();
+        $agreementUnitTypes = $this->agreement_units
+            ->pluck('unit_type_id')
+            ->unique();
+
+        $unitTypeIds = $vacantUnitTypes->merge($agreementUnitTypes)->unique();
+
+        return UnitType::whereIn('id', $unitTypeIds)->get();
+    }
+    public function getVacantunits()
+    {
+        $vacantUnitIds = $this->contract->contract_unit_details
+            ->where('is_vacant', 0)
+            ->pluck('id')
+            ->unique();
+
+        $vacantUnits = ContractUnitDetail::whereIn('id', $vacantUnitIds)->get();
+
+        $vacantSubunits = ContractSubUnitDetail::whereIn('contract_unit_detail_id', $vacantUnitIds)
+            ->where('is_vacant', 0)
+            ->get();
+
+        $subunitsByUnitId = $vacantSubunits->groupBy('contract_unit_detail_id');
+
+        return [
+            'units' => $vacantUnits,
+            'subunits_by_unit' => $subunitsByUnitId,
+        ];
+    }
+    public function tenant_invoices()
+    {
+        return $this->hasMany(AgreementUnit::class, 'agreement_id', 'id');
+    }
+    public function agreementStatusLogs()
+    {
+        return $this->hasMany(AgreementStatusLogs::class, 'agreement_id', 'id');
     }
 }

@@ -41,6 +41,7 @@ class PropertyService
 
     public function createOrRestore(array $data, $user_id = null)
     {
+        // dd($data);
         $this->validate($data);
         $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['property_code'] = $this->setPropertyCode();
@@ -61,6 +62,7 @@ class PropertyService
 
     public function update($id, array $data)
     {
+        // dd($data);
         $this->validate($data, $id);
         $data['updated_by'] = auth()->user()->id;
         return $this->propertyRepository->update($id, $data);
@@ -81,7 +83,7 @@ class PropertyService
     {
         // dd($data);
         $validator = Validator::make($data, [
-            'company_id' => 'required|exists:companies,id',
+            // 'company_id' => 'required|exists:companies,id',
             'area_id' => 'required|exists:areas,id',
             'locality_id' => 'required|exists:localities,id',
             // 'property_type_id' => 'required|exists:property_types,id',
@@ -91,13 +93,24 @@ class PropertyService
                 'string',
                 Rule::unique('properties')->ignore($id)->where(function ($query) use ($data) {
                     $query->where('area_id', $data['area_id'] ?? null)
-                        ->where('company_id', $data['company_id'] ?? null)
+                        // ->where('company_id', $data['company_id'] ?? null)
                         ->where('locality_id', $data['locality_id'] ?? null)
                         ->whereNull('deleted_at');
                 }),
             ],
+
+            // Property Size and Unit
+            'property_size' => 'required|numeric|min:0',
+            'property_size_unit' => 'required|exists:property_size_units,id',
+            'status' => 'required|in:0,1',
         ], [
             'property_name.unique' => 'This property name already exists. Please choose another.',
+            'area_id.required' => 'Please select an area.',
+            'locality_id.required' => 'Please select a locality.',
+            'plot_no.required' => 'Plot number is required.',
+            'property_size.required' => 'Property size is required.',
+            'property_size_unit.required' => 'Please select a property size unit.',
+            'status.required' => 'Please select a status.',
             // 'property_type_id.required' => 'Please select a propert type.',
 
 
@@ -116,7 +129,7 @@ class PropertyService
 
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
-            ['data' => 'company_name', 'name' => 'company_name'],
+            // ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'area_name', 'name' => 'area_name'],
             ['data' => 'locality_name', 'name' => 'locality_name'],
             // ['data' => 'property_type', 'name' => 'property_type'],
@@ -124,6 +137,7 @@ class PropertyService
             ['data' => 'property_size_unit', 'name' => 'property_size_unit'],
             ['data' => 'property_size', 'name' => 'property_size'],
             ['data' => 'plot_no', 'name' => 'plot_no'],
+            ['data' => 'makani_number', 'name' => 'makani_number'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
         ];
 
@@ -131,7 +145,7 @@ class PropertyService
             ->of($query)
             ->addIndexColumn()
             ->addColumn('property_name', fn($row) => $row->property_name ?? '-')
-            ->addColumn('company_name', fn($row) => $row->company_name ?? '-')
+            // ->addColumn('company_name', fn($row) => $row->company_name ?? '-')
             ->addColumn('area_name', fn($row) => $row->area_name ?? '-')
             ->addColumn('locality_name', fn($row) => $row->locality_name ?? '-')
             // ->addColumn('property_type', fn($row) => $row->property_type ?? '-')
@@ -142,13 +156,25 @@ class PropertyService
                     $action .= '<button class="btn btn-info" data-toggle="modal"
                                                         data-target="#modal-property" data-id="' . $row->id . '"
                                                         data-name="' . $row->property_name . '"
-                                                        data-company="' . $row->company_id . '" 
-                                                        data-area="' . $row->area_id . '" 
+                                                        data-company="' . $row->company_id . '"
+                                                        data-area="' . $row->area_id . '"
                                                         data-locality="' . $row->locality_id . '"
-                                                        
+
                                                         data-property_size="' . $row->property_size . '"
                                                         data-property_size_unit="' . $row->property_size_unit . '"
-                                                        data-plot_no="' . $row->plot_no . '">Edit</button>';  //data-property_type="' . $row->property_type_id . '"
+                                                        data-plot_no="' . $row->plot_no . '"
+                                                        data-lat="' . $row->latitude . '"
+                                                        data-long="' . $row->longitude . '"
+                                                        data-address="' . $row->address . '"
+                                                        data-remarks="' . $row->remarks . '"
+                                                        data-location="' . $row->location . '"
+                                                        data-status="' . $row->status . '"
+                                                        data-makani="' . $row->makani_number . '"
+
+                                                        >Edit</button>';  //data-property_type="' . $row->property_type_id . '"
+                }
+                if (Gate::allows('property.view')) {
+                    $action .= '<a href="' . route('property.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
                 }
                 if (Gate::allows('property.delete')) {
                     $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
@@ -182,22 +208,44 @@ class PropertyService
             // print_r($row);
 
 
-            $company_id = $this->existCheck(
-                'companyService',
-                'getByData',
-                'checkIfExist',
-                array('company_name' => $row['company_name']),
-                ['company_name' => $row['company_name'],],
-                $user_id
-            );
+            // $company_id = $this->existCheck(
+            //     'companyService',
+            //     'getByData',
+            //     'checkIfExist',
+            //     array('company_name' => $row['company_name']),
+            //     ['company_name' => $row['company_name'], 'email' => 'company@demo.com', 'industry_id' => '1', 'phone' => 0000000, 'company_short_code' => $row['company_name']],
+            //     $user_id
+            // );
 
+            // $area_id = $this->existCheck(
+            //     'areaService',
+            //     'getByName',
+            //     'checkIfExist',
+            //     array('company_id' => $company_id, 'area_name' => $row['area']),
+            //     [
+            //         'company_id' => $company_id,
+            //         'area_name' => $row['area']
+            //     ],
+            //     $user_id
+            // );
+            //  $locality_id = $this->existCheck(
+            //     'localityService',
+            //     'getByData',
+            //     'checkIfExist',
+            //     array('company_id' => $company_id, 'area_id' => $area_id, 'locality_name' => $row['location']),
+            //     [
+            //         'company_id' => $company_id,
+            //         'area_id' => $area_id,
+            //         'locality_name' => $row['location']
+            //     ],
+            //     $user_id
+            // );
             $area_id = $this->existCheck(
                 'areaService',
                 'getByName',
                 'checkIfExist',
-                array('company_id' => $company_id, 'area_name' => $row['area']),
+                array('area_name' => $row['area']),
                 [
-                    'company_id' => $company_id,
                     'area_name' => $row['area']
                 ],
                 $user_id
@@ -207,9 +255,8 @@ class PropertyService
                 'localityService',
                 'getByData',
                 'checkIfExist',
-                array('company_id' => $company_id, 'area_id' => $area_id, 'locality_name' => $row['location']),
+                array('area_id' => $area_id, 'locality_name' => $row['location']),
                 [
-                    'company_id' => $company_id,
                     'area_id' => $area_id,
                     'locality_name' => $row['location']
                 ],
@@ -229,12 +276,14 @@ class PropertyService
             // );
 
 
-            $seenKey = $company_id . '-' . $area_id . '-' . $locality_id . '-' . strtolower($row['building_name']);
+            // $seenKey = $company_id . '-' . $area_id . '-' . $locality_id . '-' . strtolower($row['building_name']);
+            $seenKey = $area_id . '-' . $locality_id . '-' . strtolower($row['building_name']);
+
 
 
             if (!isset($seen[$seenKey])) {
                 $insertData[] = [
-                    'company_id' => $company_id,
+                    // 'company_id' => $company_id,
                     'area_id' => $area_id,
                     'locality_id' => $locality_id,
                     // 'property_type_id' => $property_type_id,

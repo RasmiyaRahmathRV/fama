@@ -19,7 +19,9 @@ class ContractPayment extends Model
         'beneficiary',
         'added_by',
         'updated_by',
-        'deleted_by'
+        'deleted_by',
+        'has_payment_started',
+        'has_fully_paid'
     ];
 
     public function contract()
@@ -40,10 +42,9 @@ class ContractPayment extends Model
             [User::class, 'deleted_by', 'id'],
         );
     }
-    
+
     public function contractPaymentDetails()
     {
         return $this->hasMany(ContractPaymentDetail::class);
     }
-   
 }

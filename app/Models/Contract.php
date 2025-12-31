@@ -43,7 +43,14 @@ class Contract extends Model
         'deleted_by',
         'scope_generated_by',
         'rejected_reason',
-        'is_agreement_added'
+        'is_agreement_added',
+        'has_agreement',
+        'renew_reject_status',
+        'renew_reject_reason',
+        'renew_rejected_by',
+        'contract_rejected_by',
+        'rejected_date',
+        'approved_date'
     ];
 
     public function property()
@@ -89,7 +96,7 @@ class Contract extends Model
     }
     public function contract_documents()
     {
-        return $this->hasOne(ContractDocument::class, 'contract_id', 'id');
+        return $this->hasMany(ContractDocument::class, 'contract_id', 'id');
     }
     public function contract_otc()
     {
@@ -114,6 +121,21 @@ class Contract extends Model
     public function contract_payment_receivables()
     {
         return $this->hasMany(ContractPaymentReceivable::class, 'contract_id', 'id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Contract::class, 'parent_contract_id', 'id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Contract::class, 'parent_contract_id', 'id');
+    }
+
+    public function contract_scope()
+    {
+        return $this->hasOne(ContractScope::class, 'contract_id', 'id');
     }
 
     public function user()
@@ -142,12 +164,12 @@ class Contract extends Model
                 'contract_rentals',
                 'contract_documents',
                 'contract_otc',
-                'contract_payments',
-                'contract_payment_receivables'
+                'contract_payments'
             ];
 
             // hasMany relations
             $hasManyRelations = [
+                'contract_payment_receivables',
                 'contract_payment_details',
                 'contract_subunit_details',
                 'contract_unit_details',
@@ -157,6 +179,7 @@ class Contract extends Model
                 // Soft delete hasOne
                 foreach ($hasOneRelations as $relation) {
                     $related = $contract->$relation;
+
                     if ($related) {
                         if ($userId) {
                             $related->update(['deleted_by' => $userId]);
@@ -165,15 +188,21 @@ class Contract extends Model
                     }
                 }
 
-                // Soft delete hasMany
+                // // Soft delete hasMany
+                // foreach ($hasManyRelations as $relation) {
+                //     foreach ($contract->$relation as $related) {
+                //         $related->update(['deleted_by' => $userId]);
+                //         $related->delete();
+                //     }
+                // }
                 foreach ($hasManyRelations as $relation) {
-                    $relatedCollection = $contract->$relation ?? collect();
-                    foreach ($relatedCollection as $related) {
-                        if ($userId) {
-                            $related->update(['deleted_by' => $userId]);
-                        }
+                    $relatedCollection = $contract->$relation;
+
+                    // Update all related records' deleted_by safely
+                    $relatedCollection->each(function ($related) use ($userId) {
+                        $related->update(['deleted_by' => $userId]);
                         $related->delete();
-                    }
+                    });
                 }
             } else {
                 // Force delete
@@ -201,5 +230,10 @@ class Contract extends Model
                 $contract->$relation()->withTrashed()->restore();
             }
         });
+    }
+
+    public function agreements()
+    {
+        return $this->hasMany(Agreement::class);
     }
 }

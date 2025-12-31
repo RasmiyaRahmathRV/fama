@@ -97,4 +97,17 @@ class Company extends Model
     {
         return $this->belongsTo(Industry::class, 'industry_id', 'id');
     }
+    public function banks()
+    {
+        return $this->hasMany(Bank::class, 'company_id');
+    }
+
+    public function addedBy()
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

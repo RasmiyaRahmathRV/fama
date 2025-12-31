@@ -33,6 +33,8 @@ class VendorService
         $this->validate($data);
         $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['vendor_code'] = $this->setVendorCode();
+        // $data['contract_template_id'] = 1;
+
 
         $existing = $this->vendorRepository->checkIfExist($data);
 
@@ -72,10 +74,20 @@ class VendorService
             'vendor_name' => [
                 'required',
                 Rule::unique('vendors')->ignore($id)
-                    ->where(fn($q) => $q->where('company_id', $data['company_id'])
+                    ->where(fn($q) => $q
+                        // ->where('company_id', $data['company_id'])
                         ->whereNull('deleted_at'))
             ],
-            'company_id' => 'required|exists:companies,id',
+            'vendor_phone' => 'required',
+            'vendor_email' => 'required|email',
+            'vendor_address' => 'required|string',
+            'contact_person' => 'required|string',
+            'contact_person_phone' => 'required',
+            'contact_person_email' => 'required|email',
+            'contract_template_id' => 'required|exists:vendor_contract_templates,id',
+            'status' => 'required|in:0,1',
+
+            // 'company_id' => 'required|exists:companies,id',
         ]);
 
         if ($validator->fails()) {
@@ -94,7 +106,9 @@ class VendorService
 
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
-            ['data' => 'company_name', 'name' => 'company_name'],
+            // ['data' => 'company_name', 'name' => 'company_name'],
+            ['data' => 'vendor_code', 'name' => 'vendor_code'],
+
             ['data' => 'vendor_name', 'name' => 'vendor_name'],
             ['data' => 'vendor_phone', 'name' => 'vendor_phone'],
             ['data' => 'vendor_email', 'name' => 'vendor_email'],
@@ -107,7 +121,9 @@ class VendorService
         return datatables()
             ->of($query)
             ->addIndexColumn()
-            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            // ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            ->addColumn('vendor_code', fn($row) => $row->vendor_code ?? '-')
+
             ->addColumn('vendor_name', fn($row) => $row->vendor_name ?? '-')
             ->addColumn('vendor_phone', fn($row) => $row->vendor_phone ?? '-')
             ->addColumn('vendor_email', fn($row) => $row->vendor_email ?? '-')
@@ -121,14 +137,17 @@ class VendorService
                                                         data-target="#modal-vendor"
                                                         data-row=\'' .  json_encode($row)  . '\'>Edit</button>';
                 }
-                if (Gate::allows('vendor.delete')) {
+                if (Gate::allows('vendor.view')) {
+                    $action .= '<a href="' . route('vendors.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
+                }
+                if (Gate::allows('vendors.delete')) {
                     $action .= '<button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
 
                 return $action ?: '-';
             })
             ->rawColumns(['action'])
-            ->with(['columns' => $columns]) // send columns too
+            ->with(['columns' => $columns])
             ->toJson();
     }
 
@@ -141,28 +160,35 @@ class VendorService
         foreach ($rows as $key => $row) {
 
             // dd($row);
-            $company_id = $this->companyService->getIdByCompanyname($row['company']);
+            // $company_id = $this->companyService->getIdByCompanyname($row['company']);
 
-            if ($company_id == null) {
-                $existing = $this->companyService->checkIfExist(array('company_id' => $row['company'], 'vendor_name' => $row['vendor_name']));
+            // if ($company_id == null) {
+            //     $existing = $this->companyService->checkIfExist(array('company_name' => $row['company']));
 
-                if (!empty($existing)) {
-                    // echo "exist";
-                    $existing->restore();
+            //     if (!empty($existing)) {
+            //         // echo "exist";
+            //         $existing->restore();
 
-                    $company_id = $existing->id;
-                } else {
-                    $company_id = $this->companyService->createOrRestore([
-                        'company_name' => $row['company'],
-                    ], $user_id)->id;
-                }
-            }
+            //         $company_id = $existing->id;
+            //     } else {
+            //         $company_id = $this->companyService->createOrRestore([
+            //             'company_name' => $row['company'],
+            //             'email' => 'company@demo.com',
+            //             'industry_id' => '1',
+            //             'phone' => 0000000,
+            //             'company_short_code' => $row['company'],
 
-            $vendorexist = $this->vendorRepository->checkIfExist(array('company_id' => $company_id, 'vendor_name' => $row['vendor_name']));
+            //         ], $user_id)->id;
+            //     }
+            // }
+
+            // $vendorexist = $this->vendorRepository->checkIfExist(array('company_id' => $company_id, 'vendor_name' => $row['vendor_name']));
+            $vendorexist = $this->vendorRepository->checkIfExist(array('vendor_name' => $row['vendor_name']));
+
 
             if (empty($vendorexist)) {
                 $insertData[] = [
-                    'company_id' => $company_id,
+                    // 'company_id' => $company_id,
                     'vendor_code' => $this->setVendorCode($key + 1),
                     'vendor_name' => $row['vendor_name'],
                     'vendor_phone' => $row['vendor_phone'],
@@ -174,6 +200,7 @@ class VendorService
                     'accountant_name' => $row['vendor_accountant_name'],
                     'accountant_phone' => $row['vendor_accountant_number'],
                     'accountant_email' => $row['vendor_accountant_email'],
+                    'contract_template_id' => $row['contract_template'],
                     'created_at' => now(),
                     'updated_at' => now(),
                     'added_by' => $user_id,

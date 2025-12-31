@@ -55,10 +55,10 @@
                                             <th>Company Code</th>
                                             <th>Company Short Code</th>
                                             <th>Industry</th>
-                                            <th>Address</th>
+                                            {{-- <th>Address</th>
                                             <th>Phone</th>
-                                            <th>Email</th>
-                                            <th>Website</th>
+                                            <th>Email</th> --}}
+                                            {{-- <th>Website</th> --}}
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -142,22 +142,22 @@
                         data: 'industry_name',
                         name: 'industries.name',
                     },
-                    {
-                        data: 'address',
-                        name: 'companies.address',
-                    },
-                    {
-                        data: 'phone',
-                        name: 'companies.phone',
-                    },
-                    {
-                        data: 'email',
-                        name: 'companies.email',
-                    },
-                    {
-                        data: 'website',
-                        name: 'companies.website',
-                    },
+                    // {
+                    //     data: 'address',
+                    //     name: 'companies.address',
+                    // },
+                    // {
+                    //     data: 'phone',
+                    //     name: 'companies.phone',
+                    // },
+                    // {
+                    //     data: 'email',
+                    //     name: 'companies.email',
+                    // },
+                    // {
+                    //     data: 'website',
+                    //     name: 'companies.website',
+                    // },
 
                     {
                         data: 'action',

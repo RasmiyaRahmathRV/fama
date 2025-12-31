@@ -23,6 +23,8 @@ class AgreementPayment extends Model
         'added_by',
         'updated_by',
         'deleted_by',
+        'has_payment_received',
+        'has_payment_fully_received',
     ];
 
     /**

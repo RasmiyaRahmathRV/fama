@@ -1,5 +1,24 @@
 <?php
 
+use App\Models\Agreement;
+use App\Models\AgreementPaymentDetail;
+use App\Models\ClearedReceivable;
+use App\Models\Contract;
+use App\Models\ContractPaymentDetail;
+use App\Models\ContractSubunitDetail;
+use App\Models\ContractUnitDetail;
+use App\Models\Installment;
+use App\Models\Investment;
+use App\Models\InvestmentReceivedPayment;
+use App\Models\InvestmentReferral;
+use App\Models\Investor;
+use App\Models\PaymentMode;
+use App\Models\Property;
+use App\Models\Vendor;
+use App\Repositories\Contracts\ContractRepository;
+use App\Services\Contracts\ContractService;
+use Carbon\Carbon;
+
 if (!function_exists('toNumeric')) {
     /**
      * Convert a mixed value (like "60,000.00" or "AED 5,500") to a clean float.
@@ -17,20 +36,598 @@ if (!function_exists('toNumeric')) {
     }
 }
 
+function dateFormatChange($value, $format)
+{
+    return $value ? Carbon::parse($value)->format($format) : null;
+}
+
 
 function subunitNoGeneration($subUnitData, $key, $i)
 {
     // print_r($subUnitData);
-    // print_r('increement room no - ' . $i);
+    // dd('increement room no - ' . $i);
     if (isset($subUnitData['is_partition'][$key])) {
         if ($subUnitData['is_partition'][$key] == '1') {
             $subunitno = 'P' . $i;
         } else if ($subUnitData['is_partition'][$key] == '2') {
             $subunitno = 'BS' . $i;
+        } else {
+            $subunitno = 'R' . $i;
         }
     } else {
-        $subunitno = 'R' . $i;
+        $subunitno = 'FL' . $i;
     }
 
     return $subunitno;
+}
+
+
+function subUnitCount($subUnitData, $i)
+{
+    $subunitcount = 0;
+    if (isset($subUnitData['is_partition'][$i])) {
+        if ($subUnitData['is_partition'][$i] == '1') {
+            $subunitcount = $subUnitData['partition'][$i];
+        } else if ($subUnitData['is_partition'][$i] == '2') {
+            $subunitcount = $subUnitData['bedspace'][$i];
+        } else {
+            $subunitcount = $subUnitData['room'][$i];
+        }
+    } else {
+        $subunitcount++;
+    }
+
+    return $subunitcount;
+}
+
+function subUnitType($subUnitData, $i)
+{
+    $subunit_type = '0';
+    if (isset($subUnitData['is_partition'][$i])) {
+        if ($subUnitData['is_partition'][$i] == '1') {
+            $subunit_type = '1';
+        } else if ($subUnitData['is_partition'][$i] == '2') {
+            $subunit_type = '2';
+        } else {
+            $subunit_type = '3';
+        }
+    } else {
+        $subunit_type = '4';
+    }
+
+    return $subunit_type;
+}
+
+function getPartitionValue($dataArr, $key, $receivable_installments)
+{
+    $partition = 0;
+    $bedspace = 0;
+    $room = 0;
+    $rent_per_unit_per_month = 0;
+    $rent_per_unit_per_annum = 0;
+    $subunittype = 0;
+    $subunitcount_per_unit = 0;
+    $subunit_rent_per_unit = 0;
+    $total_rent_per_unit_per_month = 0;
+    // dd($dataArr);
+    if (array_key_exists('partition', $dataArr) && isset($dataArr['partition'][$key])) {
+        if ($dataArr['partition'][$key] == 1) {
+            $partition = 1;
+            // dd($dataArr['rent_per_partition']);
+            $rent_per_unit_per_month = $dataArr['rent_per_partition'];
+            $subunittype = 1;
+            $subunitcount_per_unit += $dataArr['total_partition'][$key];
+            $subunit_rent_per_unit = $dataArr['rent_per_partition'];
+            $total_rent_per_unit_per_month = $dataArr['total_partition'][$key] * $dataArr['rent_per_partition'];
+        } else if ($dataArr['partition'][$key] == 2) {
+            $bedspace = 1;
+            $rent_per_unit_per_month = $dataArr['rent_per_bedspace'];
+            $subunittype = 2;
+            $subunitcount_per_unit += $dataArr['total_bedspace'][$key];
+            $subunit_rent_per_unit = $dataArr['rent_per_bedspace'];
+            $total_rent_per_unit_per_month = $dataArr['total_bedspace'][$key] * $dataArr['rent_per_bedspace'];
+        } else {
+            $room = 1;
+            $rent_per_unit_per_month = $dataArr['rent_per_room'];
+            $subunittype = 3;
+            $subunitcount_per_unit += $dataArr['total_room'][$key];
+            $subunit_rent_per_unit = $dataArr['rent_per_room'];
+            $total_rent_per_unit_per_month = $dataArr['total_room'][$key] * $dataArr['rent_per_room'];
+        }
+    } else {
+        $rent_per_unit_per_month = $dataArr['rent_per_flat'];
+        $subunittype = 4;
+        $subunitcount_per_unit += 1;
+        $subunit_rent_per_unit = $dataArr['rent_per_flat'];
+        $total_rent_per_unit_per_month  = $dataArr['rent_per_flat'];
+    }
+
+    $rent_per_flat = $dataArr['rent_per_flat'];
+    $installment = Installment::find($receivable_installments);
+
+    if ($installment->installment_name == '14') {
+        $installment = '13';
+    } else {
+        $installment = $installment->installment_name;
+    }
+
+    if (isset($dataArr['unit_profit'])) {
+        // print('profit');
+        $rent_per_flat = $dataArr['unit_revenue'][$key] / $installment;
+        $rent_per_unit_per_month = $rent_per_flat;
+        $subunit_rent_per_unit = $rent_per_flat;
+        $total_rent_per_unit_per_month  = $rent_per_flat;
+    }
+    // print($rent_per_unit_per_month);
+    // dd($rent_per_unit_per_month);
+    $rent_per_unit_per_annum = $rent_per_unit_per_month * $installment;
+
+    $total_rent_per_unit_per_annum = $total_rent_per_unit_per_month * $installment;
+
+    $retData = array(
+        'partition' => $partition,
+        'bedspace' => $bedspace,
+        'room' => $room,
+        'rent_per_flat' => $rent_per_flat,
+        'rent_per_unit_per_month' => $rent_per_unit_per_month,
+        'rent_per_unit_per_annum' => $rent_per_unit_per_annum,
+        'subunittype' => $subunittype,
+        'subunitcount_per_unit' => $subunitcount_per_unit,
+        'subunit_rent_per_unit' => $subunit_rent_per_unit,
+        'total_rent_per_unit_per_month' => $total_rent_per_unit_per_month,
+        'total_rent_per_unit_per_annum' => $total_rent_per_unit_per_annum
+    );
+    // dd($retData);
+    return $retData;
+}
+
+function subunittypeName($subunittype)
+{
+    if ($subunittype == 1) {
+        return 'Partition';
+    } else if ($subunittype == 2) {
+        return 'Bedspace';
+    } else if ($subunittype == 3) {
+        return 'Room';
+    } else {
+        return 'Full FLat';
+    }
+}
+
+
+function getAccommodationDetails($unitDetails)
+{
+    // dd($unitDetails);
+    $accocmmodation = $title = $price_title = '';
+    $total_price = $price = 0;
+
+    if ($unitDetails->partition != null) {
+        $title = 'Partition';
+        $price_title = 'Per Partiton';
+        $accocmmodation = $unitDetails->total_partition;
+        $price = $unitDetails->rent_per_partition;
+    } elseif ($unitDetails->bedspace != null) {
+        $title = 'Bedspace';
+        $price_title = 'Per Bedspace';
+        $accocmmodation = $unitDetails->total_bedspace;
+        $price = $unitDetails->rent_per_bedspace;
+    } elseif ($unitDetails->room != null) {
+        $title = 'Bedspace';
+        $price_title = 'Per Bedspace';
+        $accocmmodation = $unitDetails->total_room;
+        $price = $unitDetails->rent_per_room;
+    } else {
+        $title = 'Full Flat';
+        $price_title = 'Per Flat';
+        $accocmmodation = 1;
+        $price = $unitDetails->rent_per_flat;
+    }
+
+    $total_price = $unitDetails->total_rent_per_unit_per_month;
+
+    $return = array(
+        'title' => $title,
+        'price_title' => $price_title,
+        'accommodation' => $accocmmodation,
+        'price' => $price,
+        'total_price' => $total_price
+    );
+
+    return $return;
+}
+
+function formatNumber($number)
+{
+    return number_format(toNumeric($number), 2, '.', ',');
+}
+function getOccupiedDetails($unitId)
+{
+    $totalSubunits = ContractSubunitDetail::where('contract_unit_detail_id', $unitId)->count();
+    $OccupiedSubunitCount = ContractSubunitDetail::where('contract_unit_detail_id', $unitId)
+        ->where('is_vacant', 1)
+        ->count();
+
+    $VacantSubunitCount = $totalSubunits - $OccupiedSubunitCount;
+    return [
+        'occupied' => $OccupiedSubunitCount,
+        'vacant' => $VacantSubunitCount,
+        'totalsubunits' => $totalSubunits
+    ];
+}
+function getPaymentDetails($paymentId, $unitId)
+{
+    $payment_details = AgreementPaymentDetail::where('agreement_payment_id', $paymentId)
+        ->where('contract_unit_id', $unitId)
+        ->where('terminate_status', 0);
+    // $totalPaidAmount = 0;
+    // foreach ($payment_details as $detail) {
+    //     $totalPaidAmount += $payment_details->clearedReceivables->paid_amount;
+    // }
+    $totalPaidAmount = $payment_details->sum('paid_amount');
+    $totalPaymentAmount = $payment_details->sum('payment_amount');
+    $pendingAmount = $totalPaymentAmount - $totalPaidAmount;
+    return [
+        'received' => $totalPaidAmount,
+        'pending' => $pendingAmount,
+        'total' => $totalPaymentAmount
+    ];
+}
+function makeUnitVacant($unitId, $contract_id)
+{
+    $unit = ContractUnitDetail::find($unitId);
+    if ($unit) {
+        $unit->is_vacant = 0;
+        $unit->save();
+    }
+    $subunit = ContractSubunitDetail::where('contract_unit_detail_id', $unitId)->get();
+    foreach ($subunit as $sub) {
+        $sub->is_vacant = 0;
+        $sub->save();
+    }
+}
+function getVacantUnits($id)
+{
+    $unit_count = ContractUnitDetail::where('contract_id', $id)->where('is_vacant', 0)->count();
+    return $unit_count;
+}
+// function paymentStatus($agreementid)
+// {
+//     $paid = AgreementPaymentDetail::where('agreement_id', $agreementid)
+//         ->where('terminate_status', 0)
+//         ->SUM('paid_amount');
+//     // dd($paid);
+
+//     return $paid;
+// }
+function paymentStatus($agreementid)
+{
+    $payment = AgreementPaymentDetail::where('agreement_id', $agreementid)
+        ->where('terminate_status', 0)
+        ->first();
+
+    if ($payment && in_array($payment->is_payment_received, [0])) {
+        return true;
+    }
+
+    return false;
+}
+function makeContractAvailable($contract_id)
+{
+    $contract = Contract::find($contract_id);
+    $contract->is_agreement_added = 0;
+    $hasagreement = Agreement::where('contract_id', $contract_id)->exists();
+    if (!$hasagreement) {
+        $contract->has_agreement = 0;
+    }
+    $contract->save();
+}
+
+function contractStatusUpdate($status, $contract_id)
+{
+    $data = ['contract_status' => $status];
+    $contract = Contract::find($contract_id);
+    $contract->update($data);
+
+    // dump($data);
+}
+
+function renewalCount()
+{
+    $service = app(ContractService::class);  // resolve service
+    return $service->getRenewalDataCount();
+}
+
+function contractStatusName($contract_status)
+{
+    if ($contract_status == 0) return 'Pending';
+    elseif ($contract_status == 1) return 'Processing';
+    elseif ($contract_status == 2) return 'Approved';
+    elseif ($contract_status == 3) return 'Rejected';
+    elseif ($contract_status == 4) return 'Approval Pending';
+    elseif ($contract_status == 5) return 'Approval on Hold';
+    elseif ($contract_status == 6) return 'Partially Signed';
+    elseif ($contract_status == 7) return 'Fully Signed';
+    elseif ($contract_status == 8) return 'Expired';
+}
+
+function contractStatusClass($contract_status)
+{
+    if ($contract_status == 0) return 'badge badge-warning text-black';
+    elseif ($contract_status == 1) return 'badge badge-info text-white';
+    elseif ($contract_status == 2) return 'badge badge-success text-white';
+    elseif ($contract_status == 3) return 'badge badge-danger text-white';
+    elseif ($contract_status == 4) return 'badge badge-df text-white';
+    elseif ($contract_status == 5) return 'badge badge-secondary text-white';
+    elseif ($contract_status == 6) return 'badge bg-gradient-maroon text-white';
+    elseif ($contract_status == 7) return 'badge bg-gradient-lightblue text-white';
+    elseif ($contract_status == 8) return 'badge badge-warning text-black';
+}
+
+function statusCount($status)
+{
+    $repository = app(ContractRepository::class);
+
+    $filter = [
+        'search' => contractStatusName($status)
+    ];
+    return $repository->getQuery($filter)->count();
+}
+function getAgreementExpiringCounts()
+{
+    $today = Carbon::today();
+    $oneMonthLater = Carbon::today()->addMonth(1)->format('Y-m-d');
+
+
+    $expiredCount = Agreement::where('agreement_status', "=", 0)
+        ->where('end_date', '<=', $oneMonthLater)
+        ->count();
+
+    return $expiredCount;
+}
+
+function getVendorsHaveContract()
+{
+    $vendors = Vendor::where('status', 1)
+        ->whereHas('contracts')
+        ->get();
+
+    return $vendors;
+}
+
+function getPropertiesHaveContract()
+{
+    $properties = Property::where('status', 1)
+        ->whereHas('contracts')
+        ->get();
+
+    return $properties;
+}
+
+function getPaymentModeHaveContract()
+{
+    $paymentmodes = PaymentMode::where('status', 1)
+        ->whereHas('paymentDetails')
+        ->get();
+
+    return $paymentmodes;
+}
+
+function totalPaidPayable($payables)
+{
+    $paid = 0;
+    foreach ($payables as $payable) {
+        $paid += $payable->paid_amount;
+    }
+
+    return $paid;
+}
+
+function getComposition($contractId, $detailId)
+{
+    $details = ContractPaymentDetail::where('contract_id', $contractId)->orderBy('id')->get();
+
+    $totalInstallments = $details->count();
+    $currentInstallmentIndex = $details->pluck('id')->search($detailId) + 1;
+
+    return $currentInstallmentIndex . '/' . $totalInstallments;
+}
+
+function getUnitshaveAgreement()
+{
+    $units = ContractUnitDetail::with('contract')->whereHas('agreementUnits')
+        ->get();
+
+    return $units;
+}
+function getPaymentModeHaveAgreement()
+{
+    $paymentmodes = PaymentMode::where('status', 1)
+        ->whereHas('agreementPaymentDetails')
+        ->get();
+
+    return $paymentmodes;
+}
+function checkAgreementPayment($agreement_payment_id)
+{
+    $total = AgreementPaymentDetail::where('agreement_payment_id', $agreement_payment_id)
+        ->where('terminate_status', 0)
+        ->count();
+
+    $received = AgreementPaymentDetail::where('agreement_payment_id', $agreement_payment_id)
+        ->where('terminate_status', 0)
+        ->where('is_payment_received', 1)
+        ->count();
+    if ($total === $received) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function getReceivableAmount($agreement_payment_detail_id)
+{
+    // dd("test");
+    $received_amount = ClearedReceivable::where('agreement_payment_details_id', $agreement_payment_detail_id)->sum('paid_amount');
+    $receivable = AgreementPaymentDetail::where('id', $agreement_payment_detail_id)->first();
+
+    $receivable_amount = $receivable?->payment_amount;
+    $balance_to_pay = $receivable_amount - $received_amount;
+    return $balance_to_pay;
+}
+function updateContractUnitPayments($contract_unit_details_id, $paid_amount)
+{
+    $contract_unit_detail = ContractUnitDetail::find($contract_unit_details_id);
+
+    if (!$contract_unit_detail) {
+        return false;
+    }
+
+    $contract_unit_detail->total_payment_received += $paid_amount;
+    $contract_unit_detail->total_payment_pending -= $paid_amount;
+    $contract_unit_detail->save();
+
+    return $contract_unit_detail;
+}
+function investmentStatus($invest_amount, $received_amount)
+{
+    if ($invest_amount == $received_amount) {
+        return 1;
+    } elseif ($invest_amount > $received_amount) {
+        return 2;
+    } else {
+        return 0;
+    }
+}
+function InvestmentTypestatus($investor_id)
+{
+    return Investment::where('investor_id', $investor_id)->exists() ? 1 : 0;
+}
+function updateInvestor($investorId, $investmentId)
+{
+    $investmentCount = Investment::where('investor_id', $investorId)->count();
+
+    $investedAmount = Investment::where('investor_id', $investorId)->sum('investment_amount');
+
+
+    Investor::where('id', $investorId)->update([
+        'total_no_of_investments' => $investmentCount,
+        'total_invested_amount' => $investedAmount,
+    ]);
+}
+function updateReferralCommission($referrorId)
+{
+    $investor = Investor::find($referrorId);
+    $totalPending = InvestmentReferral::where('investor_referror_id', $referrorId)
+        ->sum('referral_commission_amount');
+
+    $investor->total_referal_commission = $totalPending;
+    $investor->save();
+
+    return $investor;
+}
+function parseDate($date)
+{
+    if (!$date) return null;
+    return Carbon::parse($date)->format('Y-m-d');
+}
+function paymentFullyReceived($investmentId)
+{
+    $investment = Investment::with('investmentReceivedPayments')->find($investmentId);
+
+    if (!$investment) {
+        return false;
+    }
+
+    $investmentAmount = (float) $investment->investment_amount;
+
+    // Sum only received payments
+    $totalReceived = (float) $investment->investmentReceivedPayments()
+        ->where('status', 1)
+        ->sum('received_amount');
+
+    if ($investmentAmount == $totalReceived) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function getFormattedDate($date)
+{
+    if (!$date) return null;
+    return Carbon::parse($date)->format('d-m-Y');
+}
+function updateInvestmentBalance($investmentId)
+{
+    $investment = Investment::find($investmentId);
+
+    $totalReceived = InvestmentReceivedPayment::where('investment_id', $investmentId)
+        ->sum('received_amount');
+
+    $balanceAmount = $investment->investment_amount - $totalReceived;
+
+
+    $investment->balance_amount = $balanceAmount;
+    $investment->total_received_amount = $totalReceived;
+    if ($totalReceived == $investment->investment_amount) {
+        $investment->has_fully_received = 1;
+    }
+    $investment->save();
+
+    return $investment;
+}
+function calculateNextProfitReleaseDate($grace_period, $profit_interval_id, $investment_date)
+{
+    $investmentDate = Carbon::parse($investment_date);
+    $investmentDateWithGrace = $investmentDate->copy()->addDays($grace_period);
+
+    $nextProfitReleaseDate = null;
+    switch ($profit_interval_id) {
+        case 1: // Monthly
+            $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addMonth();
+            break;
+        case 2: // Quarterly
+            $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addMonths(3);
+            break;
+        case 3: // Half-Yearly
+            $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addMonths(6);
+            break;
+        case 4: // Yearly
+            $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addYear();
+            break;
+        case 5: // every 2 months
+            $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addMonths(2);
+            break;
+    }
+
+    return $nextProfitReleaseDate->format('Y-m-d');
+}
+
+function currMonthProfit($colname, $investor_id)
+{
+    $investment = Investment::where('investor_id', $investor_id)
+        ->selectRaw('
+        SUM(' . $colname . ') as total
+    ')
+        ->first();
+
+    return $investment->total;
+}
+
+
+function getPayoutDate($row)
+{
+    return match ($row->payout_type) {
+        1 => optional($row->investment)->next_profit_release_date,
+        2 => optional($row->investment)->next_referral_commission_release_date,
+        default => null,
+    };
+}
+
+function getPayoutTypeLabel(int $type): string
+{
+    return match ($type) {
+        1 => 'Profit',
+        2 => 'Referral Commission',
+        3 => 'Principal',
+        default => 'Unknown',
+    };
 }

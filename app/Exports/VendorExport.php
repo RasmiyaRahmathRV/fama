@@ -19,7 +19,8 @@ class VendorExport implements FromCollection, WithHeadings
 
     public function collection()
     {
-        $query = Vendor::with('company');
+        // $query = Vendor::with('company');
+        $query = Vendor::where('status', 1);
 
         if ($this->search) {
             $search = $this->search;
@@ -35,16 +36,16 @@ class VendorExport implements FromCollection, WithHeadings
                     ->orWhere('contact_person', 'like', "%{$search}%")
                     ->orWhere('contact_person_email', 'like', "%{$search}%")
                     ->orWhere('contact_person_phone', 'like', "%{$search}%")
-                    ->orWhereHas('company', function ($q2) use ($search) {
-                        $q2->where('company_name', 'like', "%{$search}%");
-                    })
+                    // ->orWhereHas('company', function ($q2) use ($search) {
+                    //     $q2->where('company_name', 'like', "%{$search}%");
+                    // })
                     ->orWhereRaw("CAST(vendors.id AS CHAR) LIKE ?", ["%{$search}%"]);
             });
         }
 
-        if ($this->filter) {
-            $query->where('company_id', $this->filter);
-        }
+        // if ($this->filter) {
+        //     $query->where('company_id', $this->filter);
+        // }
 
 
         return $query->get()
@@ -52,10 +53,11 @@ class VendorExport implements FromCollection, WithHeadings
                 return [
                     'ID' => $vendor->id,
                     'Vendor Code' => $vendor->vendor_code,
-                    'Company' => $vendor->company->company_name ?? '',
+                    // 'Company' => $vendor->company->company_name ?? '',
                     'Vendor Name' => $vendor->vendor_name,
                     'Vendor Phone' => $vendor->vendor_phone,
                     'Vendor Email' => $vendor->vendor_email,
+                    'Landline Number' => $vendor->landline_number,
                     'Vendor Address' => $vendor->vendor_address,
                     'Accountant Name' => $vendor->accountant_name,
                     'Accountant Phone' => $vendor->accountant_phone,
@@ -63,6 +65,10 @@ class VendorExport implements FromCollection, WithHeadings
                     'Contact Person' => $vendor->contact_person,
                     'Contact Person Phone' => $vendor->contact_person_phone,
                     'Contact Person Email' => $vendor->contact_person_email,
+                    // 'C' => $vendor->contact_person_email,
+                    // 'Contact Person Email' => $vendor->contact_person_email,
+                    // 'Contact Person Email' => $vendor->contact_person_email,
+
 
                 ];
             });
@@ -73,10 +79,11 @@ class VendorExport implements FromCollection, WithHeadings
         return [
             'ID',
             'Vendor Code',
-            'Company',
+            // 'Company',
             'Vendor Name',
             'Vendor Phone',
             'Vendor Email',
+            'Landline Number',
             'Vendor Address',
             'Accountant Name',
             'Accountant Phone',

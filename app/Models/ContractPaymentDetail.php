@@ -24,14 +24,14 @@ class ContractPaymentDetail extends Model
         'cheque_issuer',
         'cheque_issuer_name',
         'cheque_issuer_id',
-        'paid_amount',
-        'paid_date',
-        'pending_amount',
-        'paid_by',
         'paid_status',
         'added_by',
         'updated_by',
         'deleted_by',
+        'has_returned',
+        'returned_date',
+        'returned_reason',
+        'returned_by'
     ];
 
     public function contract()
@@ -46,32 +46,33 @@ class ContractPaymentDetail extends Model
 
     public function payment_mode()
     {
-        return $this->belongsTo(PaymentMode::class);
+        return $this->belongsTo(PaymentMode::class, 'payment_mode_id', 'id');
     }
+
 
     public function bank()
     {
         return $this->belongsTo(Bank::class);
     }
 
-    public function user()
+    public function addedBy()
     {
-        return $this->belongsTo(
-            [User::class, 'added_by', 'id'],
-            [User::class, 'updated_by', 'id'],
-            [User::class, 'deleted_by', 'id'],
-        );
+        return $this->belongsTo(User::class, 'added_by', 'id');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by', 'id');
+    }
+
+    public function deletedBy()
+    {
+        return $this->belongsTo(User::class, 'deleted_by', 'id');
     }
 
     public function setPaymentDateAttribute($value)
     {
         $this->attributes['payment_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
-    }
-    public function setpaidDateAttribute($value)
-    {
-        $this->attributes['paid_date'] = $value
-            ? Carbon::parse($value)->format('Y-m-d H:i:s')
-            : null;
     }
 
     private function formatNumber($value)
@@ -92,13 +93,31 @@ class ContractPaymentDetail extends Model
     {
         return $this->formatNumber($value);
     }
-    public function getpaymentDateAttribute($value)
-    {
-        return Carbon::parse($value)->format('d-m-Y');
-    }
-    public function getPaidDateAttribute($value)
+
+    public function getPaymentDateAttribute($value)
     {
         return $value ? Carbon::parse($value)->format('d-m-Y') : null;
     }
 
+    public function payables()
+    {
+        return $this->hasMany(ContractPayableClear::class, 'contract_payment_detail_id', 'id');
+    }
+
+    public function setReturnedDateAttribute($value)
+    {
+        $this->attributes['returned_date'] = $value
+            ? Carbon::parse($value)->format('Y-m-d H:i:s')
+            : null;
+    }
+
+    public function getReturnedDateAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format('d-m-Y') : null;
+    }
+
+    public function returnedBy()
+    {
+        return $this->belongsTo(User::class, 'returned_by', 'id');
+    }
 }

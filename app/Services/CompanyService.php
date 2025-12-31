@@ -40,9 +40,11 @@ class CompanyService
 
     public function createOrRestore(array $data, $user_id = null)
     {
-        $this->validate($data);
+
         $data['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['company_code'] = $this->setCompanyCode();
+        // dd($data);
+        $this->validate($data);
 
         $existing = $this->companyRepository->checkIfExist($data);
 
@@ -145,6 +147,9 @@ class CompanyService
                                                        data-target="#modal-company"
                                                          data-row=\'' .  json_encode($row)  . '\'>Edit</button>';
                 }
+                if (Gate::allows('company.view')) {
+                    $action .= '<a href="' . route('company.show', $row->id) . '" class="btn btn-warning mx-1">View</a>';
+                }
                 if (Gate::allows('company.delete')) {
                     $action .= '<button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
@@ -154,5 +159,9 @@ class CompanyService
             ->rawColumns(['action'])
             ->with(['columns' => $columns]) // send columns too
             ->toJson();
+    }
+    public function getWithIndustry()
+    {
+        return $this->companyRepository->getWithIndustry();
     }
 }

@@ -14,44 +14,44 @@
                     <div class="card-body">
                         <div class="form-group row">
                             <div class="col-sm-6">
-                                <label for="inputEmail3" class="col-form-label">Company Name</label>
+                                <label for="inputEmail3" class="col-form-label asterisk">Company Name</label>
                                 <input type="text" name="company_name" id="company_name" class="form-control"
-                                    id="inputEmail3" placeholder="Company Name">
+                                    id="inputEmail3" placeholder="Company Name" required>
                             </div>
                             <div class="col-sm-6">
-                                <label for="inputEmail3" class="col-form-label">Company Short Code</label>
+                                <label for="inputEmail3" class="col-form-label asterisk">Company Short Code</label>
                                 <input type="text" name="company_short_code" id="company_short_code"
-                                    class="form-control" id="inputEmail3" placeholder="Company Short Code">
+                                    class="form-control" id="inputEmail3" placeholder="Company Short Code" required>
                             </div>
 
 
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-6">
-                                <label for="industry_id" class="col-form-label">Industry</label>
+                                <label for="industry_id" class="col-form-label asterisk">Industry</label>
                                 <select name="industry_id" id="industry_id" class="form-control select2"
-                                    style="width: 100%;">
+                                    style="width: 100%;" required>
                                     <option value="">-- Select Industry --</option>
                                     {{ $industry_dropdown }}
                                 </select>
                             </div>
                             <div class="col-sm-6">
-                                <label for="inputEmail3" class="col-form-label">Website</label>
+                                <label for="inputEmail3" class="col-form-label asterisk">Website</label>
                                 <input type="text" name="website" id="website" class="form-control"
-                                    id="inputEmail3" placeholder="Website">
+                                    id="inputEmail3" placeholder="Website" required>
                             </div>
 
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-6">
-                                <label for="inputEmail3" class="col-form-label">Phone</label>
+                                <label for="inputEmail3" class="col-form-label asterisk">Phone</label>
                                 <input type="number" name="phone" id="phone" class="form-control"
-                                    id="inputEmail3" placeholder="Phone">
+                                    id="inputEmail3" placeholder="Phone" required>
                             </div>
                             <div class="col-sm-6">
-                                <label for="inputEmail3" class="col-form-label">Email</label>
+                                <label for="inputEmail3" class="col-form-label asterisk">Email</label>
                                 <input type="email" name="email" id="email" class="form-control"
-                                    id="inputEmail3" placeholder="Email">
+                                    id="inputEmail3" placeholder="Email" required>
                             </div>
 
                         </div>
@@ -60,6 +60,14 @@
                                 <label for="inputEmail3" class="col-form-label">Address</label>
                                 <textarea name="address" class="form-control" id="address"></textarea>
 
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="asterisk">Status</label>
+                                <select name="status" id="status" class="form-control" required>
+                                    <option value="1" default>Active</option>
+                                    <option value="0">Inactive
+                                    </option>
+                                </select>
                             </div>
                         </div>
 

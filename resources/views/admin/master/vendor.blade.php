@@ -49,25 +49,28 @@
                             @endcan
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="vendorTable" class="table table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Company Name</th>
-                                            <th>Vendor Name</th>
-                                            <th>Vendor Phone</th>
-                                            <th>Vendor Email</th>
-                                            <th>Contact Person</th>
-                                            <th>Contact Phone</th>
-                                            <th>Accountant</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                                <div class="table-responsive">
+                                    <table id="vendorTable" class="table table-bordered table-hover w-100">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                {{-- <th>Company Name</th> --}}
+                                                <th>Vendor Code</th>
+                                                <th>Vendor Name</th>
+                                                <th>Vendor Phone</th>
+                                                <th>Vendor Email</th>
+                                                {{-- <th>Contact Person</th>
+                                                <th>Contact Number</th> --}}
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
 
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
+
                             <!-- /.card-body -->
                         </div>
                         <!-- /.card -->
@@ -140,6 +143,12 @@
                 </option>
             @endforeach
         @endslot
+        @slot('contract_templates_dropdown')
+            @foreach ($contractTemplates as $temp)
+                <option value="{{ $temp->id }}">{{ $temp->template_name }}
+                </option>
+            @endforeach
+        @endslot
     @endcomponent
 
     <script>
@@ -147,6 +156,7 @@
             let table = $('#vendorTable').DataTable({
                 processing: true,
                 serverSide: true,
+                scrollX: true,
 
                 ajax: {
                     url: "{{ route('vendor.list') }}",
@@ -160,9 +170,13 @@
                         orderable: true,
                         searchable: false
                     },
+                    // {
+                    //     data: 'company_name',
+                    //     name: 'companies.company_name',
+                    // },
                     {
-                        data: 'company_name',
-                        name: 'companies.company_name',
+                        data: 'vendor_code',
+                        name: 'vendors.vendor_code',
                     },
                     {
                         data: 'vendor_name',
@@ -176,18 +190,18 @@
                         data: 'vendor_email',
                         name: 'vendors.vendor_email',
                     },
-                    {
-                        data: 'contact_person',
-                        name: 'vendors.contact_person',
-                    },
-                    {
-                        data: 'contact_person_phone',
-                        name: 'vendors.contact_person_phone',
-                    },
-                    {
-                        data: 'accountant_name',
-                        name: 'vendors.accountant_name',
-                    },
+                    // {
+                    //     data: 'contact_person',
+                    //     name: 'vendors.contact_person',
+                    // },
+                    // {
+                    //     data: 'contact_person_phone',
+                    //     name: 'vendors.contact_person_phone',
+                    // },
+                    // {
+                    //     data: 'accountant_name',
+                    //     name: 'vendors.accountant_name',
+                    // },
                     {
                         data: 'action',
                         name: 'action',

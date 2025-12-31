@@ -50,13 +50,14 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Company</th>
+                                            {{-- <th>Company</th> --}}
                                             <th>Area</th>
                                             <th>Locality</th>
                                             {{-- <th>Property Type</th> --}}
                                             <th>Property Name</th>
                                             <th>Property size</th>
                                             <th>Plot no</th>
+                                            <th>Makani Numbet</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -128,14 +129,33 @@
     <script src="{{ asset('assets/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('assets/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
-    @component('admin.modals.modal-property', [
-        'areas' => $areas,
-        'localities' => $localities,
-        'property_types' => $property_types,
-    ])
+    {{-- @component('admin.modals.modal-property', [
+    'areas' => $areas,
+    'localities' => $localities,
+    'property_types' => $property_types,
+])
         @slot('company_dropdown')
             @foreach ($companies as $company)
                 <option value="{{ $company->id }}">{{ $company->company_name }}
+                </option>
+            @endforeach
+        @endslot
+
+        @slot('propertySizeUnits_dropdown')
+            @foreach ($propertySizeUnits as $unit)
+                <option value="{{ $unit->id }}">{{ $unit->unit_name }}
+                </option>
+            @endforeach
+        @endslot
+    @endcomponent --}}
+    @component('admin.modals.modal-property', [
+        // 'areas' => $areas,
+        'localities' => $localities,
+        'property_types' => $property_types,
+    ])
+        @slot('area_dropdown')
+            @foreach ($areas as $area)
+                <option value="{{ $area->id }}">{{ $area->area_name }}
                 </option>
             @endforeach
         @endslot
@@ -173,10 +193,10 @@
                     //     name: 'areas.id',
                     //     visible: false
                     // },
-                    {
-                        data: 'company_name',
-                        name: 'companies.company_name',
-                    },
+                    // {
+                    //     data: 'company_name',
+                    //     name: 'companies.company_name',
+                    // },
                     {
                         data: 'area_name',
                         name: 'areas.area_name',
@@ -200,6 +220,10 @@
                     {
                         data: 'plot_no',
                         name: 'properties.plot_no'
+                    },
+                    {
+                        data: 'makani_number',
+                        name: 'properties.makani_number'
                     },
                     {
                         data: 'action',
@@ -258,22 +282,29 @@
             document.activeElement.blur();
             var id = $(e.relatedTarget).data('id');
             var name = $(e.relatedTarget).data('name');
-            var company_id = $(e.relatedTarget).data('company');
+            // var company_id = $(e.relatedTarget).data('company');
             var area_id = $(e.relatedTarget).data('area');
             var locality_id = $(e.relatedTarget).data('locality');
+            var lat = $(e.relatedTarget).data('lat');
+            var long = $(e.relatedTarget).data('long');
+            var address = $(e.relatedTarget).data('address');
+            var location = $(e.relatedTarget).data('location');
+            var remarks = $(e.relatedTarget).data('remarks');
+            var status = $(e.relatedTarget).data('status');
+            var makani = $(e.relatedTarget).data('makani');
 
             if (!id) {
                 $(this).find('form')[0].reset();
-                $('#company_id').prop('disabled', false);
-                $('#company_id').val('').trigger('change');
+                // $('#company_id').prop('disabled', false);
+                // $('#company_id').val('').trigger('change');
 
-                companyChange(null, null);
+                // companyChange(null, null);
             } else {
-                $('#company_id').val(company_id).trigger('change');
-                companyChange(company_id, area_id, $(e.relatedTarget).data(
-                    'property_type'), locality_id);
-
-                // areaChange(areaId, locality_id);
+                // $('#company_id').val(company_id).trigger('change');
+                // companyChange(company_id, area_id, $(e.relatedTarget).data(
+                //     'property_type'), locality_id);
+                $('#area_id').val(area_id).trigger('change');
+                areaChange(area_id, locality_id);
 
                 // $('#company_id').prop('disabled', true);
                 $('#property_id').val(id);
@@ -281,6 +312,13 @@
                 $('#property_size').val($(e.relatedTarget).data('property_size'));
                 $('#property_size_unit').val($(e.relatedTarget).data('property_size_unit')).trigger('change');
                 $('#plot_no').val($(e.relatedTarget).data('plot_no'));
+                $('#latitude').val(lat);
+                $('#longitude').val(long);
+                $('#address').val(address);
+                $('#location').val(location);
+                $('#remarks').val(remarks);
+                $('#makani_number').val(makani);
+                $('#status').val(status).trigger('change');
 
             }
         });

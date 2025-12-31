@@ -82,4 +82,12 @@ class Area extends Model
     {
         return $this->hasMany(Locality::class);
     }
+    public function addedBy()
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

@@ -10,82 +10,137 @@
              <form action="" id="PropertyForm">
                  @csrf
                  <input type="hidden" name="id" id="property_id">
+
                  <div class="modal-body">
                      <div class="card-body">
-                         <div class="form-group row">
 
-                             {{-- @if (auth()->user()->company_id)
-                                 <input type="hidden" name="company_id" id="company_id"
-                                     value="{{ auth()->user()->company_id }}">
-                             @else --}}
-                             <div class="col-sm-4">
-                                 <label>Company</label>
-                                 <select class="form-control select2" name="company_id" id="company_id">
-                                     <option value="">Select Company</option>
-                                     {{ $company_dropdown }}
-                                 </select>
-                             </div>
-                             {{-- @endif --}}
-                             <div class="col-sm-4">
-                                 <label>Area</label>
-                                 <select class="form-control select2" name="area_id" id="area_id">
+                         <!-- Property Basic Info -->
+                         <h6 class="mb-4 text-lightblue vendorformh6">Property Basic Info</h6>
+                         <div class="form-row">
+                             <div class="col-md-6 col-sm-12 mb-3">
+                                 <label class="asterisk">Area</label>
+                                 <select class="form-control select2" name="area_id" id="area_id" required>
                                      <option value="">Select Area</option>
-
+                                     {{ $area_dropdown }}
                                  </select>
                              </div>
-                             <div class="col-sm-4">
-                                 <label>Locality</label>
-                                 <select class="form-control select2" name="locality_id" id="locality_id">
+                             <div class="col-md-6 col-sm-12 mb-3">
+                                 <label class="asterisk">Locality</label>
+                                 <select class="form-control select2" name="locality_id" id="locality_id" required>
                                      <option value="">Select Locality</option>
                                  </select>
                              </div>
                          </div>
 
-                         <div class="form-group row">
-                             {{-- <div class="col-sm-6">
-                                 <label for="inputEmail3" class="col-form-label">Property Type</label>
-                                 <select class="form-control select2" name="property_type_id" id="property_type_id">
-                                     <option value="">Select Property Type</option>
-                                 </select>
-                             </div> --}}
-                             <div class="col-sm-6">
-                                 <label for="inputEmail3" class="col-form-label">Property Name</label>
+
+
+                         <div class="form-row">
+                             <div class="col-md-6 col-sm-12 mb-3">
+                                 <label class="asterisk">Property Name</label>
                                  <input type="text" name="property_name" id="property_name" class="form-control"
-                                     id="inputEmail3" placeholder="Property Name">
+                                     placeholder="Property Name" required>
                              </div>
-                             <div class="col-sm-6">
-                                 <label>Property Size</label>
-                                 <div class="input-group input-group">
+                             <div class="col-md-6 col-sm-12 mb-3">
+                                 <label class="asterisk">Property Size</label>
+                                 <div class="input-group">
                                      <div class="input-group-prepend">
-                                         <select name="property_size_unit" id="property_size_unit">
+                                         <select name="property_size_unit" id="property_size_unit" class="form-control"
+                                             required>
                                              <option value="">Select Unit</option>
                                              {{ $propertySizeUnits_dropdown }}
-
                                          </select>
                                      </div>
-                                     <!-- /btn-group -->
                                      <input type="number" name="property_size" id="property_size" class="form-control"
-                                         placeholder="Property Size">
+                                         placeholder="Property Size" required>
                                  </div>
                              </div>
+                             {{-- @if (auth()->user()->company_id)
+                                 <input type="hidden" name="company_id" id="company_id"
+                                     value="{{ auth()->user()->company_id }}">
+                             @else --}}
+                             {{-- <div class="col-sm-4">
+                                 <label>Company</label>
+                                 <select class="form-control select2" name="company_id" id="company_id">
+                                     <option value="">Select Company</option>
+                                     {{ $company_dropdown }}
+                                 </select>
+                             </div> --}}
+                             {{-- @endif --}}
                          </div>
 
-                         <div class="form-group row">
+                         <hr>
 
-                             <div class="col-sm-6">
-                                 <label>Plot No</label>
+                         <!-- Plot & Coordinates -->
+                         <h6 class="mb-4 text-lightblue vendorformh6">Plot & Coordinates</h6>
+                         <div class="form-row">
+                             <div class="col-md-4 col-sm-12 mb-3">
+                                 <label class="asterisk">Plot No</label>
                                  <input type="text" name="plot_no" id="plot_no" class="form-control"
-                                     placeholder="Plot No">
+                                     placeholder="Plot No" required>
+                             </div>
+                             <div class="col-md-4 col-sm-12 mb-3">
+                                 <label>Latitude</label>
+                                 <input type="number" name="latitude" id="latitude" class="form-control"
+                                     placeholder="e.g. 25.204849" step="0.00000001" min="-90" max="90">
+                             </div>
+                             <div class="col-md-4 col-sm-12 mb-3">
+                                 <label>Longitude</label>
+                                 <input type="number" name="longitude" id="longitude" class="form-control"
+                                     placeholder="e.g. 55.270783" step="0.00000001" min="-180" max="180">
                              </div>
                          </div>
+                         <hr>
+
+                         <!-- Location & Address -->
+                         <h6 class="mb-4 text-lightblue vendorformh6">Location & Address</h6>
+                         <div class="form-row">
+                             <div class="col-md-6 col-sm-12 mb-3">
+                                 <label>Location</label>
+                                 <textarea name="location" id="location" class="form-control" rows="2" placeholder="Enter location link"></textarea>
+                             </div>
+                             <div class="col-md-6 col-sm-12 mb-3">
+                                 <label>Address</label>
+                                 <textarea name="address" id="address" class="form-control" rows="2" placeholder="Full property address"></textarea>
+                             </div>
+                         </div>
+                         <hr>
+
+                         <!-- Makani & Status -->
+                         <h6 class="mb-4 text-lightblue vendorformh6">Identifiers & Status</h6>
+                         <div class="form-row">
+                             <div class="col-md-6 col-sm-12 mb-3">
+                                 <label>Makani Number</label>
+                                 <input type="text" name="makani_number" id="makani_number" class="form-control"
+                                     placeholder="e.g. 1234567890" maxlength="10" pattern="\d{10}">
+                             </div>
+                             <div class="col-md-6 col-sm-12 mb-3">
+                                 <label class="asterisk">Status</label>
+                                 <select name="status" id="status" class="form-control" required>
+                                     <option value="1" selected>Active</option>
+                                     <option value="0">Inactive</option>
+                                 </select>
+                             </div>
+                         </div>
+                         <hr>
+
+                         <!-- Remarks -->
+                         <div class="form-row">
+                             <div class="col-md-12 mb-3">
+                                 <label>Remarks</label>
+                                 <textarea name="remarks" id="remarks" class="form-control" rows="3"
+                                     placeholder="Any additional notes or remarks"></textarea>
+                             </div>
+                         </div>
+
                      </div>
-                     <!-- /.card-body -->
                  </div>
+
                  <div class="modal-footer justify-content-between">
                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                      <button type="submit" class="btn btn-info">Save changes</button>
                  </div>
              </form>
+
          </div>
          <!-- /.modal-content -->
      </div>
@@ -93,35 +148,34 @@
  </div>
  <!-- /.modal -->
  <script>
-     let Areas = @json($areas);
      let allLocalities = @json($localities);
      let allpropertytypes = @json($property_types);
 
-     $('#company_id').on('change', function() {
-         let companyId = $(this).val();
-         companyChange(companyId, null); // reset areaVal when adding
-     });
+     //  $('#company_id').on('change', function() {
+     //      let companyId = $(this).val();
+     //      companyChange(companyId, null); // reset areaVal when adding
+     //  });
 
-     function companyChange(companyId, areaVal, propertytypeVal, localityVal) {
-         let options = '<option value="">Select Area</option>';
-         let options2 = '<option value="">Select Property Type</option>';
+     //  function companyChange(companyId, areaVal, propertytypeVal, localityVal) {
+     //      let options = '<option value="">Select Area</option>';
+     //      let options2 = '<option value="">Select Property Type</option>';
 
-         Areas
-             .filter(a => a.company_id == companyId)
-             .forEach(a => {
-                 options += `<option value="${a.id}" ${(a.id == areaVal) ? 'selected' : ''}>${a.area_name}</option>`;
-             });
-         $('#area_id').html(options).trigger('change');
-         areaChange(areaVal, localityVal);
+     //      Areas
+     //          .filter(a => a.company_id == companyId)
+     //          .forEach(a => {
+     //              options += `<option value="${a.id}" ${(a.id == areaVal) ? 'selected' : ''}>${a.area_name}</option>`;
+     //          });
+     //      $('#area_id').html(options).trigger('change');
+     //      areaChange(areaVal, localityVal);
 
-         allpropertytypes
-             .filter(pt => pt.company_id == companyId)
-             .forEach(pt => {
-                 options2 +=
-                     `<option value="${pt.id}" ${(pt.id == propertytypeVal) ? 'selected' : ''}>${pt.property_type}</option>`;
-             });
-         $('#property_type_id').html(options2).trigger('change');
-     }
+     //      allpropertytypes
+     //          .filter(pt => pt.company_id == companyId)
+     //          .forEach(pt => {
+     //              options2 +=
+     //                  `<option value="${pt.id}" ${(pt.id == propertytypeVal) ? 'selected' : ''}>${pt.property_type}</option>`;
+     //          });
+     //      $('#property_type_id').html(options2).trigger('change');
+     //  }
 
      $('#area_id').on('change', function() {
          let areaId = $(this).val();
@@ -146,7 +200,7 @@
          e.preventDefault();
          //  $('#company_id').prop('disabled', false);
          const ptform = $(this);
-         ptform.find('select[name="company_id"]').prop('disabled', false);
+         //  ptform.find('select[name="company_id"]').prop('disabled', false);
          ptform.find('select[name="area_id"]').prop('disabled', false);
          ptform.find('select[name="locality_id"]').prop('disabled', false);
          ptform.find('select[name="property_type_id"]').prop('disabled', false);
@@ -178,7 +232,7 @@
                          document.activeElement.blur();
                      }
                      ptform[0].reset();
-                     ptform.find('select[name="company_id"]').prop('disabled', true);
+                     //  ptform.find('select[name="company_id"]').prop('disabled', true);
                      ptform.find('select[name="area_id"]').prop('disabled', true);
                      ptform.find('select[name="locality_id"]').prop('disabled', true);
                      ptform.find('select[name="property_type_id"]').prop('disabled', true);
@@ -201,16 +255,26 @@
 
          $form[0].reset();
 
+         //  $form.find(
+         //      'select[name="company_id"], select[name="area_id"], select[name="locality_id"]]'
+         //  ).each(function() {
+         //      const $select = $(this);
+
+         //      $select.empty();
+
+         //      $select.val(null).trigger('change');
+
+         //      $select.prop('disabled', false);
+         //  });
          $form.find(
-             'select[name="company_id"], select[name="area_id"], select[name="locality_id"]]'
+             'select[name="area_id"], select[name="locality_id"]'
          ).each(function() {
              const $select = $(this);
 
-             $select.empty();
-
+             //  $select.empty();
              $select.val(null).trigger('change');
-
              $select.prop('disabled', false);
          });
+
      });
  </script>

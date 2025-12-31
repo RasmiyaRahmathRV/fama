@@ -17,4 +17,12 @@ class AgreementDocRepository
     {
         return AgreementDocument::create($data);
     }
+    public function update(array $data)
+    {
+        return AgreementDocument::update($data);
+    }
+    public function getDocuments($id)
+    {
+        return AgreementDocument::with('TenantIdentity')->where("agreement_id", $id)->get();
+    }
 }

@@ -34,6 +34,9 @@ class AgreementTenant extends Model
         'added_by',
         'updated_by',
         'deleted_by',
+        'contact_person',
+        'contact_number',
+        'contact_email'
     ];
 
     /**
@@ -49,5 +52,9 @@ class AgreementTenant extends Model
     public function agreement()
     {
         return $this->belongsTo(Agreement::class, 'agreement_id');
+    }
+    public function nationality()
+    {
+        return $this->belongsTo((Nationality::class));
     }
 }

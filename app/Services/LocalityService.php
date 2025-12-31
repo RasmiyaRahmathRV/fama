@@ -81,7 +81,7 @@ class LocalityService
     private function validate(array $data, $id = null)
     {
         $validator = Validator::make($data, [
-            'company_id' => 'required|exists:companies,id',
+            // 'company_id' => 'required|exists:companies,id',
             'area_id' => 'required|exists:areas,id',
             'locality_name' => [
                 'required',
@@ -91,14 +91,14 @@ class LocalityService
                     ->where(
                         fn($query) =>
                         $query->where('area_id', $data['area_id'] ?? null)
-                            ->where('company_id', $data['company_id'] ?? null)
+                            // ->where('company_id', $data['company_id'] ?? null)
                             ->whereNull('deleted_at'),
                     )
             ],
         ], [
             'locality_name.unique' => 'This locality name already exists. Please choose another.',
             'area_id.unique' => 'This area already exists. Please choose another.',
-            'company_id.unique' => 'This company already exists. Please choose another.',
+            // 'company_id.unique' => 'This company already exists. Please choose another.',
         ]);
 
         if ($validator->fails()) {
@@ -114,7 +114,7 @@ class LocalityService
             ['data' => 'DT_RowIndex', 'name' => 'id'],
             ['data' => 'locality_name', 'name' => 'locality_name'],
             ['data' => 'area_name', 'name' => 'area_name'],
-            ['data' => 'company_name', 'name' => 'company_name'],
+            // ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
         ];
 
@@ -123,14 +123,20 @@ class LocalityService
             ->addIndexColumn()
             ->addColumn('locality_name', fn($row) => $row->locality_name ?? '-')
             ->addColumn('area_name', fn($row) => $row->area->area_name ?? '-')
-            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            // ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('action', function ($row) {
                 $action = '';
                 if (Gate::allows('locality.edit')) {
                     $action .= '<button class="btn btn-info" data-toggle="modal"
                                                         data-target="#modal-locality" data-id="' . $row->id . '"
                                                         data-name="' . $row->locality_name . '"
-                                                        data-company="' . $row->company_id . '" data-area="' . $row->area_id . '">Edit</button>';
+                                                        data-company="' . $row->company_id . '"
+                                                         data-area="' . $row->area_id . '"
+                                                         data-status="' . $row->status . '"
+                                                         >Edit</button>';
+                }
+                if (Gate::allows('locality.view')) {
+                    $action .= '<a href="' . route('locality.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
                 }
                 if (Gate::allows('locality.delete')) {
                     $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
@@ -153,10 +159,12 @@ class LocalityService
         foreach ($rows as $key => $row) {
             // dd($row);
             $area = $this->areaService->getByName(['area_name' => $row['area']]);
-            $company_id = $this->companyService->getIdByCompanyname($row['company']);
+            // $company_id = $this->companyService->getIdByCompanyname($row['company']);
 
             if (empty($area)) {
-                $existing = $this->areaService->checkIfExist(array('company_id' => $company_id, 'area_name' => $row['area']));
+                // $existing = $this->areaService->checkIfExist(array('company_id' => $company_id, 'area_name' => $row['area']));
+                $existing = $this->areaService->checkIfExist(array('area_name' => $row['area']));
+
 
                 if (!empty($existing)) {
                     // echo "exist";
@@ -165,14 +173,14 @@ class LocalityService
                     $area = $existing;
                 } else {
                     $area = $this->areaService->createOrRestore([
-                        'company_id' => $company_id,
+                        // 'company_id' => $company_id,
                         'area_name' => $row['area'],
                     ], $user_id);
                 }
             }
 
             $insertData[] = [
-                'company_id' => $area->company_id,
+                // 'company_id' => $area->company_id,
                 'area_id' => $area->id,
                 'locality_code' => $this->setLocalityCode($key + 1),
                 'locality_name' => $row['locality'],

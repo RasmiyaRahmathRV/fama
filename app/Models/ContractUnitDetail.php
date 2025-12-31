@@ -26,6 +26,15 @@ class ContractUnitDetail extends Model
         'property_type_id',
         'partition',
         'bedspace',
+        'room',
+        'maid_room',
+        'rent_per_flat',
+        'rent_per_unit_per_month',
+        'rent_per_unit_per_annum',
+        'total_rent_per_unit_per_month',
+        'subunittype',
+        'subunitcount_per_unit',
+        'subunit_rent_per_unit',
         'total_partition',
         'total_bedspace',
         'rent_per_partition',
@@ -40,7 +49,12 @@ class ContractUnitDetail extends Model
         'added_by',
         'updated_by',
         'deleted_by',
-        'is_vacant'
+        'is_vacant',
+        'unit_rent_per_month',
+        'subunit_occupied_count',
+        'subunit_vacant_count',
+        'total_payment_received',
+        'total_payment_pending'
     ];
 
     public function contract()
@@ -109,7 +123,7 @@ class ContractUnitDetail extends Model
 
     public function getAttributeValue($key)
     {
-        $value = parent::getAttributeValue($key);
+        // $value = parent::getAttributeValue($key);
         $formatted = [
             'unit_rent_per_annum',
             'rent_per_room',
@@ -117,11 +131,36 @@ class ContractUnitDetail extends Model
             'rent_per_bedspace',
         ];
 
-        if (in_array($key, $formatted, true)) {
+        // ✅ Safely get value only if attribute exists
+        $value = array_key_exists($key, $this->attributes)
+            ? parent::getAttributeValue($key)
+            : null;
+
+        // ✅ Only format if the key is one of your formatted fields
+        //    and the value is numeric
+        if (in_array($key, $formatted, true) && is_numeric($value)) {
             return $this->formatNumber($value);
         }
-        return $value;
+
+        return $value ?? parent::getAttributeValue($key);
     }
+
+    // public function getUnitRentPerAnnumAttribute($value)
+    // {
+    //     return formatNumber($value);
+    // }
+    // public function getRentPerRoomAttribute($value)
+    // {
+    //     return formatNumber($value);
+    // }
+    // public function getRentPerPartitionAttribute($value)
+    // {
+    //     return formatNumber($value);
+    // }
+    // public function getRentPerBedspaceAttribute($value)
+    // {
+    //     return formatNumber($value);
+    // }
 
     protected static function booted()
     {
@@ -166,5 +205,11 @@ class ContractUnitDetail extends Model
                 $contractUnitDetail->$relation()->withTrashed()->restore();
             }
         });
+    }
+
+
+    public function agreementUnits()
+    {
+        return $this->hasMany(AgreementUnit::class, 'contract_unit_details_id');
     }
 }

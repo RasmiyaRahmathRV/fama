@@ -61,10 +61,32 @@ class Vendor extends Model
 {
     use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
 
-    protected $fillable = ['company_id', 'vendor_code', 'vendor_name', 'vendor_phone', 'vendor_email', 'vendor_address', 'accountant_name', 'accountant_phone', 'accountant_email', 'contact_person', 'contact_person_phone', 'contact_person_email', 'added_by', 'updated_by', 'deleted_by', 'status'];
+    protected $fillable = ['company_id', 'vendor_code', 'vendor_name', 'vendor_phone', 'vendor_email', 'vendor_address', 'accountant_name', 'accountant_phone', 'accountant_email', 'contact_person', 'contact_person_phone', 'contact_person_email', 'added_by', 'updated_by', 'deleted_by', 'status', 'contract_template_id', 'location', 'landline_number', 'remarks'];
 
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function contract_template()
+    {
+        return $this->belongsTo(VendorContractTemplate::class, 'contract_template_id');
+    }
+
+    public function contracts()
+    {
+        return $this->hasMany(Contract::class);
+    }
+    public function addedBy()
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+    public function contractTemplate()
+    {
+        return $this->belongsTo(VendorContractTemplate::class, 'contract_template_id');
     }
 }

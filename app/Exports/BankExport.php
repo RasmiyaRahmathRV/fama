@@ -27,23 +27,23 @@ class BankExport implements FromCollection, WithHeadings
                 $q->where('bank_name', 'like', "%{$search}%")
                     ->orWhere('bank_code', 'like', "%{$search}%")
                     ->orWhere('bank_short_code', 'like', "%{$search}%")
-                    // ->orWhereHas('company', function ($q2) use ($search) {
-                    //     $q2->where('company_name', 'like', "%{$search}%");
-                    // })
+                    ->orWhereHas('company', function ($q2) use ($search) {
+                        $q2->where('company_name', 'like', "%{$search}%");
+                    })
                     ->orWhereRaw("CAST(banks.id AS CHAR) LIKE ?", ["%{$search}%"]);
             });
         }
 
-        // if ($this->filter) {
-        //     $query->where('company_id', $this->filter);
-        // }
+        if ($this->filter) {
+            $query->where('company_id', $this->filter);
+        }
 
         return $query->get()
             ->map(function ($bank) {
                 return [
                     'ID' => $bank->id,
                     'Bank Code' => $bank->bank_code,
-                    // 'Company' => $bank->company->company_name ?? '',
+                    'Company' => $bank->company->company_name ?? '',
                     'Bank Name' => $bank->bank_name,
                     'Bank Short Code' => $bank->bank_short_code,
                 ];
@@ -55,7 +55,7 @@ class BankExport implements FromCollection, WithHeadings
         return [
             'ID',
             'Bank Code',
-            // 'Company',
+            'Company',
             'Bank Name',
             'Bank Short Code'
         ];

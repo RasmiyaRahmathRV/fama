@@ -52,6 +52,7 @@ class PropertyController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
         try {
             if (!empty($request->id)) {
                 $property = $this->propertyService->update($request->id, $request->all());
@@ -90,6 +91,7 @@ class PropertyController extends Controller
     public function show(Property $property)
     {
         //
+        return view("admin.master.property-view", compact('property'));
     }
 
     /**

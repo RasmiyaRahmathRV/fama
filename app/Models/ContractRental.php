@@ -42,6 +42,11 @@ class ContractRental extends Model
         return $this->belongsTo(Contract::class);
     }
 
+    public function installment()
+    {
+        return $this->belongsTo(Installment::class, 'receivable_installments', 'id');
+    }
+
     public function user()
     {
         return $this->belongsTo(
@@ -55,6 +60,7 @@ class ContractRental extends Model
     {
         $this->attributes['receivable_start_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
+
     private function formatNumber($value)
     {
         if ($value === null || $value === '') {
@@ -69,7 +75,6 @@ class ContractRental extends Model
 
         return number_format((int) $value);
     }
-
 
     public function getAttributeValue($key)
 
@@ -89,4 +94,30 @@ class ContractRental extends Model
         }
         return $value;
     }
+
+
+    // public function getTotalPaymentToVendorAttribute($value)
+    // {
+    //     return formatNumber($value);
+    // }
+    // public function getTotalOtcAttribute($value)
+    // {
+    //     return formatNumber($value);
+    // }
+    // public function getExpectedProfitAttribute($value)
+    // {
+    //     return formatNumber($value);
+    // }
+    // public function getRoiPercAttribute($value)
+    // {
+    //     return formatNumber($value);
+    // }
+    // public function getRentReceivablePerAnnumAttribute($value)
+    // {
+    //     return formatNumber($value);
+    // }
+    // public function getRentPerAnnumPayableAttribute($value)
+    // {
+    //     return formatNumber($value);
+    // }
 }

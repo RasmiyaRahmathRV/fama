@@ -56,7 +56,8 @@
             $(function() {
                 const map = {
                     ['#partition' + i]: '#part' + i,
-                    ['#bedspace' + i]: '#bs' + i
+                    ['#bedspace' + i]: '#bs' + i,
+                    ['#room' + i]: '#rm' + i
                     // '.partcheck': '.part',
                     // '.bedcheck': '.bs',
                 };
@@ -92,12 +93,12 @@
                     if (prevBlocks.length > unitCount) {
                         if (!existingBtn) {
                             lastFormGroup.insertAdjacentHTML('beforeend', `
-                                <div class="col-sm-1 btndelete">
-                                    <button type="button" class="btn-danger btn-block dlt-div btndetd m-4" title="Delete" data-toggle="tooltip">
-                                        <i class="fa fa-trash fa-1x"></i>
-                                    </button>
-                                </div>
-                            `);
+                        <div class="col-sm-1 btndelete">
+                            <button type="button" class="btn-danger btn-block dlt-div btndetd m-4" title="Delete" data-toggle="tooltip">
+                                <i class="fa fa-trash fa-1x"></i>
+                            </button>
+                        </div>
+                    `);
                             $('.nextBtn').prop('disabled', true);
 
                             // Remove button
@@ -105,6 +106,10 @@
                             if (removeBtn) {
                                 removeBtn.addEventListener('click', () => {
                                     if (prevBlocks.length > unitCount) {
+                                        const detailId = $(block.querySelector(
+                                            'input[name="unit_detail[id][]"]'
+                                        )).val();
+
                                         Swal.fire({
                                             title: "Are you sure?",
                                             icon: "warning",
@@ -114,9 +119,7 @@
                                             confirmButtonText: "Yes, delete it!"
                                         }).then((result) => {
                                             if (result.isConfirmed) {
-                                                const detailId = $(block.querySelector(
-                                                    'input[name="unit_detail[id][]"]'
-                                                )).val();
+
 
                                                 // var fdataUnit = new FormData();
 
@@ -132,85 +135,156 @@
                                                             .showLoading(); // Shows the built-in loader
                                                     }
                                                 });
-                                                $.ajaxSetup({
-                                                    headers: {
-                                                        'X-CSRF-TOKEN': $(
-                                                            'meta[name="csrf-token"]'
-                                                        ).attr(
-                                                            'content')
-                                                    }
-                                                });
-                                                $.ajax({
-                                                    url: `/contracts/unit-detail/${detailId}`,
-                                                    type: 'DELETE',
-                                                    // data: fdataUnit,
-                                                    // processData: false,
-                                                    // contentType: false,
-                                                    success: function(
-                                                        response) {
-                                                        toastr.success(
-                                                            response
-                                                            .message);
-                                                        // window.location.reload();
-                                                        Swal.close();
-                                                        const
-                                                            sameClassName =
-                                                            Array.from(
-                                                                block
-                                                                .classList)
-                                                            .find(
-                                                                cls => cls
-                                                                .startsWith(
-                                                                    'profitDeletecls'
-                                                                ));
 
-                                                        $('.' +
-                                                                sameClassName
-                                                            )
-                                                            .remove();
-                                                        // block.remove();
-                                                        calculateTotalRent
-                                                            ();
-                                                        CalculatePayables();
-                                                        calculateRoiFF();
-                                                        valueTorentRec(
-                                                            'change');
-                                                        finalRecCal();
-
-                                                        // After removal, check if we reached the minimum count
-                                                        const
-                                                            remainingDeletes =
-                                                            container
-                                                            .querySelectorAll(
-                                                                '.btndelete'
-                                                            );
-                                                        if (remainingDeletes
-                                                            .length <= 0 ||
-                                                            container
-                                                            .querySelectorAll(
-                                                                '.apdi')
-                                                            .length <=
-                                                            unitCount) {
-                                                            remainingDeletes
-                                                                .forEach(
-                                                                    div =>
-                                                                    div
-                                                                    .remove()
-                                                                );
-
-                                                            $('.nextBtn')
-                                                                .prop(
-                                                                    'disabled',
-                                                                    false);
+                                                if (detailId) {
+                                                    $.ajaxSetup({
+                                                        headers: {
+                                                            'X-CSRF-TOKEN': $(
+                                                                'meta[name="csrf-token"]'
+                                                            ).attr(
+                                                                'content')
                                                         }
-                                                    },
-                                                    error: function(err) {
-                                                        toastr.error(err
-                                                            .responseJSON
-                                                            .message);
-                                                        Swal.close();
+                                                    });
+                                                    $.ajax({
+                                                        url: `/contracts/unit-detail/${detailId}`,
+                                                        type: 'DELETE',
+                                                        // data: fdataUnit,
+                                                        // processData: false,
+                                                        // contentType: false,
+                                                        success: function(
+                                                            response) {
+                                                            toastr.success(
+                                                                response
+                                                                .message
+                                                            );
+                                                            // window.location.reload();
+                                                            Swal.close();
+                                                            const
+                                                                sameClassName =
+                                                                Array.from(
+                                                                    block
+                                                                    .classList
+                                                                )
+                                                                .find(
+                                                                    cls =>
+                                                                    cls
+                                                                    .startsWith(
+                                                                        'profitDeletecls'
+                                                                    ));
+
+                                                            $('.' +
+                                                                    sameClassName
+                                                                )
+                                                                .remove();
+                                                            // block.remove();
+                                                            calculateTotalRent
+                                                                ();
+                                                            CalculatePayables
+                                                                ();
+                                                            calculateRoiFF
+                                                                ();
+                                                            valueTorentRec(
+                                                                'change'
+                                                            );
+                                                            finalRecCal();
+
+                                                            // After removal, check if we reached the minimum count
+                                                            const
+                                                                remainingDeletes =
+                                                                container
+                                                                .querySelectorAll(
+                                                                    '.btndelete'
+                                                                );
+                                                            if (remainingDeletes
+                                                                .length <=
+                                                                0 ||
+                                                                container
+                                                                .querySelectorAll(
+                                                                    '.apdi')
+                                                                .length <=
+                                                                unitCount) {
+                                                                remainingDeletes
+                                                                    .forEach(
+                                                                        div =>
+                                                                        div
+                                                                        .remove()
+                                                                    );
+
+                                                                $('.nextBtn')
+                                                                    .prop(
+                                                                        'disabled',
+                                                                        false
+                                                                    );
+                                                            }
+                                                        },
+                                                        error: function(err) {
+                                                            toastr.error(err
+                                                                .responseJSON
+                                                                .message
+                                                            );
+                                                            Swal.close();
+                                                        }
+                                                    });
+                                                } else {
+                                                    Swal.close();
+                                                    const
+                                                        sameClassName =
+                                                        Array.from(
+                                                            block
+                                                            .classList
+                                                        )
+                                                        .find(
+                                                            cls =>
+                                                            cls
+                                                            .startsWith(
+                                                                'profitDeletecls'
+                                                            ));
+
+                                                    $('.' +
+                                                            sameClassName
+                                                        )
+                                                        .remove();
+                                                    // block.remove();
+                                                    calculateTotalRent
+                                                        ();
+                                                    CalculatePayables
+                                                        ();
+                                                    calculateRoiFF
+                                                        ();
+                                                    valueTorentRec(
+                                                        'change'
+                                                    );
+                                                    finalRecCal();
+
+                                                    // After removal, check if we reached the minimum count
+                                                    const
+                                                        remainingDeletes =
+                                                        container
+                                                        .querySelectorAll(
+                                                            '.btndelete'
+                                                        );
+                                                    if (remainingDeletes
+                                                        .length <=
+                                                        0 ||
+                                                        container
+                                                        .querySelectorAll(
+                                                            '.apdi')
+                                                        .length <=
+                                                        unitCount) {
+                                                        remainingDeletes
+                                                            .forEach(
+                                                                div =>
+                                                                div
+                                                                .remove()
+                                                            );
+
+                                                        $('.nextBtn')
+                                                            .prop(
+                                                                'disabled',
+                                                                false
+                                                            );
                                                     }
-                                                });
+                                                }
                                             } else {
                                                 toastr.error(errors.responseJSON
                                                     .message);
@@ -307,77 +381,89 @@
             const newBlock = document.createElement('div');
             newBlock.classList.add('apdi', 'profitDeletecls' + i);
             newBlock.innerHTML = `<div class="form-group row">
-                <div class="col-sm-2 add-morecol2">
-                    <label class="control-label"> Unit No </label>
-                    <input type="text" name="unit_detail[unit_number][]" class="form-control unit_no" placeholder="Unit No" required>
-                </div>
-                <div class="col-sm-2 add-morecol2">
-                    <label class="control-label"> Unit Type </label>
-                    <select class="form-control select2 unit_type" name="unit_detail[unit_type_id][]" id="unit_type` +
+        <div class="col-sm-2 add-morecol2">
+            <label class="control-label"> Unit No </label>
+            <input type="text" name="unit_detail[unit_number][]" class="form-control unit_no" placeholder="Unit No" required>
+        </div>
+        <div class="col-sm-2 add-morecol2">
+            <label class="control-label"> Unit Type </label>
+            <select class="form-control select2 unit_type" name="unit_detail[unit_type_id][]" id="unit_type` +
                 i + `" required>
-                        ` + UnitTypeOptions + `
-                    </select>
-                </div>
-                <div class="col-sm-1 add-morecol2">
-                    <label class="control-label"> Floor No </label>
-                    <input type="text" name="unit_detail[floor_no][]" class="form-control" placeholder="Floor No" required>
-                </div>
-                <div class="col-sm-2 add-morecol2">
-                    <label class="control-label"> Unit Status </label>
-                    <select class="form-control select2" name="unit_detail[unit_status_id][]" id="unit_status` + i + `" required>
-                        ` + UnitStatusOptions + `
-                    </select>
-                </div>
-                <div class="col-sm-2 add-morecol2">
-                    <label class="control-label"> Unit Rent Per Annum </label>
-                    <input type="number" name="unit_detail[unit_rent_per_annum][]" class="form-control unit_rent_per_annum" placeholder="Unit Rent Per Annum" required>
-                </div>
-                <div class="col-sm-3 add-morecol2">
-                    <label class="control-label">Unit Size</label>
-                        <div class="input-group input-group">
-                            <div class="input-group-prepend select2">
-                                <select name="unit_detail[unit_size_unit_id][]" id="" required>
-                                    ` + UnitSizeUnitOptions + `
-                                </select>
-                            </div>
-                            <input type="number" name="unit_detail[unit_size][]" class="form-control" placeholder="Unit Size" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-sm-2 add-morecol2">
-                        <label class="control-label"> Property type</label>
-                        <select class="form-control select2" name="unit_detail[property_type_id][]" id="" required>
-                            ` + propertyTypeOptions + `
+                ` + UnitTypeOptions + `
+            </select>
+        </div>
+        <div class="col-sm-1 add-morecol2">
+            <label class="control-label"> Floor No </label>
+            <input type="text" name="unit_detail[floor_no][]" class="form-control" placeholder="Floor No" required>
+        </div>
+        <div class="col-sm-2 add-morecol2">
+            <label class="control-label"> Unit Status </label>
+            <select class="form-control select2" name="unit_detail[unit_status_id][]" id="unit_status` + i + `" required>
+                ` + UnitStatusOptions + `
+            </select>
+        </div>
+        <div class="col-sm-2 add-morecol2">
+            <label class="control-label"> Unit Rent Per Annum </label>
+            <input type="number" name="unit_detail[unit_rent_per_annum][]" class="form-control unit_rent_per_annum" placeholder="Unit Rent Per Annum" required>
+        </div>
+        <div class="col-sm-3 add-morecol2">
+            <label class="control-label">Unit Size</label>
+                <div class="input-group input-group">
+                    <div class="input-group-prepend select2">
+                        <select name="unit_detail[unit_size_unit_id][]" id="" required>
+                            ` + UnitSizeUnitOptions + `
                         </select>
                     </div>
-                    <div class="col-sm-3 m-4">
-                        <div class="form-group clearfix">
-                            <div class="icheckbox icheck-success d-inline">
-                                <input type="checkbox" name="unit_detail[partition][` + i + `]" id="partition` + i + `" class="partcheck" value="1" required>
-                                <label class="labelpermission" for="partition` + i + `"> Partition </label>
-                            </div>
-                            <div class="icheckbox icheck-success d-inline">
-                                <input type="checkbox" name="unit_detail[partition][` + i + `]" id="bedspace` + i + `" class="bedcheck" value="2" required>
-                                <label class="labelpermission" for="bedspace` + i + `"> Bedspace </label>
-                            </div>
-                        </div>
+                    <input type="number" name="unit_detail[unit_size][]" class="form-control" placeholder="Unit Size" required>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-2 add-morecol2">
+                <label class="control-label"> Property type</label>
+                <select class="form-control select2" name="unit_detail[property_type_id][]" id="" required>
+                    ` + propertyTypeOptions + `
+                </select>
+            </div>
+            <div class="col-sm-4 m-4">
+                <div class="form-group clearfix">
+                    <div class="icheckbox icheck-success d-inline">
+                        <input type="checkbox" name="unit_detail[partition][` + i + `]" id="partition` + i + `" class="partcheck" value="1" required>
+                        <label class="labelpermission" for="partition` + i + `"> Partition </label>
                     </div>
-                    <div class="col-sm-2 part" id="part` + i + `">
-                        <label class="control-label">Total Partitions</label>
-                        <input type="number" name="unit_detail[total_partition][]" class="form-control total_partitions" placeholder="Total Partitions" required>
+                    <div class="icheckbox icheck-success d-inline">
+                        <input type="checkbox" name="unit_detail[partition][` + i + `]" id="bedspace` + i + `" class="bedcheck" value="2" required>
+                        <label class="labelpermission" for="bedspace` + i + `"> Bedspace </label>
                     </div>
-                    <div class="col-sm-2 bs" id="bs` + i + `">
-                        <label class="control-label">Total Bed Spaces</label>
-                        <input type="number" name="unit_detail[total_bedspace][]" class="form-control total_bedspaces" placeholder="Total Bed Spaces" required>
+                    <div class="icheckbox icheck-success d-inline">
+                        <input type="checkbox" name="unit_detail[partition][` + i + `]" id="room` + i + `" class="roomcheck" value="3" required>
+                        <label class="labelpermission" for="room` + i + `"> Room </label>
+                    </div>
+                     <div class="icheckbox icheck-success d-inline">
+                        <input type="checkbox" name="unit_detail[maid_room][` + i + `]" id="maidroom` + i + `" class="maidroomcheck" value="1" required>
+                        <label class="labelpermission" for="maidroom` + i + `"> Maid Room </label>
                     </div>
                 </div>
-                <hr>
-            </div>`;
+            </div>
+            <div class="col-sm-2 part" id="part` + i + `">
+                <label class="control-label">Total Partitions</label>
+                <input type="number" name="unit_detail[total_partition][]" class="form-control total_partitions" placeholder="Total Partitions" required>
+            </div>
+            <div class="col-sm-2 bs" id="bs` + i + `">
+                <label class="control-label">Total Bed Spaces</label>
+                <input type="number" name="unit_detail[total_bedspace][]" class="form-control total_bedspaces" placeholder="Total Bed Spaces" required>
+            </div>
+            <div class="col-sm-2 rm" id="rm` + i + `">
+                <label class="control-label">Total Room</label>
+                <input type="number" name="unit_detail[total_room][]" class="form-control total_room" placeholder="Total Room" required>
+            </div>
+        </div>
+        <hr>
+    </div>`;
 
             container.appendChild(newBlock);
             attachEvents(newBlock, i, 'addmore');
-            console.log('Added unit block: ' + i);
+            // console.log('Added unit block: ' + i);
 
             $(container).find('select.select2').select2({
                 placeholder: 'Select an option',
@@ -675,7 +761,7 @@
         var durationDays = parseInt($('#duration_days').val()) || 0;
 
         const startDate = parseDateCustom(startDateVal);
-        console.log(startDate);
+        // console.log(startDate);
         if (!startDate || isNaN(startDate.getTime())) {
             $('.enddate').val('');
             return;
@@ -796,20 +882,19 @@
 
 <!-- otc cost calculations -->
 <script>
-    function calculateOtc() {
-        // console.log('otc');
+    function calculateSubAccommodations() {
         let totalPartition = 0;
         let totalBedSpace = 0;
+        let totalRoom = 0;
         let totalPartitionFb = 0;
         let totalBedSpaceFb = 0;
         let totSubValue = 0;
         let cod = 0;
-        let totRoom = 0;
+        let totFlat = 0;
 
+        const countOfHouses = $('.unit_no').filter((_, el) => $(el).val()).length;
+        const totalUnitCount = $('.unit_count').filter((_, el) => $(el).val()).length;
         if ($('#contract_type').val() == '1') {
-            // Count filled inputs
-            const countOfHouses = $('.unit_no').filter((_, el) => $(el).val()).length;
-            const totalUnitCount = $('.unit_count').filter((_, el) => $(el).val()).length;
 
             // Sum values
             const sumValues = selector => $('.' + selector).toArray().reduce((sum, el) => sum + (parseFloat($(el)
@@ -821,6 +906,7 @@
             if (countOfHouses > 0) {
                 totalPartition = sumValues('total_partitions');
                 totalBedSpace = sumValues('total_bedspaces');
+                totalRoom = sumValues('total_room');
             }
 
             if (totalUnitCount > 0) {
@@ -831,24 +917,53 @@
 
             if (totalPartition > 0) cod = totSubValue = totalPartition;
             if (totalBedSpace > 0) totSubValue += totalBedSpace;
+            if (totalRoom > 0) totSubValue += totalRoom;
 
             if (totSubValue === 0) totSubValue = totalUnitCount || countOfHouses;
 
-            totRoom = totalUnitCount || countOfHouses;
+            totFlat = totalUnitCount || countOfHouses;
 
             if (totalPartitionFb > 0) cod = totSubValue = totalPartitionFb;
             if (totalBedSpaceFb > 0) totSubValue += totalBedSpaceFb;
+        } else {
+            totFlat = totalUnitCount || countOfHouses;
+            if (totSubValue === 0) totSubValue = totalUnitCount || countOfHouses;
+            if (totalPartitionFb > 0) cod = totSubValue;
         }
 
+        return {
+            totalPartition,
+            totalBedSpace,
+            totalRoom,
+            totalPartitionFb,
+            totalBedSpaceFb,
+            totSubValue,
+            cod,
+            totFlat,
+        };
+    }
+
+
+    function calculateOtc() {
+        // console.log('otc');
+
+
+        if ({{ $edit }}) {
+            return;
+        }
+
+        let subvalues = calculateSubAccommodations();
 
         // Set output values
-        $('#cost_of_development').val(1200 * cod);
-        $('#cost_of_beds').val(240 * totSubValue);
-        $('#cost_of_mattress').val(55 * totSubValue);
-        $('#cost_of_cabinets').val(100 * totSubValue);
-        $('#appliances').val(2500 * totRoom);
+        $('#cost_of_development').val(1200 * subvalues.cod);
+        $('#cost_of_beds').val(240 * subvalues.totSubValue);
+        $('#cost_of_mattress').val(55 * subvalues.totSubValue);
+        $('#cost_of_cabinets').val(100 * subvalues.totSubValue);
+        $('#cost_of_cabinets').val(100 * subvalues.totSubValue);
+        $('#appliances').val(2500 * subvalues.totFlat);
         $('#decoration').val(0);
-        $('#dewa_deposit').val(2130 * totRoom);
+        $('#cost_of_cabinets').val(100 * subvalues.totSubValue);
+        $('#dewa_deposit').val(2130 * subvalues.totFlat);
         $('#ejari').val(0);
 
         CalculatePayables();
@@ -889,12 +1004,12 @@
                     if (prevFbBlocks.length > noofinstallments) {
                         if (!existingBtn) {
                             lastFormGroup.insertAdjacentHTML('beforeend', `
-                                <div class="col-sm-1 btndelete">
-                                    <button type="button" class="btn-danger btn-block dlt-divPay btndetdPayment" title="Delete" data-toggle="tooltip">
-                                        <i class="fa fa-trash fa-1x"></i>
-                                    </button>
-                                </div>
-                            `);
+                        <div class="col-sm-1 btndelete">
+                            <button type="button" class="btn-danger btn-block dlt-divPay btndetdPayment" title="Delete" data-toggle="tooltip">
+                                <i class="fa fa-trash fa-1x"></i>
+                            </button>
+                        </div>
+                    `);
 
                             $('.nextBtn').prop('disabled', true);
 
@@ -917,7 +1032,7 @@
                                                     .querySelector(
                                                         'input[name="payment_detail[id][]"]'
                                                     )).val();
-
+                                                // console.log(detailId);
                                                 // var fdataUnit = new FormData();
 
                                                 // fdataUnit.append('_token', $('meta[name="csrf-token"]')
@@ -932,79 +1047,118 @@
                                                             .showLoading(); // Shows the built-in loader
                                                     }
                                                 });
-                                                $.ajaxSetup({
-                                                    headers: {
-                                                        'X-CSRF-TOKEN': $(
-                                                            'meta[name="csrf-token"]'
-                                                        ).attr(
-                                                            'content'
-                                                        )
-                                                    }
-                                                });
-                                                $.ajax({
-                                                    url: `/contracts/payment-detail/${detailId}`,
-                                                    type: 'DELETE',
-                                                    // data: fdataUnit,
-                                                    // processData: false,
-                                                    // contentType: false,
-                                                    success: function(
-                                                        response) {
-                                                        block
-                                                            .remove();
-                                                        toastr
-                                                            .success(
-                                                                response
-                                                                .message
-                                                            );
-
-                                                        // window.location.reload();
-                                                        Swal
-                                                            .close();
-                                                        paymentSplit
-                                                            ();
-
-                                                        // After removal, check if we reached the minimum count
-                                                        const
-                                                            remainingDeletes =
-                                                            containerPayment
-                                                            .querySelectorAll(
-                                                                '.btndelete'
-                                                            );
-                                                        if (remainingDeletes
-                                                            .length <=
-                                                            0 ||
-                                                            containerPayment
-                                                            .querySelectorAll(
-                                                                '.payment_mode_div'
+                                                if (detailId) {
+                                                    $.ajaxSetup({
+                                                        headers: {
+                                                            'X-CSRF-TOKEN': $(
+                                                                'meta[name="csrf-token"]'
+                                                            ).attr(
+                                                                'content'
                                                             )
-                                                            .length <=
-                                                            noofinstallments
-                                                        ) {
-                                                            remainingDeletes
-                                                                .forEach(
-                                                                    div =>
-                                                                    div
-                                                                    .remove()
-                                                                );
-                                                            $('.nextBtn')
-                                                                .prop(
-                                                                    'disabled',
-                                                                    false
-                                                                );
                                                         }
-                                                    },
-                                                    error: function(
-                                                        err) {
-                                                        toastr
-                                                            .error(
-                                                                err
-                                                                .responseJSON
-                                                                .message
+                                                    });
+
+                                                    $.ajax({
+                                                        url: `/contracts/payment-detail/${detailId}`,
+                                                        type: 'DELETE',
+                                                        // data: fdataUnit,
+                                                        // processData: false,
+                                                        // contentType: false,
+                                                        success: function(
+                                                            response
+                                                        ) {
+                                                            block
+                                                                .remove();
+                                                            toastr
+                                                                .success(
+                                                                    response
+                                                                    .message
+                                                                );
+
+                                                            // window.location.reload();
+                                                            Swal
+                                                                .close();
+                                                            paymentSplit
+                                                                ();
+
+                                                            // After removal, check if we reached the minimum count
+                                                            const
+                                                                remainingDeletes =
+                                                                containerPayment
+                                                                .querySelectorAll(
+                                                                    '.btndelete'
+                                                                );
+                                                            if (remainingDeletes
+                                                                .length <=
+                                                                0 ||
+                                                                containerPayment
+                                                                .querySelectorAll(
+                                                                    '.payment_mode_div'
+                                                                )
+                                                                .length <=
+                                                                noofinstallments
+                                                            ) {
+                                                                remainingDeletes
+                                                                    .forEach(
+                                                                        div =>
+                                                                        div
+                                                                        .remove()
+                                                                    );
+                                                                $('.nextBtn')
+                                                                    .prop(
+                                                                        'disabled',
+                                                                        false
+                                                                    );
+                                                            }
+                                                        },
+                                                        error: function(
+                                                            err) {
+                                                            toastr
+                                                                .error(
+                                                                    err
+                                                                    .responseJSON
+                                                                    .message
+                                                                );
+                                                            Swal
+                                                                .close();
+                                                        }
+                                                    });
+                                                } else {
+                                                    block.remove();
+                                                    Swal.close();
+                                                    paymentSplit();
+
+                                                    // After removal, check if we reached the minimum count
+                                                    const
+                                                        remainingDeletes =
+                                                        containerPayment
+                                                        .querySelectorAll(
+                                                            '.btndelete'
+                                                        );
+                                                    if (remainingDeletes
+                                                        .length <=
+                                                        0 ||
+                                                        containerPayment
+                                                        .querySelectorAll(
+                                                            '.payment_mode_div'
+                                                        )
+                                                        .length <=
+                                                        noofinstallments
+                                                    ) {
+                                                        remainingDeletes
+                                                            .forEach(
+                                                                div =>
+                                                                div
+                                                                .remove()
                                                             );
-                                                        Swal
-                                                            .close();
+                                                        $('.nextBtn')
+                                                            .prop(
+                                                                'disabled',
+                                                                false
+                                                            );
                                                     }
-                                                });
+                                                }
+
                                             } else {
                                                 toastr.error(errors.responseJSON
                                                     .message);
@@ -1054,62 +1208,62 @@
                     paymentBlock.classList.add('payment_mode_div');
 
                     paymentBlock.innerHTML = `
-                    <div class="form-group row">
-                        <div class="col-md-4">
-                            <label>Payment Mode</label>
-                                <select class="form-control select2 payment_mode"
-                                    name="payment_detail[payment_mode_id][]" id="payment_mode${i}" required>
-                                    <option value="">Select</option>
-                                    @foreach ($paymentmodes as $paymentmode)
-                                        <option value="{{ $paymentmode->id }}">
-                                            {{ $paymentmode->payment_mode_name }} </option>
-                                    @endforeach
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label>Payment Mode</label>
+                        <select class="form-control select2 payment_mode"
+                            name="payment_detail[payment_mode_id][]" id="payment_mode${i}" required>
+                            <option value="">Select</option>
+                            @foreach ($paymentmodes as $paymentmode)
+                                <option value="{{ $paymentmode->id }}">
+                                    {{ $paymentmode->payment_mode_name }} </option>
+                            @endforeach
 
 
-                                </select>
-                              
-                        </div>
-                         
-                        <div class="col-md-4">
-                            <label>Payment Date</label>
-                            <div class="input-group date" id="otherPaymentDate${i}" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input otherPaymentDate" 
-                                    name="payment_detail[payment_date][]" id="payment_date${i}" 
-                                    data-target="#otherPaymentDate${i}" placeholder="dd-mm-YYYY" required/>
-                                <div class="input-group-append" data-target="#otherPaymentDate${i}" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <label>Payment Amount</label>
-                            <input type="text" class="form-control" id="payment_amount${i}" name="payment_detail[payment_amount][]" placeholder="Payment Amount" required>
+                        </select>
+                        
+                </div>
+                    
+                <div class="col-md-4">
+                    <label>Payment Date</label>
+                    <div class="input-group date" id="otherPaymentDate${i}" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input otherPaymentDate" 
+                            name="payment_detail[payment_date][]" id="payment_date${i}" 
+                            data-target="#otherPaymentDate${i}" placeholder="dd-mm-YYYY" required/>
+                        <div class="input-group-append" data-target="#otherPaymentDate${i}" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
                     </div>
-                    <div class="form-group row">
-                            <div class="col-md-4 bank" id="bank${i}">
-                                <label for="exampleInputEmail1">Bank Name</label>
-                               
-                                <select class="form-control select2 bank_name" name="payment_detail[bank_id][]" id="bank_name${i}" required>
-                                    <option value="">Select Bank</option>
-                                    @foreach ($banks as $bank)
-                                        <option value="{{ $bank->id }}">
-                                            {{ $bank->bank_name }} </option>
-                                    @endforeach
+                </div>
+                <div class="col-md-4">
+                    <label>Payment Amount</label>
+                    <input type="text" class="form-control" id="payment_amount${i}" name="payment_detail[payment_amount][]" placeholder="Payment Amount" required>
+                </div>
+            </div>
+            <div class="form-group row">
+                    <div class="col-md-4 bank" id="bank${i}">
+                        <label for="exampleInputEmail1">Bank Name</label>
+                        
+                        <select class="form-control select2 bank_name" name="payment_detail[bank_id][]" id="bank_name${i}" required>
+                            <option value="">Select Bank</option>
+                            @foreach ($banks as $bank)
+                                <option value="{{ $bank->id }}">
+                                    {{ $bank->bank_name }} </option>
+                            @endforeach
 
 
-                                </select>
-                                
-                            </div>
+                        </select>
+                        
+                    </div>
 
-                            <div class="col-md-3 chq" id="chq${i}">
-                                <label for="exampleInputEmail1">Cheque No</label>
-                                <input type="text" class="form-control cheque_no" id="cheque_no${i}" name="payment_detail[cheque_no][]" placeholder="Cheque No" required>
-                            </div>
+                    <div class="col-md-3 chq" id="chq${i}">
+                        <label for="exampleInputEmail1">Cheque No</label>
+                        <input type="text" class="form-control cheque_no" id="cheque_no${i}" name="payment_detail[cheque_no][]" placeholder="Cheque No" required>
+                    </div>
 
-                           
-                        </div>
-                    <hr>`;
+                    
+                </div>
+            <hr>`;
 
                     //  <div class="col-md-3 chq" id="chqiss${i}">
                     //                 <label for="exampleInputEmail1">Cheque Issuer</label>
@@ -1132,7 +1286,7 @@
 
                     // Append first
                     containerPayment.appendChild(paymentBlock);
-                    console.log('type change inside payment addnmore');
+                    // console.log('type change inside payment addnmore');
                     rentPerUnitFamaFaateh();
 
                     $(containerPayment).find('select.select2').select2({
@@ -1171,7 +1325,7 @@
                 }
 
                 if ($('#contract_type').val() == '2') {
-                    console.log('type change inside installment change');
+                    // console.log('type change inside installment change');
                     rentPerUnitFamaFaateh();
                 }
 
@@ -1181,7 +1335,7 @@
 
             }
 
-
+            CalculatePayables();
 
             // containerPayment.querySelectorAll('.payment_mode_div').forEach(attachEventsPayment);
         });
@@ -1336,15 +1490,15 @@
     // });
 
     $('#contract_type').change(function() {
-        console.log('contract type changed');
+        // console.log('contract type changed');
         calculateOtc();
         var contract_type = $(this).val();
         if (contract_type == '2') {
-            console.log('Faateh contract type');
+            // console.log('Faateh contract type');
             $('#duration_months').val('12');
             $('#btob').prop('checked', true);
             $('#btoc').prop('checked', false);
-            console.log('contract change');
+            // console.log('contract change');
             rentPerUnitFamaFaateh();
             //         $('#client_name').val('Faateh');
             //         $('#client_phone').val('0568856995');
@@ -1368,7 +1522,7 @@
 
 <!-- roi and profit calculations -->
 <script>
-    $('#rent_per_part, #rent_per_bs, #rent_per_room').on('input change', function() {
+    $('#rent_per_part, #rent_per_bs, #rent_per_room, #rent_per_flat').on('input change', function() {
         calculateRoi();
         CalculatePayables();
     });
@@ -1390,7 +1544,14 @@
 
         let paymenttovendor = parseFloat(totRent + totcomm + totdepo).toFixed(2);
         let finalCost = (parseFloat(paymenttovendor) + parseFloat(totcontractfee) + parseFloat(totalotc)).toFixed(2);
-        let initialInv = parseFloat((totRent / 4) + totcomm + totdepo + totcontractfee + totalotc).toFixed(2);
+        const installment = $('#no_of_installments').find(':selected').text();
+        // console.log('installment - ' + installment);
+        // console.log('totcomm - ' + totcomm);
+        // console.log('totdepo -' + totdepo);
+        // console.log('totcontractfee -' + totcontractfee);
+        // console.log('totdepo -' + totdepo);
+        let initialInv = parseFloat((totRent / parseFloat(installment)) + totcomm + totdepo + totcontractfee + totalotc)
+            .toFixed(2);
 
         $('.total_contract_amount').val(totRent);
         $('.commssion_final').val(totcomm);
@@ -1403,8 +1564,8 @@
     }
 
 
-    $('.rentPartition, .rentBedspace, .rentRoom').hide();
-    let totalroomcount = 0;
+    $('.rentPartition, .rentBedspace, .rentRoom, .rentFlat').hide();
+    let totalflatcount = 0;
 
     $(document).on('change', '.unit_type, .partcheck, .bedcheck, .partcheck_fb, .bedcheck_fb, .fullBuildCheck',
         function() {
@@ -1415,18 +1576,14 @@
 
         if (!@json($contract && $contract->exists)) {
             // hide all first
-            $('.rentPartition, .rentBedspace, .rentRoom').hide().find('input, select').val('');
+            $('.rentPartition, .rentBedspace, .rentRoom, .rentFlat').hide().find('input, select').val('');
         }
-
-
-        console.log('subunitcheck');
 
         $('.total_rent_receivable').val('0.00');
         $('.no_of_months_final').val('0');
         $('.total_rental').val('0.00');
 
-        let hasMissingPartitionOrBedspace = false;
-        let roomcount = 0;
+
 
         // if ($('.fullBuildCheck:checked').length > 0) {
 
@@ -1463,50 +1620,78 @@
             $('.rentBedspace').show();
         }
 
-        $('.normalBuilding .apdi').each(function() {
-            // Get current row context
-            let unitType = $(this).find('.unit_type').val();
-            let partitionChecked = $(this).find('.partcheck').is(':checked');
-            let bedspaceChecked = $(this).find('.bedcheck').is(':checked');
-
-
-            // If unit type is selected but neither checkbox is checked
-            if (unitType && !partitionChecked && !bedspaceChecked) {
-                hasMissingPartitionOrBedspace = true;
-                roomcount++;
-                totalroomcount = roomcount;
-                return false; // break loop early
-            }
-        });
-        // }
-
-        if (hasMissingPartitionOrBedspace) {
+        if ($('.roomcheck:checked').length > 0) {
             $('.rentRoom').show();
-        } else {
-            $('.rentRoom').hide();
         }
 
+
+        // }
+
+
         calculateOtc();
+        calculateFlatcount();
 
     }
 
 
 
+    function calculateFlatcount() {
+        let hasMissingPartitionOrBedspace = false;
+        let flatcount = 0;
+
+        $('.apdi').each(function() {
+            // Get current row context
+            let unitType = $(this).find('.unit_type').val();
+            let partitionChecked = $(this).find('.partcheck').is(':checked');
+            let bedspaceChecked = $(this).find('.bedcheck').is(':checked');
+            let roomChecked = $(this).find('.roomcheck').is(':checked');
+
+
+            // If unit type is selected but neither checkbox is checked
+            if (unitType && !partitionChecked && !bedspaceChecked && !roomChecked) {
+                hasMissingPartitionOrBedspace = true;
+                flatcount++;
+                // return false; // break loop early
+            }
+        });
+
+        totalflatcount = flatcount;
+
+        if (hasMissingPartitionOrBedspace) {
+            $('.rentFlat').show();
+        } else {
+            $('.rentFlat').hide();
+        }
+
+    }
+
+
     function calculateRoi() {
+        let contract_type = '{{ $contract ? $contract->contract_type_id : '' }}';
+        if (contract_type == '2') {
+            calculateRoiFF();
+            return;
+        }
+
         let rentPerPartition = parseFloat($('#rent_per_part').val()) || 0;
         let rentPerBedspace = parseFloat($('#rent_per_bs').val()) || 0;
         let rentPerRoom = parseFloat($('#rent_per_room').val()) || 0;
+        let rentPerFlat = parseFloat($('#rent_per_flat').val()) || 0;
 
-        if (rentPerPartition > 0 || rentPerBedspace > 0 || rentPerRoom > 0) {
+        if (rentPerPartition > 0 || rentPerBedspace > 0 || rentPerRoom > 0 || rentPerFlat > 0) {
             let total_part = totalPartition() * rentPerPartition;
             let total_bs = totalBedspace() * rentPerBedspace;
-            let total_room = totalroomcount * rentPerRoom;
+            let total_room = totalRoom() * rentPerRoom;
+            calculateFlatcount();
+            $('#subunit_count_per_contract').val(calculateSubAccommodations().totSubValue);
 
-            let total_rent_rec = total_part + total_bs + total_room;
+            let total_flats = totalflatcount * rentPerFlat;
+
+            let total_rent_rec = customRound(total_part + total_bs + total_room + total_flats);
             let duration = $('#duration_months').val();
 
             // if($('#'))
-            let total_rental = total_rent_rec * duration;
+            let total_rental = customRound(total_rent_rec * duration);
 
 
             let expProfit = total_rental - parseFloat($('.final_cost').val());
@@ -1556,6 +1741,15 @@
 
         return total_bedspaces;
     }
+
+    function totalRoom() {
+        let total_room = 0;
+        $('.total_room').each(function() {
+            total_room += parseFloat($(this).val()) || 0;
+        });
+
+        return total_room;
+    }
 </script>
 <!-- roi and profit calculations -->
 
@@ -1568,7 +1762,7 @@
 
         // $('.rentPerUnitFF').show();
         // $('.receivable_maindiv').hide();
-        // $('.rentPartition, .rentBedspace, .rentRoom').hide();
+        // $('.rentPartition, .rentBedspace, .rentRoom, .rentFlat').hide();
 
         let no_of_units = 0;
 
@@ -1579,7 +1773,7 @@
         let unit_no = $('.unit_noFF').map(function() {
             return $(this).val();
         }).get();
-        console.log(unit_no);
+        // console.log(unit_no);
 
         const containerPayment = document.getElementsByClassName('rentPerUnitFF')[0];
         const prevffBlocks = containerPayment.querySelectorAll('.rentPerUnitFFaddmore');
@@ -1594,12 +1788,12 @@
                 if (prevffBlocks.length > no_of_units) {
                     if (!existingBtn) {
                         lastFormGroup.insertAdjacentHTML('beforeend', `
-                                <div class="col-sm-1 btndeleteProf">
-                                    <button type="button" class="btn-danger btn-block dlt-divProf btndetdProfit mt-31" title="Delete" data-toggle="tooltip">
-                                        <i class="fa fa-trash fa-1x"></i>
-                                    </button>
-                                </div>
-                            `);
+                        <div class="col-sm-1 btndeleteProf">
+                            <button type="button" class="btn-danger btn-block dlt-divProf btndetdProfit mt-31" title="Delete" data-toggle="tooltip">
+                                <i class="fa fa-trash fa-1x"></i>
+                            </button>
+                        </div>
+                    `);
 
                         $('.contractFormSubmit').prop('disabled', true);
 
@@ -1680,48 +1874,48 @@
                     ffblock.classList.add('rentPerUnitFFaddmore', 'profitDeletecls' + i);
 
                     ffblock.innerHTML = `
-                        <div class="form-group row">
-                            <div class="col-md-2">
-                                <label for="exampleInputEmail1">Unit No</label>
-                                <input type="number" class="form-control unit_noFF" id="unit_noFF${i}"
-                                    readonly value="` + $(this).val() + `">
-                                <input type="hidden" id="unit_amount_payable${i}"
-                                    value="` + unit_payable + `" name="unit_detail[unit_amount_payable][]">
-                                <input type="hidden" value="` + unit_comm + `" id="unit_commission${i}"
-                                    name="unit_detail[unit_commission][]">
-                                <input type="hidden" value="` + unit_depo + `" id="unit_deposit${i}"
-                                    name="unit_detail[unit_deposit][]">
-                            </div>
-                            <div class="col-md-2">
-                                <label for="exampleInputEmail1">Unit Type</label>
-                                <input type="text" class="form-control" id="unit_typeFF${i}"
-                                    readonly value="` + unit_type + `">
-                            </div>
-                            <div class="col-md-2">
-                                <label for="exampleInputEmail1">Profit %</label>
-                                <input type="number" class="form-control unit_profit_perc"
-                                    name="unit_detail[unit_profit_perc][]"
-                                    id="unit_profit_perc${i}" placeholder="Profit %" step="0.01" required>
-                            </div>
-                            <div class="col-md-2">
-                                <label for="exampleInputEmail1">Profit</label>
-                                <input type="number" class="form-control unit_profit"
-                                    name="unit_detail[unit_profit][]" id="unit_profit${i}"
-                                    placeholder="Profit" readonly>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="exampleInputEmail1">Revenue</label>
-                                <input type="number" class="form-control unit_revenue"
-                                    name="unit_detail[unit_revenue][]" id="unit_revenue${i}"
-                                    placeholder="Revenue" readonly>
-                            </div>
-                        </div>`;
+                <div class="form-group row">
+                    <div class="col-md-2">
+                        <label for="exampleInputEmail1">Unit No</label>
+                        <input type="number" class="form-control unit_noFF" id="unit_noFF${i}"
+                            readonly value="` + $(this).val() + `">
+                        <input type="hidden" id="unit_amount_payable${i}"
+                            value="` + unit_payable + `" name="unit_detail[unit_amount_payable][]">
+                        <input type="hidden" value="` + unit_comm + `" id="unit_commission${i}"
+                            name="unit_detail[unit_commission][]">
+                        <input type="hidden" value="` + unit_depo + `" id="unit_deposit${i}"
+                            name="unit_detail[unit_deposit][]">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="exampleInputEmail1">Unit Type</label>
+                        <input type="text" class="form-control" id="unit_typeFF${i}"
+                            readonly value="` + unit_type + `">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="exampleInputEmail1">Profit %</label>
+                        <input type="number" class="form-control unit_profit_perc"
+                            name="unit_detail[unit_profit_perc][]"
+                            id="unit_profit_perc${i}" placeholder="Profit %" step="0.01" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="exampleInputEmail1">Profit</label>
+                        <input type="number" class="form-control unit_profit"
+                            name="unit_detail[unit_profit][]" id="unit_profit${i}"
+                            placeholder="Profit" readonly>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="exampleInputEmail1">Revenue</label>
+                        <input type="number" class="form-control unit_revenue"
+                            name="unit_detail[unit_revenue][]" id="unit_revenue${i}"
+                            placeholder="Revenue" readonly>
+                    </div>
+                </div>`;
                     containerPayment.appendChild(ffblock);
 
 
 
                     $('#unit_profit_perc' + i).on('input change', function() {
-                        console.log('unit profit change inside');
+                        // console.log('unit profit change inside');
                         calculateRevenueUnit($(this), unit_payable);
                         valueTorentRec('change');
                         finalRecCal();
@@ -1761,7 +1955,7 @@
 
     $('.unit_profit_perc').on('input change', function() {
         profitHiddenValues();
-        console.log('unit profit perc');
+        // console.log('unit profit perc');
 
         let unit_payable = $(this).parent().siblings().find('input[name="unit_detail[unit_amount_payable][]"]')
             .val();
@@ -1775,9 +1969,9 @@
     function calculateRevenueUnit(ele, unit_payable) {
         if (!$(ele).val()) return;
         let profit = (unit_payable * ($(ele).val() / 100)).toFixed(2);
-        console.log($(ele).val());
-        console.log('unit_payable' + unit_payable);
-        console.log('profit' + profit);
+        // console.log($(ele).val());
+        // console.log('unit_payable' + unit_payable);
+        // console.log('profit' + profit);
 
 
         $(ele).parent().siblings().find('input[name="unit_detail[unit_profit][]"]')
@@ -1789,8 +1983,6 @@
         installmentChangeRec();
 
     }
-
-
 
 
     $('#rent_installments').on('input change', function() {
@@ -1818,12 +2010,12 @@
             if (prevffBlocks.length > rec_inst) {
                 if (!existingBtn) {
                     formGroup.insertAdjacentHTML('beforeend', `
-                        <div class="col-sm-1 btndelete">
-                            <button type="button" class="btn btn-danger btn-block dlt-divRec btndetdRec" title="Delete" data-toggle="tooltip">
-                                <i class="fa fa-trash fa-1x"></i>
-                            </button>
-                        </div>
-                    `);
+                <div class="col-sm-1 btndelete">
+                    <button type="button" class="btn btn-danger btn-block dlt-divRec btndetdRec" title="Delete" data-toggle="tooltip">
+                        <i class="fa fa-trash fa-1x"></i>
+                    </button>
+                </div>
+            `);
 
                     $('.contractFormSubmit').prop('disabled', true);
 
@@ -1846,7 +2038,6 @@
                                             .querySelector(
                                                 'input[name="receivables[id][]"]'
                                             )).val();
-
                                         // var fdataUnit = new FormData();
 
                                         // fdataUnit.append('_token', $('meta[name="csrf-token"]')
@@ -1861,69 +2052,100 @@
                                                     .showLoading(); // Shows the built-in loader
                                             }
                                         });
-                                        $.ajaxSetup({
-                                            headers: {
-                                                'X-CSRF-TOKEN': $(
-                                                    'meta[name="csrf-token"]'
-                                                ).attr(
-                                                    'content'
-                                                )
-                                            }
-                                        });
-                                        $.ajax({
-                                            url: `/contracts/payment-receivable/${detailId}`,
-                                            type: 'DELETE',
-                                            // data: fdataUnit,
-                                            // processData: false,
-                                            // contentType: false,
-                                            success: function(
-                                                response) {
-                                                block
-                                                    .remove();
-                                                toastr
-                                                    .success(
-                                                        response
-                                                        .message
-                                                    );
 
-                                                // window.location.reload();
-                                                Swal
-                                                    .close();
-                                                valueTorentRec('change');
-                                                finalRecCal();
-
-                                                // ✅ Recheck after removal
-                                                const remainingDeletes =
-                                                    containerPayment
-                                                    .querySelectorAll(
-                                                        '.btndelete');
-                                                const remainingPayments =
-                                                    containerPayment
-                                                    .querySelectorAll(
-                                                        '.receivableaddmore');
-
-                                                if (remainingDeletes.length <= 0 ||
-                                                    remainingPayments
-                                                    .length <=
-                                                    rec_inst) {
-                                                    remainingDeletes.forEach(div =>
-                                                        div.remove());
-                                                    $('.contractFormSubmit').prop(
-                                                        'disabled', false);
+                                        if (detailId) {
+                                            $.ajaxSetup({
+                                                headers: {
+                                                    'X-CSRF-TOKEN': $(
+                                                        'meta[name="csrf-token"]'
+                                                    ).attr(
+                                                        'content'
+                                                    )
                                                 }
-                                            },
-                                            error: function(
-                                                err) {
-                                                toastr
-                                                    .error(
-                                                        err
-                                                        .responseJSON
-                                                        .message
-                                                    );
-                                                Swal
-                                                    .close();
+                                            });
+                                            $.ajax({
+                                                url: `/contracts/payment-receivable/${detailId}`,
+                                                type: 'DELETE',
+                                                // data: fdataUnit,
+                                                // processData: false,
+                                                // contentType: false,
+                                                success: function(
+                                                    response) {
+                                                    block
+                                                        .remove();
+                                                    toastr
+                                                        .success(
+                                                            response
+                                                            .message
+                                                        );
+
+                                                    // window.location.reload();
+                                                    Swal
+                                                        .close();
+                                                    valueTorentRec('change');
+                                                    finalRecCal();
+
+                                                    // ✅ Recheck after removal
+                                                    const remainingDeletes =
+                                                        containerPayment
+                                                        .querySelectorAll(
+                                                            '.btndelete');
+                                                    const remainingPayments =
+                                                        containerPayment
+                                                        .querySelectorAll(
+                                                            '.receivableaddmore');
+
+                                                    if (remainingDeletes.length <=
+                                                        0 ||
+                                                        remainingPayments
+                                                        .length <=
+                                                        rec_inst) {
+                                                        remainingDeletes.forEach(
+                                                            div =>
+                                                            div.remove());
+                                                        $('.contractFormSubmit')
+                                                            .prop(
+                                                                'disabled', false);
+                                                    }
+                                                },
+                                                error: function(
+                                                    err) {
+                                                    toastr
+                                                        .error(
+                                                            err
+                                                            .responseJSON
+                                                            .message
+                                                        );
+                                                    Swal
+                                                        .close();
+                                                }
+                                            });
+                                        } else {
+                                            block.remove();
+                                            Swal.close();
+                                            valueTorentRec('change');
+                                            finalRecCal();
+                                            // ✅ Recheck after removal
+                                            const remainingDeletes =
+                                                containerPayment
+                                                .querySelectorAll(
+                                                    '.btndelete');
+                                            const remainingPayments =
+                                                containerPayment
+                                                .querySelectorAll(
+                                                    '.receivableaddmore');
+
+                                            if (remainingDeletes.length <= 0 ||
+                                                remainingPayments
+                                                .length <=
+                                                rec_inst) {
+                                                remainingDeletes.forEach(div =>
+                                                    div.remove());
+                                                $('.contractFormSubmit').prop(
+                                                    'disabled', false);
                                             }
-                                        });
+                                        }
+
                                     } else {
                                         toastr.error(errors.responseJSON
                                             .message);
@@ -1970,32 +2192,32 @@
                 recpayblock.classList.add('receivableaddmore');
 
                 recpayblock.innerHTML = `
-                                    <div class="form-group row">
-                                        <div class="col-md-4">
-                                            <div class="input-group date" id="receivable_date${inst}"
-                                                data-target-input="nearest">
-                                                <input type="text"
-                                                    class="form-control datetimepicker-input receivable_date"
-                                                    name="receivables[receivable_date][]"
-                                                    id="rec_payment_date${inst}"
-                                                    data-target="#receivable_date${inst}"
-                                                    placeholder="dd-mm-YYYY" required/>
-                                                <div class="input-group-append"
-                                                    data-target="#receivable_date${inst}"
-                                                    data-toggle="datetimepicker">
-                                                    <div class="input-group-text"><i
-                                                            class="fa fa-calendar"></i></div>
-                                                </div>
-                                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                    <div class="input-group date" id="receivable_date${inst}"
+                                        data-target-input="nearest">
+                                        <input type="text"
+                                            class="form-control datetimepicker-input receivable_date"
+                                            name="receivables[receivable_date][]"
+                                            id="rec_payment_date${inst}"
+                                            data-target="#receivable_date${inst}"
+                                            placeholder="dd-mm-YYYY" required/>
+                                        <div class="input-group-append"
+                                            data-target="#receivable_date${inst}"
+                                            data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i
+                                                    class="fa fa-calendar"></i></div>
                                         </div>
-                                        <div class="col-md-4">
-                                            
-                                            <input type="number" class="form-control rec_payment_amount"
-                                                id="rec_payment_amount${inst}"
-                                                name="receivables[payment_amount][]"
-                                                placeholder="Payment Amount" step="0.01" required>
-                                        </div>
-                                    </div>`;
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    
+                                    <input type="number" class="form-control rec_payment_amount"
+                                        id="rec_payment_amount${inst}"
+                                        name="receivables[payment_amount][]"
+                                        placeholder="Payment Amount" step="0.01" required>
+                                </div>
+                            </div>`;
                 containerPayment.appendChild(recpayblock);
 
 
@@ -2017,11 +2239,12 @@
 
     function calculateRoiFF() {
         console.log('roiff');
+        $('#subunit_count_per_contract').val(calculateSubAccommodations().totSubValue);
         let totalrev = 0;
         $('.unit_revenue').each(function() {
             totalrev += parseFloat($(this).val()) || 0;
         });
-
+        // console.log(totalrev);
         let totalprof = 0;
         $('.unit_profit').each(function() {
             totalprof += parseFloat($(this).val()) || 0;
@@ -2032,8 +2255,9 @@
             var count = $('.unit_profit').length;
 
             let tot_rent_per_month = totalrev / 12;
-            $('.rentRoom').show();
-            $('#rent_per_room').val(tot_rent_per_month.toFixed(2)).attr('readonly', 'true');
+            // console.log(tot_rent_per_month);
+            $('.rentFlat').show();
+            $('#rent_per_flat').val(tot_rent_per_month.toFixed(2)).attr('readonly', 'true');
 
             let total_rent_rec = tot_rent_per_month;
 
@@ -2060,7 +2284,7 @@
         let noOfInstallments = parseInt($('#rent_installments').find(':selected').text()) || 0;
 
         let interval = 1;
-        console.log(noOfInstallments);
+        // console.log(noOfInstallments);
 
         const startDate = parseDateCustom(startDateVal);
 
@@ -2095,7 +2319,7 @@
         }
     }
 
-    $('#rent_installments, #rent_per_part, #rent_per_bs, #rent_per_room').on('input change',
+    $('#rent_installments, #rent_per_part, #rent_per_bs, #rent_per_room, #rent_per_flat').on('input change',
         function() {
             finalRecCal();
             valueTorentRec('change');
@@ -2103,20 +2327,19 @@
 
 
     function valueTorentRec(action) {
-        let rent_per_room = parseFloat($('#rent_per_room').val()) || 0;
+        let rent_per_flat = parseFloat($('#rent_per_flat').val()) || 0;
 
-        let totRentperroom = 0;
+        let totRentperflat = 0;
         if ($('#contract_type').val() == '2') {
-            totRentperroom = rent_per_room;
+            totRentperflat = rent_per_flat;
         } else {
-            totRentperroom = $('.total_rent_receivable').val();
+            totRentperflat = $('.total_rent_receivable').val();
         }
-        console.log('valueTorentRec');
 
-        let isEdit = @json($contract && $contract->exists);
+        let isEdit = {{ $edit }};
         if (!isEdit || action == 'change') {
             $('.rec_payment_amount').each(function() {
-                $(this).val(totRentperroom);
+                $(this).val(totRentperflat);
             });
         }
     }
@@ -2147,15 +2370,37 @@
     }
 
 
-    let isEdit = @json($contract && $contract->exists);
+    // let isEdit = @json($contract && $contract->exists);
+    let isEdit = {{ $edit }};
+    let isRenew = {{ $renew }};
+    if (isRenew) {
+        $('#project_no').val('');
+        $('#commission_perc').val('0');
+        $('#commission').val('0');
+        $('#deposit_perc').val('0');
+        $('#deposit').val('0');
+        $('#duration_months').val('12');
+
+        calculateEndDate();
+        console.log('roi call renew');
+        calculateRoi();
+        console.log('roi call renew');
+        CalculatePayables();
+
+        paymentSplit();
+        $('.unit_profit_perc').trigger('change');
+    }
+
     if (isEdit) {
-        //     console.log('Editing mode');
+        // console.log('Editing mode');
         //     $('#contract_type').trigger('change');
         CalculatePayables();
 
         subUnitCheck(edit = true);
         // finalRecCal();
+        console.log('roi call edit');
         calculateRoi();
+        console.log('roi call edit');
         valueTorentRec('load');
 
         $('.rec_payment_amount').on('input change', function() {
@@ -2165,7 +2410,7 @@
 
         let contract_type = '{{ $contract ? $contract->contract_type_id : '' }}';
         if (contract_type == '2') {
-            console.log('Faateh contract type on edit');
+            // console.log('Faateh contract type on edit');
             calculateRoiFF();
         }
     }

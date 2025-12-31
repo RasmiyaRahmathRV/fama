@@ -3,17 +3,24 @@
 use App\Http\Controllers\AgreementController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\BankController;
+use App\Http\Controllers\PayableClearingController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InstallmentController;
+use App\Http\Controllers\InvesmentSOAController;
+use App\Http\Controllers\InvestmentController;
+use App\Http\Controllers\InvestorController;
+use App\Http\Controllers\InvestorPaymentDistributionController;
 use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NationalityController;
 use App\Http\Controllers\PaymentModeController;
+use App\Http\Controllers\PdfSignController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyTypeController;
+use App\Http\Controllers\ReceivablesClearingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
 use Illuminate\Support\Facades\Route;
@@ -54,6 +61,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('company', CompanyController::class);
     Route::resource('contract', ContractController::class);
     Route::resource('agreement', AgreementController::class);
+    Route::resource('investment', InvestmentController::class);
+    Route::resource('investor', InvestorController::class);
+    Route::resource('investorPayout', InvestorPaymentDistributionController::class);
+
 
 
 
@@ -103,10 +114,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('export-company', [CompanyController::class, 'exportCompany'])->name('company.export');
 
     Route::get('contract-list', [ContractController::class, 'getContracts'])->name('contract.list');
-    Route::post('contract-approve', [ContractController::class, 'approveContract'])->name('contract.approve');
-    Route::post('contract-reject', [ContractController::class, 'rejectContract'])->name('contract.reject');
-    Route::get('contract-documents', [ContractController::class, 'contract_documents'])->name('contract.documents');
-    Route::post('contract-document-upload', [ContractController::class, 'document_upload'])->name('contract.document_upload');
+    Route::get('contract-documents/{id}', [ContractController::class, 'contract_documents'])->name('contract.documents');
+    Route::post('contract-documents/contract-document-upload', [ContractController::class, 'document_upload'])->name('contract.document_upload');
     Route::get('export-contract', [ContractController::class, 'exportContract'])->name('contract.export');
 
     Route::delete('contracts/unit-detail/{id}', [ContractController::class, 'deleteUnitDetail'])
@@ -117,6 +126,98 @@ Route::middleware(['auth'])->group(function () {
         ->name('contracts.payment-receivable.delete');
 
 
-    Route::get('agreemant-list', [AgreementController::class, 'getAgreements'])->name('agreement.list');
+    Route::get('agreement-list', [AgreementController::class, 'getAgreements'])->name('agreement.list');
     Route::get('export-agreement', [AgreementController::class, 'exportAgreement'])->name('agreement.export');
+    Route::get('print-view/{id}', [AgreementController::class, 'print_view'])->name('agreement.printview');
+    Route::get('agreement/{id}/print', [AgreementController::class, 'print'])->name('agreement.print');
+    Route::get('agreement-documents/{id}', [AgreementController::class, 'agreementDocuments'])->name('agreement.documents');
+    Route::post('agreement-documents-upload/{id}', [AgreementController::class, 'documentUpload'])->name('agreement.documentUpload');
+    Route::post('agreement-terminate', [AgreementController::class, 'terminate'])->name('agreement.terminate');
+    Route::post('agreement-invoice-upload', [AgreementController::class, 'invoice_upload'])->name('agreement.invoiceUpload');
+    Route::post('/agreement-unit/delete/{unitId}', [AgreementController::class, 'delete_unit'])->name('agreement.deleteUnit');
+    Route::get('expiring-list', [AgreementController::class, 'getAgreementsExpiring'])->name('agreement.expiring-list');
+    Route::get('expiring-lists', [AgreementController::class, 'getAgreementsExpiringTable'])->name('agreement.expiringlisttable');
+    Route::get('agreement/{id}/renew', [AgreementController::class, 'renewAgreement'])->name('agreement.renew');
+
+    // renewal
+    Route::get('renewal-pending-list', [ContractController::class, 'getRenewalPendingContracts'])->name('contract.renewal_pending_list');
+    Route::get('renewal-list', [ContractController::class, 'getRenewalContractsList'])->name('contract.renewal_list');
+    Route::get('contract/{id}/renew', [ContractController::class, 'renewContracts'])->name('contract.renew');
+    Route::post('contract/{id}/reject-renewal', [ContractController::class, 'rejectRenewal'])->name('contract.reject_renew');
+
+
+    // projectScope
+    Route::get('/export-building-summary/{id}', [ContractController::class, 'exportBuildingSummary']);
+    Route::get('/download-summary/{id}/{filename}', [ContractController::class, 'downloadSummary'])
+        ->name('contract.downloadSummary');
+    Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);
+
+    Route::get(
+        '/contracts/{id}/terminated-agreement-details',
+        [ContractController::class, 'getTerminatedAgreementDetails']
+    );
+    Route::get('/contracts/{contract}/check-agreement', [ContractController::class, 'checkAgreement']);
+    Route::get('contract-approval/{id}', [ContractController::class, 'contractApproval'])->name('contract.approve');
+    Route::post('contract-reject', [ContractController::class, 'rejectContract'])->name('contract.reject');
+    Route::post('contract-sendcomment', [ContractController::class, 'sendComments'])->name('contract.sendComment');
+    Route::get('contract-approval-list', [ContractController::class, 'approvalListContract'])->name('contract.approve.list');
+    Route::post('contract-send-for-approval', [ContractController::class, 'sendForApproval'])->name('contract.sendapprove');
+    Route::post('approve', [ContractController::class, 'approveContract'])->name('approve');
+
+    // test sign
+    Route::get('/signed-pdf/{id}', [PdfSignController::class, 'signedPdf'])->name('sign.contract');
+
+    Route::post('/save-signed-pdf', [PdfSignController::class, 'saveSignedPdf']);
+    Route::get('/contracts/{id}/comments', [ContractController::class, 'getComments']);
+
+
+
+
+    Route::get('finance/receivable-cheque-clearing', [ReceivablesClearingController::class, 'receivableChequeClearing'])->name('tenant.cheque.clearing');
+    Route::get('finance/receivable-cheque-clearing-list', [ReceivablesClearingController::class, 'receivableChequeClearingList'])->name('tenant.cheque.list');
+    Route::post('finance/receivable-cheque-clear', [ReceivablesClearingController::class, 'receivableChequeClearSubmit'])->name('receivable.cheque.clear.submit');
+    Route::post('finance/bounced_cheque', [ReceivablesClearingController::class, 'receivableChequeBounceSubmit'])->name('receivable.cheque.bounce.submit');
+    Route::post('finance/receivables/export', [ReceivablesClearingController::class, 'export'])->name('tanantReceivables.export');
+
+    Route::get('finance/receivable-report', [ReceivablesClearingController::class, 'receivableReport'])->name('finance.receivables.report');
+    Route::get('finance/receivable-report-list', [ReceivablesClearingController::class, 'receivableReportList'])->name('tenant.receivables.report.list');
+    Route::post('finance/receivable-report-export', [ReceivablesClearingController::class, 'receivableReportExport'])->name('receivableReport.export');
+
+    Route::get('finance/payable-cheque-clearing', [PayableClearingController::class, 'payableChequeClearing'])->name('finance.payable.clearing');
+    Route::get('finance/payable-list', [PayableClearingController::class, 'getPayables'])->name('payable.list');
+    Route::post('finance/payable-save', [PayableClearingController::class, 'submitPayables'])->name('payable.save');
+    Route::post('finance/retun-save', [PayableClearingController::class, 'submitReturns'])->name('return.save');
+    Route::get('finance/cleared-list', [PayableClearingController::class, 'crearedList'])->name('cleared.list');
+    Route::get('finance/cleared-data', [PayableClearingController::class, 'getClearedData'])->name('cleared.data');
+    Route::get('finance/export-payables', [PayableClearingController::class, 'exportPayables'])->name('payables.report.export');
+    Route::get('finance/export-payable-pending', [PayableClearingController::class, 'exportPayablePending'])->name('payables.pending.export');
+
+
+    Route::get('investor-list', [InvestorController::class, 'getInvestors'])->name('investor.list');
+    Route::post('investor/add-investor-bank', [InvestorController::class, 'addorUpdateInvestorBank'])->name('investor.bank.save');
+    Route::prefix('admin')->group(function () {
+        Route::get(
+            'investor/export-investors',
+            [InvestorController::class, 'exportInvestors']
+        )->name('investor.export');
+    });
+    Route::get('investor/get-investor-bank/{id}', [InvestorController::class, 'getInvestorBankDetails'])->name('investor.bank');
+
+
+    Route::get('payout-pending-list', [InvestorPaymentDistributionController::class, 'getPayouts'])->name('payout.pending.list');
+
+
+    Route::get('investments/investments', [InvestmentController::class, 'getInvestments'])->name('investment.list');
+    Route::post('investments/investments', [InvestmentController::class, 'addpendingInvestment'])->name('investment.submit.pending');
+    Route::get('investments/export-investment', [InvestmentController::class, 'exportInvestment'])->name('investment.export');
+    Route::post('investments/investments/update', [InvestmentController::class, 'updatePendingInvestment'])->name(('investment.submit.pending.update'));
+    Route::post('investments/investments/terminate-request', [InvestmentController::class, 'terminateRequestSubmit'])->name(('investment.submit.termination'));
+
+    Route::get('investments/investment-soa', [InvesmentSOAController::class, 'index'])->name('investment-soa.list');
+    Route::get('investments/investment-soa/data', [InvesmentSOAController::class, 'getData'])->name('investment-soa.data');
 });
+
+
+
+
+// Route::get('/download-scope/{id}', [ContractController::class, 'downloadScope']);

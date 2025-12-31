@@ -68,4 +68,8 @@ class CompanyController extends Controller
 
         return Excel::download(new CompanyExport($search, $filters), 'companies.xlsx');
     }
+    public function show(Company $company)
+    {
+        return view('admin.company.company-view', compact('company'));
+    }
 }

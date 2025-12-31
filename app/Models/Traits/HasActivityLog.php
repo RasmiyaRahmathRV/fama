@@ -25,9 +25,11 @@ trait HasActivityLog
             }
         });
 
-        static::restored(function ($model) {
-            $model->addActivityLog('restored');
-        });
+        if (in_array(\Illuminate\Database\Eloquent\SoftDeletes::class, class_uses_recursive(static::class))) {
+            static::restored(function ($model) {
+                $model->addActivityLog('restored');
+            });
+        }
     }
 
     protected function addActivityLog(string $action, array $changes = [])

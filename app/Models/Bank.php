@@ -12,10 +12,18 @@ class Bank extends Model
 {
     use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
 
-    protected $fillable = ['company_id', 'bank_code', 'bank_name', 'bank_short_code', 'added_by', 'updated_by','deleted_by', 'status'];
+    protected $fillable = ['company_id', 'bank_code', 'bank_name', 'bank_short_code', 'added_by', 'updated_by', 'deleted_by', 'status'];
 
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+    public function addedBy()
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

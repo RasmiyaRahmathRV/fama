@@ -49,7 +49,7 @@ class VendorRepository
     public function checkIfExist($data)
     {
         $existing = Vendor::withTrashed()
-            ->where('company_id', $data['company_id'])
+            // ->where('company_id', $data['company_id'])
             ->where('vendor_name', $data['vendor_name'])
             ->first();
 
@@ -63,8 +63,8 @@ class VendorRepository
     {
         // print_r($filters);
         $query = Vendor::query()
-            ->select('vendors.*', 'companies.company_name')
-            ->join('companies', 'companies.id', '=', 'vendors.company_id');
+            ->select('vendors.*');
+        // ->join('companies', 'companies.id', '=', 'vendors.company_id');
 
         if (!empty($filters['search'])) {
             $query->orwhere('vendor_name', 'like', '%' . $filters['search'] . '%')
@@ -78,15 +78,15 @@ class VendorRepository
                 ->orWhere('contact_person', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('contact_person_email', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('contact_person_phone', 'like', '%' . $filters['search'] . '%')
-                ->orWhereHas('company', function ($q) use ($filters) {
-                    $q->where('company_name', 'like', '%' . $filters['search'] . '%');
-                })
+                // ->orWhereHas('company', function ($q) use ($filters) {
+                //     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
+                // })
                 ->orWhereRaw("CAST(vendors.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
 
-        if (!empty($filters['company_id'])) {
-            $query->Where('vendors.company_id', $filters['company_id']);
-        }
+        // if (!empty($filters['company_id'])) {
+        //     $query->Where('vendors.company_id', $filters['company_id']);
+        // }
 
         return $query;
     }

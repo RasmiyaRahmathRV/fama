@@ -59,7 +59,7 @@ class Property extends Model
 {
     use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
 
-    protected $fillable = ['company_id', 'area_id', 'locality_id', 'property_type_id', 'property_code', 'property_name', 'property_size', 'property_size_unit', 'plot_no', 'added_by', 'updated_by', 'deleted_by', 'status'];
+    protected $fillable = ['company_id', 'area_id', 'locality_id', 'property_type_id', 'property_code', 'property_name', 'property_size', 'property_size_unit', 'plot_no', 'added_by', 'updated_by', 'deleted_by', 'status', 'latitude', 'longitude', 'location', 'address', 'remarks', 'makani_number'];
 
     public function user()
     {
@@ -88,6 +88,19 @@ class Property extends Model
 
     public function propertySizeUnit()
     {
-        return $this->belongsTo(PropertySizeUnit::class);
+        return $this->belongsTo(PropertySizeUnit::class, 'property_size_unit');
+    }
+
+    public function contracts()
+    {
+        return $this->hasMany(Contract::class);
+    }
+    public function addedBy()
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

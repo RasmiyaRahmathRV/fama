@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AgreementDocument extends Model
 {
-      use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
+    use HasFactory, SoftDeletes, HasActivityLog, HasDeletedBy;
 
     protected $table = 'agreement_documents';
 
@@ -35,9 +35,9 @@ class AgreementDocument extends Model
         return $this->belongsTo(Agreement::class);
     }
 
-    public function documentType()
+    public function TenantIdentity()
     {
-        return $this->belongsTo(TenantIdentity::class);
+        return $this->belongsTo(TenantIdentity::class, 'document_type', 'id');
     }
 
     /**

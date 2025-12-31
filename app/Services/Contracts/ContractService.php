@@ -26,6 +26,9 @@ use App\Services\LocalityService;
 use App\Services\PropertyService;
 use App\Services\PropertyTypeService;
 use App\Services\VendorService;
+use Carbon\Carbon;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 
 class ContractService
 {
@@ -46,6 +49,8 @@ class ContractService
         protected PropertyService $propertyServ,
         protected InstallmentService $installmentServ,
         protected VendorService $vendorServ,
+
+        protected VendorContractSign $vendorSignServ,
     ) {}
 
     public function getAll()
@@ -85,21 +90,36 @@ class ContractService
 
     public function createOrRestore(array $data, $user_id = null)
     {
-        // print_r($data);
+        // dd($data);
         $data['contract']['added_by'] = $user_id ? $user_id : auth()->user()->id;
         $data['contract']['project_code'] = $this->setProjectCode();
 
-        return DB::transaction(function () use ($data) {
-            $this->validate($data['contract'], $data['contract']['id'] ?? null);
+        $contract_renewal_status = 0;
+        if (isset($data['contract']['renewal'])) {
+            $data['contract']['renewal_date'] = Carbon::today()->format('Y-m-d');
+            $data['contract']['renewed_by'] = $user_id ? $user_id : auth()->user()->id;
+            $data['contract']['parent_contract_id'] = $data['contract']['id'];
+
+
+            $contract_renewal_status = 1;
+        }
+
+        return DB::transaction(function () use ($data, $contract_renewal_status) {
+            $this->validate($data['contract'], (!isset($data['contract']['renewal'])) ? $data['contract']['id'] ?? null : 0);
 
             $contract = $this->contractRepo->create($data['contract']);
             // Store related details
 
+            if ($contract_renewal_status == 1) {
+                $this->contractRepo->update($data['contract']['id'], array(
+                    'contract_renewal_status' => $contract_renewal_status,
+                ));
+            }
 
             $this->detailServ->create($contract->id, $data['detail'] ?? []);
 
             $unitData = $this->unitServ->create($contract->id, $data['unit'] ?? [], $data['unit_detail'] ?? []);
-
+            // dd($unitData);
             $this->unitDetServ->create($contract, $data['unit_detail'] ?? [], $data['rentals']['receivable_installments'], $unitData->id);
             // dd($contract);
             $this->rentalServ->create($contract->id, $data['rentals'] ?? []);
@@ -143,7 +163,7 @@ class ContractService
 
             $this->detailServ->update($data['detail'] ?? []);
             $unitData = $this->unitServ->update($data['unit'] ?? [], $data['unit_detail'] ?? []);
-
+            // dd($unitData);
             $this->unitDetServ->update($contract, $data['unit_detail'] ?? [], $data['rentals']['receivable_installments'], $unitData->id);
             // dd($unitData);
             $this->rentalServ->update($data['rentals'] ?? []);
@@ -200,11 +220,12 @@ class ContractService
 
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
-            ['data' => 'project_code', 'name' => 'project_code'],
+            ['data' => 'project_number', 'name' => 'project_number'],
+            // ['data' => 'contract_type', 'name' => 'contract_type'],
             ['data' => 'company_name', 'name' => 'company_name'],
-            ['data' => 'vendor_name', 'name' => 'vendor_name'],
-            ['data' => 'property_name', 'name' => 'property_name'],
-            ['data' => 'start_date', 'name' => 'start_date'],
+            ['data' => 'no_of_units', 'name' => 'no_of_units'],
+            ['data' => 'roi_perc', 'name' => 'roi_perc'],
+            ['data' => 'expected_profit', 'name' => 'expected_profit'],
             ['data' => 'end_date', 'name' => 'end_date'],
             ['data' => 'contract_status', 'name' => 'contract_status'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
@@ -213,91 +234,134 @@ class ContractService
         return datatables()
             ->of($query)
             ->addIndexColumn()
-            ->addColumn('project_code', fn($row) => ucfirst($row->project_code) ?? '-')
+            ->addColumn('project_number', function ($row) {
+                $number = 'P - ' . $row->project_number ?? '-';
+                $type = $row->contract_type->contract_type ?? '-';
+
+                // return "<strong class=''>{$number}</strong><p class='mb-0'><span>{$type}</span></p>
+                // </p>";
+                $badgeClass = '';
+
+                if ($row->contract_type_id == 1) {
+                    $badgeClass = 'badge badge-df';
+                } elseif ($row->contract_type_id == 2) {
+                    $badgeClass = 'badge badge-ff';
+                } else {
+                    $badgeClass = 'badge badge-secondary';
+                }
+
+                return "<strong>{$number}</strong>
+            <p class='mb-0'>
+                <span class='{$badgeClass}'>{$type}</span> 
+            </p>";
+            })
+            // ->addColumn('project_number', fn($row) => 'P - ' . ucfirst($row->project_number) ?? '-')
             ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
-
-            ->addColumn('vendor_name', fn($row) => $row->vendor->vendor_name ?? '-')
-            ->addColumn('property_name', fn($row) => $row->property->property_name ?? '-')
-            ->addColumn('start_date', fn($row) => $row->contract_detail->start_date ?? '-')
+            // ->addColumn('contract_type', fn($row) => $row->contract_type->shortcode ?? '-')
+            ->addColumn('no_of_units', fn($row) => $row->contract_unit->no_of_units ?? '-')
+            ->addColumn('roi_perc', fn($row) => $row->contract_rentals->roi_perc ?? '-')
+            ->addColumn('expected_profit', fn($row) => $row->contract_rentals->expected_profit ?? '-')
             ->addColumn('end_date', fn($row) => $row->contract_detail->end_date ?? '-')
-            ->addColumn('status', fn($row) => $row->contract_status ?? '-')
-
+            ->addColumn(
+                'status',
+                function ($row) {
+                    $comment = '';
+                    if ($row->contract_status == 5) {
+                        $comment = '<i class="far fa-comments loadComments" data-id="' . $row->id . '"></i>'; //data-toggle="modal" data-target="#modal-hold-comment" 
+                    }
+                    return '<span class="' . contractStatusClass($row->contract_status) . '">' . contractStatusName($row->contract_status) . '</span> ' . $comment ?? '-';
+                }
+            )
             ->addColumn('action', function ($row) {
                 $action = '';
 
-                if ($row->contract_status == 0) {
-
-                    if (Gate::allows('contract.view')) {
-                        $action .= '<a class="btn btn-primary btn-sm" href="' . route('contract.show', $row->id) . '" title="View Contract">
+                if (Gate::allows('contract.view')) {
+                    $action .= '<a class="btn btn-primary btn-sm" href="' . route('contract.show', $row->id) . '" title="View Contract">
                             <i class="fas fa-eye"></i>
                         </a> ';
-                    }
+                }
 
-                    if (Gate::allows('contract.edit')) {
-                        $action .= '<a class="btn btn-info btn-sm" href="' . route('contract.edit', $row->id) . '" title="Edit Contract">
+                if (Gate::allows('contract.edit') && $row->has_agreement == 0 && $row->contract_status != 3) {
+                    $action .= '<a class="btn btn-info btn-sm" href="' . route('contract.edit', $row->id) . '" title="Edit Contract">
                             <i class="fas fa-pencil-alt"></i>
                         </a> ';
-                    }
+                }
+
+                if ($row->contract_status == 0) {
+
+                    // if (Gate::allows('contract.view')) {
+                    //     $action .= '<a class="btn btn-primary btn-sm" href="' . route('contract.show', $row->id) . '" title="View Contract">
+                    //         <i class="fas fa-eye"></i>
+                    //     </a> ';
+                    // }
 
                     if (Gate::allows('contract.delete')) {
                         $action .= '<button class="btn btn-danger btn-sm" onclick="deleteConf(' . $row->id . ')" title="Delete Contract">
                             <i class="fas fa-trash"></i>
                         </button>';
                     }
-                } elseif ($row->contract_status == 1) {
+                }
+                // elseif ($row->contract_status == 1) {
 
+                // if (Gate::allows('contract.view')) {
+                //     $action .= '<a class="btn btn-primary btn-sm" href="' . route('contract.show', $row->id) . '" title="View Contract">
+                //         <i class="fas fa-eye"></i>
+                //     </a> ';
+                // }
+
+                // if (Gate::allows('contract.document_upload')) {
+                //     $action .= '<a class="btn btn-success btn-sm" href="' . route('contract.approve', $row->id) . '" title="Send for Approval">
+                //         <i class="fas fa-paper-plane"></i>
+                //     </a>';
+                // }
+                // } 
+                elseif ($row->contract_status == 3) {
+
+                    // if (Gate::allows('contract.view')) {
+                    //     $action .= '<a class="btn btn-primary btn-sm" href="' . route('contract.show', $row->id) . '" title="View Contract">
+                    //         <i class="fas fa-eye"></i>
+                    //     </a>';
+                    // }
+                }
+
+
+
+                if ($row->contract_status >= 1 && $row->contract_status != 3) {
                     if (Gate::allows('contract.document_upload')) {
                         $action .= '<a href="' . route('contract.documents', $row->id) . '" class="btn btn-warning btn-sm" title="Upload Documents">
                             <i class="fas fa-file"></i>
                         </a> ';
                     }
 
-                    if (Gate::allows('contract.view')) {
-                        $action .= '<a class="btn btn-primary btn-sm" href="' . route('contract.show', $row->id) . '" title="View Contract">
-                            <i class="fas fa-eye"></i>
-                        </a> ';
-                    }
 
-                    if (Gate::allows('contract.approve')) {
-                        $action .= '<a class="btn btn-info btn-sm" href="' . route('contract.approve', $row->id) . '" title="Approve Contract">
+                    if (Gate::allows('contract.send_for_approval') && in_array($row->contract_status,  [1, 5])) {
+                        $action .= '<button class="btn btn-success btn-sm" data-toggle="modal" data-id="' . $row->id . '"
+                                        data-target="#modal-send-approval" title="Send for Approval">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>';
+                    }
+                }
+
+                if (Gate::allows('contract.approve') && $row->contract_status == 4) {
+                    $action .= '<a class="btn btn-info btn-sm" href="' . route('contract.approve', $row->id) . '" title="Approve Contract">
                             <i class="fas fa-thumbs-up"></i>
                         </a>';
-                    }
-                } elseif ($row->contract_status == 2) {
+                }
 
-                    if (Gate::allows('contract.document_upload')) {
-                        $action .= '<a href="' . route('contract.documents', $row->id) . '" class="btn btn-warning btn-sm" title="Upload Documents">
-                            <i class="fas fa-file"></i>
-                        </a> ';
-                    }
-
-                    if (Gate::allows('contract.view')) {
-                        $action .= '<a class="btn btn-primary btn-sm" href="' . route('contract.show', $row->id) . '" title="View Contract">
-                            <i class="fas fa-eye"></i>
+                if (Gate::allows('contract.sign_after_approval') && $row->contract_status == 2) {
+                    $action .= '<a class="btn btn-info btn-sm" href="' . route('sign.contract', $row->id) . '" title="Sign Vendor Contract">
+                            <i class="fas fa-signature"></i>
                         </a>';
-                    }
-                } elseif ($row->contract_status == 3) {
-
-                    if (Gate::allows('contract.document_upload')) {
-                        $action .= '<a href="' . route('contract.documents', $row->id) . '" class="btn btn-warning btn-sm" title="Upload Documents">
-                            <i class="fas fa-file"></i>
-                        </a> ';
-                    }
-
-                    if (Gate::allows('contract.view')) {
-                        $action .= '<a class="btn btn-primary btn-sm" href="' . route('contract.show', $row->id) . '" title="View Contract">
-                            <i class="fas fa-eye"></i>
-                        </a>';
-                    }
                 }
 
                 return $action ?: '-';
             })
 
-            ->rawColumns(['action'])
+            ->rawColumns(['project_number', 'action', 'status'])
             ->with(['columns' => $columns])
             ->toJson();
     }
+
     public function getAllwithUnits()
     {
         return $this->contractRepo->allwithUnits();
@@ -308,6 +372,8 @@ class ContractService
         $units = ContractUnitDetail::where('contract_id', $id)
             ->with('contractSubUnitDetails')
             ->get();
+        Contract::where('id', $id)
+            ->update(['has_agreement' =>  1]);
 
         $allVacant = $units->every(function ($unit) {
             $unitVacant = $unit->is_vacant == 1;
@@ -325,4 +391,115 @@ class ContractService
 
         return false;
     }
+
+    public function fullContracts()
+    {
+        return $this->contractRepo->fullContracts();
+    }
+    public function getRenewalDataTable(array $filters = [])
+    {
+        $query = $this->contractRepo->getRenewalQuery($filters);
+        // dd($query);
+
+        $columns = [
+            ['data' => 'DT_RowIndex', 'name' => 'id'],
+            ['data' => 'project_number', 'name' => 'project_number'],
+            ['data' => 'contract_type', 'name' => 'contract_type'],
+            ['data' => 'company_name', 'name' => 'company_name'],
+            ['data' => 'no_of_units', 'name' => 'no_of_units'],
+            ['data' => 'roi_perc', 'name' => 'roi_perc'],
+            ['data' => 'expected_profit', 'name' => 'expected_profit'],
+            ['data' => 'end_date', 'name' => 'end_date'],
+            ['data' => 'contract_status', 'name' => 'contract_status'],
+            ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
+        ];
+
+        return datatables()
+            ->of($query)
+            ->addIndexColumn()
+            ->addColumn('project_number', fn($row) => 'P - ' . ucfirst($row->project_number) ?? '-')
+            ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
+            ->addColumn('contract_type', fn($row) => $row->contract_type ?? '-')
+            ->addColumn('no_of_units', fn($row) => $row->contract_unit->no_of_units ?? '-')
+            ->addColumn('roi_perc', fn($row) => $row->contract_rentals->roi_perc ?? '-')
+            ->addColumn('expected_profit', fn($row) => $row->contract_rentals->expected_profit ?? '-')
+            ->addColumn('end_date', fn($row) => $row->contract_detail->end_date ?? '-')
+            // ->addColumn('status', fn($row) => $row->contract_status ?? '-')
+
+            ->addColumn('action', function ($row) {
+                $action = '';
+
+                if (Gate::allows('contract.renew')) {
+                    $action .= '<a class="btn btn-primary btn-sm" href="' . route('contract.renew', $row->id) . '" title="Renew COntract">
+                            <i class="fas fa-sync-alt"></i>
+                        </a> ';
+
+                    $action .= '<a class="btn btn-danger btn-sm openRejectModalBtn" href="#" data-url="' . route('contract.reject_renew', $row->id) . '" data-id="' . $row->id . '" title="Reject Renewal">
+                            <i class="fas fa-times"></i>
+                        </a> ';
+                }
+
+                return $action ?: '-';
+            })
+
+            ->rawColumns(['action'])
+            ->with(['columns' => $columns])
+            ->toJson();
+    }
+
+    public function getRenewalDataCount(array $filters = [])
+    {
+        // $query = ${$this->contractRepo->getRenewalQuery($filters)}->count();
+
+        $query = $this->contractRepo->getRenewalQuery($filters);
+
+        return $query->count();
+    }
+
+
+    public function rejectRenew($data, $contract_id)
+    {
+        $dataArr = [
+            'renew_reject_reason' => $data->renew_reject_reason,
+            'renew_reject_status' => 1,
+            'renew_rejected_by'   => auth()->user()->id,
+        ];
+
+        return $this->contractRepo->updateRejectRenew($contract_id, $dataArr);
+    }
+
+    public function getAllChildren($contract_id)
+    {
+        return $this->contractRepo->getAllRelatedContracts($contract_id);
+    }
+
+    public function approveContract($data)
+    {
+        $dataArr = [
+            'contract_status' => $data['status'],
+            'contract_id' => $data['contract_id'],
+        ];
+
+        if ($data['status'] == '2') {
+            $dataArr['approved_by'] = auth()->user()->id;
+            $dataArr['approved_date'] = Carbon::now();;
+        } else {
+            $dataArr['rejected_reason'] = $data['reason'];
+            $dataArr['rejected_date'] = Carbon::now();
+            $dataArr['contract_rejected_by'] = auth()->user()->id;
+        }
+        // dd($dataArr);
+
+        // dd($this->vendorSignServ->addImageToPdf($data['contract_id']));
+        return $this->contractRepo->update($data['contract_id'], $dataArr);
+    }
+
+    // public function vendorContractSign($contract_id)
+    // {
+    //     $contract = $this->contractRepo->find($contract_id);
+    //     $vendor = $contract->vendor;
+
+    //     // Send email to vendor for contract signing
+    //     // Implement email sending logic here
+    // }
 }

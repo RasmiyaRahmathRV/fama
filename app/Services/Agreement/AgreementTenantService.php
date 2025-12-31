@@ -33,15 +33,25 @@ class AgreementTenantService
     {
         $validator = Validator::make($data, [
             'tenant_name' => 'required',
-            'tenant_name' => 'required',
-            'tenant_mobile' => 'required',
-            'tenant_email' => 'required',
+            'tenant_mobile' => ['required', 'regex:/^\+?\d{1,4}\s?\d{7,12}$/'],
+            'tenant_email' => 'required|email:rfc,dns',
             'nationality_id' =>  'required',
-            'tenant_address' =>  'required'
+            'tenant_address' =>  'required',
+            'contact_person' => 'required',
+            'contact_number' => ['required', 'regex:/^\+?\d{1,4}\s?\d{7,12}$/'],
+            'contact_email' => 'required|email:rfc,dns',
         ], []);
 
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
+    }
+    public function update(array $data, $user_id = null)
+    {
+        // dd($data);
+        $id = $data['id'];
+        $this->validate($data, $id);
+        $data['updated_by'] = $user_id ? $user_id : auth()->user()->id;
+        return $this->agreementTenantRepository->update($id, $data);
     }
 }

@@ -12,28 +12,39 @@
                 <input type="hidden" name="id" id="bank_id">
                 <div class="modal-body">
                     <div class="card-body">
-                        {{-- <div class="form-group row"> --}}
-                        {{-- @if (auth()->user()->company_id)
+                        <div class="form-group row">
+                            {{-- @if (auth()->user()->company_id)
                                 <input type="hidden" name="company_id" id="company_id"
                                     value="{{ auth()->user()->company_id }}">
                             @else --}}
-                        {{-- <label class="col-sm-3 col-form-label">Company</label>
-                            <select class="form-control select2 col-sm-9" name="company_id" id="company_id">
-                                <option value="">Select Company</option>
-                                {{ $company_dropdown }}
-                            </select> --}}
-                        {{-- @endif --}}
-                        {{-- </div> --}}
+                            <label class="col-sm-3 col-form-label asterisk">Company</label>
+                            <div class="col-sm-9 p-0">
+                                <select class="form-control select2 " name="company_id" id="company_id" required>
+                                    <option value="">Select Company</option>
+                                    {{ $company_dropdown }}
+                                </select>
+                            </div>
+
+                            {{-- @endif --}}
+                        </div>
                         <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Bank Name</label>
+                            <label for="inputEmail3" class="col-sm-3 col-form-label asterisk">Bank Name</label>
                             <input type="text" name="bank_name" id="bank_name" class="col-sm-9 form-control"
-                                id="inputEmail3" placeholder="Bank Name">
+                                id="inputEmail3" placeholder="Bank Name" required>
                         </div>
 
                         <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Short Code</label>
+                            <label for="inputEmail3" class="col-sm-3 col-form-label asterisk">Short Code</label>
                             <input type="text" name="bank_short_code" id="bank_short_code"
-                                class="col-sm-9 form-control" id="inputEmail3" placeholder="Bank Short Code">
+                                class="col-sm-9 form-control" id="inputEmail3" placeholder="Bank Short Code" required>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-3 col-form-label asterisk">Status</label>
+                            <select name="status" id="status" class="col-sm-9 form-control" required>
+                                <option value="1" selected>Active</option>
+                                <option value="0">Inactive
+                                </option>
+                            </select>
                         </div>
                     </div>
                     <!-- /.card-body -->

@@ -61,21 +61,21 @@ class AreaRepository
     public function getQuery(array $filters = []): Builder
     {
         $query = Area::query()
-            ->select('areas.*', 'companies.company_name')
-            ->join('companies', 'companies.id', '=', 'areas.company_id');
+            ->select('areas.*');
+        // ->join('companies', 'companies.id', '=', 'areas.company_id');
 
         if (!empty($filters['search'])) {
             $query->orwhere('area_name', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('area_code', 'like', '%' . $filters['search'] . '%')
-                ->orWhereHas('company', function ($q) use ($filters) {
-                    $q->where('company_name', 'like', '%' . $filters['search'] . '%');
-                })
+                // ->orWhereHas('company', function ($q) use ($filters) {
+                //     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
+                // })
                 ->orWhereRaw("CAST(areas.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
 
-        if (!empty($filters['company_id'])) {
-            $query->Where('company_id', $filters['company_id']);
-        }
+        // if (!empty($filters['company_id'])) {
+        //     $query->Where('company_id', $filters['company_id']);
+        // }
 
         return $query;
     }
@@ -83,7 +83,7 @@ class AreaRepository
     public function checkIfExist($data)
     {
         $existing = Area::withTrashed()
-            ->where('company_id', $data['company_id'])
+            // ->where('company_id', $data['company_id'])
             ->where('area_name', $data['area_name'])
             ->first();
 

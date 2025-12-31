@@ -17,4 +17,14 @@ class AgreementPaymentRepository
     {
         return AgreementPayment::create($data);
     }
+    public function update($id, array $data)
+    {
+        $payment = $this->find($id);
+        $payment->update($data);
+        return $payment;
+    }
+    public function find($id)
+    {
+        return AgreementPayment::findOrFail($id);
+    }
 }

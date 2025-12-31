@@ -2,6 +2,8 @@
 
 namespace App\Services\Contracts;
 
+use App\Models\AgreementPayment;
+use App\Models\Contract;
 use App\Models\ContractSubunitDetail;
 use App\Models\ContractUnitDetail;
 use App\Repositories\Contracts\SubUnitDetailRepository;
@@ -29,21 +31,40 @@ class SubUnitDetailService
         // dd($subUnitData);
         $subunitArr = [];
         foreach ($subUnitData['unit_type'] as $key => $value) {
-            // print_r($detailId);
-            for ($i = 1; $i <= $subUnitData['partition'][$key]; $i++) {
-                $subunit_type = '0';
-                if (isset($subUnitData['is_partition'][$key])) {
-                    if ($subUnitData['is_partition'][$key] == '1') {
-                        $subunitno = 'P' . $i;
-                        $subunit_type = '1';
-                    } else if ($subUnitData['is_partition'][$key] == '2') {
-                        $subunitno = 'BS' . $i;
-                        $subunit_type = '2';
-                    }
-                } else {
-                    $subunitno = 'R' . $i;
-                    $subunit_type = '3';
-                }
+            // dd($subUnitData);
+            $subunitcount = subUnitCount($subUnitData, $key);
+            // if (isset($subUnitData['is_partition'][$key])) {
+            //     if ($subUnitData['is_partition'][$key] == '1') {
+            //         $subunitcount = $subUnitData['partition'][$key];
+            //     } else if ($subUnitData['is_partition'][$key] == '2') {
+            //         $subunitcount = $subUnitData['bedspace'][$key];
+            //     } else {
+            //         $subunitcount = $subUnitData['room'][$key];
+            //     }
+            // } else {
+            //     $subunitcount++;
+            // }
+
+            for ($i = 1; $i <= $subunitcount; $i++) {
+                // print_r($detailId);
+                // $subunit_type = '0';
+                $subunit_type = subUnitType($subUnitData, $key);
+                $subunitno = subunitNoGeneration($subUnitData, $key, $i);
+                // if (isset($subUnitData['is_partition'][$key])) {
+                //     if ($subUnitData['is_partition'][$key] == '1') {
+                //         $subunitno = 'P' . $i;
+                //         $subunit_type = '1';
+                //     } else if ($subUnitData['is_partition'][$key] == '2') {
+                //         $subunitno = 'BS' . $i;
+                //         $subunit_type = '2';
+                //     } else {
+                //         $subunitno = 'R' . $i;
+                //         $subunit_type = '3';
+                //     }
+                // } else {
+                //     $subunitno = 'FL' . $i;
+                //     $subunit_type = '4';
+                // }
 
                 $subunitcode = 'P' . $subUnitData['project_no'] . '/' . $subUnitData['company_code'] . '/' .  $subUnitData['unit_no'][$key] . '/' . $subunitno;
                 // dd('aftercode');
@@ -57,6 +78,7 @@ class SubUnitDetailService
                     'subunit_code' => $subunitcode,
                     'added_by' => $user_id ? $user_id : auth()->user()->id,
                 );
+                // dd($subunitArr);
 
                 $this->subunitdetRepo->create($subunitArr);
             }
@@ -78,15 +100,19 @@ class SubUnitDetailService
         DB::transaction(function () use ($detailId, $subUnitData, $key, $user_id) {
             // dd('before');
 
-            if (isset($subUnitData['is_partition'][$key])) {
-                if ($subUnitData['is_partition'][$key] == '1') {
-                    $subunit_type = '1';
-                } else if ($subUnitData['is_partition'][$key] == '2') {
-                    $subunit_type = '2';
-                }
-            } else {
-                $subunit_type = '3';
-            }
+            // if (isset($subUnitData['is_partition'][$key])) {
+            //     if ($subUnitData['is_partition'][$key] == '1') {
+            //         $subunit_type = '1';
+            //     } else if ($subUnitData['is_partition'][$key] == '2') {
+            //         $subunit_type = '2';
+            //     } else {
+            //         $subunit_type = '3';
+            //     }
+            // } else {
+            //     $subunit_type = '4';
+            // }
+
+            $subunit_type = subUnitType($subUnitData, $key);
 
             // 🔹 Get existing subunits for this detail
             $existing = ContractSubunitDetail::where('contract_unit_detail_id', $detailId)
@@ -98,16 +124,18 @@ class SubUnitDetailService
 
             // echo "</pre>";
             // print_r($subUnitData);
-            $subunitcount = 0;
-            if (isset($subUnitData['is_partition'][$key])) {
-                if ($subUnitData['is_partition'][$key] == '1') {
-                    $subunitcount = $subUnitData['partition'][$key];
-                } else if ($subUnitData['is_partition'][$key] == '2') {
-                    $subunitcount = $subUnitData['bedspace'][$key];
-                }
-            } else {
-                $subunitcount++;
-            }
+            $subunitcount = subUnitCount($subUnitData, $key);
+            // if (isset($subUnitData['is_partition'][$key])) {
+            //     if ($subUnitData['is_partition'][$key] == '1') {
+            //         $subunitcount = $subUnitData['partition'][$key];
+            //     } else if ($subUnitData['is_partition'][$key] == '2') {
+            //         $subunitcount = $subUnitData['bedspace'][$key];
+            //     } else {
+            //         $subunitcount = $subUnitData['room'][$key];
+            //     }
+            // } else {
+            //     $subunitcount++;
+            // }
             // dd('before');
             $existPrevTypeId = $this->subunitdetRepo->existPrevSubType($detailId, $subUnitData['is_partition'][$key] ?? 0);
             // dd($existPrevTypeId);
@@ -169,7 +197,7 @@ class SubUnitDetailService
             'subunit_code' => $subunitcode,
             'added_by' => $user_id ? $user_id : auth()->user()->id,
         );
-
+        // dd($subunitArr);
         if ($oldValue || $existing) {
             if ($existing) {
                 // dd('exist');
@@ -188,26 +216,108 @@ class SubUnitDetailService
     }
 
 
-    public function markSubunitVacant($subunitId)
-    {
-        $subunit = ContractSubunitDetail::find($subunitId);
+    // public function markSubunitOccupied($subunitId)
+    // {
+    //     $subunit = ContractSubunitDetail::find($subunitId);
 
-        if (!$subunit) {
+    //     if (!$subunit) {
+    //         return;
+    //     }
+
+    //     $subunit->is_vacant = 1;
+    //     $subunit->save();
+
+    //     $unitId = $subunit->contract_unit_detail_id;
+
+    //     $allVacant = ContractSubunitDetail::where('contract_unit_detail_id', $unitId)
+    //         ->where('is_vacant', 0)
+    //         ->doesntExist();
+
+    //     if ($allVacant) {
+    //         ContractUnitDetail::where('id', $unitId)
+    //             ->update(['is_vacant' => 1]);
+    //     }
+    // }
+
+    public function markSubunitOccupied($unitId, $subunitId = null)
+    {
+        DB::transaction(function () use ($unitId, $subunitId) {
+
+            // Step 1: Mark subunit vacant if exists
+            if ($subunitId) {
+                $subunit = ContractSubunitDetail::find($subunitId);
+                if ($subunit) {
+                    $subunit->is_vacant = 1;
+                    $subunit->save();
+                    $unitId = $subunit->contract_unit_detail_id;
+                }
+            }
+
+            $details = getOccupiedDetails($unitId);
+            $unit = ContractUnitDetail::find($unitId);
+            $unit->subunit_occupied_count = $details['occupied'];
+            $unit->subunit_vacant_count = $details['vacant'];
+            $unit->save();
+
+            if ($details['totalsubunits'] === 0 || $details['occupied'] === $details['totalsubunits']) {
+
+                if ($unit) {
+                    $unit->is_vacant = 1;
+                    $unit->save();
+                }
+            }
+        });
+    }
+
+    public function allVacant($contractId)
+    {
+        $units = ContractUnitDetail::where('contract_id', $contractId)->get();
+
+        foreach ($units as $unit) {
+            $unit->contractSubUnitDetails()->update(['is_vacant' => 1]);
+            $details = getOccupiedDetails($unit->id);
+            // dd($details);
+            $unit->subunit_occupied_count = $details['occupied'];
+            $unit->subunit_vacant_count = $details['vacant'];
+            $unit->is_vacant = 1;
+            $unit->save();
+        }
+
+        // $allUnitsVacant = ContractUnitDetail::where('contract_id', $contractId)
+        //     ->where('is_vacant', 0)
+        //     ->doesntExist();
+
+        // if ($allUnitsVacant) {
+        //     Contract::where('id', $contractId)->update(['is_vacant' => 1]);
+        // }
+    }
+    public function Updatepaymentdetails($paymentId, $unitId)
+    {
+        $details = getPaymentDetails($paymentId, $unitId);
+        $unit = ContractUnitDetail::find($unitId);
+        $unit->total_payment_received = $details['received'];
+        $unit->total_payment_pending = $details['pending'];
+        $unit->save();
+    }
+    public function markUnitOccupied($unitId)
+    {
+        $unit = ContractUnitDetail::find($unitId);
+        if (!$unit) {
             return;
         }
 
-        $subunit->is_vacant = 1;
-        $subunit->save();
-
-        $unitId = $subunit->contract_unit_detail_id;
-
-        $allVacant = ContractSubunitDetail::where('contract_unit_detail_id', $unitId)
-            ->where('is_vacant', 0)
-            ->doesntExist();
-
-        if ($allVacant) {
-            ContractUnitDetail::where('id', $unitId)
-                ->update(['is_vacant' => 1]);
+        $unit->is_vacant = 1;
+        $unit->save();
+        $subunits = ContractSubunitDetail::where('contract_unit_detail_id', $unitId)->get();
+        foreach ($subunits as $subunit) {
+            $subunit->is_vacant = 1;
+            $subunit->save();
         }
+
+
+        $details = getOccupiedDetails($unitId);
+        $unit->subunit_occupied_count = $details['occupied'];
+        $unit->subunit_vacant_count = $details['vacant'];
+        $unit->save();
     }
 }

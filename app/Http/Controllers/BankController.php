@@ -65,6 +65,7 @@ class BankController extends Controller
     public function show(Bank $bank)
     {
         //
+        return view('admin.master.bank-view', compact('bank'));
     }
 
     /**

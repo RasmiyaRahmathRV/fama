@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         foreach (['Super Admin', 'Admin', 'Sales', 'Accountant', 'Manager', 'Operations', 'Data Analyst'] as $role) {
-            UserType::create([
+            UserType::updateOrCreate([
                 'user_type' => $role,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -45,7 +45,7 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($modules as $module) {
-            $parent = Permission::create([
+            $parent = Permission::updateOrCreate([
                 'permission_name' => ucfirst($module),
                 'parent_id' => null
             ]);
@@ -56,35 +56,51 @@ class UserSeeder extends Seeder
                 $subModule = ['view'];
             } else {
                 $subModule = ['add', 'view', 'edit', 'delete'];
-                if (in_array($module, ['contract', 'agreement'])) {
+                if (in_array($module, ['contract'])) {
                     $subModule[] = 'approve';
                     $subModule[] = 'reject';
                     $subModule[] = 'document_upload';
+                    $subModule[] = 'renew';
+                    $subModule[] = 'send_for_approval';
+                    $subModule[] = 'sign_after_approval';
+                }
+
+                if (in_array($module, ['agreement'])) {
+                    $subModule[] = 'terminate';
+                    $subModule[] = 'invoice_upload';
+                    $subModule[] = 'document_upload';
                     $subModule[] = 'manage_installments';
+                    $subModule[] = 'renew';
+                }
+                if (in_array($module, ['investment'])) {
+                    $subModule[] = 'terminate';
+                    $subModule[] = 'submit_pending';
                 }
             }
 
             foreach ($subModule as $action) {
-                Permission::create([
+                Permission::updateOrCreate([
                     'permission_name' => "{$module}.{$action}",
                     'parent_id' => $parent->id
                 ]);
             }
         }
 
-        $user_id = User::create([
-            'user_code' => 'USR0001',
-            'first_name' => 'Super',
-            'last_name' => 'Admin',
-            'user_type_id' => 1,
-            'email' => 'superadmin@demo.com',
-            'username' => 'superadmin',
-            'password' => bcrypt('captain'),
-            'added_by' => 1,
-        ])->id;
+        $user_id = User::updateOrCreate(
+            ['email' => 'superadmin@demo.com'],
+            [
+                'user_code' => 'USR0001',
+                'first_name' => 'Super',
+                'last_name' => 'Admin',
+                'user_type_id' => 1,
+                'username' => 'superadmin',
+                'password' => bcrypt('captain'),
+                'added_by' => 1,
+            ]
+        )->id;
 
         foreach (Permission::all() as $permissions) {
-            UserPermission::create([
+            UserPermission::updateOrCreate([
                 'user_id' => $user_id,
                 'permission_id' => $permissions->id,
             ]);

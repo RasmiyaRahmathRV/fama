@@ -3,38 +3,45 @@
 namespace App\Repositories\Agreement;
 
 use App\Models\Agreement;
+use App\Models\AgreementPaymentDetail;
+use App\Models\AgreementUnit;
 use App\Models\Contract;
+use App\Models\ContractSubunitDetail;
+use App\Models\ContractUnitDetail;
+use App\Models\TenantInvoice;
+use App\Repositories\Contracts\ContractRepository;
+use App\Services\Agreement\AgreementPaymentDetailService;
+use App\Services\Agreement\AgreementPaymentService;
+use App\Services\Agreement\AgreementTenantService;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AgreementRepository
 {
+    public function __construct(
+        protected ContractRepository $contractRepository,
+
+
+    ) {}
     public function all()
     {
-        return Contract::all();
+        return Agreement::all();
     }
 
     public function find($id)
     {
 
-        return Contract::with(
-            'contract_detail',
-            'contract_rentals',
-            'contract_documents',
-            'contract_otc',
-            'contract_payments.contractPaymentDetails.payment_mode',
-            'contract_payments.contractPaymentDetails.bank',
-            'contract_payments.installment',
-            'contract_unit.contractUnitDetails.contractSubUnitDetails',
-            'contract_unit_details.property_type',
-            'contract_unit_details.unit_type',
-            'contract_unit_details.unit_status',
+        return Agreement::with(
+            'contract',
             'company',
-            'area',
-            'locality',
-            'vendor',
-            'property',
-            'contract_type'
+            'tenant.nationality',
+            'agreement_payment.agreementPaymentDetails',
+            'agreement_documents',
+            'agreement_units.contractSubunitDetail',
+            'agreement_units.contractUnitDetail'
+
+
         )->findOrFail($id);
     }
 
@@ -51,32 +58,25 @@ class AgreementRepository
 
     public function update($id, array $data)
     {
-        $contract = $this->find($id);
-        $contract->update($data);
-        return $contract;
+        $agreement = $this->find($id);
+        $agreement->update($data);
+        return $agreement;
     }
     public function delete($id)
     {
-        $contract = $this->find($id);
-        $contract->deleted_by = auth()->user()->id;
-        $contract->save();
-        return $contract->delete();
+        $agreement = $this->find($id);
+        $agreement->deleted_by = auth()->user()->id;
+        $agreement->save();
+        $contract_id = $agreement->contract_id;
+        $this->makeVacant($id, $contract_id);
+        return $agreement->delete();
     }
 
-    // public function checkIfExist($data)
-    // {
-    //     $existing = Contract::withTrashed()
-    //         ->where('contract_name', $data['contract_name'])
-    //         ->first();
 
-    //     if ($existing && $existing->trashed()) {
-    //         // $existing->restore();
-    //         return $existing;
-    //     }
-    // }
 
     public function getQuery(array $filters = []): Builder
     {
+        // dd("test");
         $query = Agreement::query()
             ->select([
                 'agreements.*',
@@ -85,7 +85,10 @@ class AgreementRepository
                 'agreement_tenants.tenant_name',
                 'agreement_tenants.tenant_email',
                 'agreement_tenants.tenant_mobile',
-                'contract_types.contract_type'
+                'contract_types.contract_type',
+                // \DB::raw('SUM(agreement_payment_details.paid_amount) as paid_amount')
+                'contract_units.business_type as business_type'
+
 
             ])
             ->join('contracts', 'contracts.id', '=', 'agreements.contract_id')
@@ -93,7 +96,10 @@ class AgreementRepository
             // ->join('vendors', 'vendors.id', '=', 'contracts.vendor_id')
             ->join('companies', 'companies.id', '=', 'agreements.company_id')
             ->join('agreement_tenants', 'agreement_tenants.agreement_id', '=', 'agreements.id')
-            ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id');
+            ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id')
+            ->join('contract_units', 'contract_units.contract_id', '=', 'contracts.id');
+
+
         // $get = $query->get();
         // dd($get);
 
@@ -106,6 +112,9 @@ class AgreementRepository
                 })
                 ->orWhereHas('contract.contract_type', function ($q) use ($filters) {
                     $q->where('contract_type', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('contract.contract_unit', function ($q) use ($filters) {
+                    $q->where('business_type', 'like', '%' . $filters['search'] . '%');
                 })
                 ->orWhereHas('tenant', function ($q) use ($filters) {
                     $q->where('tenant_name', 'like', '%' . $filters['search'] . '%')
@@ -120,6 +129,254 @@ class AgreementRepository
         }
 
 
+        if (isset($filters['status']) && $filters['status'] !== 'all') {
+            $query->where('agreements.agreement_status', $filters['status']);
+        }
+
+
+        // if (!empty($filters['company_id'])) {
+        //     $query->Where('contracts.company_id', $filters['company_id']);
+        // }
+
+        $query->orderBy('agreements.id', 'desc');
+
+        return $query;
+    }
+    public function findunits($id)
+    {
+        return Agreement::find($id)
+            ->agreement_units()
+            ->pluck('id')
+            ->toArray();
+    }
+    public function getDetails($id)
+    {
+
+        return Agreement::with([
+            'contract' => function ($query) {
+                $query->with(['vendor', 'area', 'property', 'locality', 'contract_rentals', 'contract_type']);
+            },
+            'company',
+            'tenant.nationality',
+            'agreement_payment.agreementPaymentDetails.invoice',
+            'agreement_payment.installment',
+            'agreement_documents',
+            'agreement_units.contractSubunitDetail',
+            'agreement_units.contractUnitDetail.unit_type'
+        ])->findOrFail($id);
+    }
+
+
+    public function makeVacant($agreementid, $contractid)
+    {
+        DB::transaction(function () use ($agreementid, $contractid) {
+            $contract = $this->contractRepository->find($contractid);
+            $type = $contract->contract_type_id;
+            $business_type = $contract->contract_unit->business_type;
+            $agreement = $this->find($agreementid);
+            $contract_unit_details = $agreement->agreement_units->pluck('contract_unit_details_id');
+            // dd($contract_unit_details);
+            $contract_subunits = $agreement->agreement_units
+                ->pluck('subunit_ids')
+                ->flatten()
+                ->unique()
+                ->values()
+                ->toArray();
+
+
+            if ($type == 2) {
+                // dd('test');
+                $contract_units = $contract->contract_unit_details;
+                foreach ($contract_units as $unit) {
+                    makeUnitVacant($unit->id, $contractid);
+                }
+            } else {
+                // dd($contract_unit_details);
+                foreach ($contract_unit_details as $unit) {
+                    $unitdetail = ContractUnitDetail::find($unit);
+                    if ($unitdetail) {
+                        // dd($unitdetail);
+                        $unitdetail->is_vacant = 0;
+                        $unitdetail->save();
+                    }
+                }
+                foreach ($contract_subunits as $contract_subunit_id) {
+                    $subunitdetail = ContractSubunitDetail::find($contract_subunit_id);
+                    if ($subunitdetail) {
+                        $subunitdetail->is_vacant = 0;
+                        $subunitdetail->save();
+                    }
+                }
+            }
+
+            $contract->is_agreement_added = 0;
+            $contract->save();
+
+            $allUnitsVacant = $contract->contract_unit_details()->where('is_vacant', 1)->doesntExist();
+            $allSubUnitvacant = $contract->contract_subunit_details()->where('is_vacant', 1)->doesntExist();
+            // dd($allSubUnitvacant);
+            if ($allUnitsVacant && $allSubUnitvacant) {
+                $contract->has_agreement = 0;
+                $contract->save();
+            }
+        });
+    }
+
+
+    public function terminate($data)
+    {
+        // dd($data);
+        return DB::transaction(function () use ($data) {
+            $agreement_id = $data['agreement_id'];
+            $agreement = $this->find($agreement_id);
+
+            // $agreement->deleted_by = auth()->user()->id;
+            $agreement->terminated_by = auth()->user()->id;
+            $agreement->terminated_reason = $data['terminated_reason'];
+            $agreement->terminated_date = $data['terminated_date'];
+            $agreement->agreement_status = 1;
+            $agreement->save();
+
+            $contract_id = $agreement->contract_id;
+            // $contract = $this->contractRepository->find($contract_id);
+            // $type = $contract->contract_type_id;
+            // // $business_type = $contract->contract_unit->business_type;
+            // $contract_unit_details = $agreement->agreement_units->pluck('contract_unit_details_id');
+            // $contract_subunits = $agreement->agreement_units
+            //     ->pluck('subunit_ids')
+            //     ->flatten()
+            //     ->unique()
+            //     ->values()
+            //     ->toArray();
+            // dd($contract_subunits);
+            // if ($type == 2) {
+            //     foreach ($contract->contract_unit_details as $unit) {
+            //         makeUnitVacant($unit, $contract_id);
+            //     }
+            // } else {
+            //     foreach ($contract_unit_details as $unit) {
+            //         $unitdetail = ContractUnitDetail::find($unit);
+            //         if ($unitdetail) {
+            //             $unitdetail->is_vacant = 0;
+            //             $unitdetail->save();
+            //         }
+            //     }
+            //     foreach ($contract_subunits as $contract_subunit_id) {
+            //         $subunitdetail = ContractSubunitDetail::find($contract_subunit_id);
+            //         if ($subunitdetail) {
+            //             $subunitdetail->is_vacant = 0;
+            //             $subunitdetail->save();
+            //         }
+            //     }
+            // }
+
+            // $contract = $this->contractRepository->find($contract_id);
+            // $contract->is_agreement_added = 0;
+            // $contract->save();
+
+            // $anotherActiveAgreement = Agreement::where('contract_id', $contract_id)
+            //     ->where('id', '!=', $agreement_id)
+            //     ->where('agreement_status', 0)
+            //     ->exists();
+            // if (!$anotherActiveAgreement) {
+            //     $contract->has_agreement = 0;
+            //     $contract->save();
+            // }
+
+            $this->makeVacant($agreement_id, $contract_id);
+            $this->updatePaymentDetails($agreement_id, $agreement->terminated_date);
+
+            return;
+        });
+    }
+    public function updatePaymentDetails($agreement_id, $terminated_date)
+    {
+        $terminated_date = \Carbon\Carbon::parse($terminated_date);
+
+        $paymentDetails = AgreementPaymentDetail::where('agreement_id', $agreement_id)
+            ->whereDate('payment_date', '>', $terminated_date)
+            ->get();
+        // dd($paymentDetails);
+
+        foreach ($paymentDetails as $payment) {
+            $payment->terminate_status = 1;
+            $payment->save();
+        }
+
+        return $paymentDetails;
+    }
+    public function getExpired(array $filters = [])
+    {
+        // dd($filters['end_date_from']);
+
+        $oneMonthsLater = Carbon::today()->addMonths(1)->format('Y-m-d');
+        // dd($oneMonthsLater);
+        $query = Agreement::query()
+            ->select([
+                'agreements.*',
+                'contracts.project_number',
+                'companies.company_name',
+                'agreement_tenants.tenant_name',
+                'agreement_tenants.tenant_email',
+                'agreement_tenants.tenant_mobile',
+                'contract_types.contract_type',
+                // \DB::raw('SUM(agreement_payment_details.paid_amount) as paid_amount')
+                'contract_units.business_type as business_type'
+
+
+            ])
+            ->join('contracts', 'contracts.id', '=', 'agreements.contract_id')
+            ->join('properties', 'properties.id', '=', 'contracts.property_id')
+            // ->join('vendors', 'vendors.id', '=', 'contracts.vendor_id')
+            ->join('companies', 'companies.id', '=', 'agreements.company_id')
+            ->join('agreement_tenants', 'agreement_tenants.agreement_id', '=', 'agreements.id')
+            ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id')
+            ->join('contract_units', 'contract_units.contract_id', '=', 'contracts.id')
+            ->where('agreement_status', "=", 0)
+            ->where('end_date', '<=', $oneMonthsLater);
+
+        // $get = $query->get();
+        // dd($get);
+
+        if (!empty($filters['search'])) {
+            $query->orwhere('agreement_code', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('project_number', 'like', '%' . $filters['search'] . '%')
+
+                ->orWhereHas('company', function ($q) use ($filters) {
+                    $q->where('company_name', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('contract.contract_type', function ($q) use ($filters) {
+                    $q->where('contract_type', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('contract.contract_unit', function ($q) use ($filters) {
+                    $q->where('business_type', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('tenant', function ($q) use ($filters) {
+                    $q->where('tenant_name', 'like', '%' . $filters['search'] . '%')
+                        ->orWhere('tenant_email', 'like', '%' . $filters['search'] . '%')
+                        ->orWhere('tenant_mobile', 'like', '%' . $filters['search'] . '%');
+                })
+                // ->orWhereHas('contract_type', function ($q) use ($filters) {
+                //     $q->where('contract_type', 'like', '%' . $filters['search'] . '%');
+                // })
+
+                ->orWhereRaw("CAST(agreements.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
+        }
+
+
+        if (isset($filters['status']) && $filters['status'] !== 'all') {
+            $query->where('agreements.agreement_status', $filters['status']);
+        }
+
+        if (!empty($filters['end_date_from'])) {
+            $from = Carbon::createFromFormat('d-m-Y', $filters['end_date_from'])->format('Y-m-d');
+            $query->whereDate('agreements.end_date', '>=', $from);
+        }
+
+        if (!empty($filters['end_date_to'])) {
+            $to = Carbon::createFromFormat('d-m-Y', $filters['end_date_to'])->format('Y-m-d');
+            $query->whereDate('agreements.end_date', '<=', $to);
+        }
 
 
 
@@ -128,6 +385,8 @@ class AgreementRepository
         // }
 
         $query->orderBy('agreements.id', 'desc');
+        // $result = $query->get();
+        // dd($result);
 
         return $query;
     }

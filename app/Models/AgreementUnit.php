@@ -24,6 +24,11 @@ class AgreementUnit extends Model
         'added_by',
         'updated_by',
         'deleted_by',
+        'subunit_ids',
+        'unit_revenue'
+    ];
+    protected $casts = [
+        'subunit_ids' => 'array',
     ];
 
     /**
@@ -48,6 +53,10 @@ class AgreementUnit extends Model
 
     public function contractSubunitDetail()
     {
-        return $this->belongsTo(ContractSubunitDetail::class);
+        return $this->belongsTo(ContractSubunitDetail::class, 'contract_subunit_details_id', 'id');
+    }
+    public function agreement_payment_details()
+    {
+        return $this->hasMany(AgreementPaymentDetail::class, 'agreement_unit_id', 'id');
     }
 }

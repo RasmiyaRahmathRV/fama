@@ -1,0 +1,722 @@
+@extends('admin.layout.admin_master')
+
+@section('custom_css')
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{{ asset('assets/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" href="{{ asset('assets/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{{ asset('assets/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+@endsection
+
+@section('content')
+    <div class="content-wrapper">
+
+        <!-- Page Header -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Investment</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ url('dashboard') }}">Home</a></li>
+                            <li class="breadcrumb-item active">Investment</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <section class="content">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+
+                            <!-- Card Header -->
+                            <div class="card-header">
+                                <h3 class="card-title font-weight-bold">Add Investment</h3>
+                            </div>
+
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <form id="investmentForm" method="POST" enctype="multipart/form-data">
+                                    @csrf
+
+                                    <!-- ================= Investor Information ================= -->
+                                    <div class="card card-outline card-info ">
+                                        <div class="card-header">
+                                            <h3 class="card-title font-weight-bold">Investor Information</h3>
+                                        </div>
+
+                                        <div class="card-body">
+                                            <div class="row">
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">Investor</label>
+                                                        <select class="form-control select2" name="investor_id"
+                                                            id="investor_id" required>
+                                                            <option value="">Select Investor</option>
+                                                            @foreach ($data['investors'] as $investor)
+                                                                <option value="{{ $investor->id }}"
+                                                                    data-reference-id="{{ $investor->referral_id }}"
+                                                                    data-referror="{{ $investor->referral ? $investor->referral->investor_name . ' - ' . $investor->referral->investor_code : '' }}"
+                                                                    data-payout-batch-id="{{ $investor->payout_batch_id }}"
+                                                                    data-profit-release-date="{{ $investor->profit_release_date }}"
+                                                                    data-banks='@json($investor->investorBanks)'
+                                                                    data-investments='@json($investor->total_no_of_investments)'>
+                                                                    {{ $investor->investor_name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">Investment Amount</label>
+                                                        <input type="number" class="form-control" id="investment_amount"
+                                                            name="investment_amount" placeholder="Enter Investment Amount"
+                                                            required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>Received Amount</label>
+                                                        <input type="text" class="form-control" name="received_amount"
+                                                            placeholder="Enter Received Amount">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">Investment Date</label>
+                                                        <div class="input-group date" id="investmentdate"
+                                                            data-target-input="nearest">
+                                                            <input type="text" class="form-control datetimepicker-input"
+                                                                name="investment_date" id="investment_date"
+                                                                data-target="#investmentdate" placeholder="DD-MM-YYYY"
+                                                                required>
+                                                            <div class="input-group-append" data-target="#investmentdate"
+                                                                data-toggle="datetimepicker">
+                                                                <div class="input-group-text">
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- ================= Investment Terms ================= -->
+                                    <div class="card card-outline card-info ">
+                                        <div class="card-header">
+                                            <h3 class="card-title font-weight-bold">Investment Terms</h3>
+                                        </div>
+
+                                        <div class="card-body">
+                                            <div class="row">
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">Investment Tenure (Months)</label>
+                                                        <input type="number" class="form-control" name="investment_tenure"
+                                                            id="investment_tenure" placeholder="Invesmnet Tenure" required>
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">Grace Period (Days)</label>
+                                                        <input type="number" class="form-control" name="grace_period"
+                                                            id="grace_period" placeholder="Grace Period" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">Maturity Date</label>
+                                                        <div class="input-group date" id="maturityDate"
+                                                            data-target-input="nearest">
+                                                            <input type="text"
+                                                                class="form-control datetimepicker-input"
+                                                                name="maturity_date" id="maturity_date" required
+                                                                data-target="#maturityDate" placeholder="DD-MM-YYYY">
+                                                            <div class="input-group-append" data-target="#maturityDate"
+                                                                data-toggle="datetimepicker">
+                                                                <div class="input-group-text">
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- ================= Profit ================= -->
+                                    <div class="card card-outline card-info ">
+                                        <div class="card-header">
+                                            <h3 class="card-title font-weight-bold">Profit Details</h3>
+                                        </div>
+
+                                        <div class="card-body">
+                                            <div class="row">
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">Profit %</label>
+                                                        <input type="text" class="form-control" name="profit_perc"
+                                                            id="profit_perc" placeholder="Profit Percentage" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>Profit Amount</label>
+                                                        <input type="text" class="form-control" name="profit_amount"
+                                                            id="profit_amount" placeholder="Profit Amount" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">Profit Interval</label>
+                                                        <select class="form-control select2" id="profit_interval_id"
+                                                            name="profit_interval_id" required>
+                                                            <option value="">Select Interval</option>
+                                                            @foreach ($data['profitInterval'] as $interval)
+                                                                <option value="{{ $interval->id }}">
+                                                                    {{ $interval->profit_interval_name }}</option>
+                                                            @endforeach
+
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>Profit Amount per Interval</label>
+                                                        <input type="text" class="form-control"
+                                                            name="profit_amount_per_interval"
+                                                            id="profit_amount_per_interval"
+                                                            placeholder="Profit Amount per Interval" readonly>
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">Profit Release Date</label>
+                                                        <div class="input-group date" id="profitreleasedate"
+                                                            data-target-input="nearest">
+                                                            <input type="text"
+                                                                class="form-control datetimepicker-input"
+                                                                name="profit_release_date" id="profit_release_date"
+                                                                data-target="#profitreleasedate" placeholder="DD-MM-YYYY">
+                                                            <div class="input-group-append"
+                                                                data-target="#profitreleasedate"
+                                                                data-toggle="datetimepicker">
+                                                                <div class="input-group-text">
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>Payout Batch</label>
+                                                        <select class="form-control select2" id="payout_batch_id"
+                                                            name="payout_batch_id" required>
+                                                            <option value="">Select Payout Batch</option>
+                                                            @foreach ($data['payoutBatches'] as $batch)
+                                                                <option value="{{ $batch->id }}">
+                                                                    {{ $batch->batch_name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">Investor Bank</label>
+                                                        <select class="form-control select2" name="investor_bank_id"
+                                                            id="investor_bank_id" required>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- ================== Referral ================= -->
+                                    <div class="card card-outline card-info " id="referral-section">
+                                        <div class="card-header">
+                                            <h3 class="card-title font-weight-bold">Referral Details :- <span
+                                                    class="referror-det text-success"></span></h3>
+                                        </div>
+
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">Referral Commission %</label>
+                                                        <input type="text" class="form-control"
+                                                            name="referral_commission_perc" id="referral_commission_perc"
+                                                            placeholder="Referral Commission Percentage">
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" name="referral_id" id="referral_id">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">Referral Commission Amount</label>
+                                                        <input type="text" class="form-control"
+                                                            name="referral_commission_amount"
+                                                            id="referral_commission_amount"
+                                                            placeholder="Referral Commission Amount">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">Referral Commission Frequency</label>
+                                                        <select class="form-control select2"
+                                                            name="referral_commission_frequency_id">
+                                                            <option value="">Select Frequency</option>
+                                                            @foreach ($data['frequency'] as $freq)
+                                                                <option value="{{ $freq->id }}">
+                                                                    {{ $freq->commission_frequency_name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <!-- ================= Nominee & Documents ================= -->
+                                    <div class="card card-outline card-info ">
+                                        <div class="card-header">
+                                            <h3 class="card-title font-weight-bold">Nominee</h3>
+                                        </div>
+
+                                        <div class="card-body">
+                                            <div class="row">
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>Nominee Name</label>
+                                                        <input type="text" class="form-control" name="nominee_name"
+                                                            placeholder="Nominee Name">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>Nominee Email</label>
+                                                        <input type="text" class="form-control" name="nominee_email"
+                                                            placeholder="Nominee Email">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>Nominee Phone</label>
+                                                        <input type="text" class="form-control" name="nominee_phone"
+                                                            placeholder="Nominee Phone">
+                                                    </div>
+                                                </div>
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- ================= Company & Bank ================= -->
+                                    <div class="card card-outline card-info ">
+                                        <div class="card-header">
+                                            <h3 class="card-title font-weight-bold">Company & Bank Details</h3>
+                                        </div>
+
+                                        <div class="card-body">
+                                            <div class="row">
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">Company</label>
+                                                        <select class="form-control select2" name="company_id"
+                                                            id="company_id" required>
+                                                            <option value="">Select Company</option>
+                                                            @foreach ($data['companyBanks'] as $company)
+                                                                <option value="{{ $company->id }}"
+                                                                    data-banks='@json($company->banks)'>
+                                                                    {{ $company->company_name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="asterisk">Company Bank</label>
+                                                        <select class="form-control select2" name="company_bank_id"
+                                                            id="company_bank_id" required>
+                                                            <option value="">Select Company Bank</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- ================= Nominee & Documents ================= -->
+                                    <div class="card card-outline card-info ">
+                                        <div class="card-header">
+                                            <h3 class="card-title font-weight-bold">Documents</h3>
+                                        </div>
+
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>Upload Contract</label>
+                                                        <input type="file" class="form-control" name="contract_file">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- Reinvestment hidden Inputs --}}
+                                    <input type="hidden" name="reinvestment_or_not" value="{{ $reinvestment }}">
+                                    <input type="hidden" name="parent_investment_id"
+                                        value="{{ $parent_investment_id }}">
+
+                                    <!-- ================= Submit ================= -->
+                                    <div class="text-right">
+                                        <button type="submit" class="btn btn-info px-4">
+                                            <i class="fa fa-save"></i> Save Investment
+                                        </button>
+                                    </div>
+
+                                </form>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+@endsection
+
+@section('custom_js')
+    <!-- Select2 -->
+    <script src="{{ asset('assets/select2/js/select2.full.min.js') }}"></script>
+
+    <!-- Moment & Date Picker -->
+    <script src="{{ asset('assets/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+
+    <!-- DataTables -->
+    <script src="{{ asset('assets/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('assets/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('assets/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('assets/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+
+    <script>
+        $(function() {
+
+            // Select2
+            $('.select2').select2({
+                theme: 'bootstrap4'
+            });
+
+            // Date Pickers
+            $('#investmentdate').datetimepicker({
+                format: 'DD-MM-YYYY'
+            });
+            $('#profitreleasedate').datetimepicker({
+                format: 'DD-MM-YYYY'
+            });
+
+
+            $('#maturityDate').datetimepicker({
+                format: 'DD-MM-YYYY'
+            });
+
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#referral-section').hide();
+
+            function calculateProfit() {
+                let investmentAmount = parseFloat($('#investment_amount').val()) || 0;
+                let profitPerc = parseFloat($('#profit_perc').val()) || 0;
+
+                let profitAmount = (investmentAmount * profitPerc) / 100;
+
+                $('#profit_amount').val(profitAmount.toFixed(2));
+            }
+
+            $('#investment_amount, #profit_perc').on('keyup change', function() {
+                calculateProfit();
+            });
+
+            function calculateProfitPerInterval() {
+                let profitAmount = parseFloat($('#profit_amount').val()) || 0;
+                let interval = $('#profit_interval_id').val();
+                let divisor = 0;
+                switch (interval) {
+                    case '1':
+                        divisor = 12;
+                        break;
+                    case '2':
+                        divisor = 4;
+                        break;
+                    case '3':
+                        divisor = 2;
+                        break;
+                    case '4':
+                        divisor = 1;
+                        break;
+                }
+
+                let profitPerInterval = profitAmount / divisor;
+                $('#profit_amount_per_interval').val(profitPerInterval.toFixed(2));
+            }
+
+            $('#profit_amount, #profit_interval_id').on('keyup change', function() {
+                calculateProfitPerInterval();
+            });
+
+
+            function calculateMaturityDate() {
+                let investmentDate = $('#investment_date').val();
+                let tenure = parseInt($('#investment_tenure').val()) || 0;
+                let grace = parseInt($('#grace_period').val()) || 0;
+
+                if (investmentDate) {
+                    let parts = investmentDate.split('-');
+                    let dateObj = new Date(parts[2], parts[1] - 1, parts[0]);
+
+                    dateObj.setMonth(dateObj.getMonth() + tenure);
+
+                    dateObj.setDate(dateObj.getDate() + grace);
+
+                    let day = ("0" + dateObj.getDate()).slice(-2);
+                    let month = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+                    let year = dateObj.getFullYear();
+
+                    $('#maturity_date').val(`${day}-${month}-${year}`);
+                }
+            }
+
+            $('#investment_date, #investment_tenure, #grace_period').on('change keyup', function() {
+                calculateMaturityDate();
+            });
+
+            function calculateReferralCommission() {
+                let investmentAmount = parseFloat($('#investment_amount').val()) || 0;
+                let referalprofitPerc = parseFloat($('#referral_commission_perc').val()) || 0;
+
+                let commissionAmount = (investmentAmount * referalprofitPerc) / 100;
+
+                $('#referral_commission_amount').val(commissionAmount.toFixed(2));
+            }
+
+            $('#referral_commission_perc,#investment_amount').on('keyup change', function() {
+                calculateReferralCommission();
+            });
+
+            function investorChange() {
+                let investorId = $('#investor_id').val();
+                let selectedOption = $('#investor_id').find(':selected');
+                let referenceId = selectedOption.data('reference-id');
+                let payoutBatchId = selectedOption.data('payout-batch-id');
+                let profitReleaseDate = selectedOption.data('profit-release-date');
+                let banks = selectedOption.data('banks');
+                let $bankSelect = $('#investor_bank_id');
+                let investments = parseInt(selectedOption.data('investments')) || 0;
+
+                console.log(investorId, referenceId, investments);
+
+                if (payoutBatchId) {
+                    $('#payout_batch_id')
+                        .val(payoutBatchId)
+                        .trigger('change');
+                } else {
+                    $('#payout_batch_id').val('').trigger('change');
+                }
+
+
+                // Set profit release date
+                if (profitReleaseDate) {
+                    // var dateParts = profitReleaseDate.split('-');
+                    // var formattedDate = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
+                    // $('#profit_release_date').val(formattedDate);
+                    $('#profit_release_date').val(profitReleaseDate);
+
+                } else {
+                    $('#profit_release_date').val('');
+                }
+
+
+                if (referenceId && referenceId > 0 && investments === 0) {
+                    $('#referral-section').show();
+                    $('#referral_id').val(referenceId);
+                    $('.referror-det').text(selectedOption.data('referror'));
+                } else {
+                    $('#referral-section').hide();
+                }
+
+
+
+                $bankSelect.empty().append('<option value="">Select Bank</option>');
+
+                if (!banks || banks.length === 0) {
+                    return;
+                }
+
+                let primaryBankId = null;
+
+                $.each(banks, function(index, bank) {
+                    $bankSelect.append(
+                        `<option value="${bank.id}">
+                            ${bank.investor_bank_name} - ${bank.investor_iban}
+                        </option>`
+                    );
+
+                    if (bank.is_primary == 1) {
+                        primaryBankId = bank.id;
+                    }
+                });
+
+                if (primaryBankId) {
+                    $bankSelect.val(primaryBankId).trigger('change');
+                }
+
+            }
+
+            $('#investor_id').on('change', function() {
+                investorChange();
+            });
+
+            investorChange();
+
+            function companyChange() {
+                let companyId = $('#company_id').val();
+                let selectedOption = $('#company_id option:selected');
+                let banks = selectedOption.data('banks');
+                let $bankSelect = $('#company_bank_id');
+
+                $bankSelect.empty().append('<option value="">Select Bank</option>');
+
+                if (!banks || banks.length === 0) {
+                    return;
+                }
+
+                $.each(banks, function(index, bank) {
+                    $bankSelect.append(
+                        `<option value="${bank.id}">
+                            ${bank.bank_name}
+                        </option>`
+                    );
+                });
+            }
+
+            $('#company_id').on('change', companyChange);
+
+
+            $('#investmentForm').on('submit', function(e) {
+                e.preventDefault();
+
+                // HTML5 validation
+                if (!this.checkValidity()) {
+                    // Trigger native browser validation UI
+                    this.reportValidity();
+                    return;
+                }
+
+                // Collect form data
+                let formData = new FormData(this);
+
+                $.ajax({
+                    url: "{{ route('investment.store') }}",
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function() {
+                        // Optional: disable submit button
+                        $('#investmentForm button[type="submit"]').attr('disabled', true);
+                    },
+                    success: function(response) {
+                        // Handle success
+
+                        toastr.success(response.message);
+
+                        $('#investmentForm')[0].reset();
+                        $('.select2').val(null).trigger('change');
+                        $('#referral-section').hide();
+                    },
+                    error: function(xhr) {
+                        // Handle error
+                        let errMsg = 'Something went wrong!';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errMsg = xhr.responseJSON.message;
+                        }
+                        // Swal.fire({
+                        //     icon: 'error',
+                        //     title: 'Error',
+                        //     text: errMsg,
+                        // });
+                        toastr.error(errMsg);
+                    },
+                    complete: function() {
+                        $('#investmentForm button[type="submit"]').attr('disabled', false);
+                    }
+                });
+
+            });
+
+
+
+
+        });
+    </script>
+@endsection
