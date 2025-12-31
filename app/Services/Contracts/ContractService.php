@@ -80,7 +80,7 @@ class ContractService
             'vendors' => $this->vendorServ->getAll(),
             'installments' => Installment::all(),
             'paymentmodes' => PaymentMode::all(),
-            'banks' => Bank::all(),
+            'banks' => Bank::where('status', 1)->get(),
             'contractTypes' => ContractType::all(),
             'UnitTypes' => UnitType::all(),
             'UnitStatus' => UnitStatus::all(),
@@ -252,7 +252,7 @@ class ContractService
 
                 return "<strong>{$number}</strong>
             <p class='mb-0'>
-                <span class='{$badgeClass}'>{$type}</span> 
+                <span class='{$badgeClass}'>{$type}</span>
             </p>";
             })
             // ->addColumn('project_number', fn($row) => 'P - ' . ucfirst($row->project_number) ?? '-')
@@ -267,7 +267,7 @@ class ContractService
                 function ($row) {
                     $comment = '';
                     if ($row->contract_status == 5) {
-                        $comment = '<i class="far fa-comments loadComments" data-id="' . $row->id . '"></i>'; //data-toggle="modal" data-target="#modal-hold-comment" 
+                        $comment = '<i class="far fa-comments loadComments" data-id="' . $row->id . '"></i>'; //data-toggle="modal" data-target="#modal-hold-comment"
                     }
                     return '<span class="' . contractStatusClass($row->contract_status) . '">' . contractStatusName($row->contract_status) . '</span> ' . $comment ?? '-';
                 }
@@ -314,7 +314,7 @@ class ContractService
                 //         <i class="fas fa-paper-plane"></i>
                 //     </a>';
                 // }
-                // } 
+                // }
                 elseif ($row->contract_status == 3) {
 
                     // if (Gate::allows('contract.view')) {

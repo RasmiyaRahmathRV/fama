@@ -10,7 +10,8 @@ class CompanyRepository
 {
     public function all()
     {
-        return Company::all();
+        // return Company::all();
+        return Company::where('status', 1)->get();
     }
 
     public function find($id)
