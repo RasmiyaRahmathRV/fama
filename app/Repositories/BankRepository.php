@@ -9,7 +9,8 @@ class BankRepository
 {
     public function all()
     {
-        return Bank::all();
+        // return Bank::all();
+        return Bank::where('status', 1)->get();
     }
 
     public function find($id)
