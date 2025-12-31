@@ -9,7 +9,8 @@ class AreaRepository
 {
     public function all()
     {
-        return Area::all();
+        // return Area::all();
+        return Area::where('status', 1)->get();
     }
 
     public function find($id)

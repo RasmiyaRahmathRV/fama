@@ -9,7 +9,8 @@ class VendorRepository
 {
     public function all()
     {
-        return Vendor::all();
+        // return Vendor::all();
+        return Vendor::where('status', 1)->get();
     }
 
     public function find($id)

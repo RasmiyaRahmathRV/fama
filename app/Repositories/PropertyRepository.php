@@ -9,7 +9,8 @@ class PropertyRepository
 {
     public function all()
     {
-        return Property::all();
+        // return Property::all();
+        return Property::where('status', 1)->get();
     }
 
     public function find($id)

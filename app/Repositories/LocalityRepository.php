@@ -9,7 +9,8 @@ class LocalityRepository
 {
     public function all()
     {
-        return Locality::all();
+        // return Locality::all();
+        return Locality::where('status', 1)->get();
     }
 
     public function find($id)
