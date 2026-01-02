@@ -3,9 +3,12 @@
 namespace App\Services\Investment;
 
 use App\Repositories\Investment\InvestorRepository;
+use App\Services\Investment\WhatsAppMsgService;
+use App\Services\WhatsAppService;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -18,7 +21,8 @@ class InvestorService
         protected InvestorRepository $investorRepo,
         protected InvestorBankService $investorBankServ,
         protected InvestorDocumentService $investorDocServ,
-        protected InfobipWhatsAppService $infobipService,
+        // protected InfobipWhatsAppService $infobipService,
+        protected WhatsAppMsgService $whatsApp
     ) {}
 
 
@@ -62,6 +66,36 @@ class InvestorService
             //     "first_purchase_thank_you",
             //     ['Rasmiya']
             // );
+            $template = 'demo_message';
+            $variables = []; // empty for no-variable template
+            $phone = $investor->investor_mobile ?? null;
+            // dd($template);
+
+            if (!empty($phone)) {
+                // Normalize phone
+                $templateId = '290729';
+                $phone = $investor->investor_mobile;
+
+                $response = $this->whatsApp->sendTemplateById($phone, $templateId);
+                // dd($response);
+
+                \Log::info('WhatsApp response', ['response' => $response]);
+            } else {
+
+                \Log::warning('WhatsApp not sent: phone is missing', [
+                    'investor_id' => $investor->id,
+                ]);
+
+                $response = [
+                    'status'  => 'skipped',
+                    'message' => 'Investor phone number is missing',
+                ];
+            }
+
+            return response()->json([
+                'status'   => 'success',
+                'whatsapp' => $response,
+            ]);
         });
     }
 
