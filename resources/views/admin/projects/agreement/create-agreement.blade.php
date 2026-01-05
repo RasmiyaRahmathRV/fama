@@ -815,6 +815,7 @@
         let editedUnit = @json($agreement->agreement_units ?? null);
 
         let fullContracts = @json($fullContracts ?? []);
+        window.allBanks = @json($banks);
         // console.log(fullContracts);
 
         // let editedUnit = window.editedUnit || [];
@@ -828,6 +829,7 @@
             const companyId = $('#company_id').val();
             let renewalContractId = "{{ $renewalContractId ?? '' }}";
             console.log('test', renewalContractId);
+
             if (renewalContractId) {
                 contractId = renewalContractId;
             }
@@ -928,7 +930,7 @@
                 .filter(d => d.is_vacant == 0)
                 .map(d => d.unit_type_id);
             unitTypeIds = [...new Set(unitTypeIds)];
-            console.log('Unit Type Ids:', unitTypeIds);
+            // console.log('Unit Type Ids:', unitTypeIds);
 
 
             let selectedUnitIds = [];
@@ -942,7 +944,7 @@
                     }
                 });
             }
-            console.log('Selected Unit Ids:', selectedUnitIds);
+            // console.log('Selected Unit Ids:', selectedUnitIds);
 
 
             allunittypes
@@ -955,7 +957,7 @@
 
             $('.unit_type_id').html(options);
             const selectedUnitTypeId = selectedUnitIds.length ? selectedUnitIds[0] : '';
-            console.log('Selected Unit Type ID:', selectedUnitTypeId);
+            // console.log('Selected Unit Type ID:', selectedUnitTypeId);
             $('.unit_type_id')
                 .val(selectedUnitIds.length ? selectedUnitIds[0] : '')
                 .trigger('change.select2');
@@ -973,7 +975,7 @@
                 (selectedContractType && selectedContractType.contract_type === 'Fama Faateh')
             ) {
                 let uniDetails = [];
-                console.log('Agreemant :', agreement);
+                // console.log('Agreemant :', agreement);
                 if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
                     unitDetails = editedUnit
                         .filter(u => u.contract_unit_detail)
@@ -981,7 +983,7 @@
                 } else {
                     // alert('ff');
                     unitDetails = contract?.contract_unit?.contract_unit_details || [];
-                    console.log('unit', unitDetails);
+                    // console.log('unit', unitDetails);
 
                 }
                 unit_details = unitDetails;
@@ -991,8 +993,8 @@
                                         <i class="fas fa-door-open text-info"></i> Unit Details - ${selectedContractType.contract_type}
                                     </h5>
                             `;
-                console.log('unitdetails', unitDetails);
-                console.log("editedUnit", editedUnit);
+                // console.log('unitdetails', unitDetails);
+                // console.log("editedUnit", editedUnit);
 
                 unitDetails.forEach((u, index) => {
                     const type = allunittypes?.find(t => t.id == u.unit_type_id)?.unit_type || 'Unknown';
@@ -1050,7 +1052,7 @@
 
             } else if (selectedContractType && selectedContractType.contract_type === 'Direct Fama') {
                 if (agreement && agreement.agreement_units && agreement.agreement_units.length > 0) {
-                    console.log('Agreemant :', agreement);
+                    // console.log('Agreemant :', agreement);
 
                     const agreementUnitId = agreement.agreement_units[0].id;
 
@@ -1101,7 +1103,7 @@
             defaultStart = moment($('#start_date').val(), "DD-MM-YYYY");
             defaultEnd = moment($('#end_date').val(), "DD-MM-YYYY");
             defaultDuration = $("#duration_months").val();
-            console.log('Default values set:', defaultStart, defaultEnd, defaultDuration);
+            // console.log('Default values set:', defaultStart, defaultEnd, defaultDuration);
 
 
 
@@ -1408,6 +1410,7 @@
             let deletedAgreementUnitIds = [];
             // console.log("editedPayment", editedPayment);
             // console.log("editedUnit", editedUnit);
+            companyId = $("#company_id").val();
 
             if (editedPayment) {
                 //console.log('editedpayment', editedPayment);
@@ -1658,6 +1661,21 @@
                                         });
 
                                     paymentModeChangeFF(unitId, payIndex);
+
+                                    const banks = getBanksByCompany(companyId);
+                                    // console.log("Banks :", banks);
+                                    const bankSelect = $(`#bank_name_${uniqueId}`);
+
+                                    bankSelect.empty().append(
+                                        `<option value="">Select Bank Name</option>`);
+
+                                    banks.forEach(bank => {
+                                        bankSelect.append(`
+                                <option value="${bank.id}" ${bank.id == pay.bank_id ? 'selected' : ''}>
+                                    ${bank.bank_name}
+                                </option>
+                            `);
+                                    });
                                 }
                             });
                         });
@@ -1739,13 +1757,9 @@
                                     <div class="form-group row extra-fields" id="extra_fields_${uniqueId}">
                                         <div class="col-md-4 bank" id="bank_${uniqueId}">
                                             <label>Bank Name</label>
-                                            <select class="form-control " name="payment_detail[${unit.id}][${payIndex}][bank_id]" id="bank_name_${uniqueId}">
+                                            <select class="form-control" name="payment_detail[${unit.id}][${payIndex}][bank_id]" id="bank_name_${uniqueId}">
                                                 <option value="" disabled>Select bank</option>
-                                                @foreach ($banks as $bank)
-                                                    <option value="{{ $bank->id }}" ${pay.bank_id == {{ $bank->id }} ? 'selected' : ''}>
-                                                        {{ $bank->bank_name }}
-                                                    </option>
-                                                @endforeach
+
                                             </select>
                                         </div>
 
@@ -1784,6 +1798,8 @@
                                 </div>
                             `;
                         });
+                        containerPayment.appendChild(accordion);
+                        $(accordion).find('.select2').select2();
                         // Initialize dates and hide/show extras
                         setTimeout(() => {
                             editedUnit.forEach(unitObj => {
@@ -1796,14 +1812,39 @@
                                     $(`#otherPaymentDate_${uniqueId}`).datetimepicker({
                                         format: 'DD-MM-YYYY'
                                     });
+                                    // console.log(unit.id, payIndex);
                                     paymentModeChangeFF(unit.id, payIndex);
                                 });
+                                unitPayments.forEach((pay, payIndex) => {
+                                    const uniqueId = `${unit.id}_${payIndex}`;
+                                    const bankSelect = $(`#bank_name_${uniqueId}`);
+
+                                    if (!bankSelect.length) return;
+
+
+                                    bankSelect.prop('disabled', false);
+                                    bankSelect.empty().append(
+                                        `<option value="">Select Bank Name</option>`);
+
+                                    const banks = getBanksByCompany(companyId);
+
+                                    banks.forEach(bank => {
+                                        bankSelect.append(`
+                                            <option value="${bank.id}" ${bank.id == pay.bank_id ? 'selected' : ''}>
+                                                ${bank.bank_name}
+                                            </option>
+                                        `);
+                                    });
+
+                                });
+
                             });
                         }, 200);
 
                         editedUnit.forEach((unit) => {
                             for (let i = 0; i < installments; i++) {
                                 const uniqueId = `${unit.id}_${i}`;
+                                // console.log("test");
 
                                 $(`#otherPaymentDate_${uniqueId}`).datetimepicker({
                                     format: 'DD-MM-YYYY'
@@ -1816,12 +1857,14 @@
                                 hidePayments(i);
 
                                 $('#payment_mode' + uniqueId).change(function() {
+                                    // console.log("paymentmodechange");
                                     paymentModeChangeFF(unit.id, i);
                                 });
 
                                 $('#otherPaymentDate_' + uniqueId).on('input change', function() {
                                     calculatePaymentDatesFF(unit.id, i);
                                 });
+                                // console.log(unit.id, i);
 
                                 paymentModeChangeFF(unit.id, i);
                             }
@@ -1830,8 +1873,7 @@
 
 
 
-                    containerPayment.appendChild(accordion);
-                    $(accordion).find('.select2').select2();
+
 
 
 
@@ -1969,11 +2011,9 @@
                                 <div class="form-group row extra-fields" id="extra_fields_${uniqueId}">
                                     <div class="col-md-4 bank" id="bank_${uniqueId}">
                                         <label>Bank Name</label>
-                                        <select class="form-control select2" name="payment_detail[${unit.id}][${i}][bank_id]" id="bank_name_${uniqueId}">
+                                        <select class="form-control" name="payment_detail[${unit.id}][${i}][bank_id]" id="bank_name_${uniqueId}">
                                             <option value="" >Select bank</option>
-                                            @foreach ($banks as $bank)
-                                                <option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>
-                                            @endforeach
+
                                         </select>
                                     </div>
 
@@ -2054,6 +2094,25 @@
                                 });
 
                                 paymentModeChangeFF(unit.id, i);
+
+                                const bankSelect = $(`#bank_name_${uniqueId}`);
+
+                                if (!bankSelect.length) return;
+
+
+                                bankSelect.prop('disabled', false);
+                                bankSelect.empty().append(
+                                    `<option value="">Select Bank Name</option>`);
+
+                                const banks = getBanksByCompany(companyId);
+
+                                banks.forEach(bank => {
+                                    bankSelect.append(`
+                                            <option value="${bank.id}" >
+                                                ${bank.bank_name}
+                                            </option>
+                                        `);
+                                });
                             }
                         });
 
@@ -2169,7 +2228,7 @@
                             <div class="form-group row" id="extra_fields_${i}">
                                 <div class="col-md-4 bank" id="bank${i}">
                                 <label>Bank Name</label>
-                                <select class="form-control select2" name="payment_detail[${i}][bank_id]" id="bank_name${i}">
+                                <select class="form-control" name="payment_detail[${i}][bank_id]" id="bank_name${i}">
                                     <option value="" >Select Bank Name</option>
                                     @foreach ($banks as $bank)
                                         <option value="{{ $bank->id }}" ${pay.bank_id == {{ $bank->id }} ? 'selected' : ''}>{{ $bank->bank_name }}</option>
@@ -2227,6 +2286,20 @@
                         $('#payment_mode' + i).change(function() {
                             paymentModeChange(i);
                         });
+                        const banks = getBanksByCompany(companyId);
+                        // console.log("Banks :", banks);
+                        const bankSelect = $(`#bank_name${i}`);
+
+                        bankSelect.empty().append(`<option value="">Select Bank Name</option>`);
+
+                        banks.forEach(bank => {
+                            bankSelect.append(`
+                                <option value="${bank.id}" ${bank.id == pay.bank_id ? 'selected' : ''}>
+                                    ${bank.bank_name}
+                                </option>
+                            `);
+                        });
+
                     }
 
 
@@ -2285,10 +2358,7 @@
                                             <label for="exampleInputEmail1">Bank Name</label>
                                             <select class="form-control select2" name="payment_detail[${i}][bank_id]" id="bank_name${i}">
                                                 <option value="" disabled>Select Bank Name</option>
-                                                @foreach ($banks as $bank)
-                                            <option value="{{ $bank->id }}">
-                                                    {{ $bank->bank_name }} </option>
-                                        @endforeach
+
                                             </select>
                                         </div>
 
@@ -2347,6 +2417,20 @@
                         $('#otherPaymentDate0').on('input change', function() {
                             calculatePaymentDates();
                         });
+                        const banks = getBanksByCompany(companyId);
+                        // console.log("Banks :", banks);
+                        const bankSelect = $(`#bank_name${i}`);
+
+                        bankSelect.empty().append(`<option value="">Select Bank Name</option>`);
+
+                        banks.forEach(bank => {
+                            bankSelect.append(`
+                                <option value="${bank.id}">
+                                    ${bank.bank_name}
+                                </option>
+                            `);
+                        });
+
 
 
                     }
@@ -2487,6 +2571,7 @@
 
 
         function paymentModeChangeFF(unitId, i) {
+            // alert("called");
             const uniqueId = `${unitId}_${i}`;
             const payment_mode = $(`#payment_mode${uniqueId}`).val();
 
@@ -2494,6 +2579,7 @@
                 $(`#chq_${uniqueId}`).show().find('input, select').prop('disabled', false).prop('required', true);
                 $(`#bank_${uniqueId}`).show().find('input, select').prop('disabled', false).prop('required', true);
             } else if (payment_mode == '2') { // Bank Transfer
+                // alert("called");
                 $(`#bank_${uniqueId}`).show().find('input, select').prop('disabled', false).prop('required', true);
                 $(`#chq_${uniqueId}`).hide().find('input, select').prop('disabled', true);
             } else { // Cash or others
@@ -2733,5 +2819,10 @@
             unitNumberChange(unitId, row);
             updateUnitOptions('.unit_no_select');
         });
+    </script>
+    <script>
+        function getBanksByCompany(companyId) {
+            return window.allBanks.filter(bank => bank.company_id == companyId);
+        }
     </script>
 @endsection

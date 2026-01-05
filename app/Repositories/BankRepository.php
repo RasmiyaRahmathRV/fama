@@ -64,16 +64,16 @@ class BankRepository
     {
         // print_r($filters);
         $query = Bank::query()
-            ->select('banks.*'); //, 'companies.company_name'
-        // ->join('companies', 'companies.id', '=', 'banks.company_id');
+            ->select('banks.*') //, 'companies.company_name'
+            ->join('companies', 'companies.id', '=', 'banks.company_id');
 
         if (!empty($filters['search'])) {
             $query->orwhere('bank_name', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('bank_code', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('bank_short_code', 'like', '%' . $filters['search'] . '%')
-                // ->orWhereHas('company', function ($q) use ($filters) {
-                //     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
-                // })
+                ->orWhereHas('company', function ($q) use ($filters) {
+                    $q->where('company_name', 'like', '%' . $filters['search'] . '%');
+                })
                 ->orWhereRaw("CAST(banks.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }
 
