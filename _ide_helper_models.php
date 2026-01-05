@@ -1971,13 +1971,9 @@ namespace App\Models{
  * @property int $investor_id
  * @property string $amount_paid
  * @property string $paid_date
- * @property int $paid_mode_id
- * @property int|null $paid_bank
- * @property string|null $paid_cheque_number
- * @property string|null $payment_remarks
  * @property int $paid_by
- * @property int|null $updated_by
- * @property int|null $deleted_by
+ * @property int $updated_by
+ * @property int $deleted_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -1992,12 +1988,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereInvestorId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidBank($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidChequeNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidModeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaymentRemarks($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePayoutId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereUpdatedBy($value)
@@ -2320,6 +2312,7 @@ namespace App\Models{
  * @property string|null $location
  * @property string|null $remarks
  * @property int|null $deleted_by
+ * @property string|null $makani_number
  * @property-read \App\Models\User|null $addedBy
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Contract> $contracts
  * @property-read int|null $contracts_count
@@ -2330,6 +2323,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Property whereLatitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Property whereLocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Property whereLongitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Property whereMakaniNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Property whereRemarks($value)
  */
 	class Property extends \Eloquent {}
@@ -2736,5 +2730,14 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|VendorContractTemplate whereVersion($value)
  */
 	class VendorContractTemplate extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage query()
+ */
+	class WhatsappMessage extends \Eloquent {}
 }
 

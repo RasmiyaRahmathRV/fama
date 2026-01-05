@@ -26,19 +26,47 @@ class WhatsAppMsgService
      * @param string $language   Template language (default 'en')
      * @return array
      */
-    public function sendTemplateById(string $phone, string $templateId): array
+    // public function sendTemplateById(string $phone, string $templateId): array
+    // {
+    //     try {
+    //         // normalize phone
+    //         $phone = preg_replace('/[^0-9]/', '', $phone);
+
+    //         $payload = [
+    //             'apiToken'        => env('WHATCHIMP_API_KEY'),
+    //             'phone_number_id' => env('WHATSAPP_NUMBER_ID'),
+    //             'template_id'     => $templateId,
+    //             'phone_number'    => $phone,
+    //         ];
+
+    //         $response = Http::asForm()->post(
+    //             'https://app.whatchimp.com/api/v1/whatsapp/send/template',
+    //             $payload
+    //         );
+
+    //         $data = $response->json();
+
+    //         \Log::info('Whatchimp Template Response', [
+    //             'payload' => $payload,
+    //             'response' => $data
+    //         ]);
+
+    //         return $data;
+    //     } catch (\Exception $e) {
+    //         \Log::error('Whatchimp Template Error', [
+    //             'error' => $e->getMessage()
+    //         ]);
+
+    //         return [
+    //             'status' => 'error',
+    //             'message' => $e->getMessage()
+    //         ];
+    //     }
+    // }
+    public function sendTemplateById(array $payload): array
     {
         try {
-            // normalize phone
-            $phone = preg_replace('/[^0-9]/', '', $phone);
-
-            $payload = [
-                'apiToken'        => env('WHATCHIMP_API_KEY'),
-                'phone_number_id' => env('WHATSAPP_NUMBER_ID'),
-                'template_id'     => $templateId,
-                'phone_number'    => $phone,
-            ];
-
+            // $phone = preg_replace('/[^0-9]/', '', $phone);
             $response = Http::asForm()->post(
                 'https://app.whatchimp.com/api/v1/whatsapp/send/template',
                 $payload
@@ -47,9 +75,10 @@ class WhatsAppMsgService
             $data = $response->json();
 
             \Log::info('Whatchimp Template Response', [
-                'payload' => $payload,
+                'payload'  => $payload,
                 'response' => $data
             ]);
+            // dd($data);
 
             return $data;
         } catch (\Exception $e) {

@@ -2,6 +2,7 @@
 
 namespace App\Services\Investment;
 
+use App\Models\WhatsappMessage;
 use App\Repositories\Investment\InvestorRepository;
 use App\Services\Investment\WhatsAppMsgService;
 use App\Services\WhatsAppService;
@@ -66,31 +67,48 @@ class InvestorService
             //     "first_purchase_thank_you",
             //     ['Rasmiya']
             // );
-            $template = 'demo_message';
-            $variables = []; // empty for no-variable template
+            $templateId = '291843';
+            $templateId_ar = '291927';
+
             $phone = $investor->investor_mobile ?? null;
-            // dd($template);
+            $phone = preg_replace('/[^0-9]/', '', $phone);
 
-            if (!empty($phone)) {
-                // Normalize phone
-                $templateId = '290729';
-                $phone = $investor->investor_mobile;
+            $variables = [
+                'investor_name' => $investor->investor_name ?? 'Investor',
+            ];
 
-                $response = $this->whatsApp->sendTemplateById($phone, $templateId);
-                // dd($response);
+            $templates = [
+                'en' => $templateId,
+                'ar' => $templateId_ar,
+            ];
 
-                \Log::info('WhatsApp response', ['response' => $response]);
-            } else {
+            foreach ($templates as $lang => $tid) {
 
-                \Log::warning('WhatsApp not sent: phone is missing', [
+                $payload = [
+                    'apiToken' => env('WHATCHIMP_API_KEY'),
+                    'phone_number_id' => env('WHATSAPP_NUMBER_ID'),
+                    'template_id' => $tid,
+                    'phone_number' => $phone,
+                    // Whatchimp variable syntax: templateVariable-<name>-1
+                    'templateVariable-invesor-1' => $variables['investor_name']
+                ];
+                $response = $this->whatsApp->sendTemplateById($payload);
+
+                $status = isset($response['status']) && $response['status'] == '1' ? 1 : 0;
+
+                WhatsappMessage::create([
                     'investor_id' => $investor->id,
+                    'phone'       => $phone,
+                    'template_id' => $tid,
+                    'variables'   => json_encode($variables),
+                    'payload'     => json_encode($payload),
+                    'response'    => json_encode($response),
+                    'status'      => $status,
                 ]);
 
-                $response = [
-                    'status'  => 'skipped',
-                    'message' => 'Investor phone number is missing',
-                ];
+                \Log::info("WhatsApp {$lang} response", ['response' => $response]);
             }
+
 
             return response()->json([
                 'status'   => 'success',
