@@ -563,6 +563,8 @@ namespace App\Models{
  * @property-read \App\Models\User|null $addedBy
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Bank> $banks
  * @property-read int|null $banks_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Contract> $contracts
+ * @property-read int|null $contracts_count
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\User|null $updatedBy
  * @method static \Illuminate\Database\Eloquent\Builder|Company whereCompanyShortCode($value)
@@ -2734,9 +2736,29 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property int $investor_id
+ * @property string $phone
+ * @property string|null $template_id
+ * @property string|null $variables
+ * @property string|null $payload
+ * @property string|null $response
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage query()
+ * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage whereInvestorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage wherePayload($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage whereResponse($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage whereTemplateId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WhatsappMessage whereVariables($value)
  */
 	class WhatsappMessage extends \Eloquent {}
 }

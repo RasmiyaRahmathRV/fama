@@ -21,12 +21,15 @@ class DashboardController extends Controller
 
         // Get chart & investment data
         $widgets = $this->dashboardService->widgetsData();
-        $data = $this->dashboardService->inventoryChart();
+        $data = $this->dashboardService->investmentChart();
+        $inventoryData = $this->dashboardService->inventoryChart();
+        // dd($inventoryData);
 
         return view('admin.dashboard', array_merge(
             compact('title', 'renewalCount'),
             $data,
-            $widgets
+            $widgets,
+            $inventoryData
         ));
     }
 }

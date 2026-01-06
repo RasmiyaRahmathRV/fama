@@ -26,7 +26,7 @@ class DashboardService
 
     ) {}
 
-    public function inventoryChart()
+    public function investmentChart()
     {
         // Get last 2 months of investments
         $monthlyData = Investment::selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, SUM(investment_amount) as total_amount, COUNT(*) as count')
@@ -72,5 +72,110 @@ class DashboardService
         $wid_totalInvestors = Investor::count();
         $wid_totalInvestments = Investment::count();
         return compact('wid_totalContracts', 'wid_totalInvestors', 'wid_totalInvestments');
+    }
+    // public function inventoryChart()
+    // {
+
+    //     $companies = Company::with(['contracts.contract_unit'])->get();
+
+    //     $companyNames = [];
+    //     $companyUnits = [];
+
+    //     foreach ($companies as $company) {
+    //         $companyNames[] = $company->company_name;
+
+    //         // sum all contract units under this company
+    //         $totalUnits = $company->contracts->sum(function ($contract) {
+    //             return $contract->contract_unit->no_of_units;
+    //         });
+    //         // dd($totalUnits);
+
+    //         $companyUnits[] = $totalUnits;
+    //     }
+    //     dd($companyUnits);
+
+    //     $totalUnits = array_sum($companyUnits);
+
+    //     $percentChange = 10;
+
+    //     return compact('companyNames', 'companyUnits', 'totalUnits', 'percentChange');
+    // }
+
+
+    public function inventoryChart()
+    {
+
+        $companies = Company::with(['contracts.contract_unit'])->get();
+
+        $companyNames = [];
+        $dfUnits = [];
+        $ffUnits = [];
+        $totalUnits = [];
+
+        $thisMonthStart = Carbon::now()->startOfMonth();
+        $lastMonthStart = Carbon::now()->subMonth()->startOfMonth();
+        $lastMonthEnd   = Carbon::now()->subMonth()->endOfMonth();
+
+        $thisMonthUnits = 0;
+        $lastMonthUnits = 0;
+
+        foreach ($companies as $company) {
+            $companyNames[] = $company->company_name;
+
+            $dfTotal = 0;
+            $ffTotal = 0;
+
+            foreach ($company->contracts as $contract) {
+                $units = $contract->contract_unit->no_of_units ?? 0;
+
+                if ($contract->contract_type_id === 1) {
+                    $dfTotal += $units;
+                }
+
+                if ($contract->contract_type_id === 2) {
+                    $ffTotal += $units;
+                }
+
+                if ($contract->created_at >= $thisMonthStart) {
+                    $thisMonthUnits += $units;
+                }
+
+                if (
+                    $contract->created_at >= $lastMonthStart &&
+                    $contract->created_at <= $lastMonthEnd
+                ) {
+                    $lastMonthUnits += $units;
+                }
+            }
+
+            $dfUnits[] = $dfTotal;
+            $ffUnits[] = $ffTotal;
+            $totalUnits[] = $dfTotal + $ffTotal;
+        }
+
+        $grandTotal = array_sum($totalUnits);
+
+        $difference = $thisMonthUnits - $lastMonthUnits;
+
+        $percentChange = $lastMonthUnits > 0
+            ? round(($difference / $lastMonthUnits) * 100, 2)
+            : 100;
+
+        $trend = $difference > 0
+            ? 'up'
+            : ($difference < 0 ? 'down' : 'same');
+
+        return compact(
+            'companyNames',
+            'dfUnits',
+            'ffUnits',
+            'totalUnits',
+            'grandTotal',
+            'thisMonthUnits',
+            'lastMonthUnits',
+            'difference',
+            'percentChange',
+            'trend'
+        );
     }
 }

@@ -96,146 +96,50 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="card">
-                            <div class="card-header border-0 d-flex justify-content-between">
-                                <h3 class="card-title">Online Store Visitors</h3>
-                                <a href="javascript:void(0);">View Report</a>
+                            <div class="card-header border-0">
+                                <div class="d-flex justify-content-between">
+                                    <h3 class="card-title">Inventory</h3>
+                                    {{-- <a href="javascript:void(0);">View Report</a> --}}
+                                </div>
                             </div>
                             <div class="card-body">
-                                <div class="d-flex mb-3">
+                                <div class="d-flex">
                                     <p class="d-flex flex-column">
-                                        <span class="text-bold text-lg">820</span>
-                                        <span>Visitors Over Time</span>
+                                        <span class="text-bold text-lg">{{ $grandTotal ?? 0 }}</span>
+                                        <span>Total Units</span>
                                     </p>
                                     <p class="ml-auto d-flex flex-column text-right">
-                                        <span class="text-success">
-                                            <i class="fas fa-arrow-up"></i> 12.5%
-                                        </span>
-                                        <span class="text-muted">Since last week</span>
+                                        @if ($trend === 'up')
+                                            <span class="text-success">
+                                                <i class="fas fa-arrow-up"></i> {{ $percentChange }}%
+                                            </span>
+                                        @elseif($trend === 'down')
+                                            <span class="text-danger">
+                                                <i class="fas fa-arrow-down"></i> {{ abs($percentChange) }}%
+                                            </span>
+                                        @else
+                                            <span class="text-warning">No Change</span>
+                                        @endif
+                                        <span class="text-muted">Compared to last month</span>
+
                                     </p>
+
                                 </div>
+                                <!-- /.d-flex -->
 
                                 <div class="position-relative mb-4">
-                                    <canvas id="visitors-chart" height="200"></canvas>
+                                    <canvas id="inventory-chart" height="200"></canvas>
                                 </div>
 
                                 <div class="d-flex flex-row justify-content-end">
                                     <span class="mr-2">
-                                        <i class="fas fa-square text-primary"></i> This Week
+                                        <i class="fas fa-square text-primary"></i> DF Units
                                     </span>
-                                    <span>
-                                        <i class="fas fa-square text-gray"></i> Last Week
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /.card -->
 
-                        <div class="card">
-                            <div class="card-header border-0">
-                                <h3 class="card-title">Products</h3>
-                                <div class="card-tools">
-                                    <a href="#" class="btn btn-tool btn-sm">
-                                        <i class="fas fa-download"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-tool btn-sm">
-                                        <i class="fas fa-bars"></i>
-                                    </a>
+                                    <span>
+                                        <i class="fas fa-square bg-ffred"></i> FF Units
+                                    </span>
                                 </div>
-                            </div>
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-striped table-valign-middle">
-                                    <thead>
-                                        <tr>
-                                            <th>Product</th>
-                                            <th>Price</th>
-                                            <th>Sales</th>
-                                            <th>More</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <img src="{{ asset('img/default-150x150.png') }}" alt="Product 1"
-                                                    class="img-circle img-size-32 mr-2">
-                                                Some Product
-                                            </td>
-                                            <td>$13 USD</td>
-                                            <td>
-                                                <small class="text-success mr-1">
-                                                    <i class="fas fa-arrow-up"></i>
-                                                    12%
-                                                </small>
-                                                12,000 Sold
-                                            </td>
-                                            <td>
-                                                <a href="#" class="text-muted">
-                                                    <i class="fas fa-search"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <img src="{{ asset('img/default-150x150.png') }}" alt="Product 1"
-                                                    class="img-circle img-size-32 mr-2">
-                                                Another Product
-                                            </td>
-                                            <td>$29 USD</td>
-                                            <td>
-                                                <small class="text-warning mr-1">
-                                                    <i class="fas fa-arrow-down"></i>
-                                                    0.5%
-                                                </small>
-                                                123,234 Sold
-                                            </td>
-                                            <td>
-                                                <a href="#" class="text-muted">
-                                                    <i class="fas fa-search"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <img src="{{ asset('img/default-150x150.png') }}" alt="Product 1"
-                                                    class="img-circle img-size-32 mr-2">
-                                                Amazing Product
-                                            </td>
-                                            <td>$1,230 USD</td>
-                                            <td>
-                                                <small class="text-danger mr-1">
-                                                    <i class="fas fa-arrow-down"></i>
-                                                    3%
-                                                </small>
-                                                198 Sold
-                                            </td>
-                                            <td>
-                                                <a href="#" class="text-muted">
-                                                    <i class="fas fa-search"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <img src="{{ asset('img/default-150x150.png') }}" alt="Product 1"
-                                                    class="img-circle img-size-32 mr-2">
-                                                Perfect Item
-                                                <span class="badge bg-danger">NEW</span>
-                                            </td>
-                                            <td>$199 USD</td>
-                                            <td>
-                                                <small class="text-success mr-1">
-                                                    <i class="fas fa-arrow-up"></i>
-                                                    63%
-                                                </small>
-                                                87 Sold
-                                            </td>
-                                            <td>
-                                                <a href="#" class="text-muted">
-                                                    <i class="fas fa-search"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
                         <!-- /.card -->
@@ -246,7 +150,7 @@
                             <div class="card-header border-0">
                                 <div class="d-flex justify-content-between">
                                     <h3 class="card-title">Investments</h3>
-                                    <a href="javascript:void(0);">View Report</a>
+                                    {{-- <a href="javascript:void(0);">View Report</a> --}}
                                 </div>
                             </div>
                             <div class="card-body">
@@ -267,7 +171,7 @@
 
                                 <!-- Chart -->
                                 <div class="position-relative mb-4">
-                                    <canvas id="inventory-chart" height="200"></canvas>
+                                    <canvas id="investment-chart" height="200"></canvas>
                                 </div>
 
                                 <div class="d-flex flex-row justify-content-end">
@@ -286,7 +190,7 @@
 
                         <!-- /.card -->
 
-                        <div class="card">
+                        {{-- <div class="card">
                             <div class="card-header border-0">
                                 <h3 class="card-title">Online Store Overview</h3>
                                 <div class="card-tools">
@@ -336,7 +240,7 @@
                                 </div>
                                 <!-- /.d-flex -->
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <!-- /.col-md-6 -->
                 </div>
@@ -355,7 +259,7 @@
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('js/demo.js') }}"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="{{ asset('js/pages/dashboard3.js') }}"></script>
+    {{-- <script src="{{ asset('js/pages/dashboard3.js') }}"></script> --}}
 
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -363,7 +267,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const canvas = document.getElementById('inventory-chart');
+            const canvas = document.getElementById('investment-chart');
             if (!canvas) return;
 
             const ctx = canvas.getContext('2d');
@@ -384,6 +288,8 @@
                             borderColor: 'rgba(54, 162, 235, 1)',
                             borderWidth: 1,
                             yAxisID: 'y',
+                            barThickness: 40,
+                            borderRadius: 6
                         },
                         {
                             type: 'line',
@@ -446,13 +352,112 @@
                         x: {
                             title: {
                                 display: true,
-                                text: 'Month'
+                                text: 'Month',
+                                font: {
+                                    size: 14,
+                                    weight: '500'
+                                }
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(200,200,200,0.1)'
                             }
                         }
                     }
                 }
             });
 
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('inventory-chart').getContext('2d');
+
+            if (window.inventoryChart) window.inventoryChart.destroy();
+
+            window.inventoryChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {!! json_encode($companyNames) !!},
+
+                    datasets: [{
+                            label: 'DF Units',
+                            data: {!! json_encode($dfUnits) !!},
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            barThickness: 40,
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'FF Units',
+                            data: {!! json_encode($ffUnits) !!},
+                            backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                            barThickness: 40,
+                            borderRadius: 6
+                        }
+                    ]
+
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + ' units';
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Company-wise Total Units',
+                            font: {
+                                size: 16,
+                                weight: '600'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Units'
+                            },
+                            grid: {
+                                color: 'rgba(200,200,200,0.2)',
+                                borderDash: [3, 3]
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Companies',
+                                font: {
+                                    size: 14,
+                                    weight: '500'
+                                }
+                            },
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 45,
+                                minRotation: 0,
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
         });
     </script>
 
