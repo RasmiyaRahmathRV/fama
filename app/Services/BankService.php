@@ -106,6 +106,7 @@ class BankService
             ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('bank_name', fn($row) => $row->bank_name ?? '-')
             ->addColumn('back_short_code', fn($row) => $row->back_short_code ?? '-')
+            ->addColumn('status', fn($row) => $row->status ?? '-')
             ->addColumn('action', function ($row) {
                 $action = '';
                 if (Gate::allows('bank.edit')) {

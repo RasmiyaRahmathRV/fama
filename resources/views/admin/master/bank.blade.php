@@ -56,6 +56,7 @@
                                             <th>Company Name</th>
                                             <th>Bank Name</th>
                                             <th>Short Code</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -169,6 +170,16 @@
                         name: 'banks.bank_short_code',
                     },
                     {
+                        data: 'status',
+                        name: 'banks.status',
+                        render: function(data, type, row) {
+                            if (data == 1) {
+                                return '<span class="badge bg-success">Active</span>';
+                            } else {
+                                return '<span class="badge bg-secondary">Inactive</span>';
+                            }
+                        }
+                    }, {
                         data: 'action',
                         name: 'action',
                         orderable: false,
