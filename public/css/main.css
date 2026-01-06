@@ -313,7 +313,39 @@ color: white;
     text-decoration: underline;
 }
 .bg-ffred{
-    color: rgba(255, 99, 132, 0.7);
+    color: rgb(91 134 229);
 }
+.bg-greendf {
+    color: #88ccc6 ;
+}
+/* Projects */
+.bg-gradient-projects {
+    background: linear-gradient(135deg, #36d1dc, #5b86e5) !important;
+    color: #fff;
+}
+
+/* Investors */
+.bg-gradient-investors {
+    background: linear-gradient(135deg, #11998e, #38ef7d) !important;
+    color: #fff;
+}
+
+/* Investments */
+.bg-gradient-investments {
+    background: linear-gradient(135deg, #f7971e, #ffd200) !important;
+    color: #fff;
+}
+
+/* Revenue */
+.bg-gradient-revenue {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b) !important;
+    color: #fff;
+}
+
+/* Improve icon visibility */
+.small-box .icon {
+    color: rgba(255, 255, 255, 0.35);
+}
+
 
 

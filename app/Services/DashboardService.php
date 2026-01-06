@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Company;
 use App\Models\Contract;
+use App\Models\ContractRental;
 use App\Models\Investment;
 use App\Models\Investor;
 use App\Models\PayoutBatch;
@@ -71,7 +72,8 @@ class DashboardService
         $wid_totalContracts = Contract::count();
         $wid_totalInvestors = Investor::count();
         $wid_totalInvestments = Investment::count();
-        return compact('wid_totalContracts', 'wid_totalInvestors', 'wid_totalInvestments');
+        $wid_revenue = ContractRental::sum('rent_receivable_per_annum');
+        return compact('wid_totalContracts', 'wid_totalInvestors', 'wid_totalInvestments', 'wid_revenue');
     }
     // public function inventoryChart()
     // {

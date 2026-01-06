@@ -189,7 +189,7 @@
                with font-awesome or any other icon font library -->
                         <li class="nav-item">
                             <a href="{{ route('dashboard.index') }}"
-                                class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
+                                class="nav-link {{ request()->is('dashboard') ? 'active bg-gradient-projects' : '' }}">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>Dashboard</p>
                             </a>
@@ -225,7 +225,7 @@
                         @endphp
                         @if (auth()->user()->hasPermissionInRange(1, 45))
                             <li class="nav-item {{ $master ? 'menu-open' : '' }}">
-                                <a href="#" class="nav-link {{ $master ? 'active' : '' }}">
+                                <a href="#" class="nav-link {{ $master ? 'active bg-gradient-projects' : '' }}">
                                     <i class="nav-icon fas fa-copy"></i>
                                     <p>
                                         Masters
@@ -320,7 +320,8 @@
 
                         @if (auth()->user()->hasPermissionInRange(56, 73) || Gate::any(['contract.send_for_approval']))
                             <li class="nav-item {{ $project ? 'menu-open' : '' }}">
-                                <a href="#" class="nav-link {{ $project ? 'active' : '' }}">
+                                <a href="#"
+                                    class="nav-link {{ $project ? 'active bg-gradient-projects' : '' }}">
                                     <i class="nav-icon fas fa-edit"></i>
                                     <p>
                                         Project
@@ -352,7 +353,8 @@
 
                         @if (auth()->user()->hasPermissionInRange(84, 86))
                             <li class="nav-item {{ $finance ? 'menu-open' : '' }}">
-                                <a href="#" class="nav-link {{ $finance ? 'active' : '' }}">
+                                <a href="#"
+                                    class="nav-link {{ $finance ? 'active bg-gradient-projects' : '' }}">
                                     <i class="nav-icon fas fa-file-invoice"></i>
                                     <p>
                                         Finance
@@ -382,7 +384,8 @@
 
                         @if (auth()->user()->hasPermissionInRange(74, 83))
                             <li class="nav-item {{ $invest ? 'menu-open' : '' }}">
-                                <a href="#" class="nav-link {{ $invest ? 'active' : '' }}">
+                                <a href="#"
+                                    class="nav-link {{ $invest ? 'active bg-gradient-projects' : '' }}">
                                     <i class="nav-icon fas fa-coins"></i>
                                     <p>
                                         Investment
@@ -426,7 +429,7 @@
                         @if (Gate::any(['User', 'user.add', 'user.view', 'user.edit', 'user.delete']))
                             <li class="nav-item {{ request()->is('user') ? 'menu-open' : '' }}">
                                 <a href="{{ route('user.index') }}"
-                                    class="nav-link {{ request()->is('user') ? 'active' : '' }}">
+                                    class="nav-link {{ request()->is('user') ? 'active bg-gradient-projects' : '' }}">
                                     <i class="nav-icon fas fa-user"></i>
                                     <p>
                                         Users
@@ -437,7 +440,7 @@
                         @if (Gate::any(['Company', 'company.add', 'company.view', 'company.edit', 'company.delete']))
                             <li class="nav-item {{ request()->is('company') ? 'menu-open' : '' }}">
                                 <a href="{{ route('company.index') }}"
-                                    class="nav-link {{ request()->is('coimpany') ? 'active' : '' }}">
+                                    class="nav-link {{ request()->is('coimpany') ? 'active bg-gradient-projects' : '' }}">
                                     <i class="nav-icon fas fa-building"></i>
                                     <p>
                                         Company
