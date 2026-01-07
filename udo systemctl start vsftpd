@@ -1,0 +1,13 @@
+[0;1;32m●[0m vsftpd.service - vsftpd FTP server
+     Loaded: loaded (]8;;file://srv1234873/usr/lib/systemd/system/vsftpd.service/usr/lib/systemd/system/vsftpd.service]8;;; [0;1;32menabled[0m; preset: [0;1;32menabled[0m)
+     Active: [0;1;32mactive (running)[0m since Mon 2026-01-05 05:50:29 UTC; 5min ago
+    Process: 2056 ExecStartPre=/bin/mkdir -p /var/run/vsftpd/empty (code=exited, status=0/SUCCESS)
+   Main PID: 2058 (vsftpd)
+      Tasks: 1 (limit: 9483)
+     Memory: 720.0K (peak: 1.5M)
+        CPU: 11ms
+     CGroup: /system.slice/vsftpd.service
+             └─[0;38;5;245m2058 /usr/sbin/vsftpd /etc/vsftpd.conf[0m
+
+Jan 05 05:50:29 srv1234873 systemd[1]: Starting vsftpd.service - vsftpd FTP server...
+Jan 05 05:50:29 srv1234873 systemd[1]: Started vsftpd.service - vsftpd FTP server.
