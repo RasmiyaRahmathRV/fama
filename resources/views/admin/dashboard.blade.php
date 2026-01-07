@@ -9,12 +9,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Real Estate CRM Dashboard</h1>
+                        <h1 class="m-0">Dashboard</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Dashboard v3</li>
+                            <li class="breadcrumb-item active">Dashboard</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -132,7 +132,7 @@
                                 <!-- /.d-flex -->
 
                                 <div class="position-relative mb-4">
-                                    <canvas id="inventory-chart" height="200"></canvas>
+                                    <canvas id="inventory-chart" height="272"></canvas>
                                 </div>
 
                                 <div class="d-flex flex-row justify-content-end">
@@ -174,7 +174,7 @@
                                 </div>
 
                                 <!-- Chart -->
-                                <div class="position-relative mb-4" style="height: 198px;">
+                                <div class="position-relative mb-4" style="height: 271px;">
                                     <canvas id="investment-chart"></canvas>
                                 </div>
 
@@ -249,7 +249,7 @@
                     <!-- /.col-md-6 -->
                 </div>
                 <!-- /.row -->
-                <div class="row">
+                {{-- <div class="row">
                     <div class="col-md-4 col-sm-6 col-12">
                         <div class="info-box">
                             <span class="info-box-icon bg-gradient-projects"><i class="far fa-envelope"></i></span>
@@ -291,7 +291,7 @@
                     <!-- /.col -->
 
                     <!-- /.col -->
-                </div>
+                </div> --}}
             </div>
             <!-- /.container-fluid -->
         </div>
