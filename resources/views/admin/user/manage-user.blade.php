@@ -66,52 +66,52 @@
                                         </div>
                                         <div class="bs-stepper-content card">
                                             <!-- your steps content here -->
-                                            <div id="logins-part" class="content" role="tabpanel"
+                                            <div id="logins-part" class="content step-content" role="tabpanel"
                                                 aria-labelledby="logins-part-trigger">
                                                 <div class="form-group row">
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">First Name</label>
+                                                        <label for="exampleInputEmail1" class="asterisk">First Name</label>
                                                         <input type="text" class="form-control" id="first_name"
                                                             name="first_name" placeholder="First Name"
-                                                            value="{{ $user->first_name ?? '' }}">
+                                                            value="{{ $user->first_name ?? '' }}" required>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Last Name</label>
+                                                        <label for="exampleInputEmail1" class="asterisk">Last Name</label>
                                                         <input type="text" class="form-control" id="last_name"
                                                             name="last_name" placeholder="Last Name"
-                                                            value="{{ $user->last_name ?? '' }}">
+                                                            value="{{ $user->last_name ?? '' }}" required>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Email</label>
+                                                        <label for="exampleInputEmail1" class="asterisk">Email</label>
                                                         <input type="text" class="form-control" id="email"
                                                             name="email" placeholder="Email"
-                                                            value="{{ $user->email ?? '' }}">
+                                                            value="{{ $user->email ?? '' }}" required>
                                                     </div>
                                                 </div>
                                                 <div class="form-group row">
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Phone</label>
+                                                        <label for="exampleInputEmail1" class="asterisk">Phone</label>
                                                         <input type="number" class="form-control" id="phone"
                                                             name="phone" placeholder="Phone"
-                                                            value="{{ $user->phone ?? '' }}">
+                                                            value="{{ $user->phone ?? '' }}" required>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">User Name</label>
+                                                        <label for="exampleInputEmail1" class="asterisk">User Name</label>
                                                         <input type="text" class="form-control" id="username"
                                                             name="username" placeholder="User Name"
-                                                            value="{{ $user->username ?? '' }}">
+                                                            value="{{ $user->username ?? '' }}" required>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Password</label>
+                                                        <label for="exampleInputEmail1" class="asterisk">Password</label>
                                                         <input type="text" class="form-control" id="password"
-                                                            name="password" placeholder="Password">
+                                                            name="password" placeholder="Password" required>
                                                     </div>
                                                 </div>
                                                 <div class="form-group row">
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">User Type</label>
+                                                        <label for="exampleInputEmail1" class="asterisk">User Type</label>
                                                         <select class="form-control select2" name="user_type_id"
-                                                            id="user_type_id">
+                                                            id="user_type_id" required>
                                                             <option value="">Select User Type</option>
                                                             @foreach ($user_types as $user_type)
                                                                 <option value="{{ $user_type->id }}"
@@ -126,9 +126,9 @@
                                                             value="{{ auth()->user()->company_id }}">
                                                     @else
                                                         <div class="col-md-4">
-                                                            <label>Company</label>
+                                                            <label class="asterisk">Company</label>
                                                             <select class="form-control select2" name="company_id"
-                                                                id="company_id">
+                                                                id="company_id" required>
                                                                 <option value="">Select Company</option>
                                                                 @foreach ($companies as $company)
                                                                     <option value="{{ $company->id }}"
@@ -141,14 +141,14 @@
                                                     @endif
 
                                                     <div class="col-md-4">
-                                                        <label>Upload Profile Photo</label>
+                                                        <label class="asterisk">Upload Profile Photo</label>
                                                         <input type="file" name="profile_photo" id="profile_photo"
-                                                            class="form-control">
+                                                            class="form-control" required>
                                                     </div>
                                                 </div>
-                                                <a class="btn btn-info" onclick="stepper.next()">Next</a>
+                                                <a class="btn btn-info nextBtn">Next</a>
                                             </div>
-                                            <div id="information-part" class="content" role="tabpanel"
+                                            <div id="information-part" class="content step-content" role="tabpanel"
                                                 aria-labelledby="information-part-trigger">
                                                 <div class="form-group row">
                                                     <table class="table table-bordered">
@@ -234,6 +234,7 @@
     <script src="{{ asset('assets/select2/js/select2.full.min.js') }}"></script>
     <!-- BS-Stepper -->
     <script src="{{ asset('assets/bs-stepper/js/bs-stepper.min.js') }}"></script>
+    @include('admin.user.validation-js')
 
     <script>
         // BS-Stepper Init
