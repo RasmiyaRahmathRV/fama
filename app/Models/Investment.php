@@ -243,4 +243,9 @@ class Investment extends Model
     {
         return $value ? Carbon::parse($value)->format('d-m-Y') : null;
     }
+
+    public function setLastProfitReleasedDate($date)
+    {
+        $this->attributes['last_profit_released_date'] = Carbon::parse($date)->format('Y-m-d');
+    }
 }

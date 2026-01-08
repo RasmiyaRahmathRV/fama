@@ -17,11 +17,13 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         foreach (['Super Admin', 'Admin', 'Sales', 'Accountant', 'Manager', 'Operations', 'Data Analyst'] as $role) {
-            UserType::updateOrCreate([
-                'user_type' => $role,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            UserType::updateOrCreate(
+                ['user_type' => $role],
+                [
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
         }
 
         $modules = [

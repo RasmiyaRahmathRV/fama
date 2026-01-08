@@ -682,8 +682,8 @@ function  updateInvestmentOnDistribution($payoutData, $distributedData)
         'total_profit_released' => toNumeric($investment->total_profit_released) + toNumeric($distributedData->amount_paid),
         'current_month_released' => getcurrMonthRelease(date('Y-m'), $investmentId, 1),
         'outstanding_profit' => getOutstangingInvestmentProfit($investmentId),
-        'last_profit_released_date' => $distributedData->paid_date,
-        'next_profit_release_date' => calculateNextProfitReleaseDate(0, $investment->profit_interval_id, $distributedData->paid_date, $investment->payout_batch_id->batch_name),
+        'last_profit_released_date' => Carbon::parse($distributedData->paid_date)->format('Y-m-d'),
+        'next_profit_release_date' => calculateNextProfitReleaseDate(0, $investment->profit_interval_id, $distributedData->paid_date, $investment->payoutBatch->batch_name),
         'next_referral_commission_release_date' => $nextCommDate,
         'updated_by' => auth()->user()->id,
     );
