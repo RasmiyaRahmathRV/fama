@@ -468,6 +468,11 @@
 
         @yield('content')
 
+        <!-- Global Loader -->
+        <div id="global-loader" style="display:none;">
+            <img src="{{ asset('images/loader.gif') }}" alt="Loading..." />
+        </div>
+
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
             <!-- Control sidebar content goes here -->

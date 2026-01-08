@@ -347,5 +347,27 @@ color: white;
     color: rgba(255, 255, 255, 0.35);
 }
 
+#global-loader {
+    position: fixed;
+    inset: 0; /* top:0; right:0; bottom:0; left:0 */
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.7);
+    color: #baa360;
+    /* background: transparent; */
+    z-index: 999999;
+    display: none;
+
+    /* Center content */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#global-loader img {
+    width: 118px;
+    height: auto;
+}
+
 
 
