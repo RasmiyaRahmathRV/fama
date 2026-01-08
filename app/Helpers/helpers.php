@@ -12,10 +12,14 @@ use App\Models\Investment;
 use App\Models\InvestmentReceivedPayment;
 use App\Models\InvestmentReferral;
 use App\Models\Investor;
+use App\Models\InvestorPayout;
 use App\Models\PaymentMode;
 use App\Models\Property;
 use App\Models\Vendor;
 use App\Repositories\Contracts\ContractRepository;
+use App\Repositories\Investment\InvestmentReferralRepository;
+use App\Repositories\Investment\InvestmentRepository;
+use App\Repositories\Investment\InvestorRepository;
 use App\Services\Contracts\ContractService;
 use Carbon\Carbon;
 
@@ -574,31 +578,37 @@ function updateInvestmentBalance($investmentId)
 
     return $investment;
 }
-function calculateNextProfitReleaseDate($grace_period, $profit_interval_id, $investment_date)
+function calculateNextProfitReleaseDate($grace_period, $profit_interval_id, $investment_date, $batch_name)
 {
-    $investmentDate = Carbon::parse($investment_date);
-    $investmentDateWithGrace = $investmentDate->copy()->addDays($grace_period);
+    $date = Carbon::parse($investment_date)
+        ->addDays($grace_period);
 
-    $nextProfitReleaseDate = null;
+    // Extract batch start day from range (e.g. "11-20" → 11)
+    [$batchStartDay] = explode('-', $batch_name);
+    $batchStartDay = (int) $batchStartDay;
+
     switch ($profit_interval_id) {
         case 1: // Monthly
-            $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addMonth();
+            $date->addMonth();
             break;
         case 2: // Quarterly
-            $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addMonths(3);
+            $date->addMonths(3);
             break;
         case 3: // Half-Yearly
-            $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addMonths(6);
+            $date->addMonths(6);
             break;
         case 4: // Yearly
-            $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addYear();
+            $date->addYear();
             break;
-        case 5: // every 2 months
-            $nextProfitReleaseDate = $investmentDateWithGrace->copy()->addMonths(2);
+        case 5: // Every 2 months
+            $date->addMonths(2);
             break;
     }
 
-    return $nextProfitReleaseDate->format('Y-m-d');
+    // Set date to batch first day (avoid invalid dates like Feb 30)
+    $date->day = min($batchStartDay, $date->daysInMonth);
+
+    return $date->format('Y-m-d');
 }
 
 function currMonthProfit($colname, $investor_id)
@@ -630,4 +640,136 @@ function getPayoutTypeLabel(int $type): string
         3 => 'Principal',
         default => 'Unknown',
     };
+}
+
+
+function calculateNextReferralReleaseDate($referral_commission_frequency_id, $last_released_date)
+{
+    $investmentDate = Carbon::parse($last_released_date);
+
+    $nextProfitReleaseDate = null;
+    switch ($referral_commission_frequency_id) {
+        case 1: // single
+            $nextProfitReleaseDate = $investmentDate->copy()->addMonth();
+            break;
+        case 2: // twice
+            $nextProfitReleaseDate = $investmentDate->copy()->addMonths(6);
+            break;
+        case 3: // multiple
+            $nextProfitReleaseDate = $investmentDate->copy()->addMonths(2);
+            break;
+    }
+
+    return $nextProfitReleaseDate->format('Y-m-d');
+}
+
+
+// payout distribution updates
+function  updateInvestmentOnDistribution($payoutData, $distributedData)
+{
+    $repository = app(InvestmentRepository::class);
+    $investmentId = $payoutData->investment_id;
+
+
+    $investment = $repository->find($investmentId);
+
+    $nextCommDate = null;
+    if ($payoutData->payout_type == 2) {
+        $nextCommDate = calculateNextReferralReleaseDate($investment->investmentReferral->referral_commission_frequency_id, $distributedData->paid_date);
+    }
+
+    $investmentArr = array(
+        'total_profit_released' => toNumeric($investment->total_profit_released) + toNumeric($distributedData->amount_paid),
+        'current_month_released' => getcurrMonthRelease(date('Y-m'), $investmentId, 1),
+        'outstanding_profit' => getOutstangingInvestmentProfit($investmentId),
+        'last_profit_released_date' => $distributedData->paid_date,
+        'next_profit_release_date' => calculateNextProfitReleaseDate(0, $investment->profit_interval_id, $distributedData->paid_date, $investment->payout_batch_id->batch_name),
+        'next_referral_commission_release_date' => $nextCommDate,
+        'updated_by' => auth()->user()->id,
+    );
+    return $repository->update($investmentId, $investmentArr);
+}
+
+
+function refCommUpdateOnDistribution($payoutData, $distributedData)
+{
+    $repository = app(InvestmentReferralRepository::class);
+    $referralId = $payoutData->payout_reference_id;
+
+
+    $refComm = $repository->find($referralId);
+
+    $bal = toNumeric($refComm->referral_commission_amount) - toNumeric($payoutData->amount_paid);
+    $totCommRel = toNumeric($refComm->total_commission_released) + toNumeric($distributedData->amount_paid);
+
+    $refCommArr = array(
+        'referral_commission_status' => ($bal > 0) ? 2 : 1,
+        'last_referral_commission_released_date' => $distributedData->paid_date,
+        'total_commission_pending' => $bal,
+        'total_commission_released' => $totCommRel,
+        'current_month_commission_released' => getcurrMonthRelease(date('Y-m'), $payoutData->investment_id, 2),
+        'commission_released_perc' => $totCommRel / $refComm->referral_commission_amount,
+        'updated_by' => auth()->user()->id,
+    );
+
+    return $repository->update($referralId, $refCommArr);
+}
+
+
+function investorUpdateOnDistribution($payoutData, $distributedData)
+{
+    $repository = app(InvestorRepository::class);
+    $investorId = $payoutData->investor_id;
+
+    $investor = $repository->find($payoutData->investor_id);
+
+    $investorArr = array(
+        'total_profit_received' => getcurrMonthRelease(null, null, 1, $investorId),
+        'total_referal_commission_received' => getcurrMonthRelease(null, null, 2, $investorId),
+        'total_principal_received' => getcurrMonthRelease(null, null, 3, $investorId),
+        'updated_by' => auth()->user()->id,
+    );
+
+    return $repository->update($payoutData->investor_id, $investorArr);
+}
+
+
+function getcurrMonthRelease($month = null, $investmentId = null, $type = null, $investorId = null)
+{
+    if ($investorId) {
+        $cond = array(
+            'investor_id' => $investorId,
+        );
+    } else {
+        $cond = array(
+            'payout_release_month' => $month,
+            'investment_id' => $investmentId,
+            'payout_type' => $type
+        );
+    }
+
+
+    $payouts = InvestorPayout::where($cond)->get();
+
+    $release = 0;
+    foreach ($payouts as $payout) {
+        $release += $payout->amount_paid;
+    }
+
+    return $release;
+}
+
+function getOutstangingInvestmentProfit($investmentId)
+{
+    $payouts = InvestorPayout::where([
+        'investment_id' => $investmentId,
+        'is_processed' => 0,
+    ])->get();
+
+    $balance = 0;
+    foreach ($payouts as $payout) {
+        $balance += $payout->amount_pending;
+    }
+
+    return $balance;
 }

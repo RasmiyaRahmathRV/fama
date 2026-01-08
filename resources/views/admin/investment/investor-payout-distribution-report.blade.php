@@ -40,6 +40,10 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
+                            <div class="card-header">
+                                <a class="btn btn-info float-right mr-1" href="{{ route('investorPayout.index') }}"><i
+                                        class="fas fa-arrow-left mr-2"></i> Back</a>
+                            </div>
 
                             <!-- /.card-header -->
                             <div class="card-body">
@@ -48,107 +52,55 @@
                                     <!-- form start -->
                                     <form class="form-horizontal">
                                         <div class="form-group row m-4">
-                                            <div class="col-md-3">
-                                                <label for="inputPassword3">Month</label>
-                                                <select class="form-control select2" name="month" id="month">
-                                                    <option value="">Select Month</option>
-                                                    <?php for ($m = 1; $m <= 12; ++$m) { ?>
-                                                    <option value="{{ $m }}">
-                                                        <?= date('F', mktime(0, 0, 0, $m, 1)) ?></option>
-                                                    <?php } ?>
-                                                </select>
+                                            <div class="col-md-2">
+                                                <label for="exampleInputEmail1">From</label>
+                                                <div class="input-group date" id="dateFrom" data-target-input="nearest">
+                                                    <input type="text" class="form-control datetimepicker-input"
+                                                        data-target="#dateFrom" id="date_From" placeholder="dd-mm-YYYY"
+                                                        value="{{ request('from_date', date('01-m-Y')) }}" />
+                                                    <div class="input-group-append" data-target="#dateFrom"
+                                                        data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-md-3">
-                                                <label for="inputPassword3">Batch</label>
-                                                <select class="form-control select2" name="batch_id" id="batch_id">
-                                                    <option value="">Select Batch</option>
-                                                    @foreach ($payoutbatches as $payoutbatch)
-                                                        <option value="{{ $payoutbatch->id }}">
-                                                            {{ $payoutbatch->batch_name }}</option>
-                                                    @endforeach
-                                                </select>
+                                            <div class="col-md-2">
+                                                <label for="exampleInputEmail1">To</label>
+                                                <div class="input-group date" id="dateTo" data-target-input="nearest">
+                                                    <input type="text" class="form-control datetimepicker-input"
+                                                        data-target="#dateTo" id="date_To" placeholder="dd-mm-YYYY"
+                                                        value="{{ request('from_date', date('d-m-Y')) }}" />
+                                                    <div class="input-group-append" data-target="#dateTo"
+                                                        data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-md-3">
-                                                <label for="inputPassword3">Investor</label>
-                                                <select class="form-control select2" name="investor_id" id="investor_id">
-                                                    <option value="">Select Investor</option>
-                                                    @foreach ($investors as $investor)
-                                                        <option value="{{ $investor->id }}">{{ $investor->investor_name }}
-                                                        </option>
-                                                    @endforeach
-
-                                                </select>
-                                            </div>
-                                            <!-- </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="form-group"> -->
-                                            <div class="col-md-1 float-right">
+                                            <div class="col-md-1">
                                                 <button type="button" class="btn btn-info searchbtnchq">Search</button>
                                             </div>
                                         </div>
-
                                     </form>
                                 </div>
                                 <!-- /.card -->
 
                                 <div class="card">
-                                    <div class="card-header">
-                                        <!-- <h3 class="card-title">Property Details</h3> -->
-                                        <span class="float-right">
-                                            <!-- <button class="btn btn-info float-right m-1" data-toggle="modal"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    data-target="#modal-Property">Add Investor Payout</button> -->
-                                            <button class="btn btn-success float-right m-1 bulktriggerbtn"
-                                                data-toggle="modal" data-target="#modal-payout"
-                                                data-clear-type="bulk">Payout All</button>
-
-                                            <a href="{{ route('distributed.report') }}"
-                                                class="btn btn-outline-maroon m-1"><i class="fas fa-book"></i>
-                                                View Report</a>
-                                        </span>
-                                    </div>
                                     <div class="card-body">
                                         <table id="payoutPendingTable" class="table table-bordered table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th>
-                                                        <div class="icheck-primary d-inline">
-                                                            <input type="checkbox" name="selectall" id="selectAll"
-                                                                value="1" onclick="toggleAllCheckboxes()">
-                                                            <label for="selectAll">Select All
-                                                            </label>
-                                                        </div>
-                                                    </th>
+                                                    <th>#</th>
                                                     <th>Investor Name</th>
                                                     {{-- <th style="width: 5%">Investment Amount</th> --}}
                                                     <th>Payout Date</th>
                                                     <th>Payout Type</th>
                                                     <th>payout Amount</th>
                                                     <th>Payment Mode</th>
-                                                    <th>Action</th>
+                                                    {{-- <th>Action</th> --}}
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {{-- <tr>
-                                                    <td>
-                                                        <div class="icheck-primary d-inline">
-                                                            <input type="checkbox" id="ichek1" class="groupCheckbox"
-                                                                name="installment_id[]">
-                                                            <label for="ichek1">
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Investor</td>
-                                                    <td>AED 1000</td>
-                                                    <td>08/08/2024</td>
-                                                    <td>AED 1000</td>
-                                                    <td>AED 200</td>
-                                                    <td>AED 1200</td>
-                                                    <td>Bank Transfer</td>
-                                                    <td>Fama</td>
-                                                    <td>
-                                                        <button class="btn btn-info float-right m-1 singleClear"
-                                                            data-toggle="modal" data-target="#modal-payout"
-                                                            data-clear-type="single">Payout</button> </td>
-                                                </tr> --}}
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -278,120 +230,12 @@
 
 
     <script>
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["excel"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-
-        });
-
-        $('#investmentdate').datetimepicker({
+        $('#dateFrom').datetimepicker({
             format: 'DD-MM-YYYY'
         });
 
-
-        function toggleAllCheckboxes() {
-            document.getElementById('selectAll').addEventListener('change', function() {
-                const itemCheckboxes = document.querySelectorAll('.groupCheckbox');
-                itemCheckboxes.forEach(checkbox => {
-                    checkbox.checked = this
-                        .checked; // Set checked status based on the "Select All" checkbox
-                });
-            });
-        }
-
-        $(document).ready(function() {
-            // $('#PayableList').DataTable();
-            hidelemnetsonload();
-        });
-
-        function hidelemnetsonload() {
-            $('.banksingle, .cheque, .modechange').hide();
-        }
-
-        $('.singleClear').on('change', function() {
-            $('.singleClear').not(this).prop('checked', false);
-            console.log($(this).val());
-            if ($(this).prop('checked')) {
-
-                $('.modechange').show();
-                if ($(this).val() == 2) {
-                    $('.banksingle').show();
-                    $('.cheque').hide();
-                } else if ($(this).val() == 3) {
-                    $('.banksingle').hide();
-                    $('.cheque').show();
-                } else {
-                    $('.banksingle').hide();
-                    $('.cheque').hide();
-                }
-            } else {
-                $('.banksingle').hide();
-                $('.cheque').hide();
-                $('.modechange').hide();
-            }
-        });
-
-        // $('#bankBulk').click(function() {
-        //     if ($(this).prop('checked')) {
-        //         $('.banksingle').show();
-        //     } else {
-        //         $('.banksingle').hide();
-        //     }
-        // });
-
-        $('.bulktriggerbtn').click(function(e) {
-            e.preventDefault();
-            if ($('.groupCheckbox:checked').length === 0) {
-                toastr.error('Please select one or more items to continue.');
-                return false;
-            } else {
-                $('#modal-clear-payable').show();
-            }
-        });
-
-
-
-        $('#modal-payout').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var clearType = button.data('clear-type'); // Extract info from data-* attributes
-            $('#PayoutSubmitForm')[0].reset();
-            hidelemnetsonload();
-
-            $(this).find('input, select, textarea').removeClass('is-invalid is-valid');
-
-            $('#method').val(clearType);
-
-            // $('.modechange').hide();
-            if (clearType === 'bulk') {
-
-                $('.clrngamnt').hide();
-                $('.chq').hide().css('display', 'none', 'important');
-            } else {
-                $('#payoutId').val(button.data('det-id'));
-
-                let totalAmount = button.data('amount');
-                document.getElementById('paid_amount').addEventListener('input', function() {
-                    let paid = parseFloat(this.value) || 0;
-                    // Prevent entering more than total amount
-                    if (paid > totalAmount) {
-                        paid = totalAmount;
-                        this.value = totalAmount;
-                    }
-
-                    let remaining = totalAmount - paid;
-
-                    document.getElementById('amountPending').innerText =
-                        'Remaining Amount: ' + remaining;
-                });
-
-                $('#amountPending').text('Remaining Amount: ' + button.data('amount'));
-                $('.clrngamnt').show();
-                $('.chq').show();
-            }
+        $('#dateTo').datetimepicker({
+            format: 'DD-MM-YYYY'
         });
     </script>
 
@@ -403,80 +247,37 @@
                 responsive: true,
 
                 ajax: {
-                    url: "{{ route('payout.pending.list') }}",
+                    url: "{{ route('distributed.list') }}",
                     data: function(d) {
-                        d.month = $('#month').val();
-                        d.batch_id = $('#batch_id').val();
-                        d.investor_id = $('#investor_id').val();
+                        d.date_From = $('#date_From').val();
+                        d.date_To = $('#date_To').val();
                     }
                 },
                 columns: [{
-                        data: 'checkbox',
-                        name: 'checkbox',
-                        orderable: false,
+                        data: 'DT_RowIndex',
+                        name: 'id',
+                        orderable: true,
                         searchable: false
                     },
                     {
                         data: 'investor_name',
                         name: 'investor_name',
                     },
-                    // {
-                    //     data: 'contract_type',
-                    //     name: 'contract_types.contract_type',
-                    // },
                     {
-                        data: 'payout_date',
-                        name: 'payout_date',
+                        data: 'paid_date',
+                        name: 'paid_date',
                     },
                     {
                         data: 'payout_type',
                         name: 'payout_type',
                     },
-                    // {
-                    //     data: 'property_name',
-                    //     name: 'contract.property.property_name',
-                    // },
                     {
-                        data: 'payout_amount',
-                        name: 'payout_amount',
+                        data: 'amount_paid',
+                        name: 'amount_paid',
                     },
                     {
                         data: 'payment_mode',
                         name: 'payment_mode',
-                    },
-                    // {
-                    //     data: 'cheque_no',
-                    //     name: 'contract_payment_details.cheque_no',
-                    // },
-                    // {
-                    //     data: 'payment_amount',
-                    //     name: 'payment_amount',
-                    // },
-                    // {
-                    //     data: 'composition',
-                    //     name: 'composition',
-                    // },
-                    // {
-                    //     data: 'has_returned',
-                    //     name: 'has_returned',
-                    //     render: function(data, type, row) {
-                    //         if (data == 1) {
-                    //             return '<span class="badge bg-danger text-white">Returned</span><i class="far fa-comments loadReason pl-1" onclick="loadReason(this)" data-reason="' +
-                    //                 row.returned_reason + '"></i>';
-
-
-
-                    //         }
-                    //         return '-';
-
-                    //     },
-                    // },
-
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
                     },
                 ],
                 rowCallback: function(row, data, index) {
@@ -503,15 +304,15 @@
                         let params = dt.ajax.params();
 
                         // add your custom filters manually (important)
-                        params.month = $('#month').val();
-                        params.batch_id = $('#batch_id').val();
-                        params.investor_id = $('#investor_id').val();
+                        params.date_From = $('#date_From').val();
+                        params.date_To = $('#date_To').val();
                         params.search = dt.search();
 
                         // build query string
                         let queryString = $.param(params);
 
-                        let url = "{{ route('payout.pending.export') }}?" + queryString;
+                        let url = "{{ route('payout.report.export') }}?" + queryString;
+
                         window.location.href = url;
                     }
                 }]

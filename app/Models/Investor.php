@@ -40,6 +40,8 @@ class Investor extends Model
         'created_by',
         'updated_by',
         'deleted_by',
+        'total_principal_received',
+        'investor_relation_id'
     ];
 
     public function nationality()
@@ -60,6 +62,11 @@ class Investor extends Model
     public function referral()
     {
         return $this->belongsTo(Investor::class, 'referral_id', 'id');
+    }
+
+    public function investor_relation()
+    {
+        return $this->belongsTo(InvestorRelation::class, 'investor_relation_id', 'id');
     }
 
     public function payoutBatch()

@@ -20,9 +20,14 @@ return new class extends Migration
             $table->decimal('amount_paid', 12, 2);
             $table->date('paid_date');
 
+            $table->unsignedBigInteger('paid_mode_id')->default(0);
+            $table->unsignedBigInteger('paid_bank')->nullable();
+            $table->string('paid_cheque_number')->nullable();
+            $table->text('payment_remarks')->nullable();
+
             $table->unsignedBigInteger('paid_by');
-            $table->unsignedBigInteger('updated_by');
-            $table->unsignedBigInteger('deleted_by');
+            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->unsignedBigInteger('deleted_by')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

@@ -194,6 +194,22 @@
                                                     </div> --}}
                                                 </div>
                                             </div>
+
+                                            <div class="form-group row">
+                                                <div class="col-sm-4">
+                                                    <label for="inputEmail3" class="asterisk">Investor Relation</label>
+                                                    <select class="form-control select2"
+                                                        name="investor[investor_relation_id]" required>
+                                                        <option value="">Select Relation</option>
+                                                        @foreach ($relations as $relation)
+                                                            <option value="{{ $relation->id }}"
+                                                                {{ $investor?->investor_relation_id == $relation->id ? 'selected' : '' }}>
+                                                                {{ $relation->relation_name }}</option>
+                                                        @endforeach
+
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="card card-outline card-info p-4">

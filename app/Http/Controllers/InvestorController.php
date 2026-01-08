@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\InvestorExport;
 use App\Models\DocumentType;
 use App\Models\Investor;
+use App\Models\InvestorRelation;
 use App\Models\PaymentMode;
 use App\Models\PayoutBatch;
 use App\Services\Investment\InvestorBankService;
@@ -38,6 +39,8 @@ class InvestorController extends Controller
         $paymentModes = PaymentMode::all();
         $investorsLists = $this->investorService->getAllActive();
         $investor = null;
+        $relations  = InvestorRelation::all();
+
 
         return view("admin.investment.investor-create", compact(
             "title",
@@ -46,7 +49,8 @@ class InvestorController extends Controller
             "documentTypes",
             "paymentModes",
             "investorsLists",
-            "investor"
+            "investor",
+            "relations"
         ));
     }
 
@@ -59,6 +63,7 @@ class InvestorController extends Controller
         $paymentModes = PaymentMode::all();
         $investor = $this->investorService->getById($id);
         $investorsLists = $this->investorService->getAllActive();
+        $relations  = InvestorRelation::all();
 
 
         return view("admin.investment.investor-create", compact(
@@ -68,7 +73,8 @@ class InvestorController extends Controller
             "documentTypes",
             "paymentModes",
             "investorsLists",
-            "investor"
+            "investor",
+            "relations"
         ));
     }
 

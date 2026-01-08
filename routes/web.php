@@ -204,7 +204,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('investor/get-investor-bank/{id}', [InvestorController::class, 'getInvestorBankDetails'])->name('investor.bank');
 
 
-    Route::get('payout-pending-list', [InvestorPaymentDistributionController::class, 'getPayouts'])->name('payout.pending.list');
+    Route::get('payout/payout-pending-list', [InvestorPaymentDistributionController::class, 'getPayouts'])->name('payout.pending.list');
+    Route::get('payout/distributed-report', [InvestorPaymentDistributionController::class, 'distributedReport'])->name('distributed.report');
+    Route::get('payout/distributed-list', [InvestorPaymentDistributionController::class, 'getDistributedList'])->name('distributed.list');
+    Route::post('payout/payout-distribute-save', [InvestorPaymentDistributionController::class, 'savePayouts'])->name('payout.distribute.save');
+    Route::get('payout/export-distribute', [InvestorPaymentDistributionController::class, 'exportDistribute'])->name('payout.report.export');
+    Route::get('payout/export-payout-pending', [InvestorPaymentDistributionController::class, 'exportPayoutPending'])->name('payout.pending.export');
 
 
     Route::get('investments/investments', [InvestmentController::class, 'getInvestments'])->name('investment.list');

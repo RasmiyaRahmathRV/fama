@@ -7,6 +7,7 @@ use App\Models\InvestorPaymentDistribution;
 use App\Models\InvestorPayout;
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class InvestorPaymentDistributionRepository
 {
@@ -31,9 +32,29 @@ class InvestorPaymentDistributionRepository
         return $investmentDocument->update($data);
     }
 
+    public function createMany(array $dataArray)
+    {
+        $detId = [];
+        foreach ($dataArray as $data) {
+            $detId[] = InvestorPaymentDistribution::create($data);
+        }
+        return  $detId;
+    }
+
+    public function updateMany(array $data)
+    {
+        $detId = [];
+        foreach ($data as $key => $value) {
+            $paymentdet = $this->find($key);
+            $paymentdet->update($value);
+
+            $detId[] = $key;
+        }
+        return  $detId;
+    }
+
     public function getPendings(array $filters = []): Builder
     {
-        $today = Carbon::today();
         $nextWeek = Carbon::today()->addDays(7);
 
         $query = InvestorPayout::query()
@@ -43,31 +64,98 @@ class InvestorPaymentDistributionRepository
             ])
             ->whereColumn('investor_payouts.payout_amount', '>', 'investor_payouts.amount_paid')
             ->where('investor_payouts.is_processed', 0)
-            ->whereHas('investment', function ($q) use ($today, $nextWeek) {
-                $q->where('terminate_status', '!=', 2)
-                    ->where(function ($dateQuery) use ($today, $nextWeek) {
+            ->whereHas('investment', function ($q) use ($nextWeek, $filters) {
+                $q->where('terminate_status', '!=', 2);
+
+                if (empty($filters['filter'])) {
+                    $q->where(function ($dateQuery) use ($nextWeek) {
 
                         // PROFIT
-                        $dateQuery->where(function ($profit) use ($today, $nextWeek) {
+                        $dateQuery->where(function ($profit) use ($nextWeek) {
                             $profit->whereNotNull('next_profit_release_date')
                                 ->whereDate('next_profit_release_date', '<=', $nextWeek);
                         })
 
                             // COMMISSION
-                            ->orWhere(function ($commission) use ($today, $nextWeek) {
+                            ->orWhere(function ($commission) use ($nextWeek) {
                                 $commission->whereNotNull('next_referral_commission_release_date')
                                     ->whereDate('next_referral_commission_release_date', '<=', $nextWeek);
                             })
 
                             // 🔹 PRINCIPAL RETURN (termination requested)
-                            ->orWhere(function ($principal) use ($today, $nextWeek) {
+                            ->orWhere(function ($principal) use ($nextWeek) {
                                 $principal->where('terminate_status', 1)
                                     ->whereNotNull('next_profit_release_date')
                                     ->whereDate('next_profit_release_date', '<=', $nextWeek);
                             });
                     });
-            })
-            ->orderBy('investor_payouts.id');
+                }
+            });
+
+        if (!empty($filters['filter'])) {
+            $filter = $filters['filter'];
+
+            // Vendor filter
+            if ($filter['month']) {
+                $month = str_pad($filter['month'], 2, '0', STR_PAD_LEFT);
+
+                $query->where('investor_payouts.payout_release_month', 'like', "%-$month");
+            }
+
+            // property filter
+            if ($filter['batch_id']) {
+                $query->whereHas('investment', function ($q) use ($filter) {
+                    $q->where('payout_batch_id', $filter['batch_id']);
+                });
+            }
+
+            // payment mode filter
+            if ($filter['investor_id']) {
+                $query->where('investor_payouts.investor_id', $filter['investor_id']);
+            }
+        }
+
+        $query->orderBy('investor_payouts.id');
+
+
+        return $query;
+    }
+
+    public function getDistributedList(array $filters = []): Builder
+    {
+
+        $fromDate = now()->startOfMonth()->toDateString();
+        $todate = now()->toDateString();
+
+
+        $query = InvestorPaymentDistribution::query()
+            ->with([
+                'investorPayout',
+                'Investor',
+                'investorPayout.investment',
+                'investorPayout.investmentReferral',
+                'paymentMode',
+                'paidBank'
+            ]);
+
+
+        if (!empty($filters['filter'])) {
+            $filter = $filters['filter'];
+
+
+            if (!empty($filter['date_From'])) {
+                $fromDate = $filter['date_From'];
+            }
+
+            if (!empty($filter['date_To'])) {
+                $todate = $filter['date_To'];
+            }
+        }
+
+        $query->whereBetween('investor_payment_distributions.paid_date', [
+            $fromDate,
+            $todate
+        ]);
 
 
         return $query;

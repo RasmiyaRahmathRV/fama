@@ -33,7 +33,8 @@ class DatabaseSeeder extends Seeder
             VendorContractTemplateSeeder::class,
             PayoutBatchSeeder::class,
             ProfitIntervalSeeder::class,
-            ReferralCommissionFrequencySeeder::class
+            ReferralCommissionFrequencySeeder::class,
+            InvestorRelationsSeeder::class
         ]);
     }
 }

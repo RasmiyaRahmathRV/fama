@@ -2,8 +2,11 @@
 
 namespace App\Services\Investment;
 
+use App\Models\InvestorPayout;
+use App\Repositories\Investment\InvestmentRepository;
 use App\Repositories\Investment\InvestorPaymentDistributionRepository;
 use App\Repositories\Investment\InvestorRepository;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -11,6 +14,8 @@ class InvestorPaymentDistributionService
 {
     public function __construct(
         protected InvestorPaymentDistributionRepository $investorDistRepo,
+        protected InvestmentRepository $investmentRepository,
+        protected InvestorRepository $investorRepo,
     ) {}
 
 
@@ -37,40 +42,13 @@ class InvestorPaymentDistributionService
         return $record;
     }
 
-    public function update($id, array $data)
-    {
-        $this->validate($data, $id);
-        $data['updated_by'] = auth()->user()->id;
-        return $this->investorDistRepo->update($id, $data);
-    }
+    // public function update($id, array $data)
+    // {
+    //     $this->validate($data, $id);
+    //     $data['updated_by'] = auth()->user()->id;
+    //     return $this->investorDistRepo->update($id, $data);
+    // }
 
-
-
-
-
-    private function validate(array $data, $id = null)
-    {
-        $validator = Validator::make($data, [
-
-            'referral_commission_perc' => 'required|numeric|min:0|max:100',
-            'referral_commission_amount' => 'required|numeric|min:0',
-            'referral_commission_frequency_id' => 'required|exists:referral_commission_frequencies,id',
-        ], [
-
-            'referral_commission_perc.required' => 'Referral commission percentage is required.',
-            'referral_commission_perc.numeric' => 'Referral commission percentage must be a number.',
-            'referral_commission_perc.min' => 'Referral commission percentage cannot be negative.',
-            'referral_commission_perc.max' => 'Referral commission percentage cannot exceed 100.',
-            'referral_commission_amount.required' => 'Referral commission amount is required.',
-            'referral_commission_amount.numeric' => 'Referral commission amount must be a number.',
-            'referral_commission_amount.min' => 'Referral commission amount cannot be negative.',
-
-        ]);
-
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
-    }
 
     public function getPendingList(array $filters = [])
     {
@@ -148,14 +126,171 @@ class InvestorPaymentDistributionService
 
             ->addColumn('action', function ($row) {
                 return '
-                <a class="btn btn-success btn-sm" title="Clear cheque"
-                                data-toggle="modal" data-target="#modal-clear-payable"
+                <a class="btn btn-success btn-sm bulktriggerbtn" title="Clear cheque"
+                                data-toggle="modal" data-target="#modal-payout"
                                 data-clear-type="single" data-det-id="' . $row->id . '" 
                                 data-amount="' . $row->amount_pending . '">
                                 Pay now</a>';
             })
 
             ->rawColumns(['investor_name', 'payout_type', 'action', 'checkbox'])
+            ->with(['columns' => $columns])
+            ->toJson();
+    }
+
+    public function savePayout(array $data)
+    {
+        $this->validate($data);
+
+        if ($data['method'] == 'bulk') {
+            $payoutIds = explode(',', $data['payout_ids']);
+        } else {
+            $payoutIds = $data['payout_ids'];
+        }
+
+        $payoutIds = is_array($payoutIds) ? $payoutIds : [$payoutIds];
+
+        $distributions = [];
+        foreach ($payoutIds as $payoutId) {
+            $payoutDetails = InvestorPayout::find($payoutId);
+
+            $pendingAmt = 0;
+            if ($data['method'] == 'single') {
+                $pendingAmt = toNumeric($payoutDetails->payout_amount) - toNumeric($data['paid_amount']);
+            }
+
+            $distributions[] = array(
+                'payout_id' => $payoutDetails->id,
+                'investor_id' => $payoutDetails->investor_id,
+                'amount_paid' => $data['paid_amount'] ?? toNumeric($payoutDetails->payout_amount),
+                'amount_pending' => $pendingAmt,
+                'is_processed' => $pendingAmt == 0 ? 1 : 0,
+                'paid_date' => $data['paid_date'],
+                'paid_mode_id' => $data['paid_mode'] ?? 0,
+                'paid_bank' => $data['paid_bank'] ?? null,
+                'paid_cheque_number' => $data['paid_cheque_number'] ?? null,
+                'payment_remarks' => $data['payment_remarks'] ?? null,
+                'paid_by' => auth()->user()->id,
+            );
+        }
+
+        return DB::transaction(function () use ($distributions) {
+            // DB::enableQueryLog();
+            // $paidIds = $this->investorDistRepo->updateMany($paymentdet);
+
+            $distributionDatas = $this->investorDistRepo->createMany($distributions);
+            // dd($distributionDatas);
+            foreach ($distributionDatas as $distributionData) {
+
+
+
+                $payoutData = InvestorPayout::find($distributionData->payout_id);
+
+                $payoutDataArr = $payoutData;
+                $balance = $payoutDataArr->amount_pending - $distributionData->amount_paid;
+                // payout update
+                $payoutDataArr->amount_paid = $distributionData->amount_paid;
+                $payoutDataArr->amount_pending = $balance;
+                $payoutDataArr->is_processed = $balance == 0 ? 1 : 0;
+                $payoutDataArr->update();
+
+
+                // investment update
+                $investment = updateInvestmentOnDistribution($payoutData, $distributionData);
+
+                // referral update
+                if ($payoutData->payout_type == 2) {
+                    $refComm = refCommUpdateOnDistribution($payoutData, $distributionData);
+                }
+
+
+                // investor update
+                $investor = investorUpdateOnDistribution($payoutData, $distributionData);
+            }
+
+            return $distributionDatas;
+        });
+    }
+
+    private function validate(array $data, $id = null)
+    {
+        $validator = Validator::make($data, [
+
+            'paid_date' => 'required',
+            'paid_mode' => 'required',
+        ], [
+
+            'referral_commission_perc.required' => 'Date is required.',
+            'paid_mode.required' => 'Payment mode is required.',
+
+        ]);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+    }
+
+    public function getDistributedList(array $filters = [])
+    {
+        $query = $this->investorDistRepo->getDistributedList($filters);
+
+        $columns = [
+            ['data' => 'investor_name', 'name' => 'investor_name'],
+            ['data' => 'paid_date', 'name' => 'paid_date'],
+            ['data' => 'payout_type', 'name' => 'payout_type'],
+            ['data' => 'amount_paid', 'name' => 'amount_paid'],
+            ['data' => 'payment_mode', 'name' => 'payment_mode'],
+            ['data' => 'action', 'name' => 'action', 'orderable' => false, 'searchable' => false],
+        ];
+
+        return datatables()
+            ->of($query)
+            ->addIndexColumn()
+            ->addColumn('investor_name', function ($row) {
+                $investor = $row->investor;
+
+                if (!$investor) return '-';
+
+                return "
+            <strong class='text-capitalize'>{$investor->investor_name}</strong>
+            <p class='mb-0 text-primary'>{$investor->investor_email}</p>
+            <p class='text-muted small'>
+                <i class='fa fa-phone-alt text-danger'></i>
+                <span class='font-weight-bold'>{$investor->investor_mobile}</span>
+            </p>
+        ";
+            })
+
+            ->addColumn('paid_date', fn($row) => $row->paid_date ?? '-')
+            ->addColumn('payout_type', function ($row) {
+                return match ($row->investorPayout->payout_type) {
+                    1 => '<span class="badge badge-success">Profit</span>',
+                    2 => '<span class="badge badge-info">Commission</span>',
+                    3 => '<span class="badge badge-warning">Principal</span>',
+                    default => '-',
+                };
+            })
+
+            ->addColumn('amount_paid', function ($row) {
+                return number_format($row->amount_paid, 2);
+            })
+
+            ->addColumn('payment_mode', function ($row) {
+
+                if (in_array($row->paymentMode?->id, [1, 4])) {
+                    $mode = $row->paymentMode?->payment_mode_name;
+                } elseif ($row->paymentMode?->id == 2) {
+                    $mode = $row->paymentMode?->payment_mode_name . ' - ' . $row->paidBank?->bank_name;
+                } elseif ($row->paymentMode?->id == 3) {
+                    $mode = $row->paymentMode?->payment_mode_name . ' - ' . $row->paidBank?->bank_name . ' - ' . $row->cheque_no;
+                } else {
+                    $mode = ' - ';
+                }
+
+                return $mode;
+            })
+
+            ->rawColumns(['investor_name', 'payout_type'])
             ->with(['columns' => $columns])
             ->toJson();
     }

@@ -192,8 +192,6 @@ class InvestmentService
                 UpdateReferralCommission($data['referral_id']);
             }
 
-
-
             return $investment;
         });
     }

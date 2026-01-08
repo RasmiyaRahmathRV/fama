@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DistributePendingExport;
+use App\Exports\DistributeReportExport;
+use App\Models\InvestorPaymentDistribution;
 use App\Models\PayoutBatch;
 use App\Services\BankService;
 use App\Services\Investment\InvestorPaymentDistributionService;
 use App\Services\Investment\InvestorService;
 use App\Services\PaymentModeService;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InvestorPaymentDistributionController extends Controller
 {
@@ -21,10 +25,10 @@ class InvestorPaymentDistributionController extends Controller
 
     public function index()
     {
-        $title = 'Investor';
+        $title = 'Investor Payout';
 
         $banks = $this->bankService->getAll();
-        $paymentmodes = $this->paymentModeService->getAll();
+        $paymentmodes = $this->paymentModeService->getAll()->where('id', '!=', 4);
         $payoutbatches = PayoutBatch::where('status', 1)->get();
         $investors = $this->investorService->getAllActive();
 
@@ -35,11 +39,15 @@ class InvestorPaymentDistributionController extends Controller
     {
 
         if ($request->ajax()) {
-            $filterData = array(
-                'month' => dateFormatChange($request->date_from, 'Y-m-d'),
-                'batch_id' => dateFormatChange($request->date_to, 'Y-m-d'),
-                'investor_id' => $request->investor_id,
-            );
+            $filterData = [];
+            if ($request->month || $request->batch_id || $request->investor_id) {
+                $filterData = array(
+                    'month' => $request->month,
+                    'batch_id' => $request->batch_id,
+                    'investor_id' => $request->investor_id,
+                );
+            }
+
 
             $filters = [
                 'search' => $request->search['value'] ?? null,
@@ -48,5 +56,83 @@ class InvestorPaymentDistributionController extends Controller
 
             return $this->investorDistrService->getPendingList($filters);
         }
+    }
+
+    public function savePayouts(Request $request)
+    {
+        try {
+            $paidDet = $this->investorDistrService->savePayout($request->all());
+
+            return response()->json(['success' => true, 'data' => $paidDet, 'message' => 'Pay outs saved successfully'], 200);
+        } catch (\Exception $e) {
+
+            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
+        }
+    }
+
+    public function distributedReport()
+    {
+        $title = 'Investor Payout Report';
+
+        $banks = $this->bankService->getAll();
+        $paymentmodes = $this->paymentModeService->getAll()->where('id', '!=', 4);
+        $payoutbatches = PayoutBatch::where('status', 1)->get();
+        $investors = $this->investorService->getAllActive();
+
+        return view("admin.investment.investor-payout-distribution-report", compact("title", "paymentmodes", "banks", "payoutbatches", "investors"));
+    }
+
+    public function getDistributedList(Request $request)
+    {
+
+        if ($request->ajax()) {
+            $filterData = [];
+            if ($request->date_From || $request->date_To) {
+                $filterData = array(
+                    'date_From' => dateFormatChange($request->date_From, 'Y-m-d'),
+                    'date_To' => dateFormatChange($request->date_To, 'Y-m-d'),
+                );
+            }
+
+
+            $filters = [
+                'search' => $request->search['value'] ?? null,
+                'filter' => $filterData,
+            ];
+
+            return $this->investorDistrService->getDistributedList($filters);
+        }
+    }
+
+    public function exportPayoutPending()
+    {
+        $filters = [];
+
+        if (request('month') || request('batch_id') || request('investor_id')) {
+            $filters = array(
+                'month' => request('month'),
+                'batch_id' => request('batch_id'),
+                'investor_id' => request('investor_id'),
+            );
+        }
+
+        $search = request('search') ?? null;
+
+        return Excel::download(new DistributePendingExport($search, $filters), 'payout-pending-report.xlsx');
+    }
+
+    public function exportDistribute()
+    {
+        $filters = [];
+        if (request('date_From') || request('date_To')) {
+            $filters = array(
+                'date_From' => dateFormatChange(request('date_From'), 'Y-m-d'),
+                'date_To' => dateFormatChange(request('date_To'), 'Y-m-d'),
+            );
+        }
+
+        $search = request('search') ?? null;
+
+        return Excel::download(new DistributeReportExport($search, $filters), 'payout-paid-report.xlsx');
     }
 }

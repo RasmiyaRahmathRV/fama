@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('message_settings', function (Blueprint $table) {
+        Schema::create('investor_relations', function (Blueprint $table) {
             $table->id();
-            $table->integer('message_type')->default(1)->comment('1-invitation, 2- profit release');
-            $table->text('message_body');
+            $table->string('relation_name');
             $table->integer('status')->default(1);
             $table->timestamps();
         });
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('message_settings');
+        Schema::dropIfExists('investor_relations');
     }
 };
