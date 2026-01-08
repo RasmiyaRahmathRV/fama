@@ -36,4 +36,8 @@ return [
         'api_key'  => env('INFOBIP_API_KEY'),
     ],
 
+    'whatchimp' => [
+        'api_key' => env('WHATCHIMP_API_KEY'),
+    ],
+
 ];

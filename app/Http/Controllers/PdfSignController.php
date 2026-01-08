@@ -171,13 +171,13 @@ class PdfSignController extends Controller
         $contractdocu->signed_status = 1;
         $contractdocu->save();
 
-        $email = new ContractSignedEmail();
-        $email->contract_id   = $contract->id;
-        $email->vendor_id     = $contract->vendor_id;
-        $email->email_to      = $recipientEmail;
-        $email->email_subject = 'Signed PDF Document';
-        $email->email_body    = "PDF attached: " . basename($finalPdf);
-        $email->save();
+        // $email = new ContractSignedEmail();
+        // $email->contract_id   = $contract->id;
+        // $email->vendor_id     = $contract->vendor_id;
+        // $email->email_to      = $recipientEmail;
+        // $email->email_subject = 'Signed PDF Document';
+        // $email->email_body    = "PDF attached: " . basename($finalPdf);
+        // $email->save();
 
         $contract->signed_at = now();
         $contract->contract_status = '6'; // Signed
@@ -198,10 +198,15 @@ class PdfSignController extends Controller
 
         $convertedPdf = $convertedDir . '/converted_' . basename($inputPdf);
 
-        $gsPath = env('GHOSTSCRIPT_PATH');
-        $cmd = "\"$gsPath\" -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=\"$convertedPdf\" \"$inputPdf\"";
+        $gsPath = env('GHOSTSCRIPT_PATH', '/usr/bin/gs');
+        $cmd = $gsPath . " -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=\"$convertedPdf\" \"$inputPdf\"";
+
+        \Log::info('GS CMD: ' . $cmd);
 
         exec($cmd . " 2>&1", $outputLog, $returnVar);
+
+        \Log::info('GS OUTPUT: ' . json_encode($outputLog));
+        \Log::info('GS RETURN: ' . $returnVar);
 
         if ($returnVar !== 0) {
             throw new \Exception("Ghostscript failed: " . json_encode($outputLog));

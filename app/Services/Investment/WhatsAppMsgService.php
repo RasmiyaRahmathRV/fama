@@ -14,7 +14,7 @@ class WhatsAppMsgService
     {
         // Correct Whatchimp API endpoint for template messages
         $this->apiUrl = "https://app.whatchimp.com/api/v1/whatsapp/send/template";
-        $this->apiKey = env('WHATCHIMP_API_KEY'); // from .env
+        $this->apiKey = config('services.whatchimp.api_key');
     }
 
     /**
