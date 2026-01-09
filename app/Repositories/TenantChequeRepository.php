@@ -136,7 +136,7 @@ class TenantChequeRepository
             // ->where('id', '>=', 12)
             ->where('is_payment_received', '!=', 1)
             ->where('terminate_status', 0)
-            ->whereDate('payment_date', '>=', Carbon::today())
+            // ->whereDate('payment_date', '>=', Carbon::today())
             ->whereDate('payment_date', '<=', Carbon::today()->addWeeks(2));
 
 
