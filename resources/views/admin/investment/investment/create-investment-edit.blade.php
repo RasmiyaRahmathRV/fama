@@ -671,6 +671,10 @@
             $('#maturityDate').datetimepicker({
                 format: 'DD-MM-YYYY'
             });
+            $('#firstreferralcommissionreleasedate').datetimepicker({
+                format: 'DD-MM-YYYY'
+            });
+
 
         });
     </script>
@@ -858,6 +862,12 @@
                 return;
             }
 
+            // Only calculate if the input is empty
+            let firstProfitInput = $('#first_profit_release_date');
+            if (firstProfitInput.val().trim() !== '') {
+                return; // keep existing value
+            }
+
             let parts = investmentDate.split('-');
             let date = new Date(parts[2], parts[1] - 1, parts[0]);
 
@@ -1032,6 +1042,13 @@
                 }
             });
 
+        });
+    </script>
+    <script>
+        $('#firstprofitreleasedate').on('change.datetimepicker', function(e) {
+            // e.date is a moment object
+            let fp_date = e.date ? e.date.format('DD-MM-YYYY') : '';
+            $('#first_referral_commission_release_date').val(fp_date);
         });
     </script>
 @endsection

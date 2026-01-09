@@ -186,7 +186,8 @@ class InvestmentService
                 // dd($investorReferraldata);
                 $this->investmentReferralService->create($investorReferraldata);
                 $this->investmentRepository->update($investment->id, [
-                    'next_referral_commission_release_date' => $investment['next_profit_release_date'],
+                    'next_referral_commission_release_date' => Carbon::createFromFormat('d-m-Y', $data['next_profit_release_date'])
+                        ->format('Y-m-d'),
                 ]);
 
                 UpdateReferralCommission($data['referral_id']);
@@ -306,7 +307,9 @@ class InvestmentService
                     $this->investmentReferralService->update($data['investment_referral_id'], $investorReferralData);
                 }
                 $this->investmentRepository->update($investment->id, [
-                    'next_referral_commission_release_date' => $investment['next_profit_release_date'],
+                    // 'next_referral_commission_release_date' => $investment['next_profit_release_date'],
+                    'next_referral_commission_release_date' => Carbon::createFromFormat('d-m-Y', $data['next_profit_release_date'])
+                        ->format('Y-m-d'),
                 ]);
                 updateReferralCommission($data['referral_id']);
             }
