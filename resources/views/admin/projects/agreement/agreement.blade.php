@@ -80,6 +80,7 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 1%">#</th>
+                                            <th>Actions</th>
                                             <th>Agreement Code</th>
                                             <th>Company Name</th>
                                             <th>Project Details</th>
@@ -90,7 +91,6 @@
                                             <th>Agreement Status</th>
                                             <th>Signed Agreement Status</th>
                                             <th>Created At</th>
-                                            <th>Actions</th>
                                             <!-- <th>Status</th> -->
                                             {{-- <th></th> --}}
                                         </tr>
@@ -223,6 +223,12 @@
                         searchable: false
                     },
                     {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
                         data: 'agreement_code',
                         name: 'agreements.agreement_code',
                     },
@@ -311,12 +317,7 @@
                     },
 
 
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
-                    },
+
                 ],
                 order: [
                     [0, 'desc']
