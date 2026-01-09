@@ -35,6 +35,9 @@ class InvestmentSoaRepository
                     'debit' => 0,
                 ];
             });
+        // dd($investments);
+        // $investments = null;
+
 
         $payouts = InvestorPaymentDistribution::with('investor')
             ->when($from && $to, function ($q) use ($from, $to) {
@@ -50,6 +53,9 @@ class InvestmentSoaRepository
                     'debit' => $pay->amount_paid,
                 ];
             });
+        $investments = $investments ?? collect();
+        // dd($investments);
+        $payouts = $payouts ?? collect();
 
 
 
