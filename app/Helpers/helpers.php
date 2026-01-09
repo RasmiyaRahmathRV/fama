@@ -515,6 +515,7 @@ function updateInvestor($investorId, $investmentId)
     Investor::where('id', $investorId)->update([
         'total_no_of_investments' => $investmentCount,
         'total_invested_amount' => $investedAmount,
+        'status' => 1
     ]);
 }
 function updateReferralCommission($referrorId)

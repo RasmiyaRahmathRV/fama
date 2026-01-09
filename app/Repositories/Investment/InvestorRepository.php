@@ -142,6 +142,9 @@ class InvestorRepository
             if ($investor->total_invested_amount > 0) {
                 $investor->total_invested_amount -= $investment->investment_amount;
             }
+            if ($investor->total_no_of_investments === 0) {
+                $investor->status = 0;
+            }
 
             $investor->save();
 

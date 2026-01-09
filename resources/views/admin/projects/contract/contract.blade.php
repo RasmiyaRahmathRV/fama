@@ -97,6 +97,7 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 1%">#</th>
+                                                <th style="width:112px;">Actions</th>
                                                 <th>Project</th>
                                                 {{-- <th>Contract type</th> --}}
                                                 <th>Company Name</th>
@@ -106,7 +107,6 @@
                                                 <th>Start date</th>
                                                 <th>End date</th>
                                                 <th>Status</th>
-                                                <th style="width:112px;"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -260,6 +260,12 @@
                         searchable: false
                     },
                     {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
                         data: 'project_number',
                         name: 'contracts.project_number',
                     },
@@ -321,12 +327,7 @@
                         // },
                     },
 
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
-                    },
+
                 ],
                 order: [
                     [0, 'desc']

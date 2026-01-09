@@ -95,15 +95,17 @@ class UpdateMonthlyPendingProfit extends Command
                         // $monthsDiff = $nextProfitRelease->diffInMonths($currentMonth);
 
                         // if ($monthsDiff % $monthsGap !== 0) continue;
-                        if (!$nextProfitRelease->isSameMonth($currentMonth)) {
-                            continue;
-                        }
+                        // if (!$nextProfitRelease->isSameMonth($currentMonth)) {
+                        //     continue;
+                        // }
 
                         // Check if next profit release is **within current month**
                         // if ($nextProfitRelease->between($currentMonthStart, $currentMonthEnd)) {
-                        $payout = $this->createInvestorpayout(1, $currentMonthStart, $investment);
-                        // dd($payout);
-                        // }
+                        $payout = null;
+                        if ($nextProfitRelease->lt($currentMonthStart) || $nextProfitRelease->isSameMonth($currentMonth)) {
+                            $payout = $this->createInvestorpayout(1, $currentMonthStart, $investment);
+                            // dd($payout);
+                        }
                         if ($payout) {
 
                             // $outstandingProfit += $payout->pending_amount;
@@ -125,20 +127,24 @@ class UpdateMonthlyPendingProfit extends Command
 
                         // Check if next referral commission release is **within current month**
                         // if ($nextReferralRelease->between($currentMonthStart, $currentMonthEnd)) {
-                        $this->createInvestorpayout(2, $currentMonthStart, $investment);
-                        // }
+                        if ($nextProfitRelease->lt($currentMonthStart) || $nextProfitRelease->isSameMonth($currentMonth)) {
+                            $this->createInvestorpayout(2, $currentMonthStart, $investment);
+                        }
                     }
 
                     // ----------------------------
                     // TERMINATION PAYOUT
                     // ----------------------------
                     if ($investment->terminate_status == 1 && $investment->termination_date) {
+                        // dd("test");
                         $terminationDate = Carbon::parse($investment->termination_date);
 
                         // Check if termination date is **within current month**
                         // if ($terminationDate->between($currentMonthStart, $currentMonthEnd)) {
-                        $this->createInvestorpayout(3, $currentMonthStart, $investment);
-                        // }
+                        if ($terminationDate->lt($currentMonthStart) || $terminationDate->isSameMonth($currentMonth)) {
+                            // dd("test");
+                            $this->createInvestorpayout(3, $currentMonthStart, $investment);
+                        }
                     }
                 }
             });
@@ -193,8 +199,7 @@ class UpdateMonthlyPendingProfit extends Command
                     break;
             }
 
-
-            return InvestorPayout::firstOrCreate(
+            return  InvestorPayout::firstOrCreate(
                 [
 
                     'investment_id'        => $investment->id,
@@ -210,6 +215,7 @@ class UpdateMonthlyPendingProfit extends Command
                     'is_processed'   => 0,
                 ]
             );
+            // dd($data);
 
             // return $payout;
         });
