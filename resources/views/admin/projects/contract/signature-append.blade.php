@@ -57,7 +57,7 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = "{{ asset('js/pdf.worker.js') }}";
 
         const container = document.getElementById('pdf-container');
-        const pdfUrl = "{{ asset('storage/' . $vendorContract->original_document_path) }}"; // uploaded PDF
+        const pdfUrl = "{!! asset('storage/' . $vendorContract->original_document_path) !!}";
 
         const loadingTask = pdfjsLib.getDocument(pdfUrl);
         loadingTask.promise.then(async pdf => {
@@ -92,7 +92,7 @@
         // Sign & Send button
         $('#save-sign').on('click', function() {
 
-            showLoader('Processing contract...', 'Please wait while the PDF is converted, signed, and emailed.');
+            showLoader(); //'Processing contract...', 'Please wait while the PDF is converted, signed, and emailed.'
 
 
             $.ajax({

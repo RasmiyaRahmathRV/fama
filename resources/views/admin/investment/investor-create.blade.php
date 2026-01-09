@@ -454,7 +454,7 @@
         function submitForm(e) {
             // SHOW loader
             // $('#global-loader').show();
-            $('#global-loader').fadeIn(150);
+            showLoader();
             let investorId = $('#investor_id').val();
 
 
@@ -481,13 +481,13 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    $('#global-loader').fadeOut(150);
+                    hideLoader();
                     // console.log(response);
                     toastr.success(response.message);
                     window.location.href = "{{ route('investor.index') }}";
                 },
                 error: function(errors) {
-                    $('#global-loader').fadeOut(150);
+                    hideLoader();
                     toastr.error(errors.responseJSON.message);
                 }
             });

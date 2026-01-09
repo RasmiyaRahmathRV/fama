@@ -137,15 +137,7 @@
             cancelButtonText: "Cancel"
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire({
-                    title: "Deleting...",
-                    text: "Please wait",
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
+                showLoader();
                 $.ajax({
                     url: `/agreement-unit/delete/${unitId}`,
                     type: 'POST',
@@ -171,10 +163,10 @@
                             });
                             row.remove();
                             $(`.accordion-for-unit[data-unit-id='${unitId}']`).remove();
-                            swal.close();
+                            hideLoader();
                             toastr.success(response.message);
                         } else {
-                            swal.close();
+                            hideLoader();
                             toastr.error(response.message || "Unable to delete unit");
                         }
                         if (response.vacant_units > 0) {
@@ -184,7 +176,7 @@
                         }
                     },
                     error: function(xhr) {
-                        swal.close();
+                        hideLoader();
                         toastr.error("Something went wrong. Please try again.");
                     }
                 });

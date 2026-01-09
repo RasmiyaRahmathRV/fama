@@ -36,14 +36,7 @@
 
         // Add CSRF
         fdata.append('_token', $('meta[name="csrf-token"]').attr('content'));
-        Swal.fire({
-            title: 'Please wait...',
-            html: 'Saving agreement data...',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
+        showLoader();
 
         $.ajax({
             url: url,
@@ -52,7 +45,7 @@
             processData: false,
             contentType: false,
             success: function(response) {
-                Swal.close();
+                hideLoader();
                 // Swal.fire({
                 //     title: 'Success!',
                 //     text: response.message,
@@ -66,7 +59,7 @@
                 window.location = "{{ route('agreement.index') }}"
             },
             error: function(xhr) {
-                Swal.close();
+                hideLoader();
 
                 const response = xhr.responseJSON;
                 if (xhr.status === 422 && response?.errors) {

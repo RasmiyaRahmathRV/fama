@@ -345,7 +345,7 @@
         $('#ContractUploadForm').submit(function(e) {
             e.preventDefault();
 
-            showLoader('Processing upload...', 'Please wait while the documents are being uploaded.');
+            showLoader(); //'Processing upload...', 'Please wait while the documents are being uploaded.'
 
             var form = document.getElementById('ContractUploadForm');
             var fdata = new FormData(form);
