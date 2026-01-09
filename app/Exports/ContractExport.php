@@ -57,6 +57,10 @@ class ContractExport implements FromCollection, WithHeadings
                     'Project ID' => "P - " . $contract->project_number,
                     'Project CODE' => $contract->project_code,
                     'Contract Type' => $contract->contract_type->contract_type,
+                    'Business Type' => match ($contract->contract_unit->business_type) {
+                        1 => "B2B",
+                        2 => "B2C"
+                    },
                     'Start Date'  => $contract->contract_detail->start_date,
                     'End Date'  => $contract->contract_detail->end_date,
                     'Company Name' => $contract->company->company_name,
@@ -97,6 +101,7 @@ class ContractExport implements FromCollection, WithHeadings
             'ID',
             'Project CODE',
             'Contact Type',
+            'Business Type',
             'Start Date',
             'End Date',
             'Company Name',

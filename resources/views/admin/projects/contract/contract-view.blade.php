@@ -414,13 +414,14 @@
 @section('custom_js')
     <script>
         function generateScope(id) {
-
+            showLoader();
             $.ajax({
                 type: "GET",
                 url: "/export-building-summary/" + id, // ← correct
                 dataType: "json",
                 success: function(response) {
-                    console.log(response);
+                    hideLoader();
+                    // console.log(response);
                     // Create a temporary link
                     var link = document.createElement('a');
                     link.href = response.file_url;
@@ -436,6 +437,7 @@
                     }, 800);
                 },
                 error: function(xhr) {
+                    hideLoader();
                     alert("Failed to export summary!");
                 }
             });

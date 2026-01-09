@@ -99,14 +99,15 @@
                                                 <th style="width: 1%">#</th>
                                                 <th style="width:112px;">Actions</th>
                                                 <th>Project</th>
-                                                {{-- <th>Contract type</th> --}}
+                                                <th>Business type</th>
+                                                <th>Status</th>
                                                 <th>Company Name</th>
                                                 <th>Total Units</th>
                                                 <th>ROI %</th>
                                                 <th>Profit</th>
                                                 <th>Start date</th>
                                                 <th>End date</th>
-                                                <th>Status</th>
+
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -269,33 +270,9 @@
                         data: 'project_number',
                         name: 'contracts.project_number',
                     },
-                    // {
-                    //     data: 'contract_type',
-                    //     name: 'contract_types.contract_type',
-                    // },
                     {
-                        data: 'company_name',
-                        name: 'companies.company_name',
-                    },
-                    {
-                        data: 'no_of_units',
-                        name: 'contract_units.no_of_units',
-                    },
-                    {
-                        data: 'roi_perc',
-                        name: 'contract_rentals.roi_perc',
-                    },
-                    {
-                        data: 'expected_profit',
-                        name: 'contract_rentals.expected_profit',
-                    },
-                    {
-                        data: 'start_date',
-                        name: 'contract_details.start_date',
-                    },
-                    {
-                        data: 'end_date',
-                        name: 'contract_details.end_date',
+                        data: 'business_type',
+                        name: 'contract_units.business_type',
                     },
                     {
                         data: 'status',
@@ -326,6 +303,31 @@
                         //     return '<span class="' + badgeClass + '">' + text + '</span>';
                         // },
                     },
+                    {
+                        data: 'company_name',
+                        name: 'companies.company_name',
+                    },
+                    {
+                        data: 'no_of_units',
+                        name: 'contract_units.no_of_units',
+                    },
+                    {
+                        data: 'roi_perc',
+                        name: 'contract_rentals.roi_perc',
+                    },
+                    {
+                        data: 'expected_profit',
+                        name: 'contract_rentals.expected_profit',
+                    },
+                    {
+                        data: 'start_date',
+                        name: 'contract_details.start_date',
+                    },
+                    {
+                        data: 'end_date',
+                        name: 'contract_details.end_date',
+                    },
+
 
 
                 ],
@@ -378,7 +380,7 @@
                 }
 
                 // Apply DataTable search column filter (status = column index 1)
-                table.column(8).search(filterValue).draw();
+                table.column(4).search(filterValue).draw();
             });
         });
 
