@@ -23,6 +23,7 @@ use App\Http\Controllers\PropertyTypeController;
 use App\Http\Controllers\ReceivablesClearingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
+use App\Services\BrevoService;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -220,6 +221,26 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('investments/investment-soa', [InvesmentSOAController::class, 'index'])->name('investment-soa.list');
     Route::get('investments/investment-soa/data', [InvesmentSOAController::class, 'getData'])->name('investment-soa.data');
+
+
+    Route::get('/send-test-template', function () {
+
+        $brevoService = new BrevoService();
+
+        $result = $brevoService->sendEmail(
+            [
+                ['email' => 'geethufama@gmail.com', 'name' => 'Test User']
+            ],
+            'Test Stripo Template', // Subject
+            'admin.emails.test-email', // Blade template
+            ['name' => 'Test User'] // Data for template
+        );
+
+        return $result; // Will return "true" if email sent successfully
+    });
+    Route::get('/preview-email', function () {
+        return view('admin.emails.test-email', ['name' => 'Test User']);
+    });
 });
 
 
