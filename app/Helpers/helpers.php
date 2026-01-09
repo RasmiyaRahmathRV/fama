@@ -673,7 +673,7 @@ function  updateInvestmentOnDistribution($payoutData, $distributedData)
 
     $investment = $repository->find($investmentId);
 
-    $nextCommDate = null;
+    $nextCommDate = Carbon::parse($investment->next_referral_commission_release_date)->format('Y-m-d');
     if ($payoutData->payout_type == 2) {
         $nextCommDate = calculateNextReferralReleaseDate($investment->investmentReferral->referral_commission_frequency_id, $distributedData->paid_date);
     }

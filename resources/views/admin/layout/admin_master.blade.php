@@ -562,19 +562,23 @@
             });
         }
 
-        function showLoader(title, msg) {
-            Swal.fire({
-                title: title, //'Processing upload...'
-                html: msg, //'Please wait while the documents are being uploaded.'
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+        function showLoader() {
+            // title, msg
+            // Swal.fire({
+            //     title: title, //'Processing upload...'
+            //     html: msg, //'Please wait while the documents are being uploaded.'
+            //     allowOutsideClick: false,
+            //     didOpen: () => {
+            //         Swal.showLoading();
+            //     }
+            // });
+
+            $('#global-loader').fadeIn(150);
         }
 
         function hideLoader() {
-            Swal.close();
+            // Swal.close();
+            $('#global-loader').fadeOut(150);
         }
     </script>
 

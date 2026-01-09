@@ -984,14 +984,7 @@
             if (investmentId) {
                 formData.append('_method', 'PUT');
             }
-            Swal.fire({
-                title: 'Please wait...',
-                html: 'Saving investment data...',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+            showLoader();
 
             $.ajax({
                 url: url,
@@ -1008,7 +1001,7 @@
                 },
                 success: function(response) {
                     // Handle success
-                    Swal.close();
+                    hideLoader();
 
                     toastr.success(response.message);
 
@@ -1019,7 +1012,7 @@
                 },
                 error: function(xhr) {
                     // Handle error
-                    Swal.close();
+                    hideLoader();
 
                     let errMsg = 'Something went wrong!';
                     if (xhr.responseJSON && xhr.responseJSON.message) {

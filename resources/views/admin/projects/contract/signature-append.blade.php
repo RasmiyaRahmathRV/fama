@@ -92,7 +92,7 @@
         // Sign & Send button
         $('#save-sign').on('click', function() {
 
-            showLoader('Processing contract...', 'Please wait while the PDF is converted, signed, and emailed.');
+            showLoader(); //'Processing contract...', 'Please wait while the PDF is converted, signed, and emailed.'
 
 
             $.ajax({
