@@ -57,7 +57,7 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = "{{ asset('js/pdf.worker.js') }}";
 
         const container = document.getElementById('pdf-container');
-        const pdfUrl = "{{ asset('storage/' . $vendorContract->original_document_path) }}"; // uploaded PDF
+        const pdfUrl = "{!! asset('storage/' . $vendorContract->original_document_path) !!}";
 
         const loadingTask = pdfjsLib.getDocument(pdfUrl);
         loadingTask.promise.then(async pdf => {
