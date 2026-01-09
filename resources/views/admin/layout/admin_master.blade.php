@@ -470,7 +470,7 @@
 
         <!-- Global Loader -->
         <div id="global-loader" style="display:none;">
-            <img src="{{ asset('images/loader.gif') }}" alt="Loading..." />
+            <img src="{{ asset('images/loader-fama.gif') }}" alt="Loading..." />
         </div>
 
         <!-- Control Sidebar -->
