@@ -674,14 +674,17 @@ function  updateInvestmentOnDistribution($payoutData, $distributedData)
     $investment = $repository->find($investmentId);
 
     $nextCommDate = Carbon::parse($investment->next_referral_commission_release_date)->format('Y-m-d');
+    $profitReleased = 0;
     if ($payoutData->payout_type == 2) {
         $nextCommDate = calculateNextReferralReleaseDate($investment->investmentReferral->referral_commission_frequency_id, $distributedData->paid_date);
+    } else {
+        $profitReleased = toNumeric($distributedData->amount_paid);
     }
 
     $investmentArr = array(
-        'total_profit_released' => toNumeric($investment->total_profit_released) + toNumeric($distributedData->amount_paid),
+        'total_profit_released' => toNumeric($investment->total_profit_released) + $profitReleased,
         'current_month_released' => getcurrMonthRelease(date('Y-m'), $investmentId, 1),
-        'outstanding_profit' => getOutstangingInvestmentProfit($investmentId),
+        'outstanding_profit' => getOutstangingInvestmentProfit($investmentId, $payoutData->payout_type),
         'last_profit_released_date' => Carbon::parse($distributedData->paid_date)->format('Y-m-d'),
         'next_profit_release_date' => calculateNextProfitReleaseDate(0, $investment->profit_interval_id, $distributedData->paid_date, $investment->payoutBatch->batch_name),
         'next_referral_commission_release_date' => $nextCommDate,
@@ -704,7 +707,7 @@ function refCommUpdateOnDistribution($payoutData, $distributedData)
 
     $refCommArr = array(
         'referral_commission_status' => ($bal > 0) ? 2 : 1,
-        'last_referral_commission_released_date' => $distributedData->paid_date,
+        'last_referral_commission_released_date' => Carbon::parse($distributedData->paid_date)->format('Y-m-d'),
         'total_commission_pending' => $bal,
         'total_commission_released' => $totCommRel,
         'current_month_commission_released' => getcurrMonthRelease(date('Y-m'), $payoutData->investment_id, 2),
@@ -725,11 +728,11 @@ function investorUpdateOnDistribution($payoutData, $distributedData)
 
     $investorArr = array(
         'total_profit_received' => getcurrMonthRelease(null, null, 1, $investorId),
-        'total_referal_commission_received' => getcurrMonthRelease(null, null, 2, $investorId),
+        'total_referral_commission_received' => getcurrMonthRelease(null, null, 2, $investorId),
         'total_principal_received' => getcurrMonthRelease(null, null, 3, $investorId),
         'updated_by' => auth()->user()->id,
     );
-
+    // dd($investorArr);
     return $repository->update($payoutData->investor_id, $investorArr);
 }
 
@@ -739,6 +742,7 @@ function getcurrMonthRelease($month = null, $investmentId = null, $type = null, 
     if ($investorId) {
         $cond = array(
             'investor_id' => $investorId,
+            'payout_type' => $type
         );
     } else {
         $cond = array(
@@ -759,11 +763,12 @@ function getcurrMonthRelease($month = null, $investmentId = null, $type = null, 
     return $release;
 }
 
-function getOutstangingInvestmentProfit($investmentId)
+function getOutstangingInvestmentProfit($investmentId, $payoutType)
 {
     $payouts = InvestorPayout::where([
         'investment_id' => $investmentId,
         'is_processed' => 0,
+        'payout_type' => 1
     ])->get();
 
     $balance = 0;
