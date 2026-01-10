@@ -23,6 +23,7 @@ class Kernel extends ConsoleKernel
             ->after(function () {
                 \Log::info('profit:update-monthly-pending command finished');
             });;
+        \Log::info('profit:update-monthly-pending command finished');
     }
 
     /**
