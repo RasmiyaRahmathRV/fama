@@ -581,6 +581,13 @@
             $('#global-loader').fadeOut(150);
         }
     </script>
+    {{-- <script>
+        $(window).on('load', function() {
+            setTimeout(function() {
+                $('#global-loader').fadeOut(300);
+            }, 1000);
+        });
+    </script> --}}
 
 </body>
 

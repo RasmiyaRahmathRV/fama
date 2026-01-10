@@ -53,7 +53,7 @@ class ContractCommentService
                     'Kindly Review and Approve Contract',
                     'admin.emails.contract-approval-email',
                     [
-                        'name'           => 'Test User',
+                        // 'name'           => 'Test User',
                         'contractNumber' => $contract->project_number,
                         'approvalUrl'    => $approvalUrl
                     ]

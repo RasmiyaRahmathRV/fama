@@ -10,6 +10,7 @@ use App\Models\ReferralCommissionFrequency;
 use App\Repositories\Investment\InvestmentDocumentRepository;
 use App\Repositories\Investment\InvestmentRepository;
 use App\Repositories\Investment\InvestorRepository;
+use App\Services\BrevoService;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,7 @@ class InvestmentService
         protected InvestmentDocumentService $investmentDocumentService,
         protected InvestmentReferralService $investmentReferralService,
         protected InvestmentReceivedPaymentService $investmentReceivedPaymentService,
+        protected BrevoService $brevoService
 
 
     ) {}
@@ -192,6 +194,22 @@ class InvestmentService
 
                 UpdateReferralCommission($data['referral_id']);
             }
+            $viewUrl = route('investment.show', [
+                'investment' => $investment->id
+            ]);
+
+            $result = $this->brevoService->sendEmail(
+                [
+                    ['email' => 'geethufama@gmail.com', 'name' => 'Test User']
+                ],
+                'New Investment Added – Ref #' . $investment->id,
+                'admin.emails.add-investment-email',
+                [
+                    'name'           => $investor->investor_name,
+                    'amount' => $investment->investment_amount,
+                    'url'    => $viewUrl
+                ]
+            );
 
             return $investment;
         });
