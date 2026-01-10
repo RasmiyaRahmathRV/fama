@@ -14,9 +14,10 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('agreements:expire')->daily();
-        $schedule->command('profit:update-monthly-pending')
-            ->monthlyOn(1, '00:05')
-            ->withoutOverlapping();
+        // $schedule->command('profit:update-monthly-pending')
+        //     ->monthlyOn(1, '00:05')
+        //     ->withoutOverlapping();
+        $schedule->command('profit:update-monthly-pending')->dailyAt('12:00')->withoutOverlapping();
     }
 
     /**
