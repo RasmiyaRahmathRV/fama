@@ -95,6 +95,7 @@ class PropertyService
                     $query->where('area_id', $data['area_id'] ?? null)
                         // ->where('company_id', $data['company_id'] ?? null)
                         ->where('locality_id', $data['locality_id'] ?? null)
+                        ->where('plot_no', $data['plot_no'] ?? null)
                         ->whereNull('deleted_at');
                 }),
             ],
@@ -277,26 +278,36 @@ class PropertyService
 
 
             // $seenKey = $company_id . '-' . $area_id . '-' . $locality_id . '-' . strtolower($row['building_name']);
-            $seenKey = $area_id . '-' . $locality_id . '-' . strtolower($row['building_name']);
+            $seenKey = $area_id . '-' . $locality_id . '-' . $row['plot_number'] . '-' . strtolower($row['building_name']);
+
+            $propertyExist = $this->propertyRepository->checkIfExist(array(
+                // 'company_id' => $company_id,
+                'area_id' => $area_id,
+                'locality_id' => $locality_id,
+                'property_name' => $row['building_name'],
+                'plot_no' => $row['plot_number'],
+            ));
 
 
+            if ($propertyExist == null) {
 
-            if (!isset($seen[$seenKey])) {
-                $insertData[] = [
-                    // 'company_id' => $company_id,
-                    'area_id' => $area_id,
-                    'locality_id' => $locality_id,
-                    // 'property_type_id' => $property_type_id,
-                    'property_code' => $this->setPropertyCode($rowindx + 1),
-                    'property_name' => $row['building_name'],
-                    'property_size' => $row['property_size'],
-                    'property_size_unit' => $row['property_size_unit'],
-                    'plot_no' => $row['plot_number'],
-                    'created_at' => now()->toDateTimeString(),
-                    'updated_at' => now()->toDateTimeString(),
-                    'added_by' => $user_id,
-                ];
-                $seen[$seenKey] = true;
+                if (!isset($seen[$seenKey])) {
+                    $insertData[] = [
+                        // 'company_id' => $company_id,
+                        'area_id' => $area_id,
+                        'locality_id' => $locality_id,
+                        // 'property_type_id' => $property_type_id,
+                        'property_code' => $this->setPropertyCode($rowindx + 1),
+                        'property_name' => $row['building_name'],
+                        'property_size' => $row['property_size'],
+                        'property_size_unit' => $row['property_size_unit'],
+                        'plot_no' => $row['plot_number'],
+                        'created_at' => now()->toDateTimeString(),
+                        'updated_at' => now()->toDateTimeString(),
+                        'added_by' => $user_id,
+                    ];
+                    $seen[$seenKey] = true;
+                }
             }
         }
 
