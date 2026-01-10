@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Mail\PasswordResetMail;
 use App\Models\User;
+use App\Services\BrevoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +14,10 @@ use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
 {
+    public function __construct(
+        protected BrevoService $brevoService,
+    ) {}
+
     public function login()
     {
         if (auth()->check()) {
@@ -43,10 +49,24 @@ class LoginController extends Controller
     public function doForgotPassword(Request $request)
     {
         $user = User::where('email', $request->email)->first();
+        // dd($request->email);
         if ($user) {
             $token = Str::random(120);
             $user->update(['password_reset_token' => $token]);
-            Mail::to(request('email'))->send(new PasswordResetMail($user, $token));
+            // Mail::to(request('email'))->send(new PasswordResetMail($user, $token));
+            $resetUrl = route('reset.password', $token);
+
+            $result = $this->brevoService->sendEmail(
+                [
+                    ['email' => $user->email, 'name' => $user->first_name]
+                ],
+                'Reset Your Password',
+                'admin.emails.forgot-password-email',
+                [
+                    'name' => $user->first_name . ' ' . $user->last_name,
+                    'url'  => $resetUrl
+                ]
+            );
             return redirect()->back()->with('message', 'Please check your inbox for reset link.')->with('status', 'success');
         } else {
             return redirect()->back()->with('message', 'Invalid Email Address.')->with('status', 'error');
