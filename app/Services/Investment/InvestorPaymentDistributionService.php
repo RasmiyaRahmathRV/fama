@@ -159,15 +159,15 @@ class InvestorPaymentDistributionService
 
             $pendingAmt = 0;
             if ($data['method'] == 'single') {
-                $pendingAmt = toNumeric($payoutDetails->payout_amount) - toNumeric($data['paid_amount']);
+                $pendingAmt = toNumeric($payoutDetails->amount_pending) - toNumeric($data['paid_amount']);
             }
 
             $distributions[] = array(
                 'payout_id' => $payoutDetails->id,
                 'investor_id' => $payoutDetails->investor_id,
-                'amount_paid' => $data['paid_amount'] ?? toNumeric($payoutDetails->payout_amount),
-                'amount_pending' => $pendingAmt,
-                'is_processed' => $pendingAmt == 0 ? 1 : 0,
+                'amount_paid' => $data['paid_amount'] ?? toNumeric($payoutDetails->amount_pending),
+                // 'amount_pending' => $pendingAmt,
+                // 'is_processed' => $pendingAmt == 0 ? 1 : 0,
                 'paid_date' => $data['paid_date'],
                 'paid_mode_id' => $data['paid_mode'] ?? 0,
                 'paid_bank' => $data['paid_bank'] ?? null,
@@ -192,7 +192,7 @@ class InvestorPaymentDistributionService
                 $payoutDataArr = $payoutData;
                 $balance = $payoutDataArr->amount_pending - $distributionData->amount_paid;
                 // payout update
-                $payoutDataArr->amount_paid = $distributionData->amount_paid;
+                $payoutDataArr->amount_paid = $payoutDataArr->amount_paid + $distributionData->amount_paid;
                 $payoutDataArr->amount_pending = $balance;
                 $payoutDataArr->is_processed = $balance == 0 ? 1 : 0;
                 $payoutDataArr->update();

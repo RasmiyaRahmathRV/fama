@@ -82,12 +82,12 @@ class InvestorController extends Controller
     {
         try {
             if (!empty($request->id)) {
-                $area = $this->investorService->update($request->id, $request->all());
-                return response()->json(['success' => true, 'data' => $area, 'message' => 'Investor updated successfully'], 200);
+                $investor = $this->investorService->update($request->id, $request->all());
+                return response()->json(['success' => true, 'data' => $investor, 'message' => 'Investor updated successfully'], 200);
             } else {
-                $area = $this->investorService->create($request->all());
+                $investor = $this->investorService->create($request->all());
 
-                return response()->json(['success' => true, 'data' => $area, 'message' => 'Investor created successfully'], 201);
+                return response()->json(['success' => true, 'data' => $investor, 'message' => 'Investor created successfully'], 201);
             }
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);

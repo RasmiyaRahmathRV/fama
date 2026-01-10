@@ -221,11 +221,12 @@ class ContractService
         $columns = [
             ['data' => 'DT_RowIndex', 'name' => 'id'],
             ['data' => 'project_number', 'name' => 'project_number'],
-            // ['data' => 'contract_type', 'name' => 'contract_type'],
+            ['data' => 'business_type', 'name' => 'business_type'],
             ['data' => 'company_name', 'name' => 'company_name'],
             ['data' => 'no_of_units', 'name' => 'no_of_units'],
             ['data' => 'roi_perc', 'name' => 'roi_perc'],
             ['data' => 'expected_profit', 'name' => 'expected_profit'],
+            ['data' => 'start_date', 'name' => 'start_date'],
             ['data' => 'end_date', 'name' => 'end_date'],
             ['data' => 'contract_status', 'name' => 'contract_status'],
             ['data' => 'action', 'name' => 'action', 'orderable' => true, 'searchable' => true],
@@ -235,6 +236,7 @@ class ContractService
             ->of($query)
             ->addIndexColumn()
             ->addColumn('project_number', function ($row) {
+
                 $number = 'P - ' . $row->project_number ?? '-';
                 $type = $row->contract_type->contract_type ?? '-';
 
@@ -257,10 +259,21 @@ class ContractService
             })
             // ->addColumn('project_number', fn($row) => 'P - ' . ucfirst($row->project_number) ?? '-')
             ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
-            // ->addColumn('contract_type', fn($row) => $row->contract_type->shortcode ?? '-')
+            ->addColumn('business_type', function ($row) {
+                if ($row->business_type == 1) {
+                    $type = "B2B";
+                } elseif ($row->business_type == 2) {
+                    $type = "B2C";
+                } else {
+                    $type = "-";
+                }
+
+                return "<strong class='text-uppercase'>{$type}</strong>";
+            })
             ->addColumn('no_of_units', fn($row) => $row->contract_unit->no_of_units ?? '-')
-            ->addColumn('roi_perc', fn($row) => $row->contract_rentals->roi_perc ?? '-')
+            ->addColumn('roi_perc', fn($row) => $row->contract_rentals->roi_perc . '%' ?? '-')
             ->addColumn('expected_profit', fn($row) => $row->contract_rentals->expected_profit ?? '-')
+            ->addColumn('start_date', fn($row) => $row->contract_detail->start_date ?? '-')
             ->addColumn('end_date', fn($row) => $row->contract_detail->end_date ?? '-')
             ->addColumn(
                 'status',
@@ -357,7 +370,7 @@ class ContractService
                 return $action ?: '-';
             })
 
-            ->rawColumns(['project_number', 'action', 'status'])
+            ->rawColumns(['project_number', 'action', 'status', 'business_type'])
             ->with(['columns' => $columns])
             ->toJson();
     }

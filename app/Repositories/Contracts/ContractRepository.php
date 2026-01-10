@@ -118,6 +118,7 @@ class ContractRepository
                 'contract_details.end_date',
                 'companies.company_name',
                 'contract_units.no_of_units',
+                'contract_units.business_type',
                 'contract_rentals.roi_perc',
                 'contract_rentals.expected_profit',
                 // $statusText

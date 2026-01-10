@@ -183,6 +183,10 @@ function renderUnitDetails($sheet, $contract)
             ],
 
         ]);
+
+    $sheet->getStyle("M5:P11")
+        ->getNumberFormat()
+        ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
 }
 
 function renderPayables($sheet, $contract, $title)
@@ -522,12 +526,12 @@ function renderFamaPaymentSummary($sheet, $contract)
         ['Commission', $contract['commission']],
         ['Ejari Registration Fee', '0'],
         ['Total to be paid', $contract['total_contract_amount']],
-        ['Profit', $contract['expected_profit']],
         ['Total Revenue', $contract['total_rental']],
         ['Initial Rent', $contract['initial_investment']],
         ['One Time Cost', $contract['total_otc']],
         ['Initial Investment', $contract['initial_investment']],
-        ['ROI', $contract['roi']],
+        ['Profit', $contract['expected_profit']],
+        ['ROI', $contract['roi'] . '%'],
         ['Project Scope', ''],
     ];
 
@@ -798,12 +802,14 @@ function renderUnitDetailsFF($sheet, $contract)
         $subunitdet = getAccommodationDetails($unitdetail);
 
 
+
         $commonHead = ['Flat No', 'Unit Type', 'Rent Amount',];
         $commonData =  [
             $unitdetail->unit_number ?? '',
             $unitdetail->unit_type->unit_type ?? '',
             $unitdetail->unit_rent_per_annum ?? 0,
         ];
+
         if ($contract['parent']) {
             $extraHead = [];
             $extraData = [];
@@ -870,7 +876,6 @@ function renderUnitDetailsFF($sheet, $contract)
         $unitDetaiArr[] = ['', '', formatNumber(array_sum($rentAnnum) / 4), '', '', '', ''];
         $unitDetaiArr[] = ['', '', formatNumber(array_sum($rentAnnum) * 0.1), '', '', '', ''];
     }
-
 
     // Write the array starting at row 4, column K
     $sheet->fromArray($unitDetaiArr, null, 'I5');
@@ -943,7 +948,7 @@ function renderUnitDetailsFF($sheet, $contract)
         ]);
 
 
-    $sheet->getStyle("I5:O13")
+    $sheet->getStyle("K5:O13")
         ->getNumberFormat()
         ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
 }
