@@ -55,11 +55,12 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Action</th>
+                                            <th>Status</th>
                                             <th>Company Name</th>
                                             <th>Investor Name</th>
                                             <th>Investment Amount</th>
                                             <th>Received Amount</th>
-                                            <th>Date</th>
+                                            <th>Investment Date</th>
                                             <th>Profit Interval</th>
                                             <th>Profit %</th>
                                             <th>Maturity date</th>
@@ -278,6 +279,41 @@
                         searchable: false
                     },
                     {
+                        data: 'investment_status',
+                        name: 'investment_status',
+                        render: function(data, type, row) {
+                            let mainStatus = '';
+                            let mainClass = '';
+
+                            let terminateStatus = '';
+                            let terminateClass = '';
+
+                            // Main status
+                            if (row.investment_status == 1) {
+                                mainStatus = 'Active';
+                                mainClass = 'badge-success';
+                            } else {
+                                mainStatus = 'Inactive';
+                                mainClass = 'badge-secondary';
+                            }
+
+                            // Termination status
+                            if (row.terminate_status == 1) {
+                                terminateStatus = 'Termination Requested';
+                                terminateClass = 'badge-warning';
+                            } else if (row.terminate_status == 2) {
+                                terminateStatus = 'Terminated';
+                                terminateClass = 'badge-danger';
+                            }
+
+                            return `
+                                <span class="badge ${mainClass}">${mainStatus}</span><br>
+                                <span class="badge ${terminateClass}">${terminateStatus}</span>
+                        `;
+                        }
+
+                    },
+                    {
                         data: 'company_name',
                         name: 'company.company_name'
                     },
@@ -475,7 +511,10 @@
             });
         }
         $(document).on('click', '.openTerminationModal', function() {
+            $('#terminationForm')[0].reset();
+            $('#existingFileContainer').html('');
             let investmentId = $(this).data('id');
+
 
             $('#termination_investment_id').val(investmentId);
             $('#requested_date').val('');
@@ -574,6 +613,10 @@
                     $('#terminationForm button[type="submit"]').attr('disabled', false);
                 }
             });
+        });
+        $('#terminationModal').on('hidden.bs.modal', function() {
+            // Reset the form fields
+            $('#terminationForm')[0].reset();
         });
     </script>
 @endsection

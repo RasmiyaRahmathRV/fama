@@ -1041,7 +1041,11 @@
         $('#firstprofitreleasedate').on('change.datetimepicker', function(e) {
             // e.date is a moment object
             let fp_date = e.date ? e.date.format('DD-MM-YYYY') : '';
-            $('#first_referral_commission_release_date').val(fp_date);
+            let $commission = $('#first_referral_commission_release_date');
+
+            if (!$commission.val()) {
+                $commission.val(fp_date);
+            }
         });
     </script>
 @endsection

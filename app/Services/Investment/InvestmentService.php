@@ -188,7 +188,7 @@ class InvestmentService
                 // dd($investorReferraldata);
                 $this->investmentReferralService->create($investorReferraldata);
                 $this->investmentRepository->update($investment->id, [
-                    'next_referral_commission_release_date' => Carbon::createFromFormat('d-m-Y', $data['next_profit_release_date'])
+                    'next_referral_commission_release_date' => Carbon::createFromFormat('d-m-Y', $data['next_referral_commission_release_date'])
                         ->format('Y-m-d'),
                 ]);
 
@@ -326,7 +326,7 @@ class InvestmentService
                 }
                 $this->investmentRepository->update($investment->id, [
                     // 'next_referral_commission_release_date' => $investment['next_profit_release_date'],
-                    'next_referral_commission_release_date' => Carbon::createFromFormat('d-m-Y', $data['next_profit_release_date'])
+                    'next_referral_commission_release_date' => Carbon::createFromFormat('d-m-Y', $data['next_referral_commission_release_date'])
                         ->format('Y-m-d'),
                 ]);
                 updateReferralCommission($data['referral_id']);
@@ -540,15 +540,15 @@ class InvestmentService
                     }
                     if (($row->terminate_status == 1) && Gate::allows('investment.terminate')) {
                         $action .= '
-                                <button class="btn btn-sm btn-danger m-1 openTerminationModal"
+                                <button class="btn btn-sm btn-warning m-1 openTerminationModal"
                                 data-status = "' . $row->terminate_status . '"
                                     data-id="' . $row->id . '"
                                     data-requested-date="' . ($row->termination_requested_date ? \Carbon\Carbon::parse($row->termination_requested_date)->format('d-m-Y') : '') . '"
                                     data-duration="' . ($row->termination_duration ?? '') . '"
                                     data-termination-date="' . ($row->termination_date ? \Carbon\Carbon::parse($row->termination_date)->format('d-m-Y') : '') . '"
                                    data-file-path="' . ($row->termination_document ? Storage::url($row->termination_document) : '') . '"
-                                    title="Terminate Investment">
-                                    <i class="fas fa-ban"></i>
+                                    title="Edit termination Details">
+                                    <i class="fas fa-file-signature"></i>
                                 </button>
                             ';
                     } elseif (Gate::allows('investment.terminate')) {
