@@ -53,7 +53,8 @@ class InvestmentSoaRepository
                     'debit' => $pay->amount_paid,
                 ];
             });
-        $investments = $investments ?? collect();
+        $investments = $investments->isEmpty() ? collect() : $investments;
+
         // dd($investments);
         $payouts = $payouts ?? collect();
 

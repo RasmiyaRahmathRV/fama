@@ -1453,6 +1453,8 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property string|null $requested
+ * @property string|null $response
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|EmailLog newModelQuery()
@@ -1460,6 +1462,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|EmailLog query()
  * @method static \Illuminate\Database\Eloquent\Builder|EmailLog whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|EmailLog whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EmailLog whereRequested($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|EmailLog whereResponse($value)
  * @method static \Illuminate\Database\Eloquent\Builder|EmailLog whereUpdatedAt($value)
  */
 	class EmailLog extends \Eloquent {}

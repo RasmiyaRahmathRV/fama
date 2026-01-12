@@ -879,6 +879,7 @@
 
 
         function contractChange() {
+            removeTenant();
 
             // alert("called");
             if (editedUnit) {
@@ -974,6 +975,7 @@
             if (
                 (selectedContractType && selectedContractType.contract_type === 'Fama Faateh')
             ) {
+                fillFFTenant();
                 let uniDetails = [];
                 // console.log('Agreemant :', agreement);
                 if (editedUnit && Array.isArray(editedUnit) && editedUnit.length > 0) {
@@ -2011,7 +2013,7 @@
                                 <div class="form-group row extra-fields" id="extra_fields_${uniqueId}">
                                     <div class="col-md-4 bank" id="bank_${uniqueId}">
                                         <label>Bank Name</label>
-                                        <select class="form-control" name="payment_detail[${unit.id}][${i}][bank_id]" id="bank_name_${uniqueId}">
+                                        <select class="form-control is-invalid" name="payment_detail[${unit.id}][${i}][bank_id]" id="bank_name_${uniqueId}">
                                             <option value="" >Select bank</option>
 
                                         </select>
@@ -2356,7 +2358,7 @@
                                 <div class="form-group row" id="extra_fields_${i}">
                                         <div class="col-md-4 bank" id="bank${i}">
                                             <label for="exampleInputEmail1">Bank Name</label>
-                                            <select class="form-control select2" name="payment_detail[${i}][bank_id]" id="bank_name${i}">
+                                            <select class="form-control select2 is-invalid" name="payment_detail[${i}][bank_id]" id="bank_name${i}">
                                                 <option value="" disabled>Select Bank Name</option>
 
                                             </select>
@@ -2823,6 +2825,28 @@
     <script>
         function getBanksByCompany(companyId) {
             return window.allBanks.filter(bank => bank.company_id == companyId);
+        }
+    </script>
+    <script>
+        function fillFFTenant() {
+            $('#tenant_name').val('Faateh Real Estate');
+            $('#tenant_mobile').val('+971568856995');
+            $('#tenant_email').val('adil@faateh.ae');
+            $('#contact_person').val('Adil Faridi');
+            $('#contact_number').val('+971568856995');
+            $('#contact_email').val('adil@faateh.ae');
+            $('#tenant_address').val('Dubai');
+
+        }
+
+        function removeTenant() {
+            $('#tenant_name').val('');
+            $('#tenant_mobile').val('');
+            $('#tenant_email').val('');
+            $('#contact_person').val('');
+            $('#contact_number').val('');
+            $('#contact_email').val('');
+            $('#tenant_address').val('');
         }
     </script>
 @endsection
