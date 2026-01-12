@@ -57,7 +57,7 @@
 
                             <!-- Card Body -->
                             <div class="card-body">
-                                <form id="investmentForm" method="POST" enctype="multipart/form-data">
+                                <form id="investmentForm" method="POST" enctype="multipart/form-data" novalidate>
                                     @csrf
 
                                     @if (isset($investment))
@@ -979,9 +979,32 @@
             e.preventDefault();
 
             // HTML5 validation
-            if (!this.checkValidity()) {
-                // Trigger native browser validation UI
-                this.reportValidity();
+            // if (!this.checkValidity()) {
+            //     // Trigger native browser validation UI
+            //     this.reportValidity();
+            //     return;
+            // }
+            const form = this;
+
+            // Run custom validation
+            if (!validateFormFields(form)) {
+                // Optional: scroll to first error
+                const firstError = form.querySelector('.is-invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Incomplete Step',
+                        text: 'Please complete all required inputs.',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 2500,
+                    });
+                }
                 return;
             }
             validateReceivedAmount();
@@ -1047,5 +1070,41 @@
                 $commission.val(fp_date);
             }
         });
+    </script>
+    <script>
+        function validateFormFields(form) {
+            let isValid = true;
+
+            form.querySelectorAll('[required]:not([type="radio"])').forEach(field => {
+                // Skip hidden fields
+                if (field.offsetParent === null) return;
+
+                if (!field.checkValidity()) {
+                    field.classList.add('is-invalid');
+                    field.classList.remove('is-valid');
+                    isValid = false;
+                } else {
+                    field.classList.add('is-valid');
+                    field.classList.remove('is-invalid');
+                }
+            });
+
+            // Validate Select2 fields
+            $(form).find('select.select2[required]').each(function() {
+                if (!$(this).is(':visible')) return;
+
+                const value = $(this).val();
+                const container = $(this).next('.select2-container');
+
+                if (!value || value.length === 0) {
+                    container.addClass('is-invalid').removeClass('is-valid');
+                    isValid = false;
+                } else {
+                    container.addClass('is-valid').removeClass('is-invalid');
+                }
+            });
+
+            return isValid;
+        }
     </script>
 @endsection
