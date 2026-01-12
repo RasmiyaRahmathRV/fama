@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Jobs\SignAndSendJob;
 use App\Models\ContractSignedEmail;
 use App\Repositories\Contracts\ContractRepository;
 use App\Repositories\Contracts\DocumentRepository;
+use App\Services\BrevoService;
 use App\Services\Contracts\ContractService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -19,6 +21,7 @@ class PdfSignController extends Controller
         protected ContractService $contractService,
         protected ContractRepository $contractRepo,
         protected DocumentRepository $documentRepo,
+        protected BrevoService $brevoService
     ) {}
 
     public function signedPdf($id)
@@ -156,13 +159,31 @@ class PdfSignController extends Controller
         $recipientEmail = 'rahmathrasmiya@gmail.com' ?? 'default@mail.com'; //$contract->vendor->email
         $recipientName  = $contract->vendor->vendor_name ?? 'Vendor';
 
-        Mail::send('emails.pdf_sent', [
-            'pdfPath' => $finalPdf,
-            'pdfName' => basename($finalPdf),
-            'recipientName' => $recipientName
-        ], function ($message) use ($recipientEmail) {
-            $message->to($recipientEmail)->subject('Signed PDF Document');
-        });
+        // Mail::send('emails.pdf_sent', [
+        //     'pdfPath' => $finalPdf,
+        //     'pdfName' => basename($finalPdf),
+        //     'recipientName' => $recipientName
+        // ], function ($message) use ($recipientEmail) {
+        //     $message->to($recipientEmail)->subject('Signed PDF Document');
+        // });
+        $pdfPath = $finalPdf;
+        $vendor_name = $contract->vendor->vendor_name;
+        $property_name = $contract->property->property_name;
+        $units = $contract->contract_unit->unit_numbers;
+        $result = $this->brevoService->sendEmail(
+            [
+                ['email' => 'geethufama@gmail.com', 'name' => $vendor_name]
+            ],
+            'Signed Vendor Contract',
+            'admin.emails.send-contractpdf-email',
+            [
+
+                'property_name' => $property_name,
+                'units' => $units,
+                'vendor_name' => $vendor_name,
+                'pdf_path' => $pdfPath
+            ]
+        );
 
         // Update contract
         $contractdocu = $contract->contract_documents->where('document_type_id', 1)->first();
