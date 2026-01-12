@@ -10,9 +10,11 @@ use App\Repositories\Contracts\DocumentRepository;
 use App\Services\BrevoService;
 use App\Services\Contracts\ContractService;
 use Illuminate\Http\Request;
+use Illuminate\Process\FakeProcessDescription;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use setasign\Fpdi\Tcpdf\Fpdi;
+// use setasign\Fpdi\Tcpdf\Fpdi;
 use TCPDF;
 
 class PdfSignController extends Controller
@@ -166,7 +168,8 @@ class PdfSignController extends Controller
         // ], function ($message) use ($recipientEmail) {
         //     $message->to($recipientEmail)->subject('Signed PDF Document');
         // });
-        $pdfPath = $finalPdf;
+        $url = config('app.url');
+        $pdfPath = $url . '/storage/' . $fullPath;
         $vendor_name = $contract->vendor->vendor_name;
         $property_name = $contract->property->property_name;
         $units = $contract->contract_unit->unit_numbers;
