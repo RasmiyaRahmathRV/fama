@@ -952,21 +952,24 @@
             return;
         }
 
-        let subvalues = calculateSubAccommodations();
+        if ($('#contract_type').val() == 1) {
+            let subvalues = calculateSubAccommodations();
 
-        // Set output values
-        $('#cost_of_development').val(1200 * subvalues.cod);
-        $('#cost_of_beds').val(240 * subvalues.totSubValue);
-        $('#cost_of_mattress').val(55 * subvalues.totSubValue);
-        $('#cost_of_cabinets').val(100 * subvalues.totSubValue);
-        $('#cost_of_cabinets').val(100 * subvalues.totSubValue);
-        $('#appliances').val(2500 * subvalues.totFlat);
-        $('#decoration').val(0);
-        $('#cost_of_cabinets').val(100 * subvalues.totSubValue);
-        $('#dewa_deposit').val(2130 * subvalues.totFlat);
-        $('#ejari').val(0);
+            // Set output values
+            $('#cost_of_development').val(1200 * subvalues.cod);
+            $('#cost_of_beds').val(240 * subvalues.totSubValue);
+            $('#cost_of_mattress').val(55 * subvalues.totSubValue);
+            $('#cost_of_cabinets').val(100 * subvalues.totSubValue);
+            $('#cost_of_cabinets').val(100 * subvalues.totSubValue);
+            $('#appliances').val(2500 * subvalues.totFlat);
+            $('#decoration').val(0);
+            $('#cost_of_cabinets').val(100 * subvalues.totSubValue);
+            $('#dewa_deposit').val(2130 * subvalues.totFlat);
+            $('#ejari').val(0);
 
+        }
         CalculatePayables();
+
     }
 
     // Trigger on input/change
@@ -1491,7 +1494,7 @@
 
     $('#contract_type').change(function() {
         // console.log('contract type changed');
-        calculateOtc();
+
         var contract_type = $(this).val();
         if (contract_type == '2') {
             // console.log('Faateh contract type');
@@ -1506,6 +1509,7 @@
             //         $('#contact_person').val('Adil');
 
         } else {
+            calculateOtc();
             $('#duration_months').val('13');
             $('#btob').prop('checked', false);
             $('#btoc').prop('checked', true);
@@ -1550,7 +1554,9 @@
         // console.log('totdepo -' + totdepo);
         // console.log('totcontractfee -' + totcontractfee);
         // console.log('totdepo -' + totdepo);
-        let initialInv = parseFloat((totRent / parseFloat(installment)) + totcomm + totdepo + totcontractfee + totalotc)
+        // let initialInv = parseFloat((totRent / parseFloat(installment)) + totcomm + totdepo + totcontractfee + totalotc)
+        //     .toFixed(2);
+        let initialInv = parseFloat((totRent / 4) + totcomm + totdepo + totcontractfee + totalotc)
             .toFixed(2);
 
         $('.total_contract_amount').val(totRent);

@@ -278,6 +278,7 @@ class ContractService
             ->addColumn(
                 'status',
                 function ($row) {
+
                     $comment = '';
                     if ($row->contract_status == 5) {
                         $comment = '<i class="far fa-comments loadComments" data-id="' . $row->id . '"></i>'; //data-toggle="modal" data-target="#modal-hold-comment"
