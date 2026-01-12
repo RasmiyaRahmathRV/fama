@@ -4,6 +4,7 @@ namespace App\Services;
 
 use GuzzleHttp\Client;
 use App\Models\EmailLog;
+use Illuminate\Support\Facades\Log;
 
 class BrevoService
 {
@@ -14,7 +15,7 @@ class BrevoService
 
     public function __construct()
     {
-        $this->apiKey = env('BREVO_API_KEY');
+        $this->apiKey = config('services.brevo.api_key');
         $this->senderEmail = 'geethufama@gmail.com';
         $this->senderName = 'Fama Real Estate';
 
@@ -39,6 +40,7 @@ class BrevoService
      */
     public function sendEmail(array $to, string $subject, string $bladeViewName, array $viewData)
     {
+        // dd("test");
         $emailLog = new EmailLog();
         // $emailLog->app = 'Fama Real Estate';
 

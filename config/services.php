@@ -39,5 +39,8 @@ return [
     'whatchimp' => [
         'api_key' => env('WHATCHIMP_API_KEY'),
     ],
+    'brevo' => [
+        'api_key' => env('BREVO_API_KEY'),
+    ],
 
 ];
