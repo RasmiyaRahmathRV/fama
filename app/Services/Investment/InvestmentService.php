@@ -547,6 +547,9 @@ class InvestmentService
                                     data-duration="' . ($row->termination_duration ?? '') . '"
                                     data-termination-date="' . ($row->termination_date ? \Carbon\Carbon::parse($row->termination_date)->format('d-m-Y') : '') . '"
                                    data-file-path="' . ($row->termination_document ? Storage::url($row->termination_document) : '') . '"
+                                   data-principal="' . ($row->investment_amount) . '"
+                                   data-outstanding="' . ($row->termination_outstanding) . '"
+                                   data-outstanding-profit = "' . ($row->outstanding_profit) . '"
                                     title="Edit termination Details">
                                     <i class="fas fa-file-signature"></i>
                                 </button>
@@ -556,6 +559,9 @@ class InvestmentService
                             <button class="btn btn-sm btn-danger m-1 openTerminationModal"
                                 data-id="' . $row->id . '"
                                 data-balance="' . $row->balance_amount . '"
+                                data-principal="' . ($row->investment_amount) . '"
+                                data-outstanding="' . ($row->termination_outstanding) . '"
+                                data-outstanding-profit = "' . ($row->outstanding_profit) . '"
                                 title="Terminate Investment">
                                 <i class="fas fa-ban"></i>
                             </button>
@@ -720,6 +726,7 @@ class InvestmentService
                 'termination_date' => Carbon::createFromFormat('d-m-Y', $data['termination_date']),
                 'termination_duration' => $data['duration'],
                 'termination_requested_by' => auth()->id(),
+                'termination_outstanding' => $data['termination_outstanding']
             ];
 
             // Handle file upload if exists
@@ -770,6 +777,7 @@ class InvestmentService
             'duration' => 'required|integer|min:1',
             'termination_date' => 'required|date|after:termination_requested_date',
             'termination_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
+            'termination_outstanding' => 'required|numeric'
         ], [
             'termination_requested_date.required' => 'Requested date is required.',
             'termination_requested_date.date' => 'Requested date must be a valid date.',

@@ -144,6 +144,9 @@ class UpdateMonthlyPendingProfit extends Command
                         if ($terminationDate->lt($currentMonthStart) || $terminationDate->isSameMonth($currentMonth)) {
                             // dd("test");
                             $this->createInvestorpayout(3, $currentMonthStart, $investment);
+                            if ($investment->termination_outstanding != 0) {
+                                $this->createInvestorpayout(4, $currentMonthStart, $investment);
+                            }
                         }
                     }
                 }
@@ -195,6 +198,10 @@ class UpdateMonthlyPendingProfit extends Command
                 case 3: // TERMINATION
                     // $amount = ($investment->investment_amount) + ($investment->outstanding_profit);
                     $amount = $investment->investment_amount;
+                    $investorId = $investment->investor_id;
+                    break;
+                case 4: // PENDING PROFIT
+                    $amount = $investment->termination_outstanding;
                     $investorId = $investment->investor_id;
                     break;
             }

@@ -91,7 +91,7 @@
 
 
             <div class="modal fade" id="terminationModal" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modal-md" role="document">
+                <div class="modal-dialog" role="document">
                     <form id="terminationForm" method="POST" enctype="multipart/form-data">
                         @csrf
 
@@ -106,6 +106,8 @@
                             <div class="modal-body">
 
                                 <input type="hidden" name="investment_id" id="termination_investment_id">
+                                <div class=" d-none text-lg-left text-info" id="profit-div">
+                                </div>
 
                                 <!-- Requested Date -->
                                 <div class="form-group">
@@ -151,6 +153,21 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="form-group">
+                                    <label>Investment Amount</label>
+                                    <input type="number" name="investment_amount" id="investment_amount"
+                                        class="form-control" disabled>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="asterisk">Outstanding Till Termination</label>
+                                    <input type="number" name="termination_outstanding" id="termination_outstanding"
+                                        class="form-control" step="0.01" min="-999999999" required>
+                                </div>
+
+
+
 
                                 <!-- File Upload -->
                                 <div class="form-group">
@@ -520,6 +537,27 @@
             $('#requested_date').val('');
             $('#termination_duration').val('');
             $('#termination_date').val('');
+            let invest_amount = $(this).data('principal');
+            $('#investment_amount').val(invest_amount);
+            let outstanding = $(this).data('outstanding');
+            $('#termination_outstanding').val(outstanding);
+            // 👉 Outstanding profit
+            let outstandingProfit = $(this).data('outstanding-profit');
+
+            if (outstandingProfit !== null && outstandingProfit !== '' && outstandingProfit != 0) {
+                $('#profit-div')
+                    .removeClass('d-none')
+                    .html(' Pending Payout Amount Generated: <strong>' + outstandingProfit +
+                        '</strong>');
+            } else {
+                $('#profit-div')
+                    .addClass('d-none')
+                    .html('');
+            }
+
+
+
+
 
             if ($(this).data('status')) {
                 $status = $(this).data('status');
@@ -528,6 +566,7 @@
                     let duration = $(this).data('duration') || '';
                     let terminationDate = $(this).data('termination-date') || '';
                     let filePath = $(this).data('file-path');
+
                     console.log(filePath);
 
 
@@ -535,6 +574,7 @@
                     $('#termination_requested_date').val(requestedDate);
                     $('#termination_duration').val(duration);
                     $('#termination_date').val(terminationDate);
+
                     if (filePath) {
                         $('#existingFileContainer').html(
                             '<a style="text-decoration:underline;" class="text-blue" href="' + filePath +
