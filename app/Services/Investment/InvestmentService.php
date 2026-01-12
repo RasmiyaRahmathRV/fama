@@ -10,6 +10,7 @@ use App\Models\ReferralCommissionFrequency;
 use App\Repositories\Investment\InvestmentDocumentRepository;
 use App\Repositories\Investment\InvestmentRepository;
 use App\Repositories\Investment\InvestorRepository;
+use App\Services\BrevoService;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,7 @@ class InvestmentService
         protected InvestmentDocumentService $investmentDocumentService,
         protected InvestmentReferralService $investmentReferralService,
         protected InvestmentReceivedPaymentService $investmentReceivedPaymentService,
+        protected BrevoService $brevoService
 
 
     ) {}
@@ -186,12 +188,28 @@ class InvestmentService
                 // dd($investorReferraldata);
                 $this->investmentReferralService->create($investorReferraldata);
                 $this->investmentRepository->update($investment->id, [
-                    'next_referral_commission_release_date' => Carbon::createFromFormat('d-m-Y', $data['next_profit_release_date'])
+                    'next_referral_commission_release_date' => Carbon::createFromFormat('d-m-Y', $data['next_referral_commission_release_date'])
                         ->format('Y-m-d'),
                 ]);
 
                 UpdateReferralCommission($data['referral_id']);
             }
+            $viewUrl = route('investment.show', [
+                'investment' => $investment->id
+            ]);
+
+            $result = $this->brevoService->sendEmail(
+                [
+                    ['email' => 'geethufama@gmail.com', 'name' => 'Test User']
+                ],
+                'New Investment Added – Ref #' . $investment->id,
+                'admin.emails.add-investment-email',
+                [
+                    'name'           => $investor->investor_name,
+                    'amount' => $investment->investment_amount,
+                    'url'    => $viewUrl
+                ]
+            );
 
             return $investment;
         });
@@ -308,7 +326,7 @@ class InvestmentService
                 }
                 $this->investmentRepository->update($investment->id, [
                     // 'next_referral_commission_release_date' => $investment['next_profit_release_date'],
-                    'next_referral_commission_release_date' => Carbon::createFromFormat('d-m-Y', $data['next_profit_release_date'])
+                    'next_referral_commission_release_date' => Carbon::createFromFormat('d-m-Y', $data['next_referral_commission_release_date'])
                         ->format('Y-m-d'),
                 ]);
                 updateReferralCommission($data['referral_id']);
@@ -522,15 +540,15 @@ class InvestmentService
                     }
                     if (($row->terminate_status == 1) && Gate::allows('investment.terminate')) {
                         $action .= '
-                                <button class="btn btn-sm btn-danger m-1 openTerminationModal"
+                                <button class="btn btn-sm btn-warning m-1 openTerminationModal"
                                 data-status = "' . $row->terminate_status . '"
                                     data-id="' . $row->id . '"
                                     data-requested-date="' . ($row->termination_requested_date ? \Carbon\Carbon::parse($row->termination_requested_date)->format('d-m-Y') : '') . '"
                                     data-duration="' . ($row->termination_duration ?? '') . '"
                                     data-termination-date="' . ($row->termination_date ? \Carbon\Carbon::parse($row->termination_date)->format('d-m-Y') : '') . '"
                                    data-file-path="' . ($row->termination_document ? Storage::url($row->termination_document) : '') . '"
-                                    title="Terminate Investment">
-                                    <i class="fas fa-ban"></i>
+                                    title="Edit termination Details">
+                                    <i class="fas fa-file-signature"></i>
                                 </button>
                             ';
                     } elseif (Gate::allows('investment.terminate')) {
@@ -689,32 +707,57 @@ class InvestmentService
         // dd($data);
         // Validate the request
         $this->validateTermination($data);
-        $investment = $this->investmentRepository->getWithDetails($data['investment_id']);
 
-        // Find the investment
+        $investment = DB::transaction(function () use ($data) {
+            $investment = $this->investmentRepository->getWithDetails($data['investment_id']);
 
-        // Prepare termination data
-        $terminationData = [
-            'terminate_status' => 1,
-            'termination_requested_date' => Carbon::createFromFormat('d-m-Y', $data['termination_requested_date']),
-            'termination_date' => Carbon::createFromFormat('d-m-Y', $data['termination_date']),
-            'termination_duration' => $data['duration'],
-            'termination_requested_by' => auth()->id(),
-        ];
+            // Find the investment
 
-        // Handle file upload if exists
-        if (isset($data['termination_file'])) {
-            $fileName = uniqid() . '_' . $investment->investment_code . $data['termination_file']->getClientOriginalName();
-            $path = $data['termination_file']->storeAs(
-                'investments/' . $investment->investor->investor_code . '/terminations/' . $investment->investment_code,
-                $fileName,
-                'public'
-            );
-            $terminationData['termination_document'] = $path;
-        }
+            // Prepare termination data
+            $terminationData = [
+                'terminate_status' => 1,
+                'termination_requested_date' => Carbon::createFromFormat('d-m-Y', $data['termination_requested_date']),
+                'termination_date' => Carbon::createFromFormat('d-m-Y', $data['termination_date']),
+                'termination_duration' => $data['duration'],
+                'termination_requested_by' => auth()->id(),
+            ];
 
-        // Update investment
-        $investment =  $this->investmentRepository->update($data['investment_id'], $terminationData);
+            // Handle file upload if exists
+            if (isset($data['termination_file'])) {
+                $fileName = uniqid() . '_' . $investment->investment_code . $data['termination_file']->getClientOriginalName();
+                $path = $data['termination_file']->storeAs(
+                    'investments/' . $investment->investor->investor_code . '/terminations/' . $investment->investment_code,
+                    $fileName,
+                    'public'
+                );
+                $terminationData['termination_document'] = $path;
+            }
+
+            // Update investment
+            return  $this->investmentRepository->update($data['investment_id'], $terminationData);
+        });
+
+        $investor = $investment->investor;
+        $doc = $investment->termination_document;
+        $url = config('app.url');
+        $document_path = $url . '/storage/' . $doc;
+        // dd($document_path);
+
+        $result = $this->brevoService->sendEmail(
+            [
+                ['email' => 'geethufama@gmail.com', 'name' => 'Test User']
+            ],
+            'Investment Termination Request Created',
+            'admin.emails.terminate-investment-email',
+            [
+                'name'           => $investor->investor_name,
+                'amount' => $investment->investment_amount,
+                'requested_date' => $investment->termination_requested_date,
+                'termination_date' => $investment->termination_date,
+                'duration' => $investment->termination_duration,
+                'document_path' => $document_path
+            ]
+        );
 
         return $investment;
     }

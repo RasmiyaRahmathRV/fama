@@ -470,7 +470,7 @@
 
         <!-- Global Loader -->
         <div id="global-loader" style="display:none;">
-            <img src="{{ asset('images/loader-fama.gif') }}" alt="Loading..." />
+            <img src="{{ asset('images/fama-loader-new.gif') }}" alt="Loading..." />
         </div>
 
         <!-- Control Sidebar -->
@@ -581,6 +581,13 @@
             $('#global-loader').fadeOut(150);
         }
     </script>
+    {{-- <script>
+        $(window).on('load', function() {
+            setTimeout(function() {
+                $('#global-loader').fadeOut(300);
+            }, 1000);
+        });
+    </script> --}}
 
 </body>
 
