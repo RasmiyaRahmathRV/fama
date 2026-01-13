@@ -155,6 +155,7 @@
         });
 
         $('#importBtn').on('click', function() {
+            showLoader();
             let formData = new FormData($('#areaImportForm')[0]);
             $.ajax({
                 url: "{{ route('import.area') }}",
@@ -163,10 +164,12 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
+                    hideLoader();
                     toastr.success(response.message);
                     window.location.reload();
                 },
                 error: function(err) {
+                    hideLoader();
                     toastr.error(err.responseJSON.message);
                 }
             });

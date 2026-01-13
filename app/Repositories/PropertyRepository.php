@@ -95,9 +95,10 @@ class PropertyRepository
             ->where('area_id', $data['area_id'])
             ->where('locality_id', $data['locality_id'])
             ->where('property_name', $data['property_name'])
+            ->where('plot_no', $data['plot_no'])
             ->first();
 
-        if ($existing && $existing->trashed()) {
+        if ($existing) {
             // $existing->restore();
             return $existing;
         }

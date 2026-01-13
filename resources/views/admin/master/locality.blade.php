@@ -254,6 +254,7 @@
         });
 
         $('#importBtn').on('click', function() {
+            showLoader();
             let formData = new FormData($('#LocalityImportForm')[0]);
             $.ajax({
                 url: "{{ route('import.locality') }}",
@@ -262,10 +263,12 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
+                    hideLoader();
                     toastr.success(response.message);
                     window.location.reload();
                 },
                 error: function(err) {
+                    hideLoader();
                     toastr.error(err.responseJSON.message);
                 }
             });

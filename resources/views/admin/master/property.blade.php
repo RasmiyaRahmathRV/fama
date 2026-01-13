@@ -252,6 +252,9 @@
         });
 
         $('#importBtn').on('click', function() {
+
+            showLoader();
+
             let formData = new FormData($('#PropertyImportForm')[0]);
             $.ajax({
                 url: "{{ route('import.property') }}",
@@ -268,11 +271,13 @@
 
                     // // Reset form
                     // $('#PropertyImportForm')[0].reset();
+                    hideLoader();
                     toastr.success(response.message);
 
                     window.location.reload();
                 },
                 error: function(err) {
+                    hideLoader();
                     toastr.error(err.responseJSON.message);
                 }
             });

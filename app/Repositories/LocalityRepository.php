@@ -91,7 +91,7 @@ class LocalityRepository
             ->where('locality_name', $data['locality_name'])
             ->first();
 
-        if ($existing && $existing->trashed()) {
+        if ($existing) {
             // $existing->restore();
             return $existing;
         }

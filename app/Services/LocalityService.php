@@ -179,15 +179,21 @@ class LocalityService
                 }
             }
 
-            $insertData[] = [
-                // 'company_id' => $area->company_id,
-                'area_id' => $area->id,
-                'locality_code' => $this->setLocalityCode($key + 1),
-                'locality_name' => $row['locality'],
-                'created_at' => now(),
-                'updated_at' => now(),
-                'added_by' => $user_id,
-            ];
+            $localityExist = $this->checkIfExist(array('area_id' => $area->id, 'locality_name' => $row['locality']));
+
+
+            if ($localityExist == null) {
+
+                $insertData[] = [
+                    // 'company_id' => $area->company_id,
+                    'area_id' => $area->id,
+                    'locality_code' => $this->setLocalityCode($key + 1),
+                    'locality_name' => $row['locality'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'added_by' => $user_id,
+                ];
+            }
         }
 
         $this->localityRepository->insertBulk($insertData);
