@@ -292,6 +292,19 @@
 
                     <!-- /.col -->
                 </div> --}}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            {{-- <div class="card-header bg-gradient-info">
+                                <h3 class="card-title text-white">Property Locations</h3>
+                            </div> --}}
+                            <div class="card-body p-0">
+                                <div id="map" style="width: 100%; height: 500px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <!-- /.container-fluid -->
         </div>
@@ -310,6 +323,9 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 
 
     <script>
@@ -514,203 +530,56 @@
                 });
             }
         });
-        // $(function() {
-        //     'use strict'
+    </script>
+    <script>
+        // Plain JavaScript array of properties
+        var properties = [
+            @foreach ($properties as $prop)
+                @if ($prop->latitude && $prop->longitude)
+                    {
+                        name: "{{ addslashes($prop->property_name) }}",
+                        address: "{{ addslashes($prop->address ?? '') }}",
+                        lat: {{ $prop->latitude }},
+                        lng: {{ $prop->longitude }}
+                    },
+                @endif
+            @endforeach
+        ];
 
-        //     var ticksStyle = {
-        //         fontColor: '#495057',
-        //         fontStyle: 'bold'
-        //     }
+        // Default center
+        var mapCenter = properties.length > 0 ? [properties[0].lat, properties[0].lng] : [0, 0];
 
-        //     var mode = 'index'
-        //     var intersect = false
+        var map = L.map('map').setView(mapCenter, 10);
 
-        //     // Investment Chart
-        //     var $investmentChart = $('#investment-chart')
-        //     if ($investmentChart.length) {
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
 
-        //         if (window.investmentChart) window.investmentChart.destroy()
+        console.log(properties);
 
-        //         window.investmentChart = new Chart($investmentChart, {
-        //             type: 'bar',
-        //             data: {
-        //                 labels: {!! json_encode($labels) !!},
-        //                 datasets: [{
-        //                         type: 'bar',
-        //                         label: 'Investment Amount (AED)',
-        //                         data: {!! json_encode($amounts) !!},
-        //                         backgroundColor: '#007bff',
-        //                         borderColor: '#007bff',
-        //                         borderWidth: 1,
-        //                         yAxisID: 'y',
-        //                         maxBarThickness: 40,
-        //                         borderRadius: 6
-        //                     },
-        //                     {
-        //                         type: 'line',
-        //                         label: 'No. of Investments',
-        //                         data: {!! json_encode($counts) !!},
-        //                         borderColor: '#dc3545',
-        //                         backgroundColor: 'rgba(220,53,69,0.2)',
-        //                         fill: false,
-        //                         tension: 0.3,
-        //                         yAxisID: 'y1',
-        //                         pointBackgroundColor: '#dc3545',
-        //                         pointBorderColor: '#fff',
-        //                         pointRadius: 5
-        //                     }
-        //                 ]
-        //             },
-        //             options: {
-        //                 maintainAspectRatio: false,
-        //                 responsive: true,
-        //                 tooltips: {
-        //                     mode: mode,
-        //                     intersect: intersect
-        //                 },
-        //                 hover: {
-        //                     mode: mode,
-        //                     intersect: intersect
-        //                 },
-        //                 legend: {
-        //                     display: true,
-        //                     position: 'top'
-        //                 },
-        //                 scales: {
-        //                     yAxes: [{
-        //                         type: 'linear',
-        //                         display: true,
-        //                         position: 'left',
-        //                         ticks: $.extend({
-        //                             beginAtZero: true,
-        //                             // stepSize: 1000,
-        //                             // suggestedMax: Math.ceil(Math.max(...
-        //                             //         {!! json_encode($amounts) !!}) / 2000) *
-        //                             //     2000,
-        //                             callback: function(value) {
-        //                                 return 'AED ' + value;
-        //                             }
-        //                         }, ticksStyle),
-        //                         scaleLabel: {
-        //                             display: true,
-        //                             labelString: 'Investment Amount (AED)'
-        //                         },
-        //                         gridLines: {
-        //                             display: true,
-        //                             lineWidth: 2,
-        //                             color: 'rgba(0,0,0,.1)',
-        //                             zeroLineColor: 'transparent'
-        //                         }
-        //                     }],
 
-        //                     yAxesRight: [{
-        //                         type: 'linear',
-        //                         display: true,
-        //                         position: 'right',
-        //                         ticks: $.extend({
-        //                             beginAtZero: true,
-        //                             suggestedMax: Math.max(...{!! json_encode($counts) !!}) *
-        //                                 1.5
-        //                         }, ticksStyle),
-        //                         scaleLabel: {
-        //                             display: true,
-        //                             labelString: 'No. of Investments'
-        //                         },
-        //                         gridLines: {
-        //                             drawOnChartArea: false
-        //                         }
-        //                     }],
-        //                     xAxes: [{
-        //                         display: true,
-        //                         ticks: $.extend({
-        //                             autoSkip: false,
-        //                             maxRotation: 45,
-        //                             minRotation: 0
-        //                         }, ticksStyle),
-        //                         gridLines: {
-        //                             display: false
-        //                         }
-        //                     }]
-        //                 }
-        //             }
-        //         })
-        //     }
+        properties.forEach(function(prop) {
+            L.marker([prop.lat, prop.lng])
+                .addTo(map)
+                .bindTooltip("<b>" + prop.name + "</b><br>" + prop.address, {
+                    permanent: false,
+                    direction: "top",
+                    opacity: 0.9
+                }).openTooltip();
+        });
+        // properties.forEach(function(prop) {
+        //     var marker = L.marker([prop.lat, prop.lng]).addTo(map);
 
-        //     // Inventory Chart
-        //     var $inventoryChart = $('#inventory-chart')
-        //     if ($inventoryChart.length) {
+        //     var popupContent = `<b>${prop.name}</b><br>${prop.address ?? ''}`;
+        //     marker.bindPopup(popupContent);
 
-        //         if (window.inventoryChart) window.inventoryChart.destroy()
+        //     marker.on('mouseover', function() {
+        //         this.openPopup();
+        //     });
 
-        //         window.inventoryChart = new Chart($inventoryChart, {
-        //             type: 'bar',
-        //             data: {
-        //                 labels: {!! json_encode($companyNames) !!},
-        //                 datasets: [{
-        //                         label: 'DF Units',
-        //                         data: {!! json_encode($dfUnits) !!},
-        //                         backgroundColor: '#007bff',
-        //                         maxBarThickness: 40,
-        //                         borderRadius: 6
-        //                     },
-        //                     {
-        //                         label: 'FF Units',
-        //                         data: {!! json_encode($ffUnits) !!},
-        //                         backgroundColor: '#dc3545',
-        //                         maxBarThickness: 40,
-        //                         borderRadius: 6
-        //                     }
-        //                 ]
-        //             },
-        //             options: {
-        //                 maintainAspectRatio: false,
-        //                 responsive: true,
-        //                 tooltips: {
-        //                     mode: mode,
-        //                     intersect: intersect,
-        //                     callbacks: {
-        //                         label: function(context) {
-        //                             return context.dataset.label + ': ' + context.raw + ' units';
-        //                         }
-        //                     }
-        //                 },
-        //                 legend: {
-        //                     display: true,
-        //                     position: 'top'
-        //                 },
-        //                 scales: {
-        //                     yAxes: [{
-        //                         beginAtZero: true,
-        //                         ticks: $.extend({
-        //                             beginAtZero: true
-        //                         }, ticksStyle),
-        //                         scaleLabel: {
-        //                             display: true,
-        //                             labelString: 'Number of Units'
-        //                         },
-        //                         gridLines: {
-        //                             color: 'rgba(200,200,200,0.2)',
-        //                             borderDash: [3, 3]
-        //                         }
-        //                     }],
-        //                     xAxes: [{
-        //                         ticks: $.extend({
-        //                             autoSkip: false,
-        //                             maxRotation: 45,
-        //                             minRotation: 0
-        //                         }, ticksStyle),
-        //                         scaleLabel: {
-        //                             display: true,
-        //                             labelString: 'Companies'
-        //                         },
-        //                         gridLines: {
-        //                             display: false
-        //                         }
-        //                     }]
-        //                 }
-        //             }
-        //         })
-        //     }
-        // })
+        //     marker.on('mouseout', function() {
+        //         this.closePopup();
+        //     });
+        // });
     </script>
 @endsection

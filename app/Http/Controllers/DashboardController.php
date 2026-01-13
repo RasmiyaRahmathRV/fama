@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Investment;
 use App\Services\Contracts\ContractService;
 use App\Services\DashboardService;
+use App\Services\PropertyService;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function __construct(
         protected ContractService $contractServ,
-        protected DashboardService $dashboardService
+        protected DashboardService $dashboardService,
+        protected PropertyService $propertService
     ) {}
 
     public function index()
@@ -23,13 +25,15 @@ class DashboardController extends Controller
         $widgets = $this->dashboardService->widgetsData();
         $data = $this->dashboardService->investmentChart();
         $inventoryData = $this->dashboardService->inventoryChart();
+        $properties = $this->propertService->getAll();
         // dd($inventoryData);
+        // dd($properties);
 
         return view('admin.dashboard', array_merge(
-            compact('title', 'renewalCount'),
+            compact('title', 'renewalCount', 'properties'),
             $data,
             $widgets,
-            $inventoryData
+            $inventoryData,
         ));
     }
 }
