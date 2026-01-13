@@ -39,8 +39,8 @@
                             <div class="icon">
                                 <i class="ion ion-folder"></i>
                             </div>
-                            <a href="{{ route('contract.index') }}" class="small-box-footer">More info <i
-                                    class="fas fa-arrow-circle-right"></i></a>
+                            {{-- <a href="{{ route('contract.index') }}" class="small-box-footer">More info <i
+                                    class="fas fa-arrow-circle-right"></i></a> --}}
                         </div>
                     </div>
                     <!-- ./col -->
@@ -56,8 +56,8 @@
                             <div class="icon">
                                 <i class="ion ion-stats-bars"></i>
                             </div>
-                            <a href="{{ route('investor.index') }}" class="small-box-footer">More info <i
-                                    class="fas fa-arrow-circle-right"></i></a>
+                            {{-- <a href="{{ route('investor.index') }}" class="small-box-footer">More info <i
+                                    class="fas fa-arrow-circle-right"></i></a> --}}
                         </div>
                     </div>
                     <!-- ./col -->
@@ -73,8 +73,8 @@
                             <div class="icon">
                                 <i class="ion ion-briefcase"></i>
                             </div>
-                            <a href="{{ route('investment.index') }}" class="small-box-footer">More info <i
-                                    class="fas fa-arrow-circle-right"></i></a>
+                            {{-- <a href="{{ route('investment.index') }}" class="small-box-footer">More info <i
+                                    class="fas fa-arrow-circle-right"></i></a> --}}
                         </div>
                     </div>
                     <!-- ./col -->
@@ -88,9 +88,9 @@
                             <div class="icon">
                                 <i class="ion ion-arrow-graph-up-right"></i>
                             </div>
-                            <a href="#" class="small-box-footer">
+                            {{-- <a href="#" class="small-box-footer">
                                 More info <i class="fas fa-arrow-circle-right"></i>
-                            </a>
+                            </a> --}}
                         </div>
                     </div>
 
@@ -113,11 +113,11 @@
                                         <span>Total Units</span>
                                     </p>
                                     <p class="ml-auto d-flex flex-column text-right">
-                                        @if ($trend === 'up')
+                                        @if ($arrow === 'up')
                                             <span class="text-success">
                                                 <i class="fas fa-arrow-up"></i> {{ $percentChange }}%
                                             </span>
-                                        @elseif($trend === 'down')
+                                        @elseif($arrow === 'down')
                                             <span class="text-danger">
                                                 <i class="fas fa-arrow-down"></i> {{ abs($percentChange) }}%
                                             </span>

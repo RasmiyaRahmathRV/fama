@@ -167,7 +167,7 @@ class DashboardService
             ? round(($difference / $lastMonthUnits) * 100, 2)
             : 100;
 
-        $trend = $difference > 0
+        $arrow = $difference > 0
             ? 'up'
             : ($difference < 0 ? 'down' : 'same');
 
@@ -181,7 +181,7 @@ class DashboardService
             'lastMonthUnits',
             'difference',
             'percentChange',
-            'trend'
+            'arrow'
         );
     }
 }
