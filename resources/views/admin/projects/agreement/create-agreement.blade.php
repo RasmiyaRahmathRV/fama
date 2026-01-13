@@ -879,7 +879,6 @@
 
 
         function contractChange() {
-            removeTenant();
 
             // alert("called");
             if (editedUnit) {
@@ -888,6 +887,8 @@
                     e.preventDefault();
                 });
 
+            } else {
+                removeTenant();
             }
             const contractId = $('#contract_id').val();
 
