@@ -17,13 +17,15 @@ class Kernel extends ConsoleKernel
         // $schedule->command('profit:update-monthly-pending')
         //     ->monthlyOn(1, '00:05')
         //     ->withoutOverlapping();
-        $schedule->command('profit:update-monthly-pending')->dailyAt('10:46')->withoutOverlapping()->before(function () {
-            \Log::info('profit:update-monthly-pending command started');
-        })
+        $schedule->command('profit:update-monthly-pending')
+            ->dailyAt('11:00')
+            ->withoutOverlapping()
+            ->before(function () {
+                \Log::info('profit:update-monthly-pending command started');
+            })
             ->after(function () {
                 \Log::info('profit:update-monthly-pending command finished');
-            });;
-        \Log::info('profit:update-monthly-pending command finished');
+            });
     }
 
     /**
