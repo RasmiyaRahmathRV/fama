@@ -13,7 +13,16 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('app:expire-agreements')->daily();
+        $schedule->command('app:expire-agreements')
+            ->everyMinute() // Runs every day at midnight
+            ->withoutOverlapping()
+            ->before(function () {
+                \Log::info('app:expire-agreements command started');
+            })
+            ->after(function () {
+                \Log::info('app:expire-agreements command finished');
+            });
+
         // $schedule->command('profit:update-monthly-pending')
         //     ->monthlyOn(1, '00:05')
         //     ->withoutOverlapping();
