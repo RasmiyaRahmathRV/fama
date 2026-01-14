@@ -16,6 +16,7 @@ use App\Models\InvestorPayout;
 use App\Models\PaymentMode;
 use App\Models\Property;
 use App\Models\Vendor;
+use App\Repositories\Agreement\AgreementRepository;
 use App\Repositories\Contracts\ContractRepository;
 use App\Repositories\Investment\InvestmentReferralRepository;
 use App\Repositories\Investment\InvestmentRepository;
@@ -378,13 +379,18 @@ function statusCount($status)
 }
 function getAgreementExpiringCounts()
 {
-    $today = Carbon::today();
-    $oneMonthLater = Carbon::today()->addMonth(1)->format('Y-m-d');
+    // $today = Carbon::today();
+    // $oneMonthLater = Carbon::today()->addMonth(1)->format('Y-m-d');
 
 
-    $expiredCount = Agreement::where('agreement_status', "=", 0)
-        ->where('end_date', '<=', $oneMonthLater)
-        ->count();
+    // $expiredCount = Agreement::where('agreement_status', [0, 2])
+    //     ->where('end_date', '<=', $oneMonthLater)
+    //     ->count();
+    // dd($expiredCount);
+    $repo = app(AgreementRepository::class);
+    $expired = $repo->getExpired();
+    $expiredCount = $expired->count();
+    // dd($expiredCount);
 
     return $expiredCount;
 }
