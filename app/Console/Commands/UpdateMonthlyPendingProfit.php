@@ -13,55 +13,7 @@ class UpdateMonthlyPendingProfit extends Command
     protected $signature = 'profit:update-monthly-pending';
     protected $description = 'Update current month pending profit release for all investments';
 
-    // public function handle()
-    // {
-    //     $currentMonth = Carbon::now()->startOfMonth();
-    //     $day = now()->day;
 
-    //     Investment::with('profitInterval')
-    //         ->where('investment_status', 1)
-    //         ->where('terminate_status', '!=', 2)
-    //         ->chunkById(100, function ($investments) use ($currentMonth, $day) {
-
-    //             foreach ($investments as $investment) {
-
-    //                 if (!$investment->profitInterval) continue;
-
-    //                 // $inBatch = false;
-    //                 // $batchId = $investment->payout_batch_id;
-
-    //                 // if ($batchId == 1 && $day >= 1 && $day <= 10) $inBatch = true;
-    //                 // if ($batchId == 2 && $day >= 11 && $day <= 20) $inBatch = true;
-    //                 // if ($batchId == 3 && $day >= 21 && $day <= 31) $inBatch = true;
-
-    //                 // if (!$inBatch) continue;
-
-    //                 $monthsGap = 12 / $investment->profitInterval->no_of_installments;
-
-    //                 $firstRelease = Carbon::parse($investment->next_profit_release_date)->startOfMonth();
-
-
-    //                 // Skip if first release is in the future
-    //                 if ($currentMonth->lt($firstRelease)) continue;
-
-    //                 $monthsDiff = $firstRelease->diffInMonths($currentMonth);
-    //                 // dd($investment->id, $investment->next_profit_release_date, $firstRelease, $currentMonth, $monthsDiff, $monthsGap, $monthsDiff % $monthsGap);
-
-    //                 // Only release if current month matches interval
-    //                 if ($monthsDiff % $monthsGap !== 0) continue;
-
-
-
-    //                 DB::transaction(function () use ($investment, $currentMonth) {
-    //                     $investment->update([
-    //                         'current_month_pending' => $investment->profit_amount_per_interval,
-    //                     ]);
-    //                 });
-    //             }
-    //         });
-
-    //     $this->info('Current month pending profit updated successfully.');
-    // }
 
     public function handle()
     {

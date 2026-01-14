@@ -48,22 +48,26 @@ class DashboardService
             $counts[] = (int) $data->count;
         }
 
-        // Total investment sum
         $totalInvestment = Investment::sum('investment_amount');
-
-        // Total number of investments
         $totalCount = Investment::count();
 
-        // Calculate % change from previous month
-        $lastMonthAmount = $monthlyData->count() >= 2 ? $monthlyData[$monthlyData->count() - 2]->total_amount : 0;
-        $thisMonthAmount = $monthlyData->count() >= 1 ? $monthlyData[$monthlyData->count() - 1]->total_amount : 0;
+        $percentageChange = 0;
+        $arrowUp = true;
+        // dd($monthlyData);
+        // dd($monthlyData->count());
 
-        $percentageChange = $lastMonthAmount > 0
-            ? round((($thisMonthAmount - $lastMonthAmount) / $lastMonthAmount) * 100, 2)
-            : 0;
+        if ($monthlyData->count() >= 2) {
+            $lastMonth = $monthlyData[$monthlyData->count() - 2]->total_amount;
+            $thisMonth = $monthlyData[$monthlyData->count() - 1]->total_amount;
+            // dd($thisMonth, $lastMonth);
+            // $test = ($thisMonth / $lastMonth) * 100;
+            // dd($test);
 
-        // Determine arrow up or down
-        $arrowUp = $percentageChange >= 0;
+            if ($lastMonth > 0) {
+                $percentageChange = round((($thisMonth - $lastMonth) / $lastMonth) * 100, 2);
+                $arrowUp = $percentageChange >= 0;
+            }
+        }
 
         return compact('labels', 'amounts', 'counts', 'totalInvestment', 'totalCount', 'percentageChange', 'arrowUp');
     }
@@ -163,7 +167,7 @@ class DashboardService
             ? round(($difference / $lastMonthUnits) * 100, 2)
             : 100;
 
-        $trend = $difference > 0
+        $arrow = $difference > 0
             ? 'up'
             : ($difference < 0 ? 'down' : 'same');
 
@@ -177,7 +181,7 @@ class DashboardService
             'lastMonthUnits',
             'difference',
             'percentChange',
-            'trend'
+            'arrow'
         );
     }
 }

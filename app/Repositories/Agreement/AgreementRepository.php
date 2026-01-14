@@ -332,7 +332,8 @@ class AgreementRepository
             ->join('agreement_tenants', 'agreement_tenants.agreement_id', '=', 'agreements.id')
             ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id')
             ->join('contract_units', 'contract_units.contract_id', '=', 'contracts.id')
-            ->where('agreement_status', "=", 0)
+            // ->where('agreement_status', "=", 0)
+            ->whereIn('agreement_status', [0, 2])
             ->where('end_date', '<=', $oneMonthsLater);
 
         // $get = $query->get();

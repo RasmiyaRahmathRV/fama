@@ -13,17 +13,37 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('agreements:expire')->daily();
+        $schedule->command('app:expire-agreements')
+            ->daily() // Runs every day at midnight
+            ->withoutOverlapping()
+            ->before(function () {
+                \Log::info('app:expire-agreements command started');
+            })
+            ->after(function () {
+                \Log::info('app:expire-agreements command finished');
+            });
+
         // $schedule->command('profit:update-monthly-pending')
         //     ->monthlyOn(1, '00:05')
         //     ->withoutOverlapping();
-        $schedule->command('profit:update-monthly-pending')->everyMinute()->withoutOverlapping()->before(function () {
+        $schedule->command('profit:update-monthly-pending')
+            ->monthlyOn(1, '00:05')
+            ->withoutOverlapping()
+            ->before(function () {
                 \Log::info('profit:update-monthly-pending command started');
             })
             ->after(function () {
                 \Log::info('profit:update-monthly-pending command finished');
-            });;
-        \Log::info('profit:update-monthly-pending command finished');
+            });
+        // $schedule->command('profit:update-monthly-pending')
+        //     ->everyMinute()
+        //     ->withoutOverlapping()
+        //     ->before(function () {
+        //         \Log::info('profit:update-monthly-pending command started');
+        //     })
+        //     ->after(function () {
+        //         \Log::info('profit:update-monthly-pending command finished');
+        //     });
     }
 
     /**
