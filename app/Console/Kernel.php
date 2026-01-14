@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('profit:update-monthly-pending')
         //     ->monthlyOn(1, '00:05')
         //     ->withoutOverlapping();
-        $schedule->command('profit:update-monthly-pending')->dailyAt('10:20')->withoutOverlapping()->before(function () {
+        $schedule->command('profit:update-monthly-pending')->dailyAt('10:35')->withoutOverlapping()->before(function () {
             \Log::info('profit:update-monthly-pending command started');
         })
             ->after(function () {
