@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('app:expire-agreements')
-            ->everyMinute() // Runs every day at midnight
+            ->daily() // Runs every day at midnight
             ->withoutOverlapping()
             ->before(function () {
                 \Log::info('app:expire-agreements command started');
