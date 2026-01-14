@@ -18,7 +18,7 @@ class Kernel extends ConsoleKernel
         //     ->monthlyOn(1, '00:05')
         //     ->withoutOverlapping();
         $schedule->command('profit:update-monthly-pending')
-            ->everyMinute()
+            ->monthlyOn(1, '00:05')
             ->withoutOverlapping()
             ->before(function () {
                 \Log::info('profit:update-monthly-pending command started');
@@ -26,6 +26,15 @@ class Kernel extends ConsoleKernel
             ->after(function () {
                 \Log::info('profit:update-monthly-pending command finished');
             });
+        // $schedule->command('profit:update-monthly-pending')
+        //     ->everyMinute()
+        //     ->withoutOverlapping()
+        //     ->before(function () {
+        //         \Log::info('profit:update-monthly-pending command started');
+        //     })
+        //     ->after(function () {
+        //         \Log::info('profit:update-monthly-pending command finished');
+        //     });
     }
 
     /**
