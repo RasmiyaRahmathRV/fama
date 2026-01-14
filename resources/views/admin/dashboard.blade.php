@@ -323,8 +323,8 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+
 
 
 
@@ -531,55 +531,89 @@
             }
         });
     </script>
+
     <script>
-        // Plain JavaScript array of properties
-        var properties = [
-            @foreach ($properties as $prop)
-                @if ($prop->latitude && $prop->longitude)
-                    {
-                        name: "{{ addslashes($prop->property_name) }}",
-                        address: "{{ addslashes($prop->address ?? '') }}",
-                        lat: {{ $prop->latitude }},
-                        lng: {{ $prop->longitude }}
-                    },
-                @endif
-            @endforeach
-        ];
+        function initMap() {
 
-        // Default center
-        var mapCenter = properties.length > 0 ? [properties[0].lat, properties[0].lng] : [0, 0];
+            const properties = [
+                @foreach ($properties as $prop)
+                    @if ($prop->latitude && $prop->longitude)
+                        {
+                            name: "{{ addslashes($prop->property_name) }}",
+                            address: "{{ addslashes($prop->address ?? '') }}",
+                            lat: {{ $prop->latitude }},
+                            lng: {{ $prop->longitude }}
+                        },
+                    @endif
+                @endforeach
+            ];
 
-        var map = L.map('map').setView(mapCenter, 10);
+            // Default center
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 10,
+                center: properties.length ? {
+                    lat: properties[0].lat,
+                    lng: properties[0].lng
+                } : {
+                    lat: 25.2048,
+                    lng: 55.2708
+                } // fallback Dubai
+            });
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+            const bounds = new google.maps.LatLngBounds();
 
-        console.log(properties);
+            properties.forEach(p => {
+                const position = {
+                    lat: p.lat,
+                    lng: p.lng
+                };
 
+                const marker = new google.maps.Marker({
+                    position,
+                    map,
+                    title: p.name
+                });
 
-        properties.forEach(function(prop) {
-            L.marker([prop.lat, prop.lng])
-                .addTo(map)
-                .bindTooltip("<b>" + prop.name + "</b><br>" + prop.address, {
-                    permanent: false,
-                    direction: "top",
-                    opacity: 0.9
-                }).openTooltip();
-        });
-        // properties.forEach(function(prop) {
-        //     var marker = L.marker([prop.lat, prop.lng]).addTo(map);
+                bounds.extend(position);
 
-        //     var popupContent = `<b>${prop.name}</b><br>${prop.address ?? ''}`;
-        //     marker.bindPopup(popupContent);
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `<b>${p.name}</b>`
+                });
+                marker.addListener('click', () => {
+                    infoWindow.open(map, marker);
 
-        //     marker.on('mouseover', function() {
-        //         this.openPopup();
-        //     });
+                    google.maps.event.addListenerOnce(infoWindow, 'domready', function() {
+                        const iw = document.querySelector('.gm-style-iw');
+                        if (iw) {
+                            const btn = iw.querySelector('button[aria-label="Close"]');
+                            if (btn) btn.style.display = 'none';
+                        }
+                    });
+                });
 
-        //     marker.on('mouseout', function() {
-        //         this.closePopup();
-        //     });
-        // });
+                marker.addListener('mouseover', () => {
+                    infoWindow.open(map, marker);
+                    google.maps.event.addListenerOnce(infoWindow, 'domready', function() {
+                        const iw = document.querySelector('.gm-style-iw');
+                        if (iw) {
+                            const btn = iw.querySelector('button[aria-label="Close"]');
+                            if (btn) btn.style.display = 'none';
+                        }
+                    });
+                });
+
+                marker.addListener('mouseout', () => {
+                    infoWindow.close();
+                });
+
+            });
+
+            // Auto-fit map to all markers
+            if (properties.length) {
+                map.fitBounds(bounds);
+            }
+        }
     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD46-CF9pTGIQpnKNkvc1eeZwBH2pQ70qQ&callback=initMap" async
+        defer></script>
 @endsection
