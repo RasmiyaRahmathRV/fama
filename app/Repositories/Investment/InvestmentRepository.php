@@ -139,4 +139,9 @@ class InvestmentRepository
             'investmentReceivedPayments'
         ])->findOrFail($id);
     }
+
+    public function getActiveInvestmentByInvestment($investorid)
+    {
+        return Investment::where(array('investor_id' => $investorid, 'investment_status' => 1))->get();
+    }
 }

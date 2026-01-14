@@ -60,12 +60,12 @@ class InvestorPaymentDistributionRepository
         $query = InvestorPayout::query()
             ->with([
                 'investor:id,investor_code,investor_name,investor_mobile,payment_mode_id',
-                'investment:id,investment_code,next_profit_release_date,next_referral_commission_release_date,terminate_status'
+                'investment:id,investment_code,next_profit_release_date,next_referral_commission_release_date,terminate_status,termination_date'
             ])
             ->whereColumn('investor_payouts.payout_amount', '>', 'investor_payouts.amount_paid')
             ->where('investor_payouts.is_processed', 0)
             ->whereHas('investment', function ($q) use ($nextWeek, $filters) {
-                $q->where('terminate_status', '!=', 2);
+                // $q->where('terminate_status', '!=', 2);
 
                 if (empty($filters['filter'])) {
                     $q->where(function ($dateQuery) use ($nextWeek) {
@@ -85,8 +85,8 @@ class InvestorPaymentDistributionRepository
                             // 🔹 PRINCIPAL RETURN (termination requested)
                             ->orWhere(function ($principal) use ($nextWeek) {
                                 $principal->where('terminate_status', 1)
-                                    ->whereNotNull('next_profit_release_date')
-                                    ->whereDate('next_profit_release_date', '<=', $nextWeek);
+                                    ->whereNotNull('termination_date')
+                                    ->whereDate('termination_date', '<=', $nextWeek);
                             });
                     });
                 }

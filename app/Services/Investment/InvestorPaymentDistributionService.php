@@ -102,6 +102,7 @@ class InvestorPaymentDistributionService
                     1 => '<span class="badge badge-success">Profit</span>',
                     2 => '<span class="badge badge-info">Commission</span>',
                     3 => '<span class="badge badge-warning">Principal</span>',
+                    4 => '<span class="badge badge-secondary">Pending Profit</span>',
                     default => '-',
                 };
             })

@@ -4,6 +4,15 @@
 @endphp
 
 <script>
+    document.getElementById('stepperForm').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            return false;
+        }
+    });
+</script>
+
+<script>
     // Add a custom :focusable selector
     $.extend($.expr[':'], {
         focusable: function(el) {

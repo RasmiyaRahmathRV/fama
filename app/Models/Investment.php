@@ -143,6 +143,7 @@ class Investment extends Model
         $this->attributes['investment_date'] = Carbon::parse($date)->format('Y-m-d H:i:s');
     }
 
+
     public function setMaturityDate($date)
     {
         $this->attributes['maturity_date'] = Carbon::parse($date)->format('Y-m-d H:i:s');
@@ -241,6 +242,10 @@ class Investment extends Model
     }
 
     public function getNextReferralCommissionReleaseDateAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format('d-m-Y') : null;
+    }
+    public function getTerminationDateAttribute($value)
     {
         return $value ? Carbon::parse($value)->format('d-m-Y') : null;
     }

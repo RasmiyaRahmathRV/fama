@@ -629,6 +629,8 @@ function getPayoutDate($row)
     return match ($row->payout_type) {
         1 => optional($row->investment)->next_profit_release_date,
         2 => optional($row->investment)->next_referral_commission_release_date,
+        3 => optional($row->investment)->termination_date,
+        4 => optional($row->investment)->termination_date,
         default => null,
     };
 }
@@ -675,10 +677,20 @@ function  updateInvestmentOnDistribution($payoutData, $distributedData)
     $investment = $repository->find($investmentId);
 
     $nextCommDate = Carbon::parse($investment->next_referral_commission_release_date)->format('Y-m-d');
-    $profitReleased = 0;
+    $nextProfitRelDate = Carbon::parse($investment->next_profit_release_date)->format('Y-m-d');
+    $lastProfitReleased = Carbon::parse($investment->last_profit_released_date)->format('Y-m-d');
+
+    $profitReleased = $principalReleased = 0;
+
     if ($payoutData->payout_type == 2) {
         $nextCommDate = calculateNextReferralReleaseDate($investment->investmentReferral->referral_commission_frequency_id, $distributedData->paid_date);
+    } elseif ($payoutData->payout_type == 3) {
+        $principalReleased = toNumeric($distributedData->amount_paid);
     } else {
+        if ($payoutData->amount_pending != 0) {
+            $nextProfitRelDate = calculateNextProfitReleaseDate(0, $investment->profit_interval_id, $distributedData->paid_date, $investment->payoutBatch->batch_name);
+        }
+        $lastProfitReleased = Carbon::parse($distributedData->paid_date)->format('Y-m-d');
         $profitReleased = toNumeric($distributedData->amount_paid);
     }
 
@@ -686,11 +698,16 @@ function  updateInvestmentOnDistribution($payoutData, $distributedData)
         'total_profit_released' => toNumeric($investment->total_profit_released) + $profitReleased,
         'current_month_released' => getcurrMonthRelease(date('Y-m'), $investmentId, 1),
         'outstanding_profit' => getOutstangingInvestmentProfit($investmentId, $payoutData->payout_type),
-        'last_profit_released_date' => Carbon::parse($distributedData->paid_date)->format('Y-m-d'),
-        'next_profit_release_date' => calculateNextProfitReleaseDate(0, $investment->profit_interval_id, $distributedData->paid_date, $investment->payoutBatch->batch_name),
+        'last_profit_released_date' => $lastProfitReleased,
+        'next_profit_release_date' => $nextProfitRelDate,
         'next_referral_commission_release_date' => $nextCommDate,
         'updated_by' => auth()->user()->id,
     );
+
+    if ($payoutData->amount_pending == 0) {
+        terminateStatusChange($investmentId);
+    }
+
     return $repository->update($investmentId, $investmentArr);
 }
 
@@ -733,6 +750,10 @@ function investorUpdateOnDistribution($payoutData, $distributedData)
         'total_principal_received' => getcurrMonthRelease(null, null, 3, $investorId),
         'updated_by' => auth()->user()->id,
     );
+
+    if ($payoutData->amount_pending == 0) {
+        terminateInvestorUpdates($investorId);
+    }
     // dd($investorArr);
     return $repository->update($payoutData->investor_id, $investorArr);
 }
@@ -778,4 +799,28 @@ function getOutstangingInvestmentProfit($investmentId, $payoutType)
     }
 
     return $balance;
+}
+
+function terminateStatusChange($investmentId)
+{
+    $data = [
+        'investment_status' => 0,
+        'terminate_status' => 2
+    ];
+    $inv = Investment::find($investmentId);
+    $inv->update($data);
+}
+
+function terminateInvestorUpdates($investorid)
+{
+    $repository = app(InvestmentRepository::class);
+    $activeInvestments = $repository->getActiveInvestmentByInvestment($investorid);
+
+    if ($activeInvestments->count() == 0) {
+        $data['status'] = 0;
+    }
+
+    $inv = Investor::find($investorid);
+    $data['total_terminated_investments'] = $inv->total_terminated_investments + 1;
+    $inv->update($data);
 }

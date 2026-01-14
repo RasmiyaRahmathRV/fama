@@ -267,7 +267,6 @@ class ContractService
                 } else {
                     $type = "-";
                 }
-
                 return "<strong class='text-uppercase'>{$type}</strong>";
             })
             ->addColumn('no_of_units', fn($row) => $row->contract_unit->no_of_units ?? '-')
