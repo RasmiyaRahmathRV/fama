@@ -327,7 +327,8 @@
                 $('#area_select').val(area_id).trigger('change');
                 $('#locality_id').val(id);
                 $('#locality_name').val(name);
-                $('#status').val(status).trigger(change);
+                $('#status').val(status).trigger('change');
+
 
             } else {
                 $('#localityForm').trigger("reset");
