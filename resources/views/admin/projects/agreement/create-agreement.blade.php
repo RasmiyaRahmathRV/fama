@@ -251,10 +251,46 @@
                                                 <div class="form-group row">
 
 
-                                                    <div class="col-md-4">
-                                                        <label class="asterisk">Tenant Address</label>
-                                                        <textarea name="tenant_address" class="form-control" id="tenant_address" required>{{ old('tenant_address', $tenant->tenant_address ?? '') }}</textarea>
+                                                    <div class="col-md-6">
+                                                        <label class="asterisk">Address Line 1<small
+                                                                class="text-muted fonr-weight-lighter">(Flat
+                                                                No,Building)</small></label>
+                                                        <input type="text" class="form-control" id="tenant_address"
+                                                            name="tenant_address" placeholder="Flat No,Building etc"
+                                                            value="{{ old('tenant_address', $tenant->tenant_address ?? '') }}"
+                                                            required>
                                                     </div>
+                                                    <div class="col-md-6">
+                                                        <label class="">Address Line 2<small
+                                                                class="text-muted fonr-weight-lighter">(Street)</small></label>
+                                                        <input type="text" class="form-control" id="tenant_street"
+                                                            name="tenant_street" placeholder="Street"
+                                                            value="{{ old('tenant_street', $tenant->tenant_street ?? '') }}">
+                                                    </div>
+
+
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-md-4">
+                                                        <label for="exampleInputEmail1 ">City</label>
+                                                        <input type="text" class="form-control" id="tenant_city"
+                                                            name="tenant_city" placeholder="Enter City"
+                                                            value="{{ old('tenant_city', $tenant->tenant_city ?? '') }}">
+
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="exampleInputEmail1">Emirate</label>
+                                                        <select class="form-control select2" name="emirate_id"
+                                                            id="emirate_id">
+                                                            <option value="">Select Emirate</option>
+                                                            @foreach ($emirates as $emirate)
+                                                                <option
+                                                                    value="{{ $emirate->id }}"{{ (isset($agreement) || isset($tenant)) && $tenant->emirate_id == $emirate->id ? 'selected' : '' }}>
+                                                                    {{ $emirate->name }} </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
                                                 </div>
 
                                                 <button type="button" class="btn btn-info nextBtn">Next</button>
@@ -852,7 +888,7 @@
                 contractId = renewalContractId;
             }
             if (editedUnit) {
-                $(this).on('select2:opening', function(e) {
+                $(companyId).on('select2:opening', function(e) {
                     e.preventDefault();
                 });
             }
@@ -897,18 +933,18 @@
 
 
         function contractChange() {
+            const contractId = $('#contract_id').val();
 
             // alert("called");
             if (editedUnit) {
                 // $(this).prop('readonly', true);
-                $(this).on('select2:opening', function(e) {
+                $(contractId).on('select2:opening', function(e) {
                     e.preventDefault();
                 });
 
             } else {
                 removeTenant();
             }
-            const contractId = $('#contract_id').val();
 
 
             const errorDiv = $('#paymentError');
