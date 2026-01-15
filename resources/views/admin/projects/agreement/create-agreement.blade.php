@@ -109,7 +109,7 @@
                                                 aria-labelledby="tenant-step-trigger" data-ste="0">
                                                 <div class="form-group row">
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Company</label>
+                                                        <label for="exampleInputEmail1 " class="asterisk">Company</label>
                                                         <select class="form-control select2" name="company_id"
                                                             id="company_id" required>
                                                             <option value="">Select Company</option>
@@ -140,7 +140,7 @@
 
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label>Contract</label>
+                                                        <label class="asterisk">Contract</label>
                                                         <select class="form-control select2" name="contract_id"
                                                             id="contract_id" required>
                                                             {{-- <option value="">Select Project</option>
@@ -157,7 +157,8 @@
 
 
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Tenant Name</label>
+                                                        <label for="exampleInputEmail1 " class="asterisk">Tenant
+                                                            Name</label>
                                                         <input type="text" class="form-control" id="tenant_name"
                                                             name="tenant_name" placeholder="Tenant Name"
                                                             value="{{ old('tenant_name', $tenant->tenant_name ?? '') }}"
@@ -168,8 +169,9 @@
 
 
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Tenant mobile <small
-                                                                class="text-muted fonr-weight-lighter">(e.g., +971501234567
+                                                        <label for="exampleInputEmail1 " class="asterisk">Tenant mobile
+                                                            <small class="text-muted fonr-weight-lighter">(e.g.,
+                                                                +971501234567
                                                                 or 971501234567)</small></label>
                                                         <input type="text" class="form-control" id="tenant_mobile"
                                                             name="tenant_mobile" placeholder="Tenant mobile"
@@ -180,7 +182,8 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Tenant email</label>
+                                                        <label for="exampleInputEmail1 " class="asterisk">Tenant
+                                                            email</label>
                                                         <input type="email" class="form-control" id="tenant_email"
                                                             name="tenant_email" placeholder="Tenant email"
                                                             value="{{ old('tenant_email', $tenant->tenant_email ?? '') }}"
@@ -191,7 +194,8 @@
                                                     </div>
                                                     {{-- @dump($tenant->nationality_id); --}}
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Nationality</label>
+                                                        <label for="exampleInputEmail1"
+                                                            class="asterisk">Nationality</label>
                                                         <select class="form-control select2" name="nationality_id"
                                                             id="nationality_id" required>
                                                             <option value="">Select Nationality</option>
@@ -210,7 +214,8 @@
 
 
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Contact person</label>
+                                                        <label for="exampleInputEmail1 " class="asterisk">Contact
+                                                            person</label>
                                                         <input type="text" class="form-control" id="contact_person"
                                                             name="contact_person" placeholder="Contact Person"
                                                             value="{{ old('contact_person', $tenant->contact_person ?? '') }}"
@@ -218,7 +223,8 @@
 
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Contact email</label>
+                                                        <label for="exampleInputEmail1 " class="asterisk">Contact
+                                                            email</label>
                                                         <input type="email" class="form-control " id="contact_email"
                                                             name="contact_email" placeholder="Contact email"
                                                             value="{{ old('contact_email', $tenant->contact_email ?? '') }}"
@@ -228,8 +234,9 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1">Contact Number <small
-                                                                class="text-muted fonr-weight-lighter">(e.g., +971501234567
+                                                        <label for="exampleInputEmail1 " class="asterisk">Contact Number
+                                                            <small class="text-muted fonr-weight-lighter">(e.g.,
+                                                                +971501234567
                                                                 or 971501234567)</small> </label>
                                                         <input type="text" class="form-control" id="contact_number"
                                                             name="contact_number" placeholder="Contact number"
@@ -245,7 +252,7 @@
 
 
                                                     <div class="col-md-4">
-                                                        <label>Tenant Address</label>
+                                                        <label class="asterisk">Tenant Address</label>
                                                         <textarea name="tenant_address" class="form-control" id="tenant_address" required>{{ old('tenant_address', $tenant->tenant_address ?? '') }}</textarea>
                                                     </div>
                                                 </div>
@@ -375,7 +382,8 @@
                                                                     <div class="row g-3 align-items-end">
 
                                                                         <div class="col-sm-3">
-                                                                            <label class="form-label">Unit Type</label>
+                                                                            <label class="form-label asterisk">Unit
+                                                                                Type</label>
                                                                             <input type="hidden"
                                                                                 name="unit_detail[0][unit_id]"
                                                                                 value="">
@@ -385,7 +393,7 @@
                                                                         </div>
 
                                                                         <div class="col-sm-3">
-                                                                            <label class="form-label">Select Unit
+                                                                            <label class="form-label asterisk">Select Unit
                                                                                 No</label>
                                                                             <select class="form-control  unit_type0"
                                                                                 name="unit_detail[0][contract_unit_details_id]"
@@ -393,13 +401,14 @@
                                                                         </div>
 
                                                                         <div class="col-sm-3 subunit_number_div">
-                                                                            <label class="form-label">Sub Unit</label>
+                                                                            <label class="form-label ">Sub
+                                                                                Unit</label>
                                                                             <select class="form-control sub_unit_type"
                                                                                 name="unit_detail[0][contract_subunit_details_id]"></select>
                                                                         </div>
 
                                                                         <div class="col-sm-3">
-                                                                            <label class="form-label">Rent per
+                                                                            <label class="form-label asterisk">Rent per
                                                                                 Month</label>
                                                                             <input type="text"
                                                                                 class="form-control rent_per_month"
@@ -465,7 +474,8 @@
                                                 @else
                                                     <div class="form-group row">
                                                         <div class="col-md-4">
-                                                            <label for="exampleInputEmail1">Start Date</label>
+                                                            <label for="exampleInputEmail1" class="asterisk">Start
+                                                                Date</label>
                                                             <div class="input-group date" id="startdate"
                                                                 data-target-input="nearest">
                                                                 <input type="text"
@@ -481,13 +491,15 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <label for="exampleInputEmail1">Duration in Months</label>
+                                                            <label for="exampleInputEmail1" class="asterisk">Duration in
+                                                                Months</label>
                                                             <input type="number" class="form-control"
                                                                 id="duration_months" name="duration_in_months"
                                                                 placeholder="Duration in Months" value="">
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <label for="exampleInputEmail1">End Date</label>
+                                                            <label for="exampleInputEmail1" class="asterisk">End
+                                                                Date</label>
                                                             <div class="input-group date" id="enddate"
                                                                 data-target-input="nearest">
                                                                 <input type="text"
@@ -512,7 +524,8 @@
                                                 aria-labelledby="payment-step-trigger" data-step='4'>
                                                 <div class="form-group row">
                                                     <div class="col-md-3">
-                                                        <label for="exampleInputEmail1">No. of Installments</label>
+                                                        <label for="exampleInputEmail1" class="asterisk">No. of
+                                                            Installments</label>
                                                         <select class="form-control select2" name="installment_id"
                                                             id="no_of_installments">
                                                             <option value="">Select</option>
@@ -527,17 +540,19 @@
                                                             id="no_of_installments"> --}}
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <label for="exampleInputEmail1">Interval</label>
+                                                        <label for="exampleInputEmail1" class="asterisk">Interval</label>
                                                         <input type="text" class="form-control" id="interval"
                                                             name="interval" placeholder="Interval">
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <label for="exampleInputEmail1">Beneficiary</label>
+                                                        <label for="exampleInputEmail1"
+                                                            class="asterisk">Beneficiary</label>
                                                         <input type="text" class="form-control" id="beneficiary"
                                                             name="beneficiary" placeholder="Beneficiary">
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <label for="exampleInputEmail1">Total Rent Per Annum</label>
+                                                        <label for="exampleInputEmail1" class="asterisk">Total Rent Per
+                                                            Annum</label>
                                                         <input type="text" class="form-control" id="total_rent_annum"
                                                             name="total_rent_per_annum" placeholder=""
                                                             value="{{ isset($agreement) ? $agreement->agreement_payment->total_rent_annum : '' }}"
@@ -773,8 +788,11 @@
                     .hide()
                     .find('input, select')
                     .prop('disabled', true);
+                addClassAsterisk('#bank' + i);
+                addClassAsterisk('#chq' + i);
             } else if (payment_mode == '2') { // Bank Transfer
                 $('#bank' + i).show().find('input, select').prop('disabled', false).prop('required', true);
+                addClassAsterisk('#bank' + i);
                 $('#chq' + i).hide().find('input, select').prop('disabled', true);
                 $('#chqot' + i).hide().find('input, select').prop('disabled', true);
                 $('#chqot' + i + ', #chqotiss' + i + ', #chqiss' + i)
@@ -1352,6 +1370,8 @@
                 }
                 $('.sub_unit_type').html(options).trigger('change');
                 $('.sub_unit_type').prop('required', true);
+                const $label = $('.sub_unit_type').siblings('label');
+                $label.addClass('asterisk');
 
 
                 // subUnitChange(subunitId, editedUnit);
@@ -2331,7 +2351,7 @@
 
                                 <div class="form-group row">
                                     <div class="col-md-4">
-                                        <label>Payment Mode</label>
+                                        <label class="asterisk">Payment Mode</label>
                                         <select class="form-control " name="payment_detail[${i}][payment_mode_id]" id="payment_mode${i}" required>
                                             <option value="">Select</option>
                                             @foreach ($paymentmodes as $paymentmode)
@@ -2341,7 +2361,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-4">
-                                        <label>Payment Date</label>
+                                        <label class="asterisk">Payment Date</label>
                                         <div class="input-group date" id="otherPaymentDate${i}" data-target-input="nearest">
                                             <input type="text" class="form-control datetimepicker-input otherPaymentDate"
                                                 name="payment_detail[${i}][payment_date]" id="payment_date${i}" value="${receivableDate}"
@@ -2352,7 +2372,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <label>Payment Amount</label>
+                                        <label class="asterisk">Payment Amount</label>
                                         <input type="text" class="form-control" id="payment_amount_${i}" name="payment_detail[${i}][payment_amount]" value="${existingValue}" placeholder="Payment Amount">
                                     </div>
                                 </div>
@@ -2848,6 +2868,12 @@
             $('#contact_number').val('');
             $('#contact_email').val('');
             $('#tenant_address').val('');
+        }
+    </script>
+    <script>
+        function addClassAsterisk(inputSelector) {
+            const label = $(inputSelector).find('label');
+            label.addClass('asterisk');
         }
     </script>
 @endsection
