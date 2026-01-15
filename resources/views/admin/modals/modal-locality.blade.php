@@ -42,6 +42,7 @@
                          <div class="form-group row">
                              <label for="inputEmail3" class="col-sm-4 col-form-label asterisk">Status</label>
                              <select name="status" id="status" class="col-sm-8 form-control" required>
+                                 <option value="">Select Status</option>
                                  <option value="1" selected>Active</option>
                                  <option value="0">Inactive
                                  </option>
