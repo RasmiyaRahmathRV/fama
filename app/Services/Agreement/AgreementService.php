@@ -98,7 +98,10 @@ class AgreementService
                 'added_by' => $data['added_by'],
                 'contact_person' => $data['contact_person'],
                 'contact_number' => $data['contact_number'],
-                'contact_email' => $data['contact_email']
+                'contact_email' => $data['contact_email'],
+                'tenant_street' => $data['tenant_street'],
+                'tenant_city' => $data['tenant_city'],
+                'emirate_id' => $data['emirate_id']
 
             ];
 
@@ -389,7 +392,10 @@ class AgreementService
                 'id' => $data['tenant_id'],
                 'contact_person' => $data['contact_person'],
                 'contact_number' => $data['contact_number'],
-                'contact_email' => $data['contact_email']
+                'contact_email' => $data['contact_email'],
+                'tenant_street' => $data['tenant_street'],
+                'tenant_city' => $data['tenant_city'],
+                'emirate_id' => $data['emirate_id']
             ];
             $this->agreementTenantService->update($tenantData);
 

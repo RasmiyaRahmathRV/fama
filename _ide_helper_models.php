@@ -51,7 +51,7 @@ namespace App\Models{
  * @property int $is_visa_uploaded
  * @property int $is_signed_agreement_uploaded
  * @property int $is_trade_license_uploaded
- * @property int $agreement_status 0-Pending, 1-Processing, 2-Approved, 3-Rejected
+ * @property int $agreement_status 0-Pending, 1-terminated
  * @property string|null $terminated_date
  * @property string|null $terminated_reason
  * @property int|null $terminated_by
@@ -315,6 +315,9 @@ namespace App\Models{
  * @property string $contact_person
  * @property string $contact_number
  * @property string $contact_email
+ * @property string|null $tenant_street
+ * @property string|null $tenant_city
+ * @property string|null $emirate_id
  * @property-read \App\Models\Agreement $agreement
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\Nationality|null $nationality
@@ -330,12 +333,15 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereEmirateId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereNationalityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereTenantAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereTenantCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereTenantEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereTenantMobile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereTenantName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereTenantStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AgreementTenant withTrashed()
@@ -1475,6 +1481,23 @@ namespace App\Models{
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Emirate newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Emirate newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Emirate query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Emirate whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Emirate whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Emirate whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Emirate whereUpdatedAt($value)
+ */
+	class Emirate extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|Industry newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Industry newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Industry query()
@@ -1553,7 +1576,7 @@ namespace App\Models{
  * @property string $outstanding_profit
  * @property int $is_profit_processed 0-No,1-Yes
  * @property string|null $last_profit_released_date
- * @property string $next_profit_release_date
+ * @property string|null $next_profit_release_date
  * @property string|null $next_referral_commission_release_date
  * @property string|null $nominee_name
  * @property string|null $nominee_email
@@ -1742,6 +1765,8 @@ namespace App\Models{
  * @property int $investor_referror_id
  * @property string $referral_commission_perc
  * @property string $referral_commission_amount
+ * @property string $referral_commission_released_amount
+ * @property string $referral_commission_pending_amount
  * @property int $referral_commission_frequency_id
  * @property int $referral_commission_status 0-not released,1-released,2-partially released
  * @property string|null $last_referral_commission_released_date
@@ -1776,7 +1801,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereLastReferralCommissionReleasedDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionFrequencyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionPendingAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionPerc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionReleasedAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereReferralCommissionStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereTotalCommissionPending($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestmentReferral whereTotalCommissionReleased($value)
@@ -1957,9 +1984,33 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property int $message_setting_id
+ * @property int $investor_id
+ * @property int|null $investment_id
+ * @property string $investor_mobile
+ * @property string $investor_message_body
+ * @property int $send_status
+ * @property string $api_return
+ * @property int $send_by
+ * @property string $send_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage query()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereApiReturn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereInvestmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereInvestorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereInvestorMessageBody($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereInvestorMobile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereMessageSettingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereSendAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereSendBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereSendStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorMessage whereUpdatedAt($value)
  */
 	class InvestorMessage extends \Eloquent {}
 }
@@ -2125,9 +2176,21 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property int $message_type 1-invitation, 2- profit release
+ * @property string $message_body
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting query()
+ * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting whereMessageBody($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting whereMessageType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MessageSetting whereUpdatedAt($value)
  */
 	class MessageSetting extends \Eloquent {}
 }

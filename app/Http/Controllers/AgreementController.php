@@ -6,6 +6,7 @@ use App\Exports\AgreementExport;
 use App\Models\Agreement;
 use App\Models\Bank;
 use App\Models\ContractType;
+use App\Models\Emirate;
 use App\Models\Installment;
 use App\Models\PaymentMode;
 use App\Models\TenantIdentity;
@@ -60,12 +61,13 @@ class AgreementController extends Controller
         $banks = $this->bankService->getAll();
         $nationalities = $this->nationalityService->getAll();
         $contractTypes = ContractType::all();
+        $emirates = Emirate::all();
 
 
         // dd($contractTypes);
 
         // dd($contracts);
-        return view('admin.projects.agreement.create-agreement', compact('companies', 'contracts', 'installments', 'unitTypes', 'tenantIdentities', 'paymentmodes', 'banks', 'nationalities', 'contractTypes'));
+        return view('admin.projects.agreement.create-agreement', compact('companies', 'contracts', 'installments', 'unitTypes', 'tenantIdentities', 'paymentmodes', 'banks', 'nationalities', 'contractTypes', 'emirates'));
     }
     public function store(Request $request)
     {
@@ -118,6 +120,7 @@ class AgreementController extends Controller
         $unitTypeList = $agreement->getVacantunitTypes();
         $vacantData = $agreement->getVacantUnits();
         $tenant = $agreement->tenant;
+        $emirates = Emirate::all();
         // dd($unitTypeList);
 
         return view('admin.projects.agreement.create-agreement', compact(
@@ -134,7 +137,8 @@ class AgreementController extends Controller
             'fullContracts',
             'unitTypeList',
             'vacantData',
-            'tenant'
+            'tenant',
+            'emirates'
         ));
     }
     public function update(Request $request, $id)

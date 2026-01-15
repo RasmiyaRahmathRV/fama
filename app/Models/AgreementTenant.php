@@ -36,7 +36,10 @@ class AgreementTenant extends Model
         'deleted_by',
         'contact_person',
         'contact_number',
-        'contact_email'
+        'contact_email',
+        'tenant_street',
+        'tenant_city',
+        'emirate_id'
     ];
 
     /**
