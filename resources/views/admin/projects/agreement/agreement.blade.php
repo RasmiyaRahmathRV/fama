@@ -133,7 +133,7 @@
                             <div class="modal-body">
                                 <div class="card-body">
                                     <div class="form-group row">
-                                        <label for="exampleInputEmail1">Date</label>
+                                        <label for="exampleInputEmail1" class="asterisk">Date</label>
                                         <div class="input-group date" id="terminationdate" data-target-input="nearest">
                                             <input type="text" name="terminated_date"
                                                 class="form-control datetimepicker-input" data-target="#terminationdate"
@@ -145,7 +145,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="inputEmail3" class="col-form-label">Reason</label>
+                                        <label for="inputEmail3" class="col-form-label asterisk">Reason</label>
                                         <textarea name="terminated_reason" id="" class="form-control"></textarea>
                                     </div>
                                     <input type="hidden" name="agreement_id" id="agreement_id">

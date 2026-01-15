@@ -645,7 +645,7 @@
                     <div class="modal-body">
                         <div class="card-body">
                             <div class="form-group row">
-                                <label for="inputEmail3" class="col-form-label">Upload Invoice File</label>
+                                <label for="inputEmail3" class="col-form-label asterisk">Upload Invoice File</label>
                                 <input type="file" name="invoice_path" id="" class="form-control"
                                     accept=".pdf,.jpg,.jpeg,.png" required>
                                 <div class="invalid-feedback"></div>
