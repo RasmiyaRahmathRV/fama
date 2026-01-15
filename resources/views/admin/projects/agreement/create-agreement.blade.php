@@ -1733,9 +1733,9 @@
 
                             let installmentBlocks = `
                                 <div class="row font-weight-bold mb-2">
-                                    <div class="col-md-4">Payment Mode</div>
-                                    <div class="col-md-4">Payment Date</div>
-                                    <div class="col-md-4">Payment Amount</div>
+                                    <div class="col-md-4 asterisk">Payment Mode</div>
+                                    <div class="col-md-4 asterisk">Payment Date</div>
+                                    <div class="col-md-4 asterisk">Payment Amount</div>
                                 </div>
                             `;
 
@@ -1975,9 +1975,9 @@
 
                             let installmentBlocks = `
                                         <div class="row font-weight-bold mb-2">
-                                            <div class="col-md-4">Payment Mode</div>
-                                            <div class="col-md-4">Payment Date</div>
-                                            <div class="col-md-4">Payment Amount</div>
+                                            <div class="col-md-4 asterisk">Payment Mode</div>
+                                            <div class="col-md-4 asterisk">Payment Date</div>
+                                            <div class="col-md-4 asterisk">Payment Amount</div>
                                         </div>
                                     `;
 
@@ -2607,10 +2607,13 @@
             if (payment_mode == '3') { // Cheque
                 $(`#chq_${uniqueId}`).show().find('input, select').prop('disabled', false).prop('required', true);
                 $(`#bank_${uniqueId}`).show().find('input, select').prop('disabled', false).prop('required', true);
+                addClassAsterisk(`#chq_${uniqueId}`);
+                addClassAsterisk(`#bank_${uniqueId}`);
             } else if (payment_mode == '2') { // Bank Transfer
                 // alert("called");
                 $(`#bank_${uniqueId}`).show().find('input, select').prop('disabled', false).prop('required', true);
                 $(`#chq_${uniqueId}`).hide().find('input, select').prop('disabled', true);
+                addClassAsterisk(`#bank_${uniqueId}`);
             } else { // Cash or others
                 $(`#bank_${uniqueId}`).hide().find('input, select').prop('disabled', true).prop('required', false);
                 $(`#chq_${uniqueId}`).hide().find('input, select').prop('disabled', true).prop('required', false);

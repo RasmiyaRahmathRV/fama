@@ -51,7 +51,7 @@
                     <div class="row g-3 align-items-end">
                         <!-- Unit Type -->
                         <div class="col-md-3">
-                            <label class="form-label">Unit Type</label>
+                            <label class="form-label asterisk">Unit Type</label>
                             <select class="form-control unit_type_select" name="unit_detail[${index}][unit_type_id]" required>
                                 // <option value="">Select Unit Type</option>
                                 // @foreach ($unitTypeList as $ut)
@@ -63,7 +63,7 @@
 
                         <!-- Unit Number -->
                         <div class="col-md-3">
-                            <label class="form-label">Select Unit No</label>
+                            <label class="form-label asterisk">Select Unit No</label>
                             <select class="form-control unit_no_select" name="unit_detail[${index}][contract_unit_details_id]" required>
                                 <option value="">Select Unit Number</option>
                             </select>
@@ -77,7 +77,7 @@
 
                         <!-- Rent per Month -->
                         <div class="col-md-2">
-                            <label class="form-label">Rent per Month</label>
+                            <label class="form-label asterisk">Rent per Month</label>
                             <input type="text" class="form-control rent_per_month" name="unit_detail[${index}][rent_per_month]" readonly>
                         </div>
 
@@ -208,9 +208,9 @@
 
         let installmentBlocks = `
         <div class="row font-weight-bold mb-2">
-            <div class="col-md-4">Payment Mode</div>
-            <div class="col-md-4">Payment Date</div>
-            <div class="col-md-4">Payment Amount</div>
+            <div class="col-md-4 asterisk">Payment Mode</div>
+            <div class="col-md-4 asterisk">Payment Date</div>
+            <div class="col-md-4 asterisk">Payment Amount</div>
         </div>
     `;
 
