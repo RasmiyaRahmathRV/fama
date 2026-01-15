@@ -63,7 +63,7 @@
                         value="{{ $unitDetail->id }}" class="agreement_unit_id">
                     <!-- Unit Type -->
                     <div class="col-md-3">
-                        <label class="form-label">Unit Type</label>
+                        <label class="form-label asterisk">Unit Type</label>
                         <select class="form-control unit_type_select"
                             name="unit_detail[{{ $unitkey }}][unit_type_id]" required>
                             <option value="">Select Unit Type</option>
@@ -78,7 +78,7 @@
 
                     <!-- Unit Number -->
                     <div class="col-md-3">
-                        <label class="form-label">Select Unit No</label>
+                        <label class="form-label asterisk">Select Unit No</label>
                         <select class="form-control unit_no_select"
                             name="unit_detail[{{ $unitkey }}][contract_unit_details_id]" required>
                             <option value="">Select Unit Number</option>
@@ -125,7 +125,7 @@
 
                     <!-- Rent per Month -->
                     <div class="@if ($businessType == 1) col-md-2 @else col-md-3 @endif">
-                        <label class="form-label">Rent per Month</label>
+                        <label class="form-label asterisk">Rent per Month</label>
                         <input type="text" class="form-control rent_per_month"
                             name="unit_detail[{{ $unitkey }}][rent_per_month]"
                             value="{{ $unitDetail->rent_per_month }}" readonly>

@@ -1124,6 +1124,12 @@
             defaultStart = moment($('#start_date').val(), "DD-MM-YYYY");
             defaultEnd = moment($('#end_date').val(), "DD-MM-YYYY");
             defaultDuration = $("#duration_months").val();
+
+            // 15/01/2026
+            $('#start_date').prop('readonly', true);
+            $('#end_date').prop('readonly', true);
+
+
             // console.log('Default values set:', defaultStart, defaultEnd, defaultDuration);
 
 
@@ -2220,7 +2226,7 @@
                             <input type="hidden" name="payment_detail[${i}][id]" value="${pay.id || ''}">
                             <div class="form-group row">
                                 <div class="col-md-4">
-                                    <label>Payment Mode</label>
+                                    <label class="asterisk">Payment Mode</label>
                                     <select class="form-control " name="payment_detail[${i}][payment_mode_id]" id="payment_mode${i}" required>
                                         <option value="">Select</option>
                                         @foreach ($paymentmodes as $paymentmode)
@@ -2232,7 +2238,7 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label>Payment Date</label>
+                                    <label class="asterisk">Payment Date</label>
                                     <div class="input-group date" id="otherPaymentDate${i}" data-target-input="nearest">
                                         <input type="text" class="form-control datetimepicker-input otherPaymentDate"
                                             name="payment_detail[${i}][payment_date]" id="payment_date${i}"
@@ -2244,7 +2250,7 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label>Payment Amount</label>
+                                    <label class="asterisk">Payment Amount</label>
                                     <input type="text" class="form-control" id="payment_amount_${i}" name="payment_detail[${i}][payment_amount]" value="${pay.payment_amount || ''}" placeholder="Payment Amount" />
                                 </div>
                             </div>
