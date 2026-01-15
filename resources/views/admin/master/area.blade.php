@@ -150,7 +150,7 @@
                 // $('#company_id').prop('disabled', true);
                 $('#area_id').val(id);
                 $('#area_name').val(name);
-                $('#status').val(status).trigger(change);
+                $('#status').val(status).trigger('change');
             }
         });
 
