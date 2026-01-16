@@ -42,6 +42,11 @@ class DistributeReportExport implements FromCollection, WithHeadings
             if (!empty($filter['date_To'])) {
                 $todate = $filter['date_To'];
             }
+            if (!empty($filter['investment_id'])) {
+                $query->whereHas('investorPayout.investment', function ($q) use ($filter) {
+                    $q->where('id', $filter['investment_id']);
+                });
+            }
         }
 
         $query->whereBetween('investor_payment_distributions.paid_date', [

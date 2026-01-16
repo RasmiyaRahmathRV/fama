@@ -106,6 +106,14 @@
                                                 Details</a>
                                         </li>
                                     @endif
+                                    <li class="nav-item"><a class="nav-link" href="#payout_released"
+                                            data-toggle="tab">Payout
+                                            Released</a>
+                                    </li>
+                                    <li class="nav-item"><a class="nav-link" href="#payout_pending" data-toggle="tab">Payout
+                                            Pending</a>
+                                    </li>
+
 
                                 </ul>
                             </div><!-- /.card-header -->
@@ -143,6 +151,27 @@
                                         </div>
                                     @endif
                                     <!-- /.tab-pane -->
+
+                                    <div class="tab-pane" id="payout_released">
+                                        @include(
+                                            'admin.investment.investment.partials.view-payout-released',
+                                            [
+                                                // 'received' => $investment->investmentReceivedPayments,
+                                                // 'investment' => $investment,
+                                                'investment_id' => $investment->id,
+                                            ]
+                                        )
+                                    </div>
+                                    <div class="tab-pane" id="payout_pending">
+                                        @include(
+                                            'admin.investment.investment.partials.view-payout-pending',
+                                            [
+                                                // 'received' => $investment->investmentReceivedPayments,
+                                                // 'investment' => $investment,
+                                                'investment_id' => $investment->id,
+                                            ]
+                                        )
+                                    </div>
 
                                     <!-- /.tab-pane -->
                                 </div>
@@ -227,6 +256,131 @@
                     $('#pendingInvestmentForm button[type="submit"]').attr('disabled', false);
                 }
             });
+        });
+    </script>
+    <script>
+        $('#dateFrom').datetimepicker({
+            format: 'DD-MM-YYYY'
+        });
+
+        $('#dateTo').datetimepicker({
+            format: 'DD-MM-YYYY'
+        });
+    </script>
+    <script>
+        $(function() {
+            let table = $('#payoutPendingTable').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+
+                ajax: {
+                    url: "{{ route('distributed.list') }}",
+                    data: function(d) {
+                        d.date_From = $('#date_From').val();
+                        d.date_To = $('#date_To').val();
+                        d.investment_id = $('#report_investment_id').val();
+                    }
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'id',
+                        orderable: true,
+                        searchable: false
+                    },
+                    {
+                        data: 'investor_name',
+                        name: 'investor_name',
+                    },
+                    {
+                        data: 'paid_date',
+                        name: 'paid_date',
+                    },
+                    {
+                        data: 'payout_type',
+                        name: 'payout_type',
+                    },
+                    {
+                        data: 'amount_paid',
+                        name: 'amount_paid',
+                    },
+                    {
+                        data: 'payment_mode',
+                        name: 'payment_mode',
+                    },
+                ],
+                rowCallback: function(row, data, index) {
+                    // Example: Highlight pending payments
+                    console.log(data.has_returned);
+                    if (data.has_returned === 1) {
+                        console.log(data.has_returned);
+                        $(row).css('background-color', '#ffe1e1'); // light red
+                    }
+
+                },
+                order: [
+                    [0, 'desc']
+                ],
+                dom: 'Bfrtip', // This is important for buttons
+                buttons: [{
+                    extend: 'excelHtml5',
+                    text: 'Export Excel',
+                    title: 'Contract Data',
+                    action: function(e, dt, node, config) {
+                        // redirect to your Laravel export route
+                        let searchValue = dt.search();
+
+                        let params = dt.ajax.params();
+
+                        // add your custom filters manually (important)
+                        params.date_From = $('#date_From').val();
+                        params.date_To = $('#date_To').val();
+                        params.investment_id = $('#report_investment_id').val();
+                        params.search = dt.search();
+
+                        // build query string
+                        let queryString = $.param(params);
+
+                        let url = "{{ route('payout.report.export') }}?" + queryString;
+
+                        window.location.href = url;
+                    }
+                }]
+            });
+
+            // Filter buttons
+            $('.filter-btn').on('click', function() {
+                let filterValue = $(this).data('filter');
+
+                // Reset ALL buttons
+                $('.filter-btn').each(function() {
+                    let solidClass = $(this).attr('add-class'); // btn-warning
+                    let outlineClass = solidClass ? 'btn-outline-' + solidClass.replace('btn-',
+                        '') : '';
+
+                    if (solidClass) {
+                        $(this).removeClass(solidClass).addClass(outlineClass);
+                    }
+                });
+
+                // Apply ACTIVE state to clicked button
+                let solidClass = $(this).attr('add-class'); // e.g. btn-warning
+                let outlineClass = solidClass ? 'btn-outline-' + solidClass.replace('btn-', '') : '';
+
+
+                if (solidClass) {
+                    $(this).removeClass(outlineClass).addClass(solidClass);
+                }
+
+                // Apply DataTable search column filter (status = column index 1)
+                table.column(2).search(filterValue).draw();
+            });
+
+            $('.searchbtnchq').on('click', function(e) {
+                e.preventDefault();
+                table.ajax.reload();
+            });
+
         });
     </script>
 @endsection

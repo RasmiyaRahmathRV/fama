@@ -84,6 +84,7 @@ class InvestorPaymentDistributionController extends Controller
 
     public function getDistributedList(Request $request)
     {
+        // dd($request->all());
 
         if ($request->ajax()) {
             $filterData = [];
@@ -91,6 +92,7 @@ class InvestorPaymentDistributionController extends Controller
                 $filterData = array(
                     'date_From' => dateFormatChange($request->date_From, 'Y-m-d'),
                     'date_To' => dateFormatChange($request->date_To, 'Y-m-d'),
+                    'investment_id' => $request->investment_id
                 );
             }
 
@@ -128,6 +130,7 @@ class InvestorPaymentDistributionController extends Controller
             $filters = array(
                 'date_From' => dateFormatChange(request('date_From'), 'Y-m-d'),
                 'date_To' => dateFormatChange(request('date_To'), 'Y-m-d'),
+                'investment_id' => request('investment_id')
             );
         }
 
