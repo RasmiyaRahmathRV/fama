@@ -40,7 +40,7 @@
 
         <section class="content">
             <div class="container-fluid">
-                <h5 class="mb-2">Info Box</h5>
+                {{-- <h5 class="mb-2">Info Box</h5> --}}
                 <div class="row">
 
                     <div class="col-md-3 col-sm-6 col-12">

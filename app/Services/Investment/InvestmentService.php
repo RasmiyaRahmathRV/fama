@@ -521,7 +521,7 @@ class InvestmentService
                         </a>';
                     }
 
-                    if (Gate::allows('investment.delete') && $row->is_profit_processed == 0) {
+                    if (Gate::allows('investment.delete') && $row->is_profit_processed == 0 && $row->terminate_status == 0) {
                         $action .= '<button
                             class="btn btn-sm btn-danger m-1"
                             title="Delete Investment"
@@ -554,7 +554,7 @@ class InvestmentService
                                     <i class="fas fa-file-signature"></i>
                                 </button>
                             ';
-                    } elseif (Gate::allows('investment.terminate') && ($row->terminate_status == 0)) {
+                    } elseif (Gate::allows('investment.terminate') && ($row->terminate_status == 0) && ($row->is_profit_processed == 1)) {
                         $action .= '
                             <button class="btn btn-sm btn-danger m-1 openTerminationModal"
                                 data-id="' . $row->id . '"
