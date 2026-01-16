@@ -284,6 +284,27 @@
         });
 
         $("#modal-property").on('shown.bs.modal', function(e) {
+
+
+            // $(this).find('.select2').select2({
+            //     width: '100%',
+            //     dropdownParent: $('#modal-property'),
+            //     placeholder: 'Select'
+            // });
+
+            const $modal = $(this);
+
+            $modal.find('.select2').each(function() {
+                if ($(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2('destroy');
+                }
+
+                $(this).select2({
+                    width: '100%',
+                    dropdownParent: $modal,
+                    placeholder: $(this).data('placeholder'),
+                });
+            });
             document.activeElement.blur();
             var id = $(e.relatedTarget).data('id');
             var name = $(e.relatedTarget).data('name');
