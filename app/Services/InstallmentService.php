@@ -157,6 +157,8 @@ class InstallmentService
             //     }
             // }
 
+            if ($row['installment'] == null) return;
+
             $bankexist = $this->installmentRepository->checkIfExist(array('installment_name' => $row['installment'], 'interval' => $row['interval']));  //, 'company_id' => $company_id
 
             if (empty($bankexist)) {

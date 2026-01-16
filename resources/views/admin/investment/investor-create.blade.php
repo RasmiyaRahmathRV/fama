@@ -419,7 +419,11 @@
 
 
 
-            if (!isValid) return;
+            if (!isValid) {
+                toastr.error('Please fill all required fields before submitting.');
+                return;
+            }
+
 
             submitForm(); // everything passed
 
