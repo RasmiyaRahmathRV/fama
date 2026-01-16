@@ -554,7 +554,7 @@ class InvestmentService
                                     <i class="fas fa-file-signature"></i>
                                 </button>
                             ';
-                    } elseif (Gate::allows('investment.terminate')) {
+                    } elseif (Gate::allows('investment.terminate') && ($row->terminate_status == 0)) {
                         $action .= '
                             <button class="btn btn-sm btn-danger m-1 openTerminationModal"
                                 data-id="' . $row->id . '"
