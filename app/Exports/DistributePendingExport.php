@@ -82,6 +82,11 @@ class DistributePendingExport implements FromCollection, WithHeadings
             if ($filters['investor_id']) {
                 $query->where('investor_payouts.investor_id', $filters['investor_id']);
             }
+            if (!empty($filters['investment_id'])) {
+                $query->whereHas('investment', function ($q) use ($filters) {
+                    $q->where('id', $filters['investment_id']);
+                });
+            }
         }
 
         $query->orderBy('investor_payouts.id');

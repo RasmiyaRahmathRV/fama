@@ -80,7 +80,7 @@
                                                 </select>
                                             </div>
                                             <!-- </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="form-group"> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="form-group"> -->
                                             <div class="col-md-1 float-right">
                                                 <button type="button" class="btn btn-info searchbtnchq">Search</button>
                                             </div>
@@ -95,7 +95,7 @@
                                         <!-- <h3 class="card-title">Property Details</h3> -->
                                         <span class="float-right">
                                             <!-- <button class="btn btn-info float-right m-1" data-toggle="modal"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                data-target="#modal-Property">Add Investor Payout</button> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    data-target="#modal-Property">Add Investor Payout</button> -->
                                             <button class="btn btn-success float-right m-1 bulktriggerbtn"
                                                 data-toggle="modal" data-target="#modal-payout"
                                                 data-clear-type="bulk">Payout All</button>
@@ -166,7 +166,7 @@
 
 
             <div class="modal fade" id="modal-payout">
-                <<div class="modal-dialog">
+                <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header bg-info">
                             <h4 class="modal-title">Investor Payouts</h4>
@@ -248,10 +248,11 @@
                         </form>
                     </div>
                     <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
             </div>
             <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal-dialog -->
+        </section>
     </div>
 @endsection
 
