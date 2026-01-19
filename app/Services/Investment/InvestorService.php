@@ -148,14 +148,21 @@ class InvestorService
     {
         $validator = Validator::make($data, [
             'investor_name' => 'required',
-            'investor_mobile' => 'required|numeric',
+            'investor_mobile' => [
+                'required',
+                'numeric',
+                'regex:/^[1-9][0-9]{9,14}$/'
+            ],
             'investor_email' => 'required',
             'nationality_id' => 'required',
             'id_number' => 'required',
             'payment_mode_id' => 'required',
             'investor_address' => 'required',
             'payout_batch_id' => 'required',
-            'country_of_residence' => 'required',
+            'address_line2' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'country_id' => 'required',
         ], [
             'id_number.required' => 'Emirates ID/Other ID id required',
             'payment_mode_id.required' => 'Payment Mode required'
@@ -192,7 +199,23 @@ class InvestorService
                 $name = $row->investor_name ?? '-';
                 $email = $row->investor_email ?? '-';
                 $phone = $row->investor_mobile ?? '-';
-                $address = $row->investor_address ?? '-';
+
+                $address = $row->investor_address;
+                if (!empty($row->address_line2)) {
+                    $address .= ', ' . $row->address_line2;
+                }
+                if (!empty($row->city)) {
+                    $address .= ', ' . $row->city;
+                }
+                if (!empty($row->country_id)) {
+                    $address .= ', ' . $row->country?->nationality_name;
+                }
+                if (!empty($row->postal_code)) {
+                    $address .= ' - ' . $row->postal_code;
+                }
+
+
+                $address = $address ?? '-';
 
                 return "<strong class='text-capitalize'>{$name}</strong><p class='mb-0 text-primary'>{$email}</p>
             <p class='text-muted small'><i class='fa fa-phone-alt text-danger'></i> <span class='font-weight-bold'>{$phone}</span> </p><p class='text-muted small'><i class='fas fa-home text-danger'></i> <span class='font-weight-bold'>{$address}</span></p>";

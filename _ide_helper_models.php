@@ -1850,6 +1850,12 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property string $total_principal_received
  * @property int $investor_relation_id
+ * @property string|null $address_line2
+ * @property string $city
+ * @property string $state
+ * @property string|null $postal_code
+ * @property string $country_id
+ * @property-read \App\Models\Nationality|null $country
  * @property-read \App\Models\Nationality|null $countryOfResidence
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\InvestorBank> $investorBanks
@@ -1866,6 +1872,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Investor newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Investor onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Investor query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Investor whereAddressLine2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investor whereCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investor whereCountryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereCountryOfResidence($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereCreatedBy($value)
@@ -1887,8 +1896,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Investor wherePassportNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor wherePaymentModeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor wherePayoutBatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investor wherePostalCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereProfitReleaseDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereReferralId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Investor whereState($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereTotalInvestedAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Investor whereTotalNoOfInvestments($value)
@@ -1920,6 +1931,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property int $banking_region 1-local, 2-international
  * @property-read \App\Models\User|null $deletedBy
  * @property-read \App\Models\Investor|null $investor
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorBank newModelQuery()
@@ -1927,6 +1939,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorBank onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorBank query()
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorBank whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorBank whereBankingRegion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorBank whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorBank whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorBank whereDeletedBy($value)

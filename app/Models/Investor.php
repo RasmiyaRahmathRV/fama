@@ -41,7 +41,12 @@ class Investor extends Model
         'updated_by',
         'deleted_by',
         'total_principal_received',
-        'investor_relation_id'
+        'investor_relation_id',
+        'address_line2',
+        'city',
+        'state',
+        'postal_code',
+        'country_id',
     ];
 
     public function nationality()
@@ -52,6 +57,11 @@ class Investor extends Model
     public function countryOfResidence()
     {
         return $this->belongsTo(Nationality::class, 'country_of_residence', 'id');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Nationality::class, 'country_id', 'id');
     }
 
     public function paymentMode()

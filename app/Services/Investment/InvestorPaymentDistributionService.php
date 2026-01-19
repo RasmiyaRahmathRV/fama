@@ -60,6 +60,7 @@ class InvestorPaymentDistributionService
         $columns = [
             ['data' => 'checkbox', 'name' => 'checkbox'],
             ['data' => 'investor_name', 'name' => 'investor.investor_name'],
+            ['data' => 'investment_code', 'name' => 'investment.investment_code'],
             ['data' => 'payout_date', 'name' => 'payout_date'],
             ['data' => 'payout_type', 'name' => 'payout_type'],
             ['data' => 'payout_amount', 'name' => 'amount_pending'],
@@ -84,15 +85,18 @@ class InvestorPaymentDistributionService
                 if (!$investor) return '-';
 
                 return "
+                <a href='" . route('investor.show', $investor->id) . "' target='_blank'>
             <strong class='text-capitalize'>{$investor->investor_name}</strong>
             <p class='mb-0 text-primary'>{$investor->investor_email}</p>
             <p class='text-muted small'>
                 <i class='fa fa-phone-alt text-danger'></i>
                 <span class='font-weight-bold'>{$investor->investor_mobile}</span>
             </p>
+            </a>
         ";
             })
 
+            ->addColumn('investment_code', fn($row) => ($row->investment->investment_code) ? "<a href='" . route('investment.show', $row->investment->id) . "' target='_blank'>" . $row->investment->investment_code . "</a>" : '-')
             ->addColumn('payout_date', function ($row) {
                 return getPayoutDate($row);
             })
@@ -137,7 +141,7 @@ class InvestorPaymentDistributionService
                                 Pay now</a>';
             })
 
-            ->rawColumns(['investor_name', 'payout_type', 'action', 'checkbox'])
+            ->rawColumns(['investor_name', 'payout_type', 'action', 'checkbox', 'investment_code'])
             ->with(['columns' => $columns])
             ->toJson();
     }

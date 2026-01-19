@@ -22,6 +22,7 @@ class InvestorBank extends Model
         'added_by',
         'updated_by',
         'deleted_by',
+        'banking_region'
     ];
 
     public function investor()
