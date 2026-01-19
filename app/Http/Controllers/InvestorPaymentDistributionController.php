@@ -40,11 +40,12 @@ class InvestorPaymentDistributionController extends Controller
 
         if ($request->ajax()) {
             $filterData = [];
-            if ($request->month || $request->batch_id || $request->investor_id) {
+            if ($request->month || $request->batch_id || $request->investor_id || $request->investment_id) {
                 $filterData = array(
                     'month' => $request->month,
                     'batch_id' => $request->batch_id,
                     'investor_id' => $request->investor_id,
+                    'investment_id' => $request->investment_id
                 );
             }
 
@@ -110,11 +111,12 @@ class InvestorPaymentDistributionController extends Controller
     {
         $filters = [];
 
-        if (request('month') || request('batch_id') || request('investor_id')) {
+        if (request('month') || request('batch_id') || request('investor_id') || request('investment_id')) {
             $filters = array(
                 'month' => request('month'),
                 'batch_id' => request('batch_id'),
                 'investor_id' => request('investor_id'),
+                'investment_id' => request('investment_id')
             );
         }
 

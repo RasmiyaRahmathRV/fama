@@ -44,7 +44,7 @@
 
                         <div class="card">
                             <div class="card-body">
-                                <table id="payoutPendingTable" class="table table-bordered table-hover" width="100%">
+                                <table id="payoutReleasedTable" class="table table-bordered table-hover" width="100%">
                                     <thead>
                                         <tr>
                                             <th>#</th>

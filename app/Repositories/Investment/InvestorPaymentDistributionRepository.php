@@ -113,6 +113,11 @@ class InvestorPaymentDistributionRepository
             if ($filter['investor_id']) {
                 $query->where('investor_payouts.investor_id', $filter['investor_id']);
             }
+            if ($filter['investment_id']) {
+                $query->whereHas('investment', function ($q) use ($filter) {
+                    $q->where('id', $filter['investment_id']);
+                });
+            }
         }
 
         $query->orderBy('investor_payouts.id');

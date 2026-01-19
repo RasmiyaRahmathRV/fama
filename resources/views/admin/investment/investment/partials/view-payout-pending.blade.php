@@ -3,53 +3,63 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
+
+                    <!-- /.card-header -->
                     <div class="card-body">
-                        <input type="hidden" id="report_investment_id" value="{{ $investment_id }}">
-                        <div class="card card-info">
+                        <input type="hidden" id="pending_investment_id" value="{{ $investment_id }}">
+                        {{-- <div class="card card-info">
                             <!-- /.card-header -->
                             <!-- form start -->
                             <form class="form-horizontal">
                                 <div class="form-group row m-4">
-                                    <div class="col-md-2">
-                                        <label for="exampleInputEmail1">From</label>
-                                        <div class="input-group date" id="dateFrom" data-target-input="nearest">
-                                            <input type="text" class="form-control datetimepicker-input"
-                                                data-target="#dateFrom" id="date_From" placeholder="dd-mm-YYYY"
-                                                value="{{ request('from_date', date('01-m-Y')) }}" />
-                                            <div class="input-group-append" data-target="#dateFrom"
-                                                data-toggle="datetimepicker">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-3">
+                                        <label for="inputPassword3">Month</label>
+                                        <select class="form-control select2" name="month" id="month">
+                                            <option value="">Select Month</option>
+                                            <?php for ($m = 1; $m <= 12; ++$m) { ?>
+                                            <option value="{{ $m }}">
+                                                <?= date('F', mktime(0, 0, 0, $m, 1)) ?></option>
+                                            <?php } ?>
+                                        </select>
                                     </div>
-                                    <div class="col-md-2">
-                                        <label for="exampleInputEmail1">To</label>
-                                        <div class="input-group date" id="dateTo" data-target-input="nearest">
-                                            <input type="text" class="form-control datetimepicker-input"
-                                                data-target="#dateTo" id="date_To" placeholder="dd-mm-YYYY"
-                                                value="{{ request('from_date', date('d-m-Y')) }}" />
-                                            <div class="input-group-append" data-target="#dateTo"
-                                                data-toggle="datetimepicker">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-3">
+                                        <label for="inputPassword3">Batch</label>
+                                        <select class="form-control select2" name="batch_id" id="batch_id">
+                                            <option value="">Select Batch</option>
+                                            @foreach ($payoutbatches as $payoutbatch)
+                                                <option value="{{ $payoutbatch->id }}">
+                                                    {{ $payoutbatch->batch_name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
-                                    <div class="col-md-1">
+                                    <div class="col-md-3">
+                                        <label for="inputPassword3">Investor</label>
+                                        <select class="form-control select2" name="investor_id" id="investor_id">
+                                            <option value="">Select Investor</option>
+                                            @foreach ($investors as $investor)
+                                                <option value="{{ $investor->id }}">{{ $investor->investor_name }}
+                                                </option>
+                                            @endforeach
+
+                                        </select>
+                                    </div>
+                                    <!-- </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="form-group"> -->
+                                    <div class="col-md-1 float-right">
                                         <button type="button" class="btn btn-info searchbtnchq">Search</button>
                                     </div>
                                 </div>
+
                             </form>
-                        </div>
+                        </div> --}}
                         <!-- /.card -->
 
                         <div class="card">
+
                             <div class="card-body">
                                 <table id="payoutPendingTable" class="table table-bordered table-hover" width="100%">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>Investor Name</th>
-                                            {{-- <th style="width: 5%">Investment Amount</th> --}}
                                             <th>Payout Date</th>
                                             <th>Payout Type</th>
                                             <th>payout Amount</th>
@@ -73,6 +83,5 @@
         <!-- /.row -->
     </div>
     <!-- /.container-fluid -->
-
 
 </section>

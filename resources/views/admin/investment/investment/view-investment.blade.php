@@ -269,7 +269,7 @@
     </script>
     <script>
         $(function() {
-            let table = $('#payoutPendingTable').DataTable({
+            let table = $('#payoutReleasedTable').DataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
@@ -343,6 +343,124 @@
 
                         let url = "{{ route('payout.report.export') }}?" + queryString;
 
+                        window.location.href = url;
+                    }
+                }]
+            });
+
+            // Filter buttons
+            $('.filter-btn').on('click', function() {
+                let filterValue = $(this).data('filter');
+
+                // Reset ALL buttons
+                $('.filter-btn').each(function() {
+                    let solidClass = $(this).attr('add-class'); // btn-warning
+                    let outlineClass = solidClass ? 'btn-outline-' + solidClass.replace('btn-',
+                        '') : '';
+
+                    if (solidClass) {
+                        $(this).removeClass(solidClass).addClass(outlineClass);
+                    }
+                });
+
+                // Apply ACTIVE state to clicked button
+                let solidClass = $(this).attr('add-class'); // e.g. btn-warning
+                let outlineClass = solidClass ? 'btn-outline-' + solidClass.replace('btn-', '') : '';
+
+
+                if (solidClass) {
+                    $(this).removeClass(outlineClass).addClass(solidClass);
+                }
+
+                // Apply DataTable search column filter (status = column index 1)
+                table.column(2).search(filterValue).draw();
+            });
+
+            $('.searchbtnchq').on('click', function(e) {
+                e.preventDefault();
+                table.ajax.reload();
+            });
+
+        });
+    </script>
+    <script>
+        $(function() {
+            let table = $('#payoutPendingTable').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+
+                ajax: {
+                    url: "{{ route('payout.pending.list') }}",
+                    data: function(d) {
+                        d.month = $('#month').val();
+                        d.batch_id = $('#batch_id').val();
+                        d.investor_id = $('#investor_id').val();
+                        d.investment_id = $('#pending_investment_id').val();
+                    }
+                },
+                columns: [
+
+                    {
+                        data: 'payout_date',
+                        name: 'payout_date',
+                    },
+                    {
+                        data: 'payout_type',
+                        name: 'payout_type',
+                    },
+
+                    {
+                        data: 'payout_amount',
+                        name: 'payout_amount',
+                    },
+                    {
+                        data: 'payment_mode',
+                        name: 'payment_mode',
+                    },
+
+
+                    // {
+                    //     data: 'action',
+                    //     name: 'action',
+                    //     orderable: false,
+                    //     searchable: false
+                    // },
+                ],
+                rowCallback: function(row, data, index) {
+                    // Example: Highlight pending payments
+                    console.log(data.has_returned);
+                    if (data.has_returned === 1) {
+                        console.log(data.has_returned);
+                        $(row).css('background-color', '#ffe1e1');
+                    }
+
+                },
+                order: [
+                    [0, 'desc']
+                ],
+                dom: 'Bfrtip', // This is important for buttons
+                buttons: [{
+                    extend: 'excelHtml5',
+                    text: 'Export Excel',
+                    title: 'Contract Data',
+                    action: function(e, dt, node, config) {
+                        // redirect to your Laravel export route
+                        let searchValue = dt.search();
+
+                        let params = dt.ajax.params();
+
+                        // add your custom filters manually (important)
+                        params.month = $('#month').val();
+                        params.batch_id = $('#batch_id').val();
+                        // params.investor_id = $('#investor_id').val();
+                        params.investment_id = $('#pending_investment_id').val();
+                        params.search = dt.search();
+
+                        // build query string
+                        let queryString = $.param(params);
+
+                        let url = "{{ route('payout.pending.export') }}?" + queryString;
                         window.location.href = url;
                     }
                 }]
