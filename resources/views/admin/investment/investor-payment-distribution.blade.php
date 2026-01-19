@@ -79,12 +79,8 @@
 
                                                 </select>
                                             </div>
-                                            <!-- </div>
-        <<<<<<< HEAD
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="form-group"> -->
-                                            =======
-                                            <div class="form-group"> -->
-                                                >>>>>>> origin/CRM-Fama
+
+                                            <div class="form-group">
                                                 <div class="col-md-1 float-right">
                                                     <button type="button" class="btn btn-info searchbtnchq">Search</button>
                                                 </div>
@@ -99,7 +95,7 @@
                                         <!-- <h3 class="card-title">Property Details</h3> -->
                                         <span class="float-right">
                                             <!-- <button class="btn btn-info float-right m-1" data-toggle="modal"
-                                                                                data-target="#modal-Property">Add Investor Payout</button> -->
+                                                                                            data-target="#modal-Property">Add Investor Payout</button> -->
 
                                             <button class="btn btn-success float-right m-1 bulktriggerbtn"
                                                 data-toggle="modal" data-target="#modal-payout"
