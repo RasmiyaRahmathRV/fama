@@ -285,7 +285,8 @@ class AgreementService
                         'rent_per_month' => $unit['rent_per_month'],
                         'rent_per_annum_agreement' => $rent_annum_agreement,
                         'subunit_ids' => $subunit_ids,
-                        'unit_revenue' => $contractUnitDetail['rent_per_unit_per_annum'],
+                        // 'unit_revenue' => $contractUnitDetail['rent_per_unit_per_annum'],
+                        'unit_revenue' => $rent_annum_agreement
                     ];
 
                     $createdUnit = $this->agreementUnitService->create($unitdata);
@@ -590,7 +591,8 @@ class AgreementService
                         'rent_per_annum_agreement' => $rent_annum_agreement,
                         'id' => $unit['agreement_unit_id'],
                         'subunit_ids' => $subunit_ids,
-                        'unit_revenue' => $contractUnitDetail['rent_per_unit_per_annum'],
+                        // 'unit_revenue' => $contractUnitDetail['rent_per_unit_per_annum'],
+                        'unit_revenue' => $rent_annum_agreement
                     ];
                     // dd($unitdata);
 

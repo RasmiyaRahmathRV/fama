@@ -398,6 +398,8 @@
                                                         'contract_id' => $agreement->contract_id,
                                                         'businessType' =>
                                                             $agreement->contract->contract_unit->business_type,
+                                                        'count' =>
+                                                            $agreement->agreement_payment->installment->installment_name,
                                                     ])
                                                 @else
                                                     <div id="unit_details_container">
@@ -794,7 +796,6 @@
 
 
         function calculatepaymentamount(rent_per_month = 0, payment_count = 0) {
-            // alert("called");
             // clearing the div
             const errorDiv = $('#paymentError');
             errorDiv.html('');
@@ -802,6 +803,7 @@
             $('#submitBtn').prop('disabled', false);
 
             var rentmonth = rent_per_month || 0;
+
             for (let i = 0; i < payment_count; i++) {
                 $('#payment_amount_' + i).val((rentmonth));
             }
@@ -888,7 +890,7 @@
                 contractId = renewalContractId;
             }
             if (editedUnit) {
-                $(companyId).on('select2:opening', function(e) {
+                $('#company_id').on('select2:opening', function(e) {
                     e.preventDefault();
                 });
             }
@@ -938,7 +940,7 @@
             // alert("called");
             if (editedUnit) {
                 // $(this).prop('readonly', true);
-                $(contractId).on('select2:opening', function(e) {
+                $('#contract_id').on('select2:opening', function(e) {
                     e.preventDefault();
                 });
 
@@ -1454,15 +1456,25 @@
             $('.rent_per_month')
                 .val(selectedUnit.rent_per_unit_per_month ?? '')
                 .prop('required', true)
-                .prop('readonly', true);
+                .data('count', count);
+            // .prop('readonly', true);
+
 
             calculatepaymentamount(selectedUnit.rent_per_unit_per_month, count);
+
             if (subunitId) {
                 checkTermination(subunitId, unitId, contractId);
 
             }
 
         }
+        $(document).on('input', '.rent_per_month', function() {
+            const rent_val = $(this).val();
+            const count = $(this).data('count') || 0;
+            calculatepaymentamount(rent_val, count);
+
+
+        });
     </script>
     {{-- end  --}}
     @include('admin.projects.agreement.terminate-js')
@@ -2319,6 +2331,7 @@
 
                         // Initialize Select2 and Datepicker AFTER appending to DOM
                         $(paymentBlock).find('.select2').select2();
+
                         initPaymentValidation(selectedContract.contract_type_id, selectedContract.contract_unit
                             .business_type);
 
@@ -2366,6 +2379,10 @@
                         });
 
                     }
+                    let rentval = $('.rent_per_month').val();
+                    // console.log('rentval', rentval, newInstallments)
+                    calculatepaymentamount(rentval, newInstallments)
+
 
 
 
@@ -2464,6 +2481,9 @@
                         containerPayment.appendChild(paymentBlock);
                         initPaymentValidation(selectedContract.contract_type_id, selectedContract.contract_unit
                             .business_type);
+                        // $('input[name^="payment_detail"][name$="[payment_amount]"]').each(function() {
+                        //     $(this).trigger('input.paymentValidation');
+                        // });
 
 
                         $('#otherPaymentDate' + i).datetimepicker({
@@ -2539,6 +2559,7 @@
                 let val = parseFloat($(this).val()) || 0;
                 totalPayment += val;
             });
+            // console.log(totalRent, totalPayment);
 
             // // Enable or disable submit button
             // if (totalPayment === totalRent && totalRent > 0) {
