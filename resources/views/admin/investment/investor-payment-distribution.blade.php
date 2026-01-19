@@ -80,7 +80,7 @@
                                                 </select>
                                             </div>
                                             <!-- </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="form-group"> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="form-group"> -->
                                             <div class="col-md-1 float-right">
                                                 <button type="button" class="btn btn-info searchbtnchq">Search</button>
                                             </div>
@@ -95,7 +95,7 @@
                                         <!-- <h3 class="card-title">Property Details</h3> -->
                                         <span class="float-right">
                                             <!-- <button class="btn btn-info float-right m-1" data-toggle="modal"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                data-target="#modal-Property">Add Investor Payout</button> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                data-target="#modal-Property">Add Investor Payout</button> -->
                                             <button class="btn btn-success float-right m-1 bulktriggerbtn"
                                                 data-toggle="modal" data-target="#modal-payout"
                                                 data-clear-type="bulk">Payout All</button>
@@ -118,7 +118,7 @@
                                                         </div>
                                                     </th>
                                                     <th>Investor Name</th>
-                                                    {{-- <th style="width: 5%">Investment Amount</th> --}}
+                                                    <th>Investment Code</th>
                                                     <th>Payout Date</th>
                                                     <th>Payout Type</th>
                                                     <th>payout Amount</th>
@@ -420,10 +420,10 @@
                         data: 'investor_name',
                         name: 'investor_name',
                     },
-                    // {
-                    //     data: 'contract_type',
-                    //     name: 'contract_types.contract_type',
-                    // },
+                    {
+                        data: 'investment_code',
+                        name: 'investment.investment_code',
+                    },
                     {
                         data: 'payout_date',
                         name: 'payout_date',

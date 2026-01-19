@@ -60,9 +60,10 @@
                                                 <div class="col-sm-4">
                                                     <label for="inputEmail3" class="asterisk">Investor
                                                         Mobile</label>
-                                                    <input type="number" pattern="^\+[1-9]\d{7,14}$"
+                                                    <input type="number" pattern="[1-9][0-9]{9,14}"
                                                         name="investor[investor_mobile]" id="investor_mobile"
-                                                        class="form-control" id="inputEmail3" placeholder="Investor Mobile"
+                                                        class="form-control" id="inputEmail3"
+                                                        placeholder="CountryCodeMobileNumber (e.g. 971501234567)"
                                                         value="{{ $investor->investor_mobile ?? '' }}" required>
                                                 </div>
                                                 <div class="col-sm-4">
@@ -148,9 +149,19 @@
                                             </div>
                                             <div class="form-group row">
                                                 <div class="col-sm-4">
-                                                    <label for="inputEmail3" class="asterisk">Address</label>
-                                                    <textarea class="form-control" name="investor[investor_address]" id="" required>{{ $investor->investor_address ?? '' }}</textarea>
+                                                    <label for="inputEmail3" class="asterisk">Investor Relation</label>
+                                                    <select class="form-control select2"
+                                                        name="investor[investor_relation_id]" required>
+                                                        <option value="">Select Relation</option>
+                                                        @foreach ($relations as $relation)
+                                                            <option value="{{ $relation->id }}"
+                                                                {{ $investor?->investor_relation_id == $relation->id ? 'selected' : '' }}>
+                                                                {{ $relation->relation_name }}</option>
+                                                        @endforeach
+
+                                                    </select>
                                                 </div>
+
                                                 <div class="col-sm-4">
                                                     <label for="inputEmail3" class="asterisk">Payout
                                                         Batch</label>
@@ -195,18 +206,66 @@
                                                 </div>
                                             </div>
 
+
+                                        </div>
+
+                                        <div class="card card-outline card-info p-4">
+                                            <h4>Investor Address</h4>
+                                            <hr>
+
                                             <div class="form-group row">
                                                 <div class="col-sm-4">
-                                                    <label for="inputEmail3" class="asterisk">Investor Relation</label>
-                                                    <select class="form-control select2"
-                                                        name="investor[investor_relation_id]" required>
-                                                        <option value="">Select Relation</option>
-                                                        @foreach ($relations as $relation)
-                                                            <option value="{{ $relation->id }}"
-                                                                {{ $investor?->investor_relation_id == $relation->id ? 'selected' : '' }}>
-                                                                {{ $relation->relation_name }}</option>
-                                                        @endforeach
+                                                    <label for="inputEmail3" class="asterisk">Address Line 1</label>
+                                                    <input type="text" class="form-control"
+                                                        name="investor[investor_address]"
+                                                        placeholder="Flat no, Buiding name"
+                                                        value="{{ $investor->investor_address ?? '' }}" id=""
+                                                        required>
+                                                </div>
 
+                                                <div class="col-sm-4">
+                                                    <label for="inputEmail3" class="asterisk">Address Line 2</label>
+                                                    <input type="text" class="form-control"
+                                                        name="investor[address_line2]" placeholder="Street"
+                                                        value="{{ $investor->address_line2 ?? '' }}" id=""
+                                                        required>
+                                                </div>
+
+                                                <div class="col-sm-4">
+                                                    <label for="inputEmail3" class="asterisk">City</label>
+                                                    <input type="text" class="form-control" name="investor[city]"
+                                                        value="{{ $investor->city ?? '' }}" placeholder="City"
+                                                        id="" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <div class="col-sm-4">
+                                                    <label for="inputEmail3"
+                                                        class="asterisk">State/Province/Region</label>
+                                                    <input type="text" class="form-control" name="investor[state]"
+                                                        value="{{ $investor->state ?? '' }}" placeholder="State"
+                                                        id="" required>
+                                                </div>
+
+                                                <div class="col-sm-4">
+                                                    <label for="inputEmail3">Postal Code/ZIP Code</label>
+                                                    <input type="text" class="form-control"
+                                                        name="investor[postal_code]" placeholder="Postal Code/ZIP Code"
+                                                        value="{{ $investor->postal_code ?? '' }}" id="">
+                                                </div>
+
+                                                <div class="col-sm-4">
+                                                    <label for="inputEmail3" class="asterisk">Country</label>
+                                                    <select class="form-control select2" name="investor[country_id]"
+                                                        required>
+                                                        <option value="">Select Country</option>
+                                                        @foreach ($nationalities as $nationality)
+                                                            <option value="{{ $nationality->id }}"
+                                                                {{ $nationality->id == $investor?->country_id ? 'selected' : '' }}>
+                                                                {{ $nationality->nationality_name }}
+                                                            </option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>
@@ -218,7 +277,22 @@
 
                                             <input type="hidden" name="investor_bank[bank_id]"
                                                 value="{{ $investor->primaryBank->id ?? '' }}">
+
                                             <div class="form-group row">
+                                                <div class="col-sm-4">
+                                                    <label for="inputEmail3" class="asterisk">Banking Region</label>
+                                                    <select class="form-control select2"
+                                                        name="investor_bank[banking_region]" required>
+                                                        <option value="">Select Region</option>
+                                                        <option value="1"
+                                                            {{ $investor?->primaryBank->banking_region == 1 ? 'selected' : '' }}>
+                                                            Local</option>
+                                                        <option value="2"
+                                                            {{ $investor?->primaryBank->banking_region == 2 ? 'selected' : '' }}>
+                                                            International</option>
+                                                    </select>
+                                                </div>
+
                                                 <div class="col-md-4">
                                                     <label for="inputEmail3" class="asterisk">Benenficiary
                                                         Name</label>
@@ -237,6 +311,8 @@
                                                         value="{{ $investor->primaryBank->investor_bank_name ?? '' }}"
                                                         required>
                                                 </div>
+                                            </div>
+                                            <div class="form-group row">
                                                 <div class="col-md-4">
                                                     <label for="inputEmail3" class="asterisk">IBAN</label>
                                                     <input type="text" name="investor_bank[investor_iban]"
@@ -367,6 +443,19 @@
             format: 'DD-MM-YYYY'
         });
 
+        const investorPhoneRegex = /^[1-9][0-9]{9,14}$/;
+
+        $('#investor_mobile').on('blur', function() {
+            const value = $(this).val();
+
+            if (!investorPhoneRegex.test(value)) {
+                isValid = false;
+                setInvalid(this, "Enter phone with country code (digits only, no +)");
+            } else {
+                setValid(this);
+            }
+        });
+
         $('#investorsubmitbutton').click(function(e) {
             e.preventDefault();
 
@@ -448,6 +537,7 @@
         // helper: invalid
         function setInvalid(input, message) {
             $(input).addClass("is-invalid").removeClass("is-valid");
+            toastr.error(message);
         }
 
         // helper: valid

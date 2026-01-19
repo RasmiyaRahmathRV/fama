@@ -217,6 +217,7 @@
                                                 <tr>
                                                     <th>#</th>
                                                     <th>Action</th>
+                                                    <th>Investment</th>
                                                     <th>Investment Amount</th>
                                                     <th>Date</th>
                                                     <th>Profit Interval</th>
@@ -294,10 +295,10 @@
                         orderable: false,
                         searchable: false
                     },
-                    // {
-                    //     data: 'investor_name',
-                    //     name: 'investor.investor_name'
-                    // },
+                    {
+                        data: 'investment_code',
+                        name: 'investment_code'
+                    },
                     {
                         data: 'investment_amount',
                         name: 'investment_amount'
