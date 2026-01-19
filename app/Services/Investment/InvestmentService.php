@@ -103,6 +103,7 @@ class InvestmentService
                 'added_by' => $userId,
                 'has_fully_received' => $has_fully_received,
                 'reinvestment_or_not' => $data['reinvestment_or_not'],
+                'parent_investment_id' => $data['parent_investment_id'],
                 'investment_type' => $investmentType,
                 'next_profit_release_date' => parseDate($data['next_profit_release_date']),
                 // 'next_referral_commission_release_date' => $next_profit_release_date,
@@ -112,7 +113,17 @@ class InvestmentService
             // dd($investmentData);
 
 
+
             $investment = $this->investmentRepository->create($investmentData);
+
+            if ($data['parent_investment_id']) {
+                $parent = $this->investmentRepository->find($data['parent_investment_id']);
+                $parentInv = [
+                    'has_reinvestment' => 1,
+                    'reinvested_count' => $parent->reinvested_count + 1,
+                ];
+                $this->investmentRepository->update($data['parent_investment_id'], $parentInv);
+            }
 
             // ---------------- Investment Received Payment ----------------
 

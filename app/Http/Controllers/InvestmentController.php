@@ -17,21 +17,30 @@ class InvestmentController extends Controller
         protected InvestmentService $investmentService,
         protected InvestmentRepository $investmentRepository
     ) {}
+
     public function index()
     {
         $title = 'Investments';
         return view("admin.investment.investment.investment", compact("title"));
     }
-    public function create()
+
+    public function create(Request $request)
     {
         $title = 'Create Investment';
         $data = $this->investmentService->getFormData();
-        $reinvestment = 0;
-        $parent_investment_id = null;
+        $reinvestment = $request->query('reinvestment') ?? 0;
+        $parent_investment_id = $request->query('parent_id') ?? null;
+        $parent = array(
+            'investor_id' => $request->query('investor_id'),
+            'amount' => $request->query('amount'),
+            'date' => $request->query('date'),
+        );
         $paymentsCount = 0;
+
         // dd($data);
-        return view("admin.investment.investment.create-investment-edit", compact("title", "data", 'reinvestment', 'parent_investment_id', 'paymentsCount'));
+        return view("admin.investment.investment.create-investment-edit", compact("title", "data", 'reinvestment', 'parent_investment_id', 'paymentsCount', 'parent'));
     }
+
     public function store(Request $request)
     {
         // dd($request);
@@ -42,6 +51,7 @@ class InvestmentController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
         }
     }
+
     public function getInvestments(Request $request)
     {
         // dd("test");
@@ -57,6 +67,7 @@ class InvestmentController extends Controller
             return $this->investmentService->getDataTable($filters);
         }
     }
+
     public function addpendingInvestment(Request $request)
     {
         try {
@@ -66,6 +77,7 @@ class InvestmentController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 422);
         }
     }
+
     public function edit($id)
     {
         $title = 'Edit Investment';

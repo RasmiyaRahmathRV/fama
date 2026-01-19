@@ -1994,7 +1994,9 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property int $investment_id
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\Investment|null $investment
  * @property-read \App\Models\Investor|null $investor
  * @property-read \App\Models\InvestorPayout|null $investorPayout
  * @property-read \App\Models\Bank|null $paidBank
@@ -2010,6 +2012,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereInvestmentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereInvestorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidBank($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidBy($value)

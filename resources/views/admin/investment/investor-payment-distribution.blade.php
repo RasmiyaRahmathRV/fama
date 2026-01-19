@@ -80,7 +80,7 @@
                                                 </select>
                                             </div>
                                             <!-- </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="form-group"> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="form-group"> -->
                                             <div class="col-md-1 float-right">
                                                 <button type="button" class="btn btn-info searchbtnchq">Search</button>
                                             </div>
@@ -95,7 +95,7 @@
                                         <!-- <h3 class="card-title">Property Details</h3> -->
                                         <span class="float-right">
                                             <!-- <button class="btn btn-info float-right m-1" data-toggle="modal"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                data-target="#modal-Property">Add Investor Payout</button> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                data-target="#modal-Property">Add Investor Payout</button> -->
                                             <button class="btn btn-success float-right m-1 bulktriggerbtn"
                                                 data-toggle="modal" data-target="#modal-payout"
                                                 data-clear-type="bulk">Payout All</button>
@@ -122,7 +122,7 @@
                                                     <th>Payout Date</th>
                                                     <th>Payout Type</th>
                                                     <th>payout Amount</th>
-                                                    <th>Payment Mode</th>
+                                                    <th width="188">Payment Mode</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -177,6 +177,7 @@
                         <form action="" id="PayoutSubmitForm" method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="method" id="method">
                             <input type="hidden" name="payoutId" id="payoutId">
+                            <input type="hidden" name="reinvest" id="reinvest">
                             <div class="modal-body">
                                 <div class="card-body">
                                     <div class="form-group row">
@@ -372,23 +373,34 @@
                 $('.chq').hide().css('display', 'none', 'important');
             } else {
                 $('#payoutId').val(button.data('det-id'));
+                let reinvest = button.data('reinvest');
+                $('#reinvest').val(reinvest);
 
                 let totalAmount = button.data('amount');
-                document.getElementById('paid_amount').addEventListener('input', function() {
-                    let paid = parseFloat(this.value) || 0;
-                    // Prevent entering more than total amount
-                    if (paid > totalAmount) {
-                        paid = totalAmount;
-                        this.value = totalAmount;
-                    }
 
-                    let remaining = totalAmount - paid;
+                if (reinvest) {
+                    $('#submitBtn').text('Re-Invest');
+                    $('#paid_amount').val(totalAmount).attr('readonly', true);
+                } else {
+                    document.getElementById('paid_amount').addEventListener('input', function() {
+                        let paid = parseFloat(this.value) || 0;
+                        // Prevent entering more than total amount
+                        if (paid > totalAmount) {
+                            paid = totalAmount;
+                            this.value = totalAmount;
+                        }
 
-                    document.getElementById('amountPending').innerText =
-                        'Remaining Amount: ' + remaining;
-                });
+                        let remaining = totalAmount - paid;
 
-                $('#amountPending').text('Remaining Amount: ' + button.data('amount'));
+                        document.getElementById('amountPending').innerText =
+                            'Remaining Amount: ' + remaining;
+                    });
+
+                    $('#submitBtn').text('Submit');
+                    $('#paid_amount').attr('readonly', false);
+                    $('#amountPending').text('Remaining Amount: ' + button.data('amount'));
+                }
+
                 $('.clrngamnt').show();
                 $('.chq').show();
             }
@@ -656,11 +668,29 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    // console.log(response);
+                    console.log(response);
                     $('#modal-payout').modal('hide');
                     hideLoader();
                     toastr.success(response.message);
-                    $('#payoutPendingTable').DataTable().ajax.reload();
+
+                    if ($('#reinvest').val() == 1) {
+                        let params = {};
+
+                        // add your custom filters manually (important)
+                        params.reinvestment = $('#reinvest').val();
+                        params.parent_id = response.data[0].investment_id;
+                        params.investor_id = response.data[0].investor_id;
+                        params.amount = response.data[0].amount_paid;
+                        params.date = response.data[0].paid_date;
+
+                        // build query string
+                        let queryString = $.param(params);
+
+                        window.location.href = "/investment/create?" + queryString;
+                    } else {
+                        $('#payoutPendingTable').DataTable().ajax.reload();
+                    }
+
                     // window.location.href = "{{ route('investorPayout.index') }}";
                 },
                 error: function(errors) {
