@@ -134,11 +134,15 @@ class InvestorPaymentDistributionService
 
             ->addColumn('action', function ($row) {
                 return '
-                <a class="btn btn-success btn-sm bulktriggerbtn" title="Clear cheque"
+                <a class="btn btn-success btn-sm bulktriggerbtn" title="Pay now"
                                 data-toggle="modal" data-target="#modal-payout"
-                                data-clear-type="single" data-det-id="' . $row->id . '"
+                                data-clear-type="single" data-reinvest="0" data-det-id="' . $row->id . '"
                                 data-amount="' . $row->amount_pending . '">
-                                Pay now</a>';
+                                <i class="fas fa-dollar-sign"></i></a>  <a class="btn btn-secondary btn-sm bulktriggerbtn" title="Re-Invest"
+                                data-toggle="modal" data-target="#modal-payout"
+                                data-clear-type="single" data-det-id="' . $row->id . '" data-reinvest="1" data-investmentid="' . $row->investment_id . '"
+                                data-amount="' . $row->amount_pending . '">
+                                <i class="fas fa-redo"></i></a>';
             })
 
             ->rawColumns(['investor_name', 'payout_type', 'action', 'checkbox', 'investment_code'])
@@ -171,7 +175,7 @@ class InvestorPaymentDistributionService
                 'payout_id' => $payoutDetails->id,
                 'investor_id' => $payoutDetails->investor_id,
                 'amount_paid' => $data['paid_amount'] ?? toNumeric($payoutDetails->amount_pending),
-                // 'amount_pending' => $pendingAmt,
+                'investment_id' => $payoutDetails->investment_id,
                 // 'is_processed' => $pendingAmt == 0 ? 1 : 0,
                 'paid_date' => $data['paid_date'],
                 'paid_mode_id' => $data['paid_mode'] ?? 0,
@@ -286,8 +290,10 @@ class InvestorPaymentDistributionService
             return $distributionDatas;
         });
 
-        foreach ($distr_data as $distributionData) {
-            $this->sendDistributionMessages($distributionData);
+        if ($data['reinvest'] != 1) {
+            foreach ($distr_data as $distributionData) {
+                $this->sendDistributionMessages($distributionData);
+            }
         }
 
         return $distr_data;

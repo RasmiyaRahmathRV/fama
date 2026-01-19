@@ -219,7 +219,7 @@
                                 $finance = 1;
                             }
 
-                            if (request()->is(['invest*'])) {
+                            if (request()->is(['invest*']) || request()->is(['payout/*'])) {
                                 $invest = 1;
                             }
                         @endphp
@@ -403,21 +403,24 @@
                                         </li>
                                     @endif
                                     <li class="nav-item">
-                                        <a href="{{ route('investment.index') }}" class="nav-link">
+                                        <a href="{{ route('investment.index') }}"
+                                            class="nav-link {{ request()->is('investment') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Investments</p>
                                         </a>
                                     </li>
                                     @if (Gate::any(['finance.payout']))
                                         <li class="nav-item">
-                                            <a href="{{ route('investorPayout.index') }}" class="nav-link">
+                                            <a href="{{ route('investorPayout.index') }}"
+                                                class="nav-link {{ request()->is('investorPayout*') || request()->is('payout/*') ? 'active' : '' }}">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Investor Payout</p>
                                             </a>
                                         </li>
                                     @endif
                                     <li class="nav-item">
-                                        <a href="{{ route('investment-soa.list') }}" class="nav-link">
+                                        <a href="{{ route('investment-soa.list') }}"
+                                            class="nav-link  {{ request()->is('investments/investment-soa') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Investment SOA</p>
                                         </a>
