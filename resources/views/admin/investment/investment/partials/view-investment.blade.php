@@ -76,7 +76,7 @@
                      <tr>
                          {{-- <th>#</th> --}}
                          <th>Profit Release Due on</th>
-                         <th>Current Month Pending</th>
+                         <th>Outstanding Profit</th>
 
                      </tr>
                  </thead>
