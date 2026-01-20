@@ -77,6 +77,8 @@
                          {{-- <th>#</th> --}}
                          <th>Profit Release Due on</th>
                          <th>Outstanding Profit</th>
+                         <th>Payout Batch</th>
+                         <th>Profit Interval</th>
 
                      </tr>
                  </thead>
@@ -91,6 +93,16 @@
                          <td>
                              <span class="badge badge-light text-sm text-danger">
                                  {{ number_format($investment->outstanding_profit, 2) }}
+                             </span>
+                         </td>
+                         <td>
+                             <span class="text-bold text-sm ">
+                                 {{ $investment->payoutBatch->batch_name }}
+                             </span>
+                         </td>
+                         <td>
+                             <span class="text-bold text-sm ">
+                                 {{ $investment->profitInterval->profit_interval_name }}
                              </span>
                          </td>
 
@@ -191,3 +203,65 @@
          </div>
      </div>
  </div>
+ @if ($investment->terminate_status !== 0)
+     <div class="card card-outline card-info">
+         <div class="card-header">
+             <h3 class="card-title text-teal text-bold">
+                 <i class="fas fa-file-alt mr-2"></i> Investment Termination
+             </h3>
+         </div>
+
+         <div class="card-body p-0">
+             <div class="table-responsive">
+                 <table class="table table-bordered table-striped">
+                     <thead class="bg-light">
+                         <tr>
+                             <th>Termination Status</th>
+                             <th>Requested Date</th>
+                             <th>Duration</th>
+                             <th>Termination Date</th>
+                             <th>Document</th>
+                         </tr>
+                     </thead>
+
+                     <tbody>
+                         <tr>
+                             <td>
+                                 @if ($investment->terminate_status == 1)
+                                     <span class="badge badge-warning">Termination Requested</span>
+                                 @elseif($investment->terminate_status == 2)
+                                     <span class="badge badge-danger">Terminated</span>
+                                 @endif
+                             </td>
+                             <td><span
+                                     class="badge badge-light text-sm">{{ getFormattedDate($investment->termination_requested_date) }}</span>
+                             </td>
+                             <td><span
+                                     class="badge badge-light text-sm text-danger">{{ $investment->termination_duration }}
+                                     Days</span>
+                             </td>
+                             <td><span
+                                     class="badge badge-light text-sm">{{ getFormattedDate($investment->termination_date) }}</span>
+                             </td>
+                             <td>
+                                 @if (!empty($investment->termination_document))
+                                     <a href="{{ asset('storage/' . $investment->termination_document) }}"
+                                         target="_blank" class="btn btn-xs btn-primary">
+                                         <i class="fas fa-eye"></i> view
+                                     </a>
+
+                                     <a href="{{ asset('storage/' . $investment->termination_document) }}" download
+                                         class="btn btn-xs btn-success">
+                                         <i class="fas fa-download"></i>Download
+                                     </a>
+                                 @endif
+                             </td>
+
+                         </tr>
+
+                     </tbody>
+                 </table>
+             </div>
+         </div>
+     </div>
+ @endif
