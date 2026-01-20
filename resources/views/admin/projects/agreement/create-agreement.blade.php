@@ -884,7 +884,7 @@
         function CompanyChange(contractId = null) {
             const companyId = $('#company_id').val();
             let renewalContractId = "{{ $renewalContractId ?? '' }}";
-            console.log('test', renewalContractId);
+            // console.log('test', renewalContractId);
 
             if (renewalContractId) {
                 contractId = renewalContractId;
@@ -2240,6 +2240,7 @@
 
                 const newInstallments = $(this).find('option:selected').text().trim();
                 if (editedPayment && Array.isArray(editedPayment.agreement_payment_details)) {
+                    // console.log("EditedUnit", editedUnit)
                     // Grab existing payment details if any
                     let existingPayments = [];
                     if (editedPayment && Array.isArray(editedPayment.agreement_payment_details)) {
@@ -2379,9 +2380,14 @@
                         });
 
                     }
-                    let rentval = $('.rent_per_month').val();
+                    let rentval = parseFloat($('.rent_per_month').val()) || 0;
                     // console.log('rentval', rentval, newInstallments)
-                    calculatepaymentamount(rentval, newInstallments)
+                    let editedRent = parseFloat(editedUnit?.[0]?.rent_per_month) || 0;
+                    // console.log("ren", rentval, editedRent);
+
+                    if (rentval !== editedRent) {
+                        calculatepaymentamount(rentval, newInstallments);
+                    }
 
 
 
