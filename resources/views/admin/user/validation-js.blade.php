@@ -1,4 +1,5 @@
 <script>
+    // const isEditUser = {{ isset($user) ? 'true' : 'false' }};
     document.addEventListener('DOMContentLoaded', function() {
         const stepperElement = document.querySelector('.bs-stepper');
 
@@ -70,6 +71,10 @@
         // Validate inputs, selects, and textareas
         stepContainer.querySelectorAll('[required]:not([type="radio"])').forEach(field => {
             if (field.offsetParent === null) return; // skip hidden
+            // Skip password and file inputs
+            // if (isEditUser) {
+            //     if (field.name === 'password' || field.type === 'file') return;
+            // }
 
             if (!field.checkValidity()) {
                 field.classList.add('is-invalid');

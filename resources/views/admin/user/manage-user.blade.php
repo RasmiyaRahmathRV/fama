@@ -102,9 +102,11 @@
                                                             value="{{ $user->username ?? '' }}" required>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="exampleInputEmail1" class="asterisk">Password</label>
+                                                        <label for="exampleInputEmail1"
+                                                            class="@if (!isset($user)) asterisk @endif">Password</label>
                                                         <input type="text" class="form-control" id="password"
-                                                            name="password" placeholder="Password" required>
+                                                            name="password" placeholder="Password"
+                                                            @if (!isset($user)) required @endif>
                                                     </div>
                                                 </div>
                                                 <div class="form-group row">
@@ -141,9 +143,12 @@
                                                     @endif
 
                                                     <div class="col-md-4">
-                                                        <label class="asterisk">Upload Profile Photo</label>
+                                                        <label
+                                                            class="@if (!isset($user)) asterisk @endif">Upload
+                                                            Profile Photo</label>
                                                         <input type="file" name="profile_photo" id="profile_photo"
-                                                            class="form-control" required>
+                                                            class="form-control"
+                                                            @if (!isset($user)) required @endif>
                                                     </div>
                                                 </div>
                                                 <a class="btn btn-info nextBtn">Next</a>
