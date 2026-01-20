@@ -44,10 +44,11 @@
                             <div class="card-header">
                                 <!-- <h3 class="card-title">Agreement Details</h3> -->
                                 <span class="float-right">
-                                    @can('agreement.add')
-                                        <a href="{{ route('agreement.create') }}" class="btn btn-info float-right m-1">Add
-                                            Agreement</a>
-                                    @endcan
+                                    @if (auth()->user()->hasPermissionInRange(67, 76))
+                                        <a href="{{ route('agreement.index') }}"
+                                            class="btn btn-info float-right m-1">Agreement
+                                            List</a>
+                                    @endif
                                     {{-- <button class="btn btn-secondary float-right m-1" data-toggle="modal"
                                         data-target="#modal-import">Import</button> --}}
                                 </span>
