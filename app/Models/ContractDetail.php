@@ -16,6 +16,7 @@ class ContractDetail extends Model
     protected $fillable = [
         'contract_id',
         'contract_fee',
+        'ejari',
         'start_date',
         'end_date',
         'duration_in_months',

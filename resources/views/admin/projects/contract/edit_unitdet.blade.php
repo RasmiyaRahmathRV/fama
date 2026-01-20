@@ -4,13 +4,13 @@
             <input type="hidden" name="unit_detail[id][]" value="{{ $unitDetail->id ?? '' }}">
             <div class="form-group row">
                 <div class="col-sm-2 add-morecol2">
-                    <label class="control-label"> Unit No
+                    <label class="control-label" class="asterisk"> Unit No
                     </label>
                     <input type="text" name="unit_detail[unit_number][]" class="form-control unit_no"
                         placeholder="Unit No" db-value="1" value="{{ $unitDetail->unit_number ?? '' }}" required>
                 </div>
                 <div class="col-sm-2 add-morecol2">
-                    <label class="control-label"> Unit Type
+                    <label class="control-label" class="asterisk"> Unit Type
                     </label>
                     <select class="form-control select2 unit_type" name="unit_detail[unit_type_id][]"
                         id="unit_type{{ $unitkey }}" required>
@@ -24,13 +24,13 @@
                     </select>
                 </div>
                 <div class="col-sm-1 add-morecol2">
-                    <label class="control-label"> Floor No
+                    <label class="control-label" class="asterisk"> Floor No
                     </label>
                     <input type="text" name="unit_detail[floor_no][]" class="form-control" placeholder="Floor No"
                         value="{{ $unitDetail->floor_no ?? '' }}" required>
                 </div>
                 <div class="col-sm-2 add-morecol2">
-                    <label class="control-label"> Unit Status
+                    <label class="control-label" class="asterisk"> Unit Status
                     </label>
                     <select class="form-control select2" name="unit_detail[unit_status_id][]"
                         id="unit_status{{ $unitkey }}" required>
@@ -44,13 +44,13 @@
                     </select>
                 </div>
                 <div class="col-sm-2 add-morecol2">
-                    <label class="control-label"> Unit Rent Per Annum </label>
+                    <label class="control-label" class="asterisk"> Unit Rent Per Annum </label>
                     <input type="number" name="unit_detail[unit_rent_per_annum][]"
-                        class="form-control unit_rent_per_annum" placeholder="Unit Rent Per Annum"
+                        class="form-control unit_rent_per_annum" placeholder="Unit Rent Per Annum" min="0"
                         value="{{ toNumeric($unitDetail->unit_rent_per_annum) ?? '' }}" required>
                 </div>
                 <div class="col-sm-3 add-morecol2">
-                    <label class="control-label">Unit Size</label>
+                    <label class="control-label" class="asterisk">Unit Size</label>
                     <div class="input-group input-group">
                         <div class="input-group-prepend">
                             <select name="unit_detail[unit_size_unit_id][]" id="unit_size_id{{ $unitkey }}"
@@ -65,13 +65,14 @@
                             </select>
                         </div>
                         <input type="number" name="unit_detail[unit_size][]" class="form-control"
-                            placeholder="Unit Size" value="{{ $unitDetail->unit_size ?? '' }}" required>
+                            placeholder="Unit Size" value="{{ $unitDetail->unit_size ?? '' }}" min="0"
+                            step="1" required>
                     </div>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-sm-2 add-morecol2">
-                    <label class="control-label"> Property
+                    <label class="control-label" class="asterisk"> Property
                         type</label>
 
                     <select class="form-control select2" name="unit_detail[property_type_id][]" id="" required>
@@ -117,24 +118,26 @@
                     </div>
                 </div>
                 <div class="col-sm-2 part" id="part{{ $unitkey }}">
-                    <label class="control-label">Total
+                    <label class="control-label" class="asterisk">Total
                         Partitions</label>
                     <input type="number" name="unit_detail[total_partition][]" class="form-control total_partitions"
                         placeholder="Total Partitions"
                         data-original-value="{{ old('unit_detail.total_partition', $unitDetail->total_partition ?? '') }}"
-                        value="{{ old('unit_detail.total_partition', $unitDetail->total_partition ?? '') }}" required>
+                        value="{{ old('unit_detail.total_partition', $unitDetail->total_partition ?? '') }}"
+                        min="0" required>
                 </div>
                 <div class="col-sm-2 bs" id="bs{{ $unitkey }}">
-                    <label class="control-label">Total Bed Spaces</label>
+                    <label class="control-label" class="asterisk">Total Bed Spaces</label>
                     <input type="number" name="unit_detail[total_bedspace][]" class="form-control total_bedspaces"
                         placeholder="Total Bed Spaces"
                         data-original-value="{{ old('unit_detail.total_bedspace', $unitDetail->total_bedspace ?? '') }}"
-                        value="{{ old('unit_detail.total_bedspace', $unitDetail->total_bedspace ?? '') }}" required>
+                        value="{{ old('unit_detail.total_bedspace', $unitDetail->total_bedspace ?? '') }}"
+                        min="0" required>
                 </div>
                 <div class="col-sm-2 rm" id="rm{{ $unitkey }}">
-                    <label class="control-label">Total Room</label>
+                    <label class="control-label" class="asterisk">Total Room</label>
                     <input type="number" name="unit_detail[total_room][]" class="form-control total_room"
-                        placeholder="Total Room"
+                        placeholder="Total Room" min="0"
                         value="{{ old('unit_detail.total_room', $unitDetail->total_room ?? '') }}" required>
                 </div>
             </div>

@@ -21,7 +21,6 @@ class ContractOtc extends Model
         'appliances',
         'decoration',
         'dewa_deposit',
-        'ejari',
         'cost_of_cabinets',
         'added_by',
         'updated_by',

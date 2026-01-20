@@ -3,7 +3,7 @@
         <div class="form-group row">
             <input type="hidden" name="payment_detail[id][]" value="{{ $paymentDetail->id ?? '' }}">
             <div class="col-md-4">
-                <label>Payment Mode</label>
+                <label class="asterisk">Payment Mode</label>
                 <select class="form-control select2 payment_mode" data-id="{{ $paymentkey }}"
                     name="payment_detail[payment_mode_id][]" id="payment_mode{{ $paymentkey }}" required>
                     <option value="">Select</option>
@@ -16,7 +16,7 @@
             </div>
 
             <div class="col-md-4">
-                <label>Payment Date</label>
+                <label class="asterisk">Payment Date</label>
                 <div class="input-group date" id="otherPaymentDate{{ $paymentkey }}" data-target-input="nearest">
                     <input type="text" class="form-control datetimepicker-input otherPaymentDate"
                         name="payment_detail[payment_date][]" value="{{ $paymentDetail->payment_date ?? '' }}"
@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <label>Payment Amount</label>
+                <label class="asterisk">Payment Amount</label>
                 <input type="text" class="form-control" id="payment_amount{{ $paymentkey }}"
                     name="payment_detail[payment_amount][]" placeholder="Payment Amount"
                     value="{{ $paymentDetail->payment_amount ?? '' }}" required>
@@ -37,7 +37,7 @@
         </div>
         <div class="form-group row">
             <div class="col-md-4 bank" id="bank{{ $paymentkey }}">
-                <label for="exampleInputEmail1">Bank Name</label>
+                <label for="exampleInputEmail1" class="asterisk">Bank Name</label>
 
                 <select class="form-control select2 bank_name" name="payment_detail[bank_id][]"
                     id="bank_name{{ $paymentkey }}" required>
@@ -54,7 +54,7 @@
             </div>
 
             <div class="col-md-3 chq" id="chq{{ $paymentkey }}">
-                <label for="exampleInputEmail1">Cheque No</label>
+                <label for="exampleInputEmail1" class="asterisk">Cheque No</label>
                 <input type="text" class="form-control cheque_no" id="cheque_no{{ $paymentkey }}"
                     name="payment_detail[cheque_no][]" placeholder="Cheque No"
                     value="{{ $paymentDetail->cheque_no ?? '' }}" required>

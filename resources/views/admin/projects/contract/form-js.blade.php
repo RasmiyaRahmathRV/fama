@@ -364,63 +364,66 @@
         let allUnitStatus = @json($UnitStatus);
         let UnitStatusOptions = '<option value="">Select</option>';
         allUnitStatus.forEach(pt => {
-            UnitStatusOptions += `<option value="${pt.id}">${pt.unit_status}</option>`;
+            UnitStatusOptions +=
+                `<option value="${pt.id}" ${pt.id == 1 ? 'selected' : ''}>${pt.unit_status}</option>`;
         });
 
         // unit status unit loop
         let allUnitSizeUnit = @json($UnitSizeUnit);
         let UnitSizeUnitOptions = '<option value="">Select</option>';
         allUnitSizeUnit.forEach(pt => {
-            UnitSizeUnitOptions += `<option value="${pt.id}">${pt.unit_size_unit}</option>`;
+            UnitSizeUnitOptions +=
+                `<option value="${pt.id}" ${pt.id == 1 ? 'selected' : ''}>${pt.unit_size_unit}</option>`;
         });
 
 
 
         // unit add more for normal
         function unitAddmore(i) {
+            console.log('inside unitaddmore');
             const newBlock = document.createElement('div');
             newBlock.classList.add('apdi', 'profitDeletecls' + i);
             newBlock.innerHTML = `<div class="form-group row">
         <div class="col-sm-2 add-morecol2">
-            <label class="control-label"> Unit No </label>
+            <label class="control-label asterisk"> Unit No </label>
             <input type="text" name="unit_detail[unit_number][]" class="form-control unit_no" placeholder="Unit No" required>
         </div>
         <div class="col-sm-2 add-morecol2">
-            <label class="control-label"> Unit Type </label>
+            <label class="control-label asterisk"> Unit Type </label>
             <select class="form-control select2 unit_type" name="unit_detail[unit_type_id][]" id="unit_type` +
                 i + `" required>
                 ` + UnitTypeOptions + `
             </select>
         </div>
         <div class="col-sm-1 add-morecol2">
-            <label class="control-label"> Floor No </label>
+            <label class="control-label asterisk"> Floor No </label>
             <input type="text" name="unit_detail[floor_no][]" class="form-control" placeholder="Floor No" required>
         </div>
         <div class="col-sm-2 add-morecol2">
-            <label class="control-label"> Unit Status </label>
+            <label class="control-label asterisk"> Unit Status </label>
             <select class="form-control select2" name="unit_detail[unit_status_id][]" id="unit_status` + i + `" required>
                 ` + UnitStatusOptions + `
             </select>
         </div>
         <div class="col-sm-2 add-morecol2">
-            <label class="control-label"> Unit Rent Per Annum </label>
-            <input type="number" name="unit_detail[unit_rent_per_annum][]" class="form-control unit_rent_per_annum" placeholder="Unit Rent Per Annum" required>
+            <label class="control-label asterisk"> Unit Rent Per Annum </label>
+            <input type="number" name="unit_detail[unit_rent_per_annum][]" class="form-control unit_rent_per_annum" placeholder="Unit Rent Per Annum" min="0" required>
         </div>
         <div class="col-sm-3 add-morecol2">
-            <label class="control-label">Unit Size</label>
+            <label class="control-label asterisk">Unit Size</label>
                 <div class="input-group input-group">
                     <div class="input-group-prepend select2">
                         <select name="unit_detail[unit_size_unit_id][]" id="" required>
                             ` + UnitSizeUnitOptions + `
                         </select>
                     </div>
-                    <input type="number" name="unit_detail[unit_size][]" class="form-control" placeholder="Unit Size" required>
+                    <input type="number" name="unit_detail[unit_size][]" class="form-control" placeholder="Unit Size" value="0" step="1" min="0" required>
                 </div>
             </div>
         </div>
         <div class="form-group row">
             <div class="col-sm-2 add-morecol2">
-                <label class="control-label"> Property type</label>
+                <label class="control-label asterisk"> Property type</label>
                 <select class="form-control select2" name="unit_detail[property_type_id][]" id="" required>
                     ` + propertyTypeOptions + `
                 </select>
@@ -446,15 +449,15 @@
                 </div>
             </div>
             <div class="col-sm-2 part" id="part` + i + `">
-                <label class="control-label">Total Partitions</label>
+                <label class="control-label asterisk">Total Partitions</label>
                 <input type="number" name="unit_detail[total_partition][]" class="form-control total_partitions" placeholder="Total Partitions" required>
             </div>
             <div class="col-sm-2 bs" id="bs` + i + `">
-                <label class="control-label">Total Bed Spaces</label>
+                <label class="control-label asterisk">Total Bed Spaces</label>
                 <input type="number" name="unit_detail[total_bedspace][]" class="form-control total_bedspaces" placeholder="Total Bed Spaces" required>
             </div>
             <div class="col-sm-2 rm" id="rm` + i + `">
-                <label class="control-label">Total Room</label>
+                <label class="control-label asterisk">Total Room</label>
                 <input type="number" name="unit_detail[total_room][]" class="form-control total_room" placeholder="Total Room" required>
             </div>
         </div>
@@ -965,7 +968,7 @@
             $('#decoration').val(0);
             $('#cost_of_cabinets').val(100 * subvalues.totSubValue);
             $('#dewa_deposit').val(2130 * subvalues.totFlat);
-            $('#ejari').val(0);
+            // $('#ejari').val(0);
 
         }
         CalculatePayables();
@@ -1213,7 +1216,7 @@
                     paymentBlock.innerHTML = `
             <div class="form-group row">
                 <div class="col-md-4">
-                    <label>Payment Mode</label>
+                    <label class="asterisk">Payment Mode</label>
                         <select class="form-control select2 payment_mode"
                             name="payment_detail[payment_mode_id][]" id="payment_mode${i}" required>
                             <option value="">Select</option>
@@ -1228,7 +1231,7 @@
                 </div>
                     
                 <div class="col-md-4">
-                    <label>Payment Date</label>
+                    <label class="asterisk">Payment Date</label>
                     <div class="input-group date" id="otherPaymentDate${i}" data-target-input="nearest">
                         <input type="text" class="form-control datetimepicker-input otherPaymentDate" 
                             name="payment_detail[payment_date][]" id="payment_date${i}" 
@@ -1239,13 +1242,13 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <label>Payment Amount</label>
+                    <label class="asterisk">Payment Amount</label>
                     <input type="text" class="form-control" id="payment_amount${i}" name="payment_detail[payment_amount][]" placeholder="Payment Amount" required>
                 </div>
             </div>
             <div class="form-group row">
                     <div class="col-md-4 bank" id="bank${i}">
-                        <label for="exampleInputEmail1">Bank Name</label>
+                        <label for="exampleInputEmail1" class="asterisk">Bank Name</label>
                         
                         <select class="form-control select2 bank_name" name="payment_detail[bank_id][]" id="bank_name${i}" required>
                             <option value="">Select Bank</option>
@@ -1260,7 +1263,7 @@
                     </div>
 
                     <div class="col-md-3 chq" id="chq${i}">
-                        <label for="exampleInputEmail1">Cheque No</label>
+                        <label for="exampleInputEmail1" class="asterisk">Cheque No</label>
                         <input type="text" class="form-control cheque_no" id="cheque_no${i}" name="payment_detail[cheque_no][]" placeholder="Cheque No" required>
                     </div>
 
@@ -1543,8 +1546,8 @@
             (parseFloat($('#cost_of_cabinets').val()) || 0) +
             (parseFloat($('#appliances').val()) || 0) +
             (parseFloat($('#decoration').val()) || 0) +
-            (parseFloat($('#dewa_deposit').val()) || 0) +
-            (parseFloat($('#ejari').val()) || 0);
+            (parseFloat($('#dewa_deposit').val()) || 0);
+        // (parseFloat($('#ejari').val()) || 0);
 
         let paymenttovendor = parseFloat(totRent + totcomm + totdepo).toFixed(2);
         let finalCost = (parseFloat(paymenttovendor) + parseFloat(totcontractfee) + parseFloat(totalotc)).toFixed(2);
@@ -1898,7 +1901,7 @@
                             readonly value="` + unit_type + `">
                     </div>
                     <div class="col-md-2">
-                        <label for="exampleInputEmail1">Profit %</label>
+                        <label for="exampleInputEmail1" class="asterisk">Profit %</label>
                         <input type="number" class="form-control unit_profit_perc"
                             name="unit_detail[unit_profit_perc][]"
                             id="unit_profit_perc${i}" placeholder="Profit %" step="0.01" required>
