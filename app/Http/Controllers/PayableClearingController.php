@@ -32,7 +32,7 @@ class PayableClearingController extends Controller
 
         $vendors = getVendorsHaveContract();
         $properties = getPropertiesHaveContract();
-        $paymentmodes = getPaymentModeHaveContract();
+        // $paymentmodes = getPaymentModeHaveContract();
         $companies = $this->companyService->getAll();
 
         return view('admin.finance.payable-cheque-clearing', compact(
