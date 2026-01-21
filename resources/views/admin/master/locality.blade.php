@@ -53,6 +53,7 @@
                                             {{-- <th>Company Name</th> --}}
                                             <th>Area Name</th>
                                             <th>Locality Name</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -225,6 +226,17 @@
                     {
                         data: 'locality_name',
                         name: 'localities.locality_name'
+                    },
+                    {
+                        data: 'status',
+                        name: 'areas.status',
+                        render: function(data, type, row) {
+                            if (data == 1) {
+                                return '<span class="badge bg-success">Active</span>';
+                            } else {
+                                return '<span class="badge bg-secondary">Inactive</span>';
+                            }
+                        }
                     },
                     {
                         data: 'action',

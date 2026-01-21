@@ -151,9 +151,16 @@
                                 </p>
 
                                 <p class="text-sm">
-                                    Created At
-                                    <b class="d-block">{{ $property->created_at->format('d M Y') }}</b>
+                                    Created On
+                                    <b class="d-block">{{ \Carbon\Carbon::parse($area->created_at)->format('d M Y') }}
+                                    </b>
                                 </p>
+                                <p class="text-sm">
+                                    Updated On
+                                    <b class="d-block">{{ \Carbon\Carbon::parse($area->updated_at)->format('d M Y') }}
+                                    </b>
+                                </p>
+
                                 <p class="text-sm">
                                     Remarks
                                     <b class="d-block">{{ $property->remarks }}</b>
