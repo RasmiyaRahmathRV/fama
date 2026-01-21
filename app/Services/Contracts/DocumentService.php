@@ -125,4 +125,16 @@ class DocumentService
         $contract->{$flag} = 1;
         $contract->save();
     }
+
+
+    public function updateContractAcknowledgement($contractId)
+    {
+        $data = [
+            'is_acknowledgement_released' => 1,
+            'acknowledgement_released_date' => date('Y-m-d'),
+            'acknowledgement_released_by' => auth()->user()->id,
+        ];
+
+        return $this->contractRepo->update($contractId, $data);
+    }
 }

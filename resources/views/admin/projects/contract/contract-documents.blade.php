@@ -156,6 +156,24 @@
                                                         </td>
                                                     </tr>
                                                 @endforeach
+                                                @if ($contract->is_aknowledgement_uploaded == 0 && $contract->contract_status == 7)
+                                                    <tr>
+                                                        <td>{{ count($contractDocuments) + 2 }}</td>
+                                                        <td>Acknowledgement (CRM Generated)</td>
+                                                        <td>
+                                                            @if ($contract->is_acknowledgement_released)
+                                                                <a href="{{ route('contracts.acknowledgement', $contract->id) }}"
+                                                                    class="btn btn-info" target="_blank"><i
+                                                                        class="far fa-eye"></i></a>
+                                                            @else
+                                                                <a href="{{ route('contracts.release', $contract->id) }}"
+                                                                    class="btn btn-info">Release</a>
+                                                            @endif
+
+                                                        </td>
+                                                    </tr>
+                                                @endif
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -272,10 +290,14 @@
                             </button>
                         </div>
                         <form action="" id="ContractUploadForm" method="POST" enctype="multipart/form-data">
-                            <input type="hidden" name="contract_id" value="{{ $contract->id }}">
+                            <input type="hidden" name="contract_id" value="{{ $contract->id }}" id="contract_id_upload">
                             <div class="modal-body">
                                 <div class="card-body">
                                     @foreach ($documentTypes as $key => $documentType)
+                                        @if ($documentType->id == 3 && !$contract->is_acknowledgement_released)
+                                            @continue
+                                        @endif
+
                                         <div class="form-group row">
                                             @if ($documentType->id == 1)
                                                 <div class="col-9 pr-1">
@@ -341,40 +363,5 @@
 @endsection
 
 @section('custom_js')
-    <script>
-        $('#ContractUploadForm').submit(function(e) {
-            e.preventDefault();
-
-            showLoader(); //'Processing upload...', 'Please wait while the documents are being uploaded.'
-
-            var form = document.getElementById('ContractUploadForm');
-            var fdata = new FormData(form);
-
-            fdata.append('_token', $('meta[name="csrf-token"]').attr('content'));
-
-            $.ajax({
-                type: "POST",
-                url: 'contract-document-upload',
-                data: fdata,
-                dataType: "json",
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    console.log(response);
-                    toastr.success(response.message);
-                    window.location.reload();
-                },
-                error: function(errors) {
-                    hideLoader();
-                    // Example: get first file error
-                    let message = errors.responseJSON.message;
-                    if (message.file) {
-                        toastr.error(message.file[0]);
-                    } else {
-                        toastr.error('Something went wrong.');
-                    }
-                }
-            });
-        });
-    </script>
+    @include('admin.projects.contract.includes.contract_document_js')
 @endsection

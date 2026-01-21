@@ -535,15 +535,7 @@
         // }
 
         // helper: invalid
-        function setInvalid(input, message) {
-            $(input).addClass("is-invalid").removeClass("is-valid");
-            toastr.error(message);
-        }
 
-        // helper: valid
-        function setValid(input) {
-            $(input).addClass("is-valid").removeClass("is-invalid");
-        }
 
         function submitForm(e) {
             // SHOW loader

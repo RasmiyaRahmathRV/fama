@@ -170,7 +170,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/save-signed-pdf', [PdfSignController::class, 'saveSignedPdf']);
     Route::get('/contracts/{id}/comments', [ContractController::class, 'getComments']);
-
+    Route::get('/contracts/{id}/acknowledgement', [ContractController::class, 'acknowledgement_view'])->name('contracts.acknowledgement');
+    Route::get('/contracts/{id}/print-acknowledgement', [ContractController::class, 'acknowledgement_print'])->name('contracts.acknowledgement.print');
+    Route::get('/contracts/{id}/release', [ContractController::class, 'release'])->name('contracts.release');
 
 
 

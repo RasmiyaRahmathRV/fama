@@ -830,3 +830,41 @@ function terminateInvestorUpdates($investorid)
     $data['total_terminated_investments'] = $inv->total_terminated_investments + 1;
     $inv->update($data);
 }
+
+function paymentModeCount($details): string
+{
+    $modes = $details
+        ->groupBy(fn($item) => $item->payment_mode->payment_mode_name)
+        ->map(fn($items) => $items->count());
+
+    return collect($modes)->map(function ($count, $mode) {
+
+        $countText = $count === 1 ? 'One' : $count;
+        $modeText  = strtoupper($mode === 'Cheque' ? 'PDC' : $mode);
+
+        if ($count > 1) {
+            if ($modeText === 'PDC') {
+                $modeText = "PDC's";   // 👈 required format
+            } else {
+                $modeText = Str::plural($modeText);
+            }
+        }
+
+        return "{$countText} {$modeText}";
+    })->implode(' & ');
+}
+
+function formatUnitTypes(string $text): string
+{
+    return collect(explode(',', $text))
+        ->map(function ($item) {
+            // Match: number (TYPE)
+            preg_match('/(\d+)\s*\(([^)]+)\)/', trim($item), $matches);
+
+            $count = $matches[1];              // 1
+            $type  = $matches[2]; // 1bhk, 2bhk
+
+            return "{$type}({$count})";
+        })
+        ->implode(',');
+}

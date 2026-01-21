@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\HasActivityLog;
 use App\Models\Traits\HasDeletedBy;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -50,7 +51,10 @@ class Contract extends Model
         'renew_rejected_by',
         'contract_rejected_by',
         'rejected_date',
-        'approved_date'
+        'approved_date',
+        'is_acknowledgement_released',
+        'acknowledgement_released_date',
+        'acknowledgement_released_by'
     ];
 
     public function property()
@@ -235,5 +239,15 @@ class Contract extends Model
     public function agreements()
     {
         return $this->hasMany(Agreement::class);
+    }
+
+    public function setAcknowledgementReleasedDateAttribute($value)
+    {
+        $this->attributes['acknowledgement_released_date'] = Carbon::parse($value)->format('Y-m-d');
+    }
+
+    public function getAcknowledgementReleasedDateAttribute($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y');
     }
 }
