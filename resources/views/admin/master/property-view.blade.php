@@ -63,7 +63,7 @@
                                             <span class="info-box-text text-muted">Property Size</span>
                                             <span class="info-box-number">
                                                 {{ $property->property_size }}
-                                                {{ $property->propertySizeUnit->unit_name }}
+                                                {{ $property->propertySizeUnit->unit_name ?? ' ' }}
                                             </span>
                                         </div>
                                     </div>
@@ -151,9 +151,16 @@
                                 </p>
 
                                 <p class="text-sm">
-                                    Created At
-                                    <b class="d-block">{{ $property->created_at->format('d M Y') }}</b>
+                                    Created On
+                                    <b class="d-block">{{ \Carbon\Carbon::parse($property->created_at)->format('d M Y') }}
+                                    </b>
                                 </p>
+                                <p class="text-sm">
+                                    Updated On
+                                    <b class="d-block">{{ \Carbon\Carbon::parse($property->updated_at)->format('d M Y') }}
+                                    </b>
+                                </p>
+
                                 <p class="text-sm">
                                     Remarks
                                     <b class="d-block">{{ $property->remarks }}</b>

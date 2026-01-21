@@ -1,4 +1,4 @@
-<div class="modal fade" id="modal-area">
+<div class="modal fade" id="modal-area" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -29,23 +29,26 @@
                         <div class="form-group row">
                             <label for="inputEmail3" class="col-sm-4 col-form-label asterisk">Area Name</label>
                             <input type="text" name="area_name" id="area_name" class="col-sm-8 form-control"
-                                id="inputEmail3" placeholder="Area Name" required>
+                                placeholder="Area Name" required>
                         </div>
                         <div class="form-group row">
                             <label for="inputEmail3" class="col-sm-4 col-form-label asterisk">Status</label>
-                            <select name="status" id="status" class="col-sm-8 form-control" required>
-                                <option value="">Select Area</option>
-                                <option value="1" selected>Active</option>
-                                <option value="0">Inactive
-                                </option>
-                            </select>
+                            <div class="col-sm-8 p-0">
+                                <select name="status" id="status" class=" form-control select2" required>
+                                    <option value="">Select Area</option>
+                                    <option value="1" selected>Active</option>
+                                    <option value="0">Inactive
+                                    </option>
+                                </select>
+                            </div>
+
                         </div>
                     </div>
                     <!-- /.card-body -->
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-info">Save changes</button>
+                    <button type="button" class="btn btn-default closebtn" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-info savebtninfo">Save changes</button>
                 </div>
             </form>
         </div>

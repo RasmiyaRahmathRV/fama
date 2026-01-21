@@ -1,4 +1,12 @@
 <script>
+    document.getElementById('agreementForm').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            return false;
+        }
+    });
+</script>
+<script>
     $('.agreementFormSubmit').click(function(e) {
         e.preventDefault();
         const contractForm = $(this);

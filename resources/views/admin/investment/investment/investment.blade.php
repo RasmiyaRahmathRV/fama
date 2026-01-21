@@ -215,7 +215,7 @@
                                         class="form-control font-weight-bold text-danger" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label>Received Date</label>
+                                    <label class="asterisk">Received Date</label>
                                     {{-- <input type="date" name="received_date" class="form-control" required>
                                     <label class="asterisk">Investment Date</label> --}}
                                     <div class="input-group date" id="receiveddate" data-target-input="nearest">
@@ -232,7 +232,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Received Amount</label>
+                                    <label class="asterisk">Received Amount</label>
                                     <input type="number" name="received_amount" id="received_amount"
                                         class="form-control" step="0.01" min="0" required>
                                 </div>

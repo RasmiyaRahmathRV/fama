@@ -17,6 +17,7 @@
   @endphp
   {{-- {{ dd($agreement->agreement_units) }} --}}
   @foreach ($agreement->agreement_units as $unit)
+      {{-- {{ dd($unit) }} --}}
       <table width="100%" border="2" align="center" class="mt-5" cellpadding="0" cellspacing="0"
           style="box-shadow:-4px 4px 20px #666; max-width:1025px;">
           <tr height="21">
@@ -265,7 +266,8 @@
                                   $rev = $unit->contractUnitDetail->rent_per_unit_per_annum;
                                   $rpa = $rev;
                               } else {
-                                  $rev = $unit->contractUnitDetail->rent_per_unit_per_annum;
+                                  //   $rev = $unit->contractUnitDetail->rent_per_unit_per_annum;
+                                  $rev = $unit->unit_revenue;
                                   $rpa = $rev;
                               }
 

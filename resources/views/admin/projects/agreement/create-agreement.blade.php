@@ -176,7 +176,7 @@
                                                         <input type="text" class="form-control" id="tenant_mobile"
                                                             name="tenant_mobile" placeholder="Tenant mobile"
                                                             value="{{ old('tenant_mobile', $tenant->tenant_mobile ?? '') }}"
-                                                            required pattern="^\+?\d{1,4}\s?\d{7,12}$">
+                                                            required pattern="^\+?[1-9]\d{9,14}$">
                                                         <div class="invalid-feedback">
                                                             Enter valid mobile with country code.
                                                         </div>
@@ -241,7 +241,7 @@
                                                         <input type="text" class="form-control" id="contact_number"
                                                             name="contact_number" placeholder="Contact number"
                                                             value="{{ old('contact_number', $tenant->contact_number ?? '') }}"
-                                                            required pattern="^\+?\d{1,4}\s?\d{7,12}$">
+                                                            required pattern="^\+?[1-9]\d{9,14}$">
                                                         <div class="invalid-feedback">
                                                             Enter valid mobile with country code.
                                                         </div>
@@ -398,6 +398,8 @@
                                                         'contract_id' => $agreement->contract_id,
                                                         'businessType' =>
                                                             $agreement->contract->contract_unit->business_type,
+                                                        'count' =>
+                                                            $agreement->agreement_payment->installment->installment_name,
                                                     ])
                                                 @else
                                                     <div id="unit_details_container">
@@ -794,7 +796,6 @@
 
 
         function calculatepaymentamount(rent_per_month = 0, payment_count = 0) {
-            // alert("called");
             // clearing the div
             const errorDiv = $('#paymentError');
             errorDiv.html('');
@@ -802,6 +803,7 @@
             $('#submitBtn').prop('disabled', false);
 
             var rentmonth = rent_per_month || 0;
+
             for (let i = 0; i < payment_count; i++) {
                 $('#payment_amount_' + i).val((rentmonth));
             }
@@ -882,13 +884,13 @@
         function CompanyChange(contractId = null) {
             const companyId = $('#company_id').val();
             let renewalContractId = "{{ $renewalContractId ?? '' }}";
-            console.log('test', renewalContractId);
+            // console.log('test', renewalContractId);
 
             if (renewalContractId) {
                 contractId = renewalContractId;
             }
             if (editedUnit) {
-                $(companyId).on('select2:opening', function(e) {
+                $('#company_id').on('select2:opening', function(e) {
                     e.preventDefault();
                 });
             }
@@ -938,7 +940,7 @@
             // alert("called");
             if (editedUnit) {
                 // $(this).prop('readonly', true);
-                $(contractId).on('select2:opening', function(e) {
+                $('#contract_id').on('select2:opening', function(e) {
                     e.preventDefault();
                 });
 
@@ -1454,15 +1456,25 @@
             $('.rent_per_month')
                 .val(selectedUnit.rent_per_unit_per_month ?? '')
                 .prop('required', true)
-                .prop('readonly', true);
+                .data('count', count);
+            // .prop('readonly', true);
+
 
             calculatepaymentamount(selectedUnit.rent_per_unit_per_month, count);
+
             if (subunitId) {
                 checkTermination(subunitId, unitId, contractId);
 
             }
 
         }
+        $(document).on('input', '.rent_per_month', function() {
+            const rent_val = $(this).val();
+            const count = $(this).data('count') || 0;
+            calculatepaymentamount(rent_val, count);
+
+
+        });
     </script>
     {{-- end  --}}
     @include('admin.projects.agreement.terminate-js')
@@ -2228,6 +2240,7 @@
 
                 const newInstallments = $(this).find('option:selected').text().trim();
                 if (editedPayment && Array.isArray(editedPayment.agreement_payment_details)) {
+                    // console.log("EditedUnit", editedUnit)
                     // Grab existing payment details if any
                     let existingPayments = [];
                     if (editedPayment && Array.isArray(editedPayment.agreement_payment_details)) {
@@ -2319,6 +2332,7 @@
 
                         // Initialize Select2 and Datepicker AFTER appending to DOM
                         $(paymentBlock).find('.select2').select2();
+
                         initPaymentValidation(selectedContract.contract_type_id, selectedContract.contract_unit
                             .business_type);
 
@@ -2366,6 +2380,15 @@
                         });
 
                     }
+                    let rentval = parseFloat($('.rent_per_month').val()) || 0;
+                    // console.log('rentval', rentval, newInstallments)
+                    let editedRent = parseFloat(editedUnit?.[0]?.rent_per_month) || 0;
+                    // console.log("ren", rentval, editedRent);
+
+                    if (rentval !== editedRent) {
+                        calculatepaymentamount(rentval, newInstallments);
+                    }
+
 
 
 
@@ -2464,6 +2487,9 @@
                         containerPayment.appendChild(paymentBlock);
                         initPaymentValidation(selectedContract.contract_type_id, selectedContract.contract_unit
                             .business_type);
+                        // $('input[name^="payment_detail"][name$="[payment_amount]"]').each(function() {
+                        //     $(this).trigger('input.paymentValidation');
+                        // });
 
 
                         $('#otherPaymentDate' + i).datetimepicker({
@@ -2539,6 +2565,7 @@
                 let val = parseFloat($(this).val()) || 0;
                 totalPayment += val;
             });
+            // console.log(totalRent, totalPayment);
 
             // // Enable or disable submit button
             // if (totalPayment === totalRent && totalRent > 0) {

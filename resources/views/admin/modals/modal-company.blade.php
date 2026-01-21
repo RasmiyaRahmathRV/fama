@@ -1,4 +1,4 @@
-<div class="modal fade" id="modal-company">
+<div class="modal fade" id="modal-company" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -75,8 +75,8 @@
                     <!-- /.card-body -->
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-info">Save changes</button>
+                    <button type="button" class="btn btn-default closebtn" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-info savebtninfo">Save changes</button>
                 </div>
             </form>
         </div>

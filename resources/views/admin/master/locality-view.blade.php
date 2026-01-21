@@ -120,8 +120,13 @@
                                 {{-- @dd($locality->created_at) --}}
 
                                 <p class="text-sm">
-                                    Created At
+                                    Created On
                                     <b class="d-block">{{ \Carbon\Carbon::parse($locality->created_at)->format('d M Y') }}
+                                    </b>
+                                </p>
+                                <p class="text-sm">
+                                    Updated On
+                                    <b class="d-block">{{ \Carbon\Carbon::parse($locality->updated_at)->format('d M Y') }}
                                     </b>
                                 </p>
 

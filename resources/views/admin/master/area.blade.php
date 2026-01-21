@@ -48,13 +48,14 @@
                                 </div>
                             @endcan
                             <!-- /.card-header -->
-                            <div class="card-body">
-                                <table id="areasTable" class="table table-bordered table-hover">
+                            <div class="card-body table-responsive">
+                                <table id="areasTable" class="table table-bordered table-hover" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>#</th>
                                             <th>Area Name</th>
                                             {{-- <th>Company Name</th> --}}
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -139,6 +140,20 @@
 
     <script>
         $("#modal-area").on('shown.bs.modal', function(e) {
+            const $modal = $(this);
+
+            $modal.find('.select2').each(function() {
+                if ($(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2('destroy');
+                }
+
+                $(this).select2({
+                    width: '100%',
+                    dropdownParent: $modal,
+                    placeholder: $(this).data('placeholder'),
+                });
+            });
+            $('#area_name').trigger('focus');
             var id = $(e.relatedTarget).data('id');
             var name = $(e.relatedTarget).data('name');
             var status = $(e.relatedTarget).data('status');
@@ -206,6 +221,17 @@
                     //     name: 'companies.company_name',
                     // },
                     {
+                        data: 'status',
+                        name: 'areas.status',
+                        render: function(data, type, row) {
+                            if (data == 1) {
+                                return '<span class="badge bg-success">Active</span>';
+                            } else {
+                                return '<span class="badge bg-secondary">Inactive</span>';
+                            }
+                        }
+                    },
+                    {
                         data: 'action',
                         name: 'action',
                         orderable: false,
@@ -266,5 +292,6 @@
                 }
             });
         }
+        enableEnterNavigation('#areaForm');
     </script>
 @endsection

@@ -23,12 +23,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Cheque Clearing</h1>
+                        <h1>Receivables Clearing</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="../dashboard.php">Home</a></li>
-                            <li class="breadcrumb-item active">Cheque Clearing</li>
+                            <li class="breadcrumb-item active">Receivables Clearing</li>
                         </ol>
                     </div>
                 </div>
@@ -58,9 +58,9 @@
                                         <form class="form-row align-items-end fileterform">
                                             <!-- From Date -->
                                             <div class="form-group col-md-2">
-                                                <label for="dateFrom">From</label>
+                                                <label for="dateFrom" class="asterisk">From</label>
                                                 <div class="input-group date" id="dateFrom" data-target-input="nearest">
-                                                    <input type="text" class="form-control datetimepicker-input"
+                                                    <input type="text" class="form-control datetimepicker-input" required
                                                         data-target="#dateFrom" placeholder="dd-mm-YYYY" />
                                                     <div class="input-group-append" data-target="#dateFrom"
                                                         data-toggle="datetimepicker">
@@ -71,9 +71,9 @@
 
                                             <!-- To Date -->
                                             <div class="form-group col-md-2">
-                                                <label for="dateTo">To</label>
+                                                <label for="dateTo" class="asterisk">To</label>
                                                 <div class="input-group date" id="dateTo" data-target-input="nearest">
-                                                    <input type="text" class="form-control datetimepicker-input"
+                                                    <input type="text" class="form-control datetimepicker-input" required
                                                         data-target="#dateTo" placeholder="dd-mm-YYYY" />
                                                     <div class="input-group-append" data-target="#dateTo"
                                                         data-toggle="datetimepicker">
@@ -342,7 +342,7 @@
 
                                 <!-- Clearing Date -->
                                 <div class="form-group">
-                                    <label>Clearing Date</label>
+                                    <label class="asterisk">Clearing Date</label>
                                     <div class="input-group date" id="clearingdateSingle" data-target-input="nearest">
                                         <input type="text" name="paid_date" class="form-control datetimepicker-input"
                                             id="clearing_date_input" data-target="#clearingdateSingle"
@@ -469,9 +469,9 @@
                         <form id="bouncedChequeForm" class="p-3">
                             <!-- Cheque Returning Date -->
                             <div class="mb-3">
-                                <label for="bounced_date_input" class="form-label">Returning Date</label>
+                                <label for="bounced_date_input" class="form-label asterisk">Returning Date</label>
                                 <div class="input-group" id="bouncedDate" data-target-input="nearest">
-                                    <input type="text" id="bounced_date_input" name="bounced_date"
+                                    <input type="text" id="bounced_date_input" name="bounced_date" required
                                         class="form-control datetimepicker-input" data-target="#bouncedDate"
                                         placeholder="dd-mm-YYYY" />
                                     <span class="input-group-text" data-target="#bouncedDate"
@@ -483,9 +483,9 @@
 
                             <!-- Reason for Bounce -->
                             <div class="mb-3">
-                                <label for="bounced_reason" class="form-label">Reason for Bounced Cheque</label>
+                                <label for="bounced_reason" class="form-label asterisk">Reason for Bounced Cheque</label>
                                 <textarea id="bounced_reason" name="bounced_reason" class="form-control" rows="3"
-                                    placeholder="Enter the reason for the cheque bounce"></textarea>
+                                    placeholder="Enter the reason for the cheque bounce" required></textarea>
                             </div>
                         </form>
 
@@ -583,6 +583,20 @@
 
         $('.searchbtnchq').click(function() {
             $('.searchCheque').show();
+            const searchformContainer = document.querySelector('.fileterform');
+            if (!validateformContainer(searchformContainer)) {
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: "Please fill all required fields correctly!",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                return;
+            }
             table.ajax.reload();
         });
 
@@ -820,7 +834,7 @@
             // $('#receivableClearForm')[0].reset();
             let date = $(this).data('date');
             currentAmount = $(this).data('amount');
-            console.log(currentAmount);
+            // console.log(currentAmount);
             let paymentMode = $(this).data('payment-mode');
             let formtype = $(this).data('form');
             let payment_id = $(this).data('id');
@@ -859,6 +873,7 @@
             if (formtype == "bulk") {
                 $('.cheque').hide();
                 $('#clearing_amount_div').hide();
+                $('#clearing_diff_box').hide();
 
 
             } else {
@@ -867,6 +882,7 @@
                 $('.cheque').show();
                 $('#clearing_amount_div').show();
                 $('#clearing_amount_input').prop('required', true);
+                addClassAsterisk('#clearing_amount_input');
             }
             $('#clearing_amount_input').val(currentAmount);
             $('#modal-single-clear').data('original-mode', paymentMode);
@@ -887,6 +903,7 @@
             if (selectedMode !== originalMode) {
                 $('#mode_change_reason_div').show();
                 $('#mode_change_reason').prop('required', true);
+                addClassAsterisk('#mode_change_reason')
             } else {
                 $('#mode_change_reason_div').hide();
                 $('#mode_change_reason').prop('required', false);
@@ -961,13 +978,16 @@
             if (mode === 3) {
                 $('#bank_div').show();
                 $('#bank_id').prop('required', true);
+                addClassAsterisk('#bank_id');
 
                 $('#cheque_div').show();
                 $('#cheque_no').prop('required', true);
+                addClassAsterisk('#cheque_no');
 
             } else if (mode === 2) {
                 $('#bank_div').show();
                 $('#bank_id').prop('required', true);
+                addClassAsterisk('#bank_id');
 
             } else {
                 $('#bank_id').prop('required', false).val('');
@@ -982,7 +1002,7 @@
     {{-- Filetr section --}}
     <script>
         let units = @json($units);
-        console.log('units', units)
+        // console.log('units', units)
 
         $(document).on('change', '#propertySelect', function() {
             propertyChange();
@@ -1042,7 +1062,7 @@
                 paymentIds.push($(this).val());
             });
 
-            console.log(paymentIds);
+            // console.log(paymentIds);
 
 
             const form = document.getElementById('receivableClearForm');
@@ -1143,6 +1163,21 @@
         });
         $(document).on('click', '#bouncedClearBtn', function() {
 
+            const bounceformContainer = document.querySelector('#modal-bounced-cheque');
+            if (!validateformContainer(bounceformContainer)) {
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: "Please fill all required fields correctly!",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                return;
+            }
+
             const form = document.getElementById('bouncedChequeForm');
             let formData = new FormData(form);
 
@@ -1169,15 +1204,16 @@
                 },
                 success: function(response) {
 
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'success',
-                        title: response.message || 'Bounced cheque saved successfully',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true
-                    });
+                    // Swal.fire({
+                    //     toast: true,
+                    //     position: 'top-end',
+                    //     icon: 'success',
+                    //     title: response.message || 'Bounced cheque saved successfully',
+                    //     showConfirmButton: false,
+                    //     timer: 3000,
+                    //     timerProgressBar: true
+                    // });
+                    toastr.success(response.message);
 
                     $('#modal-bounced-cheque').modal('hide');
                     form[0].reset();
@@ -1187,17 +1223,21 @@
                     $('#tenantChequeTable').DataTable().ajax.reload(null, false);
                 },
                 error: function(xhr) {
+                    // console.log(xhr);
                     let msg = 'Something went wrong';
 
                     if (xhr.status === 422) {
                         msg = Object.values(xhr.responseJSON.errors).join('<br>');
+                        toastr.error(msg);
+                    } else {
+                        toastr.error(xhr.statusText);
                     }
 
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        html: msg
-                    });
+                    // Swal.fire({
+                    //     icon: 'error',
+                    //     title: 'Error',
+                    //     html: msg
+                    // });
                 },
                 complete: function() {
                     $('#bouncedClearBtn').prop('disabled', false).text('Save');
@@ -1207,7 +1247,7 @@
         $(document).on('click', '.bouncedInfoBtn', function() {
             let reason = $(this).data('reason');
             let date = $(this).data('date');
-            console.log(reason, date);
+            // console.log(reason, date);
 
             $('#bouncedReasonText').text(reason);
 
@@ -1220,5 +1260,11 @@
 
             $('#bouncedChequeModal').modal('show');
         });
+    </script>
+    <script>
+        function addClassAsterisk(inputSelector) {
+            alert("test");
+            $(inputSelector).prev('label').addClass('asterisk');
+        }
     </script>
 @endsection
