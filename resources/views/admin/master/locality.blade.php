@@ -307,6 +307,8 @@
 
         $("#modal-locality").on('shown.bs.modal', function(e) {
             document.activeElement.blur();
+            $("#area_select").focus();
+
             var id = $(e.relatedTarget).data('id');
             var name = $(e.relatedTarget).data('name');
             var company_id = $(e.relatedTarget).data('company');
@@ -333,14 +335,16 @@
             } else {
                 $('#localityForm').trigger("reset");
             }
+
         });
 
         $('#modal-locality').on('hidden.bs.modal', function() {
             let form = $(this).find('form');
 
-            form[0].reset(); // reset normal inputs
-            form.find('select').val(null).trigger('change'); // reset all select2
+            form[0].reset();
+            form.find('select').val(null).trigger('change');
             $('#company_id').prop('disabled', false);
         });
+        enableEnterNavigation('#localityForm');
     </script>
 @endsection
