@@ -1,33 +1,40 @@
 <script>
     $('#closingdate').datetimepicker({
-        format: 'DD-MM-YYYY'
+        format: 'DD-MM-YYYY',
+        allowInputToggle: true
     });
 
     $('#startdate').datetimepicker({
-        format: 'DD-MM-YYYY'
+        format: 'DD-MM-YYYY',
+        allowInputToggle: true
     });
 
     $('#enddate').datetimepicker({
-        format: 'DD-MM-YYYY'
+        format: 'DD-MM-YYYY',
+        allowInputToggle: true
     });
 
     $('#firstpaymntdate').datetimepicker({
-        format: 'DD-MM-YYYY'
+        format: 'DD-MM-YYYY',
+        allowInputToggle: true
     });
 
     $('#receivable_start_date').datetimepicker({
-        format: 'DD-MM-YYYY'
+        format: 'DD-MM-YYYY',
+        allowInputToggle: true
     });
 
     $('.receivable_date').each(function() {
         $(this).parent().datetimepicker({
-            format: 'DD-MM-YYYY'
+            format: 'DD-MM-YYYY',
+            allowInputToggle: true
         });
     });
 
     $('.otherPaymentDate').each(function() {
         $(this).parent().datetimepicker({
-            format: 'DD-MM-YYYY'
+            format: 'DD-MM-YYYY',
+            allowInputToggle: true
         });
     });
 
@@ -78,7 +85,7 @@
 
 
         function totalUnitValue() {
-            const unitCount = $('#no_of_units').val();
+            let unitCount = parseInt($('#no_of_units').val());
             const prevBlocks = container.querySelectorAll('.apdi');
 
             // if (prevBlocks.length > unitCount) {
@@ -93,18 +100,19 @@
                     if (prevBlocks.length > unitCount) {
                         if (!existingBtn) {
                             lastFormGroup.insertAdjacentHTML('beforeend', `
-                        <div class="col-sm-1 btndelete">
-                            <button type="button" class="btn-danger btn-block dlt-div btndetd m-4" title="Delete" data-toggle="tooltip">
-                                <i class="fa fa-trash fa-1x"></i>
-                            </button>
-                        </div>
-                    `);
+                                <div class="col-sm-1 btndelete">
+                                    <button type="button" class="btn-danger btn-block dlt-div btndetd m-4" title="Delete" data-toggle="tooltip">
+                                        <i class="fa fa-trash fa-1x"></i>
+                                    </button>
+                                </div>
+                            `);
                             $('.nextBtn').prop('disabled', true);
 
                             // Remove button
                             const removeBtn = block.querySelector('.dlt-div');
                             if (removeBtn) {
                                 removeBtn.addEventListener('click', () => {
+
                                     if (prevBlocks.length > unitCount) {
                                         const detailId = $(block.querySelector(
                                             'input[name="unit_detail[id][]"]'
@@ -119,7 +127,6 @@
                                             confirmButtonText: "Yes, delete it!"
                                         }).then((result) => {
                                             if (result.isConfirmed) {
-
 
                                                 // var fdataUnit = new FormData();
 
@@ -263,6 +270,8 @@
                                                         .querySelectorAll(
                                                             '.btndelete'
                                                         );
+
+
                                                     if (remainingDeletes
                                                         .length <=
                                                         0 ||
@@ -1302,7 +1311,8 @@
 
                     // Now initialize the datetimepicker AFTER it's added
                     $('#otherPaymentDate' + i).datetimepicker({
-                        format: 'DD-MM-YYYY'
+                        format: 'DD-MM-YYYY',
+                        allowInputToggle: true
                     });
 
                     // Then attach any events or hide functions
@@ -2231,7 +2241,8 @@
 
 
                 $('#receivable_date' + inst).datetimepicker({
-                    format: 'DD-MM-YYYY'
+                    format: 'DD-MM-YYYY',
+                    allowInputToggle: true
                 });
 
                 $('#receivable_date0').on('input change', function() {
@@ -2389,11 +2400,15 @@
         $('#deposit_perc').val('0');
         $('#deposit').val('0');
         $('#duration_months').val('12');
+        $('#closingdate').find('input').val('');
+        $('#startdate').find('input').val('');
+        $('#enddate').find('input').val('');
+        $('.otherPaymentDate').val('');
+        $('.payment_mode_div.cheque_no').find('input').val('');
+        $('.receivableaddmore.date').find('input').val('');
 
         calculateEndDate();
-        console.log('roi call renew');
         calculateRoi();
-        console.log('roi call renew');
         CalculatePayables();
 
         paymentSplit();

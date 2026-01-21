@@ -147,7 +147,7 @@
                             <div class="modal-body">
                                 <div class="card-body">
                                     <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Comments</label>
+                                        <label for="inputEmail3" class="col-sm-3 col-form-label asterisk">Comments</label>
                                         <textarea name="comment" class="form-control" id="comment" cols="10" rows="5" required></textarea>
                                     </div>
                                 </div>

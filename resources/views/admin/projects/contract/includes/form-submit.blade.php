@@ -4,12 +4,13 @@
 @endphp
 
 <script>
-    document.getElementById('contractForm').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            return false;
-        }
-    });
+    // document.getElementById('contractForm').addEventListener('keydown', function(e) {
+    //     if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+    //         stepper.next();
+    //         // e.preventDefault();
+    //         return false;
+    //     }
+    // });
 </script>
 
 <script>

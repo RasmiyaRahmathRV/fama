@@ -11,6 +11,86 @@
                 allowClear: true
             });
 
+            const form = document.getElementById('contractForm');
+
+            if (form) {
+                form.addEventListener('keydown', function(e) {
+                    if (e.key !== 'Enter') return;
+
+                    const target = e.target;
+
+                    /* =========================
+                       1️⃣ TEXTAREA → allow Enter
+                       ========================= */
+                    if (target.tagName === 'TEXTAREA') return;
+
+                    /* =========================
+                       2️⃣ SELECT2 → allow Enter
+                       ========================= */
+                    if ($(target).closest('.select2-container').length) {
+                        e.stopPropagation();
+                        return;
+                    }
+
+                    /* =========================
+                        3️⃣ NATIVE SELECT → allow Enter
+                        ========================= */
+                    if (target.tagName === 'SELECT') {
+                        e.preventDefault(); // prevent form submit
+                        return;
+                    }
+
+                    /* =========================
+                        3️⃣ checkboxx FOCUSED → click it
+                        ========================= */
+                    if (target.type === 'checkbox') {
+                        e.preventDefault();
+                        target.checked = !target.checked;
+                        target.dispatchEvent(new Event('change', {
+                            bubbles: true
+                        }));
+                        return;
+                    }
+
+                    /* =========================
+                       3️⃣ BUTTON FOCUSED → click it
+                       ========================= */
+                    if (target.tagName === 'BUTTON') {
+                        e.preventDefault();
+                        target.click();
+                        return;
+                    }
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const stepIndex = window.stepper._currentIndex;
+                    const lastIndex = window.stepper._steps.length - 1;
+
+                    // LAST STEP → SUBMIT
+                    if (stepIndex === lastIndex) {
+                        if (validateStep(stepIndex)) {
+                            ContractFormSubmit(e);
+                        } else {
+                            alert('Please fill all required fields before submitting.');
+                        }
+                        return;
+                    }
+
+                    // OTHER STEPS → NEXT
+                    if (validateStep(stepIndex)) {
+                        window.stepper.next();
+
+                        if (window.stepper._currentIndex === 6) {
+                            rentPerUnitFamaFaateh();
+                        }
+                    } else {
+                        alert('Please fill all required fields in this step.');
+                    }
+
+                });
+            }
+
 
             document.addEventListener('click', function(e) {
                 if (e.target.matches('.prevBtn')) {
