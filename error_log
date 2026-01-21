@@ -1,0 +1,47 @@
+[13-Jan-2026 05:11:01 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /var/www/html/fama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 05:12:01 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /var/www/html/fama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 05:13:01 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /var/www/html/fama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 05:14:02 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /var/www/html/fama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 05:15:02 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /var/www/html/fama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 05:16:02 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /var/www/html/fama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 05:17:01 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /var/www/html/fama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 05:18:02 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /var/www/html/fama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 05:19:01 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /var/www/html/fama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 05:20:01 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /var/www/html/fama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 05:21:01 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /var/www/html/fama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 05:22:01 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /var/www/html/fama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 05:23:02 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /var/www/html/fama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 05:24:01 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /var/www/html/fama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 05:25:01 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /var/www/html/fama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 08:29:30 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /home/famacrm/crmfama/vendor/composer/platform_check.php on line 26
+[13-Jan-2026 08:29:30 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 8.2.30. in /home/famacrm/crmfama/vendor/composer/platform_check.php on line 26
+[15-Jan-2026 07:07:33 UTC] PHP Warning:  Undefined variable $app in /home/famacrm/crmfama/artisan on line 11
+[15-Jan-2026 07:07:33 UTC] PHP Fatal error:  Uncaught Error: Call to a member function loadEnvironmentFrom() on null in /home/famacrm/crmfama/artisan:11
+Stack trace:
+#0 {main}
+  thrown in /home/famacrm/crmfama/artisan on line 11
+[15-Jan-2026 07:09:25 UTC] PHP Warning:  Undefined variable $app in /home/famacrm/crmfama/artisan on line 11
+[15-Jan-2026 07:09:25 UTC] PHP Fatal error:  Uncaught Error: Call to a member function loadEnvironmentFrom() on null in /home/famacrm/crmfama/artisan:11
+Stack trace:
+#0 {main}
+  thrown in /home/famacrm/crmfama/artisan on line 11
+[15-Jan-2026 07:09:50 UTC] PHP Warning:  Undefined variable $app in /home/famacrm/crmfama/artisan on line 11
+[15-Jan-2026 07:09:50 UTC] PHP Fatal error:  Uncaught Error: Call to a member function loadEnvironmentFrom() on null in /home/famacrm/crmfama/artisan:11
+Stack trace:
+#0 {main}
+  thrown in /home/famacrm/crmfama/artisan on line 11
+[15-Jan-2026 07:11:58 UTC] PHP Warning:  Undefined variable $app in /home/famacrm/crmfama/artisan on line 11
+[15-Jan-2026 07:11:58 UTC] PHP Fatal error:  Uncaught Error: Call to a member function loadEnvironmentFrom() on null in /home/famacrm/crmfama/artisan:11
+Stack trace:
+#0 {main}
+  thrown in /home/famacrm/crmfama/artisan on line 11
+[15-Jan-2026 07:12:22 UTC] PHP Warning:  Undefined variable $app in /home/famacrm/crmfama/artisan on line 11
+[15-Jan-2026 07:12:22 UTC] PHP Fatal error:  Uncaught Error: Call to a member function loadEnvironmentFrom() on null in /home/famacrm/crmfama/artisan:11
+Stack trace:
+#0 {main}
+  thrown in /home/famacrm/crmfama/artisan on line 11
+[15-Jan-2026 07:13:26 UTC] PHP Warning:  Undefined variable $app in /home/famacrm/crmfama/artisan on line 11
+[15-Jan-2026 07:13:26 UTC] PHP Fatal error:  Uncaught Error: Call to a member function loadEnvironmentFrom() on null in /home/famacrm/crmfama/artisan:11
+Stack trace:
+#0 {main}
+  thrown in /home/famacrm/crmfama/artisan on line 11

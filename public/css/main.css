@@ -369,12 +369,14 @@ color: white;
     height: auto;
 }
 
+
 /* Data table export button respponsive fix */
 
 
 .dt-buttons  {
     width: auto !important;
 }
+
 
 
 
