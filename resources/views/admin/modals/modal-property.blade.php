@@ -95,9 +95,14 @@
                          <h6 class="mb-4 text-lightblue vendorformh6">Location & Address</h6>
                          <div class="form-row">
                              <div class="col-md-6 col-sm-12 mb-3">
-                                 <label>Location</label>
-                                 <textarea name="location" id="location" class="form-control" rows="2" placeholder="Enter location link"></textarea>
+                                 <label>Location <small class="text-muted font-weight-lighter">(Enter a valid URL
+                                         starting
+                                         with http:// or
+                                         https://)</small></label>
+                                 <textarea name="location" id="location" class="form-control" rows="2" placeholder="Enter location link"
+                                     pattern="https?://.+" title="Please enter a valid URL starting with http:// or https://"></textarea>
                              </div>
+
                              <div class="col-md-6 col-sm-12 mb-3">
                                  <label>Address</label>
                                  <textarea name="address" id="address" class="form-control" rows="2" placeholder="Full property address"></textarea>
@@ -109,7 +114,7 @@
                          <h6 class="mb-4 text-lightblue vendorformh6">Identifiers & Status</h6>
                          <div class="form-row">
                              <div class="col-md-6 col-sm-12 mb-3">
-                                 <label>Makani Number <small class="text-muted fonr-weight-lighter">(Should have 10
+                                 <label>Makani Number <small class="text-muted font-weight-lighter">(Should have 10
                                          digits)</small></label>
                                  <input type="text" name="makani_number" id="makani_number" class="form-control"
                                      placeholder="e.g. 1234567890" maxlength="10" pattern="\d{10}">
@@ -199,6 +204,9 @@
  <script>
      $('#PropertyForm').submit(function(e) {
          e.preventDefault();
+         if (!validateform()) {
+             return;
+         }
          //  $('#company_id').prop('disabled', false);
          const ptform = $(this);
          //  ptform.find('select[name="company_id"]').prop('disabled', false);
@@ -278,4 +286,21 @@
          });
 
      });
+
+     function validateform(e) {
+         //  var makani = $('#makani_number').val().trim();
+         var location = $('#location').val().trim();
+
+         //  if (makani && !/^\d{10}$/.test(makani)) {
+         //      alert('Makani number must be exactly 10 digits.');
+         //      $('#makani_number').focus();
+         //      return false;
+         //  }
+
+         if (location && !/^https?:\/\/[^\s]+$/.test(location)) {
+             toastr.error('Please enter a valid URL starting with http:// or https://');
+             $('#location').focus();
+             return false;
+         }
+     }
  </script>

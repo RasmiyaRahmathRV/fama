@@ -170,7 +170,7 @@
 
                                                     <div class="col-md-4">
                                                         <label for="exampleInputEmail1 " class="asterisk">Tenant mobile
-                                                            <small class="text-muted fonr-weight-lighter">(e.g.,
+                                                            <small class="text-muted font-weight-lighter">(e.g.,
                                                                 +971501234567
                                                                 or 971501234567)</small></label>
                                                         <input type="text" class="form-control" id="tenant_mobile"
@@ -235,7 +235,7 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="exampleInputEmail1 " class="asterisk">Contact Number
-                                                            <small class="text-muted fonr-weight-lighter">(e.g.,
+                                                            <small class="text-muted font-weight-lighter">(e.g.,
                                                                 +971501234567
                                                                 or 971501234567)</small> </label>
                                                         <input type="text" class="form-control" id="contact_number"
@@ -253,7 +253,7 @@
 
                                                     <div class="col-md-6">
                                                         <label class="asterisk">Address Line 1<small
-                                                                class="text-muted fonr-weight-lighter">(Flat
+                                                                class="text-muted font-weight-lighter">(Flat
                                                                 No,Building)</small></label>
                                                         <input type="text" class="form-control" id="tenant_address"
                                                             name="tenant_address" placeholder="Flat No,Building etc"
@@ -262,7 +262,7 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label class="">Address Line 2<small
-                                                                class="text-muted fonr-weight-lighter">(Street)</small></label>
+                                                                class="text-muted font-weight-lighter">(Street)</small></label>
                                                         <input type="text" class="form-control" id="tenant_street"
                                                             name="tenant_street" placeholder="Street"
                                                             value="{{ old('tenant_street', $tenant->tenant_street ?? '') }}">

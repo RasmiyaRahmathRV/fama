@@ -156,7 +156,7 @@
 
                                                     <div class="col-md-4">
                                                         <label for="exampleInputEmail1">Tenant mobile <small
-                                                                class="text-muted fonr-weight-lighter">(e.g., +971501234567
+                                                                class="text-muted font-weight-lighter">(e.g., +971501234567
                                                                 or 971501234567)</small></label>
                                                         <input type="text" class="form-control" id="tenant_mobile"
                                                             name="tenant_mobile" placeholder="Tenant mobile"
@@ -215,7 +215,7 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="exampleInputEmail1">Contact Number <small
-                                                                class="text-muted fonr-weight-lighter">(e.g., +971501234567
+                                                                class="text-muted font-weight-lighter">(e.g., +971501234567
                                                                 or 971501234567)</small> </label>
                                                         <input type="text" class="form-control" id="contact_number"
                                                             name="contact_number" placeholder="Contact number"
