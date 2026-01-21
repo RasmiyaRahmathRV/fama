@@ -51,8 +51,8 @@
                                     @endcan
                                     @can('agreement.renew')
                                         <a href="{{ route('agreement.expiring-list') }}"
-                                            class="btn btn-secondary float-right m-1">Renew
-                                            Agreement</a>
+                                            class="btn btn-secondary float-right m-1">Renewal List
+                                        </a>
                                     @endcan
                                     {{-- <button class="btn btn-secondary float-right m-1" data-toggle="modal"
                                         data-target="#modal-import">Import</button> --}}

@@ -63,7 +63,7 @@
                                             <span class="info-box-text text-muted">Property Size</span>
                                             <span class="info-box-number">
                                                 {{ $property->property_size }}
-                                                {{ $property->propertySizeUnit->unit_name }}
+                                                {{ $property->propertySizeUnit->unit_name ?? ' ' }}
                                             </span>
                                         </div>
                                     </div>
