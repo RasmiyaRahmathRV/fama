@@ -4,7 +4,7 @@
 @endphp
 
 <script>
-    document.getElementById('stepperForm').addEventListener('keydown', function(e) {
+    document.getElementById('contractForm').addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             return false;

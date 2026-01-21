@@ -583,6 +583,19 @@
             // Swal.close();
             $('#global-loader').fadeOut(150);
         }
+
+        function setInvalid(input, message) {
+            $(input).addClass("is-invalid").removeClass("is-valid");
+            if (message) {
+                toastr.error(message);
+            }
+
+        }
+
+        // helper: valid
+        function setValid(input) {
+            $(input).addClass("is-valid").removeClass("is-invalid");
+        }
     </script>
     {{-- <script>
         $(window).on('load', function() {

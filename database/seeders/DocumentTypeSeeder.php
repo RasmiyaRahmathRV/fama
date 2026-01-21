@@ -34,7 +34,7 @@ class DocumentTypeSeeder extends Seeder
             ],
             [
                 // 'document_type' => 3,
-                'label_name' => 'Acknoledgement',
+                'label_name' => 'Acknowledgement',
                 'field_type' => 'file',
                 'field_name' => 'acknoledgement',
                 'status_change_value' => 'is_aknowledgement_uploaded',

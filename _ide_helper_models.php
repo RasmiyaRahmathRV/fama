@@ -647,6 +647,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractUnitDetail> $contract_unit_details
  * @property-read int|null $contract_unit_details_count
  * @property-read \App\Models\User|null $deletedBy
+ * @property mixed $acknowledgement_released_date
  * @property-read \App\Models\Locality|null $locality
  * @property-read Contract|null $parent
  * @property-read \App\Models\Property|null $property

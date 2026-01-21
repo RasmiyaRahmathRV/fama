@@ -362,9 +362,10 @@ class ContractService
                 }
 
                 if (Gate::allows('contract.sign_after_approval') && $row->contract_status == 2) {
-                    $action .= '<a class="btn btn-info btn-sm" href="' . route('sign.contract', $row->id) . '" title="Sign Vendor Contract">
+                    $action .= '<a class="btn btn-info btn-sm"  title="Sign Vendor Contract" data-toggle="modal" data-id="' . $row->id . '"
+                                        data-target="#modal-upload">
                             <i class="fas fa-signature"></i>
-                        </a>';
+                        </a>';   //href="' . route('sign.contract', $row->id) . '"
                 }
 
                 return $action ?: '-';

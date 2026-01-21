@@ -23,6 +23,7 @@ use App\Services\LocalityService;
 use App\Services\PropertyService;
 use App\Services\PropertyTypeService;
 use App\Services\VendorService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
@@ -510,5 +511,32 @@ class ContractController extends Controller
     {
         $comments = $this->commentservice->getByContractId($contractId);
         return response()->json(['comments' => $comments]);
+    }
+
+    public function acknowledgement_view($id)
+    {
+        $title = "Contract Acknowledgement";
+        $contract = $this->contractService->getById($id);
+        $page = 1;
+        return view('admin.projects.contract.acknowledgement', compact('contract', 'page', 'title'));
+    }
+
+
+    public function acknowledgement_print($id)
+    {
+        $contract = $this->contractService->getById($id);
+        $page = 0;
+        $pdf = Pdf::loadView('admin.projects.contract.pdf-acknowledgement', compact('contract', 'page'))
+            ->setPaper([0, 0, 830, 1400]);
+        return $pdf->stream('contract-' . $contract->id . '.pdf');
+    }
+
+    public function release($contractId)
+    {
+        $this->documentService->updateContractAcknowledgement($contractId);
+
+        return redirect()->route('contracts.acknowledgement', $contractId)
+            ->with('success', 'Acknowledgement released');
+        // ->back()->with('success', 'Acknowledgement released');
     }
 }

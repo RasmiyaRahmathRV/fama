@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{{ asset('assets/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+
+    <link rel="stylesheet" href="{{ asset('assets/icheck-bootstrap/icheck-bootstrap.min.css') }}">
 @endsection
 
 @section('content')
@@ -146,7 +148,7 @@
                                 <div class="card-body">
                                     <div class="form-group row">
                                         <label for="inputEmail3" class="col-sm-3 col-form-label">Comments</label>
-                                        <textarea name="comment" class="form-control" id="" cols="10" rows="5"></textarea>
+                                        <textarea name="comment" class="form-control" id="comment" cols="10" rows="5" required></textarea>
                                     </div>
                                 </div>
                                 <!-- /.card-body -->
@@ -212,6 +214,51 @@
                 <!-- /.modal-dialog -->
             </div>
             <!-- /.modal -->
+
+            <div class="modal fade" id="modal-upload">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Upload Documents</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="javascript:void(0)" id="ContractUploadForm" method="POST"
+                            enctype="multipart/form-data">
+                            <input type="hidden" name="contract_id" id="contract_id_upload">
+                            <div class="modal-body">
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-9 pr-1">
+                                            <input type="hidden" name="0[document_type]" value="1">
+                                            <input type="hidden" name="0[status_change]"
+                                                value="is_vendor_contract_uploaded">
+                                            <label for="inputEmail3" class="col-form-label">Vendor Contract</label>
+                                            <input type="file" name="0[file]" class="form-control"
+                                                accept=".pdf,image/*">
+                                        </div>
+                                        <div class="col-3">
+                                            <span class="float-right mt-31">
+                                                <div class="icheck-success d-inline">
+                                                    <input type="checkbox" id="signed" name="0[signed_contract]"
+                                                        class="signedContract" value="1">
+                                                    <label class="labelpermission" for="signed"> Signed </label>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" id="importBtn" class="btn btn-info">Upload</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
 
 
         </section>
@@ -417,6 +464,25 @@
             const form = document.getElementById("ContractCommentsForm");
             var fdata = new FormData(form);
 
+            let isValid = true;
+            $(".error-text").remove(); // clear old errors
+            $(form).find("[required]:visible").each(function() {
+                const value = $(this).val()?.trim();
+
+                if (!value) {
+                    isValid = false;
+                    setInvalid(this);
+                } else {
+                    setValid(this);
+                }
+            });
+
+
+            if (!isValid) {
+                toastr.error('Please fill all required fields before submitting.');
+                return;
+            }
+
             Swal.fire({
                 title: "Are you sure?",
                 text: "The contract is ready to approve!",
@@ -508,5 +574,17 @@
                 $('#commentsModal').modal('show');
             });
         });
+
+
+        $('#modal-upload').on('show.bs.modal', function(event) {
+            var button = event.relatedTarget;
+
+            // values from button
+            var id = button.getAttribute('data-id');
+
+            // set to modal fields
+            $('#contract_id_upload').val(id);
+        });
     </script>
+    @include('admin.projects.contract.includes.contract_document_js')
 @endsection
