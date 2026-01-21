@@ -120,6 +120,11 @@
                                     <b class="d-block">{{ \Carbon\Carbon::parse($area->created_at)->format('d M Y') }}
                                     </b>
                                 </p>
+                                <p class="text-sm">
+                                    Created At
+                                    <b class="d-block">{{ \Carbon\Carbon::parse($area->updated_at)->format('d M Y') }}
+                                    </b>
+                                </p>
 
 
                             </div>
