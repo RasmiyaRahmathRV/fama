@@ -116,12 +116,12 @@
                                 {{-- @dd($area->created_at) --}}
 
                                 <p class="text-sm">
-                                    Created At
+                                    Created On
                                     <b class="d-block">{{ \Carbon\Carbon::parse($area->created_at)->format('d M Y') }}
                                     </b>
                                 </p>
                                 <p class="text-sm">
-                                    Created At
+                                    Updated On
                                     <b class="d-block">{{ \Carbon\Carbon::parse($area->updated_at)->format('d M Y') }}
                                     </b>
                                 </p>
