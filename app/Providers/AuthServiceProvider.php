@@ -9,6 +9,7 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -27,28 +28,27 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
-    
+
         // NEVER run permission logic during artisan / migrations
         if (app()->runningInConsole()) {
             return;
         }
-    
+
         try {
             // Extra safety: ensure DB connection exists
             DB::connection()->getPdo();
-    
+
             if (! Schema::hasTable('permissions')) {
                 return;
             }
-    
+
             $permissions = \App\Models\Permission::pluck('permission_name');
-    
+
             foreach ($permissions as $perm) {
                 Gate::define($perm, function ($user) use ($perm) {
                     return $user->hasPermission($perm);
                 });
             }
-    
         } catch (Throwable $e) {
             // Silently ignore DB errors during early boot
             return;

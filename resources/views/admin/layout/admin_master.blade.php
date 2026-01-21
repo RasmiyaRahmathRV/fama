@@ -526,6 +526,41 @@
             "timeOut": "3000"
         };
     </script>
+    <script>
+        function enableEnterNavigation(formSelector) {
+            $(formSelector).on('keydown', 'input, select, textarea', function(e) {
+                if (e.key !== 'Enter') return; // only handle Enter
+
+                e.preventDefault();
+                const $current = $(this);
+
+                // Handle Select2 fields
+                if ($current.hasClass('select2-hidden-accessible')) {
+                    const select2data = $current.data('select2');
+                    if (!select2data.isOpen()) {
+                        $current.select2('open'); // open dropdown on Enter
+                        return;
+                    }
+                    // if dropdown is open, let Enter select option
+                    return;
+                }
+
+                // Find all focusable elements in the form
+                const $focusable = $(formSelector)
+                    .find('input, select, textarea, button')
+                    .filter(':visible:not([readonly]):not([disabled])');
+
+                const index = $focusable.index(this);
+
+                if (index > -1 && index + 1 < $focusable.length) {
+                    $focusable.eq(index + 1).focus();
+                } else if (index + 1 === $focusable.length) {
+                    // last element → submit
+                    $(formSelector).submit();
+                }
+            });
+        }
+    </script>
     @yield('custom_js')
 
     <!-- AdminLTE -->
