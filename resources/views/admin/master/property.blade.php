@@ -305,7 +305,11 @@
                     placeholder: $(this).data('placeholder'),
                 });
             });
+            $modal.on('click', '.select2-container', function(e) {
+                e.stopPropagation();
+            });
             document.activeElement.blur();
+            $("#area_id").focus();
             var id = $(e.relatedTarget).data('id');
             var name = $(e.relatedTarget).data('name');
             // var company_id = $(e.relatedTarget).data('company');
@@ -378,5 +382,9 @@
                 }
             });
         }
+        enableEnterNavigation('#PropertyForm');
+        $('#makani_number').on('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+        });
     </script>
 @endsection

@@ -1,4 +1,4 @@
- <div class="modal fade" id="modal-property">
+ <div class="modal fade" id="modal-property" tabindex="-1" role="dialog" aria-hidden="true">
      <div class="modal-dialog modal-lg">
          <div class="modal-content">
              <div class="modal-header">
@@ -109,7 +109,8 @@
                          <h6 class="mb-4 text-lightblue vendorformh6">Identifiers & Status</h6>
                          <div class="form-row">
                              <div class="col-md-6 col-sm-12 mb-3">
-                                 <label>Makani Number</label>
+                                 <label>Makani Number <small class="text-muted fonr-weight-lighter">(Should have 10
+                                         digits)</small></label>
                                  <input type="text" name="makani_number" id="makani_number" class="form-control"
                                      placeholder="e.g. 1234567890" maxlength="10" pattern="\d{10}">
                              </div>

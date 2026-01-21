@@ -104,6 +104,7 @@ class PropertyService
             'property_size' => 'required|numeric|min:0',
             'property_size_unit' => 'required|exists:property_size_units,id',
             'status' => 'required|in:0,1',
+            'makani_number' => ['nullable', 'digits:10'],
         ], [
             'property_name.unique' => 'This property name already exists. Please choose another.',
             'area_id.required' => 'Please select an area.',
@@ -112,6 +113,7 @@ class PropertyService
             'property_size.required' => 'Property size is required.',
             'property_size_unit.required' => 'Please select a property size unit.',
             'status.required' => 'Please select a status.',
+            'makani_number.digits' => 'Makani Number must be exactly 10 digits and cannot contain letters or symbols.',
             // 'property_type_id.required' => 'Please select a propert type.',
 
 

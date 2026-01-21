@@ -1,4 +1,4 @@
- <div class="modal fade" id="modal-vendor">
+ <div class="modal fade" id="modal-vendor" tabindex="-1" role="dialog" aria-hidden="true">
      <div class="modal-dialog modal-xl">
          <div class="modal-content">
              <div class="modal-header">
@@ -97,8 +97,8 @@
                          <div class="form-row mb-3">
                              <div class="col-sm-6">
                                  <label class="asterisk">Vendor Address</label>
-                                 <textarea name="vendor_address" id="vendor_address" class="form-control" rows="2" placeholder="Vendor Address"
-                                     required></textarea>
+                                 <textarea name="vendor_address" id="vendor_address" class="form-control" rows="2"
+                                     placeholder="Vendor Address" required></textarea>
                              </div>
                              <div class="col-sm-6">
                                  <label>Location</label>
