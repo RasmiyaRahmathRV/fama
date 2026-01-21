@@ -377,6 +377,18 @@ color: white;
     width: auto !important;
 }
 
+.closebtn:focus,
+.closebtn:focus-visible {
+
+    outline-offset: 2px !important;
+    box-shadow: none !important;
+        background: #b9bec2;
+}
+
+.savebtninfo:focus{
+    background-color: #0d6371;
+}
+
 
 
 

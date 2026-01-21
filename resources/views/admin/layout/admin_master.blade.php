@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="{{ asset('css/adminlte.css') }}">
 
     <!-- custom style -->
-    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}?v=1">
 </head>
 <!--
 `body` tag options:
