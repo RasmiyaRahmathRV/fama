@@ -730,6 +730,7 @@ namespace App\Models{
  * @property int $id
  * @property int $contract_id
  * @property string|null $contract_fee
+ * @property string|null $ejari
  * @property string $start_date
  * @property string $end_date
  * @property int $duration_in_months
@@ -757,6 +758,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereDurationInDays($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereDurationInMonths($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereEjari($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereEndDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereGracePeriod($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractDetail whereId($value)
@@ -822,7 +824,6 @@ namespace App\Models{
  * @property string|null $appliances
  * @property string|null $decoration
  * @property string|null $dewa_deposit
- * @property string|null $ejari
  * @property string|null $cost_of_cabinets
  * @property string $added_by
  * @property string|null $updated_by
@@ -848,7 +849,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereDewaDeposit($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereEjari($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContractOtc whereUpdatedBy($value)
@@ -2045,7 +2045,9 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property int $investment_id
  * @property-read \App\Models\User|null $deletedBy
+ * @property-read \App\Models\Investment|null $investment
  * @property-read \App\Models\Investor|null $investor
  * @property-read \App\Models\InvestorPayout|null $investorPayout
  * @property-read \App\Models\Bank|null $paidBank
@@ -2061,6 +2063,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereDeletedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereInvestmentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution whereInvestorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidBank($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvestorPaymentDistribution wherePaidBy($value)

@@ -25,11 +25,17 @@ class InvestorPaymentDistribution extends Model
         'paid_date',
         'updated_by',
         'deleted_by',
+        'investment_id'
     ];
 
     public function investor()
     {
         return $this->belongsTo(Investor::class);
+    }
+
+    public function investment()
+    {
+        return $this->belongsTo(Investment::class);
     }
 
     public function investorPayout()

@@ -74,7 +74,6 @@
 
                                         <div class="card-body">
                                             <div class="row">
-
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label class="asterisk">Investor</label>
@@ -89,7 +88,7 @@
                                                                     data-profit-release-date="{{ $investor->profit_release_date }}"
                                                                     data-banks='@json($investor->investorBanks)'
                                                                     data-investments='@json($investor->total_no_of_investments)'
-                                                                    {{ isset($investment) && $investment->investor_id == $investor->id ? 'selected' : '' }}>
+                                                                    {{ (isset($investment) && $investment->investor_id) || $parent['investor_id'] == $investor->id ? 'selected' : '' }}>
                                                                     {{ $investor->investor_name }}
                                                                 </option>
                                                             @endforeach
@@ -103,7 +102,7 @@
                                                         <label class="asterisk">Investment Amount</label>
                                                         <input type="number" class="form-control" id="investment_amount"
                                                             name="investment_amount" placeholder="Enter Investment Amount"
-                                                            value="{{ old('investment_amount', $investment->investment_amount ?? '') }}"
+                                                            value="{{ old('investment_amount', isset($investment) && $investment->investment_amount ? $investment->investment_amount : $parent['amount'] ?? '') }}"
                                                             required>
                                                     </div>
                                                 </div>
@@ -113,7 +112,7 @@
                                                         <label>Received Amount</label>
                                                         <input type="number" class="form-control" name="received_amount"
                                                             id="received_amount" placeholder="Enter Received Amount"
-                                                            value="{{ old('received_amount', $investment->received_amount ?? '') }}"
+                                                            value="{{ old('received_amount', isset($investment) && $investment->received_amount ? $investment->received_amount : $parent['amount'] ?? '') }}"
                                                             {{ $paymentsCount > 1 ? 'readonly' : '' }}>
                                                     </div>
                                                 </div>
@@ -126,7 +125,7 @@
                                                             <input type="text" class="form-control datetimepicker-input"
                                                                 name="investment_date" id="investment_date"
                                                                 data-target="#investmentdate" placeholder="DD-MM-YYYY"
-                                                                value="{{ old('investment_date', isset($investment->investment_date) ? \Carbon\Carbon::parse($investment->investment_date)->format('d-m-Y') : '') }}"
+                                                                value="{{ old('investment_date', isset($investment->investment_date) ? \Carbon\Carbon::parse($investment->investment_date)->format('d-m-Y') : $parent['date'] ?? '') }}"
                                                                 required>
                                                             <div class="input-group-append" data-target="#investmentdate"
                                                                 data-toggle="datetimepicker">
@@ -682,7 +681,7 @@
     <script>
         $(document).ready(function() {
             $('#referral-section').hide();
-            @if (isset($investment))
+            @if (isset($investment) || $parent['investor_id'])
                 $('#investor_id').on('select2:opening', function(e) {
                     e.preventDefault();
                 });
@@ -911,7 +910,11 @@
 
         // On page load for edit
         let selectedInvestorBankId = "{{ old('investor_bank_id', $investment->investor_bank_id ?? '') }}";
-        $('#investor_id').val("{{ old('investor_id', $investment->investor_id ?? '') }}").trigger('change');
+        @php
+            $investorId = old('investor_id', isset($investment) ? $investment->investor_id : $parent['investor_id'] ?? '');
+        @endphp
+
+        $('#investor_id').val("{{ old('investor_id', $investorId) }}").trigger('change');
         investorChange(selectedInvestorBankId);
 
 
