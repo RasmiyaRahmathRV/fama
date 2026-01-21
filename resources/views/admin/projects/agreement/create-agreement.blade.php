@@ -176,7 +176,7 @@
                                                         <input type="text" class="form-control" id="tenant_mobile"
                                                             name="tenant_mobile" placeholder="Tenant mobile"
                                                             value="{{ old('tenant_mobile', $tenant->tenant_mobile ?? '') }}"
-                                                            required pattern="^\+?\d{1,4}\s?\d{7,12}$">
+                                                            required pattern="^\+?[1-9]\d{9,14}$">
                                                         <div class="invalid-feedback">
                                                             Enter valid mobile with country code.
                                                         </div>
@@ -241,7 +241,7 @@
                                                         <input type="text" class="form-control" id="contact_number"
                                                             name="contact_number" placeholder="Contact number"
                                                             value="{{ old('contact_number', $tenant->contact_number ?? '') }}"
-                                                            required pattern="^\+?\d{1,4}\s?\d{7,12}$">
+                                                            required pattern="^\+?[1-9]\d{9,14}$">
                                                         <div class="invalid-feedback">
                                                             Enter valid mobile with country code.
                                                         </div>
