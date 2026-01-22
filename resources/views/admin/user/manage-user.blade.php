@@ -12,6 +12,40 @@
     <link rel="stylesheet" href="{{ asset('assets/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('assets/bs-stepper/css/bs-stepper.min.css') }}">
+    {{-- <style>
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            max-width: 100%;
+            table-layout: fixed;
+        }
+
+        .bs-stepper-header {
+            flex-wrap: wrap;
+        }
+
+        .bs-stepper .step {
+            flex: 1 1 auto;
+        }
+
+        .bs-stepper-content {
+            overflow-x: hidden;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+        }
+
+        .content-wrapper,
+        .container-fluid,
+        .card,
+        .bs-stepper {
+            max-width: 100%;
+        }
+    </style> --}}
 @endsection
 
 @section('content')
@@ -157,8 +191,9 @@
                                                 aria-labelledby="information-part-trigger">
                                                 <div class="form-group row">
                                                     <div class="table-responsive">
-                                                        <table class="table table-bordered" style="width: 100%">
-                                                            <thead>
+                                                        <table class="table table-bordered table-responsive"
+                                                            style="width: 100%">
+                                                            <thead style="width: 100%">
                                                                 <tr>
                                                                     <td></td>
                                                                     <td>All</td>
@@ -167,7 +202,7 @@
                                                                     @endforeach
                                                                 </tr>
                                                             </thead>
-                                                            <tbody>
+                                                            <tbody style="width: 100%">
                                                                 @foreach ($permissions as $module)
                                                                     <tr>
                                                                         <td>{{ $module->permission_name }}</td>
@@ -211,7 +246,6 @@
                                                             </tbody>
                                                         </table>
                                                     </div>
-
                                                 </div>
                                                 <span class="float-right">
                                                     <button type="button" class="btn btn-info"
