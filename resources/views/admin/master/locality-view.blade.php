@@ -29,7 +29,7 @@
                 {{-- Card Header --}}
                 <div class="card-header">
                     <h3 class="card-title">
-                        <i class="fas fa-user mr-1"></i> {{ $locality->locality_name }}
+                        <i class="fas fa-map-marker-alt mr-1"></i> {{ $locality->locality_name }}
                     </h3>
 
                     <div class="card-tools">

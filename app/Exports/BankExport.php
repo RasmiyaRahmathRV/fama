@@ -46,6 +46,7 @@ class BankExport implements FromCollection, WithHeadings
                     'Company' => $bank->company->company_name ?? '',
                     'Bank Name' => $bank->bank_name,
                     'Bank Short Code' => $bank->bank_short_code,
+                    'status' => ($bank->status ?? 1) == 1 ? 'Active' : 'Inactive',
                 ];
             });
     }
@@ -57,7 +58,8 @@ class BankExport implements FromCollection, WithHeadings
             'Bank Code',
             'Company',
             'Bank Name',
-            'Bank Short Code'
+            'Bank Short Code',
+            'Status'
         ];
     }
 }
