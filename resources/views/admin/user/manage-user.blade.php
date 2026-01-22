@@ -16,7 +16,7 @@
 
 @section('content')
     <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
+    <div class="content-wrapper user-management">
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
@@ -156,58 +156,62 @@
                                             <div id="information-part" class="content step-content" role="tabpanel"
                                                 aria-labelledby="information-part-trigger">
                                                 <div class="form-group row">
-                                                    <table class="table table-bordered table-responsive">
-                                                        <thead>
-                                                            <tr>
-                                                                <td></td>
-                                                                <td>All</td>
-                                                                @foreach ($subModules as $sub)
-                                                                    <td>{{ ucfirst(str_replace('_', ' ', $sub)) }}</td>
-                                                                @endforeach
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach ($permissions as $module)
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered" style="width: 100%">
+                                                            <thead>
                                                                 <tr>
-                                                                    <td>{{ $module->permission_name }}</td>
-                                                                    <td>
-                                                                        <div class="icheck-success d-inline">
-                                                                            <input type="checkbox"
-                                                                                id="{{ $module->permission_name }}"
-                                                                                class="masterParent"
-                                                                                name="permission_id[]"
-                                                                                data-row="{{ $module->id }}"
-                                                                                value="{{ $module->id }}"
-                                                                                {{ in_array($module->id, $userPermissionIds) ? 'checked' : '' }}>
-                                                                            <label class="labelpermission"
-                                                                                for="{{ $module->permission_name }}">
-                                                                            </label>
-                                                                        </div>
-                                                                    </td>
+                                                                    <td></td>
+                                                                    <td>All</td>
                                                                     @foreach ($subModules as $sub)
-                                                                        <td>
-                                                                            @foreach ($module->children as $child)
-                                                                                @if ($child->getSubmoduleName() == $sub)
-                                                                                    <div class="icheck-success d-inline">
-                                                                                        <input type="checkbox"
-                                                                                            id="{{ $module->permission_name }}{{ $child->getSubmoduleName() }}"
-                                                                                            class="masterChild{{ $module->id }}"
-                                                                                            name="permission_id[]"
-                                                                                            value="{{ $child->id }}"
-                                                                                            {{ in_array($child->id, $userPermissionIds) ? 'checked' : '' }}>
-                                                                                        <label class="labelpermission"
-                                                                                            for="{{ $module->permission_name }}{{ $child->getSubmoduleName() }}">
-
-                                                                                        </label>
-                                                                                    </div>
-                                                                                @endif
-                                                                            @endforeach
-                                                                        </td>
+                                                                        <td>{{ ucfirst(str_replace('_', ' ', $sub)) }}</td>
                                                                     @endforeach
                                                                 </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach ($permissions as $module)
+                                                                    <tr>
+                                                                        <td>{{ $module->permission_name }}</td>
+                                                                        <td>
+                                                                            <div class="icheck-success d-inline">
+                                                                                <input type="checkbox"
+                                                                                    id="{{ $module->permission_name }}"
+                                                                                    class="masterParent"
+                                                                                    name="permission_id[]"
+                                                                                    data-row="{{ $module->id }}"
+                                                                                    value="{{ $module->id }}"
+                                                                                    {{ in_array($module->id, $userPermissionIds) ? 'checked' : '' }}>
+                                                                                <label class="labelpermission"
+                                                                                    for="{{ $module->permission_name }}">
+                                                                                </label>
+                                                                            </div>
+                                                                        </td>
+                                                                        @foreach ($subModules as $sub)
+                                                                            <td>
+                                                                                @foreach ($module->children as $child)
+                                                                                    @if ($child->getSubmoduleName() == $sub)
+                                                                                        <div
+                                                                                            class="icheck-success d-inline">
+                                                                                            <input type="checkbox"
+                                                                                                id="{{ $module->permission_name }}{{ $child->getSubmoduleName() }}"
+                                                                                                class="masterChild{{ $module->id }}"
+                                                                                                name="permission_id[]"
+                                                                                                value="{{ $child->id }}"
+                                                                                                {{ in_array($child->id, $userPermissionIds) ? 'checked' : '' }}>
+                                                                                            <label class="labelpermission"
+                                                                                                for="{{ $module->permission_name }}{{ $child->getSubmoduleName() }}">
+
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    @endif
+                                                                                @endforeach
+                                                                            </td>
+                                                                        @endforeach
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
                                                 </div>
                                                 <span class="float-right">
                                                     <button type="button" class="btn btn-info"
