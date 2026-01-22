@@ -46,7 +46,7 @@
                             @endcan
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="propertyTable" class="table table-bordered table-hover">
+                                <table id="propertyTable" class="table table-striped table-hover">
                                     <thead>
                                         <tr>
                                             <th>#</th>
