@@ -28,7 +28,7 @@
                 {{-- Card Header --}}
                 <div class="card-header">
                     <h3 class="card-title">
-                        <i class="fas fa-user mr-1"></i> {{ $vendor->vendor_name }}
+                        <i class="fas fa-user mr-1 text-blue"></i> {{ $vendor->vendor_name }}
                     </h3>
 
                     <div class="card-tools">

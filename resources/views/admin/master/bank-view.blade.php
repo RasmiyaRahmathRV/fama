@@ -29,7 +29,7 @@
                 {{-- Card Header --}}
                 <div class="card-header">
                     <h3 class="card-title">
-                        <i class="fas fa-university mr-1"></i> {{ $bank->bank_name }}
+                        <i class="fas fa-university mr-1 text-blue"></i> {{ $bank->bank_name }}
                     </h3>
 
                     <div class="card-tools">

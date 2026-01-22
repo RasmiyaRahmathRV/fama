@@ -29,7 +29,7 @@
                 {{-- Card Header --}}
                 <div class="card-header">
                     <h3 class="card-title">
-                        <i class="fas fa-city mr-1"></i> {{ $area->area_name }}
+                        <i class="fas fa-city mr-1 text-blue"></i> {{ $area->area_name }}
                     </h3>
 
                     <div class="card-tools">

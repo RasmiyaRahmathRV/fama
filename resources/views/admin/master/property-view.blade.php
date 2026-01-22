@@ -28,7 +28,7 @@
                 {{-- Card Header --}}
                 <div class="card-header">
                     <h3 class="card-title">
-                        <i class="fas fa-building mr-1"></i>
+                        <i class="fas fa-building mr-1 text-blue"></i>
                         {{ $property->property_name }}
                     </h3>
 
