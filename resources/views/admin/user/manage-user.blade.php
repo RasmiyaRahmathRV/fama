@@ -191,8 +191,7 @@
                                                 aria-labelledby="information-part-trigger">
                                                 <div class="form-group row">
                                                     <div class="table-responsive">
-                                                        <table class="table table-bordered table-responsive"
-                                                            style="width: 100%">
+                                                        <table class="table table-bordered">
                                                             <thead style="width: 100%">
                                                                 <tr>
                                                                     <td></td>
