@@ -151,7 +151,7 @@
                                                             @if (!isset($user)) required @endif>
                                                     </div>
                                                 </div>
-                                                <a class="btn btn-info nextBtn">Next</a>
+                                                <button type="button" class="btn btn-info nextBtn">Next</button>
                                             </div>
                                             <div id="information-part" class="content step-content" role="tabpanel"
                                                 aria-labelledby="information-part-trigger">
@@ -209,9 +209,12 @@
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                                <button type="submit" class="btn btn-info float-right">Submit</button>
-                                                <a class="btn btn-info float-right mr-2"
-                                                    onclick="stepper.previous()">Previous</a>
+                                                <span class="float-right">
+                                                    <button type="button" class="btn btn-info"
+                                                        onclick="stepper.previous()">Previous</button>
+                                                    <button type="submit" class="btn btn-info mr-2">Submit</button>
+                                                </span>
+
 
                                             </div>
                                         </div>
@@ -251,6 +254,28 @@
         $('.masterParent').on('change', function() {
             const row = $(this).data('row');
             $('.masterChild' + row).prop('checked', this.checked);
+        });
+
+        const userPhoneRegex = /^[1-9][0-9]{9,14}$/;
+
+        $('#phone').on('blur', function() {
+            const value = $(this).val();
+
+            if (!userPhoneRegex.test(value)) {
+                isValid = false;
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Invalid Phone',
+                    text: 'Enter phone with country code (digits only, no +)',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+                setInvalid(this, "");
+            } else {
+                setValid(this);
+            }
         });
 
         $('#UserForm').submit(function(e) {
