@@ -143,7 +143,7 @@ class VendorService
                     $action .= '<a href="' . route('vendors.show', $row->id) . '" class="btn btn-warning mb-1 mr-md-1">View</a>';
                 }
                 if (Gate::allows('vendor.delete')) {
-                    $action .= '<button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                    $action .= '<button class="btn btn-danger mb-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
                 $action .= '</div>';
                 return $action ?: '-';
