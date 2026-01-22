@@ -41,17 +41,16 @@
                                      placeholder="Property Name" required>
                              </div>
                              <div class="col-md-6 col-sm-12 mb-3">
-                                 <label class="asterisk">Property Size</label>
+                                 <label>Property Size</label>
                                  <div class="input-group">
                                      <div class="input-group-prepend">
-                                         <select name="property_size_unit" id="property_size_unit" class="form-control"
-                                             required>
+                                         <select name="property_size_unit" id="property_size_unit" class="form-control">
                                              <option value="">Select Unit</option>
                                              {{ $propertySizeUnits_dropdown }}
                                          </select>
                                      </div>
                                      <input type="number" name="property_size" id="property_size" class="form-control"
-                                         placeholder="Property Size" required>
+                                         placeholder="Property Size">
                                  </div>
                              </div>
                              {{-- @if (auth()->user()->company_id)
@@ -302,5 +301,6 @@
              $('#location').focus();
              return false;
          }
+         return true;
      }
  </script>

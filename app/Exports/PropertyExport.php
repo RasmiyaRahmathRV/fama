@@ -65,7 +65,7 @@ class PropertyExport implements FromCollection, WithHeadings
                     'locality' => $property->locality->locality_name ?? '',
                     // 'Property Type' => $property->propertyType->property_type,
                     'Property Name' => $property->property_name,
-                    'Property Size' => $property->property_size  . ' ' . $property->propertySizeUnit->unit_name,
+                    'Property Size' => $property->property_size  . ' ' . $property->propertySizeUnit->unit_name ?? '',
                     'Plot No' => $property->plot_no,
                     'Latitude' => $property->latitude ?? '-',
                     'Longitude' => $property->longitude ?? '-',
