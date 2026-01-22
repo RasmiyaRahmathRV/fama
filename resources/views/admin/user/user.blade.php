@@ -52,8 +52,8 @@
                                 </div>
                             @endcan
                             <!-- /.card-header -->
-                            <div class="card-body">
-                                <table id="userTable" class="table table-bordered table-hover">
+                            <div class="card-body table-responsive">
+                                <table id="userTable" class="table table-striped table-hover" style="width: 100%">
                                     <thead>
                                         <tr>
                                             <th>#</th>

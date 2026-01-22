@@ -49,7 +49,7 @@
                             @endcan
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="bankTable" class="table table-bordered table-hover">
+                                <table id="bankTable" class="table table-striped table-hover">
                                     <thead>
                                         <tr>
                                             <th>#</th>

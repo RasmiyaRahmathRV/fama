@@ -125,9 +125,9 @@ class LocalityService
             ->addColumn('area_name', fn($row) => $row->area->area_name ?? '-')
             // ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('action', function ($row) {
-                $action = '';
+                $action = '<div class="d-flex flex-column flex-md-row ">';
                 if (Gate::allows('locality.edit')) {
-                    $action .= '<button class="btn btn-info" data-toggle="modal"
+                    $action .= '<button class="btn btn-info mb-1 mr-md-1" data-toggle="modal"
                                                         data-target="#modal-locality" data-id="' . $row->id . '"
                                                         data-name="' . $row->locality_name . '"
                                                         data-company="' . $row->company_id . '"
@@ -136,11 +136,12 @@ class LocalityService
                                                          >Edit</button>';
                 }
                 if (Gate::allows('locality.view')) {
-                    $action .= '<a href="' . route('locality.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
+                    $action .= '<a href="' . route('locality.show', $row->id) . '" class="btn btn-warning mb-1 mr-md-1">View</a>';
                 }
                 if (Gate::allows('locality.delete')) {
-                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                    $action .= '<button class="btn btn-danger " onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
+                $action .= '</div>';
 
                 return $action ?: '-';
             })

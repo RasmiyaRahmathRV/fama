@@ -115,9 +115,9 @@ class AreaService
             ->addColumn('area_name', fn($row) => $row->area_name ?? '-')
             // ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('action', function ($row) {
-                $action = '';
+                $action = '<div class="d-flex flex-column flex-md-row ">';
                 if (Gate::allows('area.edit')) {
-                    $action .= '<button class="btn btn-info" data-toggle="modal"
+                    $action .= '<button class="btn btn-info mb-1 mr-md-1" data-toggle="modal"
                                                         data-target="#modal-area" data-id="' . $row->id . '"
                                                         data-name="' . $row->area_name . '"
                                                         data-company="' . $row->company_id . '"
@@ -125,11 +125,12 @@ class AreaService
                                                         >Edit</button>';
                 }
                 if (Gate::allows('area.view')) {
-                    $action .= '<a href="' . route('areas.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
+                    $action .= '<a href="' . route('areas.show', $row->id) . '" class="btn btn-warning mb-1 mr-md-1">View</a>';
                 }
                 if (Gate::allows('area.delete')) {
-                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                    $action .= '<button class="btn btn-danger " onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
+                $action .= '</div>';
 
                 return $action ?: '-';
             })
