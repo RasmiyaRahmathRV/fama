@@ -156,9 +156,9 @@ class PropertyService
             // ->addColumn('property_type', fn($row) => $row->property_type ?? '-')
             ->addColumn('property_size', fn($row) => $row->property_size . ' ' . $row->unit_name ?? '-')
             ->addColumn('action', function ($row) {
-                $action = '';
+                $action = '<div class="d-flex flex-column flex-md-row ">';
                 if (Gate::allows('property.edit')) {
-                    $action .= '<button class="btn btn-info" data-toggle="modal"
+                    $action .= '<button class="btn btn-info mb-1 mr-md-1" data-toggle="modal"
                                                         data-target="#modal-property" data-id="' . $row->id . '"
                                                         data-name="' . $row->property_name . '"
                                                         data-company="' . $row->company_id . '"
@@ -179,11 +179,12 @@ class PropertyService
                                                         >Edit</button>';  //data-property_type="' . $row->property_type_id . '"
                 }
                 if (Gate::allows('property.view')) {
-                    $action .= '<a href="' . route('property.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
+                    $action .= '<a href="' . route('property.show', $row->id) . '" class="btn btn-warning mb-1 mr-md-1">View</a>';
                 }
                 if (Gate::allows('property.delete')) {
-                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                    $action .= '<button class="btn btn-danger " onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
+                $action .= '</div>';
 
                 return $action ?: '-';
             })

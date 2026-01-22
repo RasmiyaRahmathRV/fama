@@ -110,15 +110,16 @@ class PropertyTypeService
             // ->addColumn('company_name', fn($row) => $row->company->company_name ?? '-')
             ->addColumn('property_type', fn($row) => $row->property_type ?? '-')
             ->addColumn('action', function ($row) {
-                $action = '';
+                $action = '<div class="d-flex flex-column flex-md-row ">';
                 if (Gate::allows('property_type.edit')) {
-                    $action .= '<button class="btn btn-info" data-toggle="modal"
+                    $action .= '<button class="btn btn-info mb-1 mr-md-1" data-toggle="modal"
                                                         data-target="#modal-property-type" data-id="' . $row->id . '"  data-name="' . $row->property_type . '"
                                                          data-row=' . json_encode($row) . '>Edit</button>'; //data-company="' . $row->company_id . '"
                 }
                 if (Gate::allows('property_type.delete')) {
-                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                    $action .= '<button class="btn btn-danger " onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
+                $action .= '</div>';
 
                 return $action ?: '-';
             })

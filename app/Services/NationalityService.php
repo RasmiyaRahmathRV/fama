@@ -104,15 +104,16 @@ class NationalityService
             ->addColumn('nationality_name', fn($row) => $row->nationality_name ?? '-')
             ->addColumn('nationality_short_code', fn($row) => $row->nationality_short_code ?? '-')
             ->addColumn('action', function ($row) {
-                $action = '';
+                $action = '<div class="d-flex flex-column flex-md-row ">';
                 if (Gate::allows('nationality.edit')) {
-                    $action .= '<button class="btn btn-info" data-toggle="modal"
+                    $action .= '<button class="btn btn-info mb-1 mr-md-1" data-toggle="modal"
                                                         data-target="#modal-nationality"
                                                         data-row=\'' .  json_encode($row)  . '\'>Edit</button>';
                 }
                 if (Gate::allows('nationality.delete')) {
-                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                    $action .= '<button class="btn btn-danger " onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
+                $action .= '</div>';
 
                 return $action ?: '-';
             })
