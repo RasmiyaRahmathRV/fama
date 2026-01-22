@@ -631,6 +631,28 @@
         function setValid(input) {
             $(input).addClass("is-valid").removeClass("is-invalid");
         }
+
+        function phoneValidation(ele, field_name) {
+            const PhoneRegex = /^[1-9][0-9]{9,14}$/;
+
+            const value = $(ele).val();
+
+            if (!PhoneRegex.test(value)) {
+                isValid = false;
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Invalid Phone',
+                    text: 'Enter ' + field_name + ' with country code (digits only, no +)',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+                setInvalid(ele, "");
+            } else {
+                setValid(ele);
+            }
+        }
     </script>
     {{-- <script>
         $(window).on('load', function() {

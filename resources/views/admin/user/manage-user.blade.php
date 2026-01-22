@@ -294,26 +294,8 @@
             $('.masterChild' + row).prop('checked', this.checked);
         });
 
-        const userPhoneRegex = /^[1-9][0-9]{9,14}$/;
-
         $('#phone').on('blur', function() {
-            const value = $(this).val();
-
-            if (!userPhoneRegex.test(value)) {
-                isValid = false;
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Invalid Phone',
-                    text: 'Enter phone with country code (digits only, no +)',
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 2500,
-                });
-                setInvalid(this, "");
-            } else {
-                setValid(this);
-            }
+            phoneValidation(this, 'phone');
         });
 
         $('#UserForm').submit(function(e) {

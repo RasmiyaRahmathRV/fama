@@ -131,6 +131,11 @@ class UserService
         $validator = Validator::make($data, [
             // 'email' => 'required|email|unique:users,email',
             'first_name' => 'required',
+            'phone' => [
+                'required',
+                'numeric',
+                'regex:/^[1-9][0-9]{9,14}$/'
+            ],
             'password' => 'required',
             'user_type_id' => 'required',
             'company_id' => 'required|exists:companies,id',

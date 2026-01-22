@@ -89,7 +89,11 @@ class CompanyService
             ],
             'email' => 'required|email',
             'industry_id' => 'required|exists:industries,id',
-            'phone'   => 'required',
+            'phone' => [
+                'required',
+                'numeric',
+                'regex:/^[1-9][0-9]{9,14}$/'
+            ],
             'company_short_code' => [
                 'required',
                 Rule::unique('companies', 'company_short_code')

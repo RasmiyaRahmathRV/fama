@@ -109,6 +109,10 @@
         @endslot
     @endcomponent
     <script>
+        $('#phone').on('blur', function() {
+            phoneValidation(this, 'phone');
+        });
+
         $(function() {
             let table = $('#companyTable').DataTable({
                 processing: true,
