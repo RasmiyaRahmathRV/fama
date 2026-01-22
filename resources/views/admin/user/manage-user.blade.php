@@ -64,7 +64,7 @@
                                                 </button>
                                             </div>
                                         </div>
-                                        <div class="bs-stepper-content card">
+                                        <div class="bs-stepper-content card p-3">
                                             <!-- your steps content here -->
                                             <div id="logins-part" class="content step-content" role="tabpanel"
                                                 aria-labelledby="logins-part-trigger">
@@ -156,7 +156,7 @@
                                             <div id="information-part" class="content step-content" role="tabpanel"
                                                 aria-labelledby="information-part-trigger">
                                                 <div class="form-group row">
-                                                    <table class="table table-bordered">
+                                                    <table class="table table-bordered table-responsive">
                                                         <thead>
                                                             <tr>
                                                                 <td></td>
