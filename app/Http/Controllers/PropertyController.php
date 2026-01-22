@@ -153,6 +153,11 @@ class PropertyController extends Controller
         // Pass a second argument as required by importExcel, e.g., the current user ID or null if not needed
         $count = $this->propertyService->importExcel($file, auth()->user()->id);
 
-        return redirect()->back()->with('success', "$count property imported successfully.");
+        // return redirect()->back()->with('success', "$count property imported successfully.");
+        if ($count == 0) {
+            return response()->json(['success' => false, 'message' => "No new property to import."]);
+        } else {
+            return response()->json(['success' => true, 'message' => "$count property imported successfully."]);
+        }
     }
 }

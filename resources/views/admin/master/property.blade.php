@@ -263,6 +263,7 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
+                    console.log(response);
 
                     // $('#propertyTable').DataTable().ajax.reload();
 
@@ -274,7 +275,7 @@
                     hideLoader();
                     toastr.success(response.message);
 
-                    window.location.reload();
+                    // window.location.reload();
                 },
                 error: function(err) {
                     hideLoader();
