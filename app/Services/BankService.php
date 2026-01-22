@@ -108,18 +108,19 @@ class BankService
             ->addColumn('back_short_code', fn($row) => $row->back_short_code ?? '-')
             ->addColumn('status', fn($row) => $row->status ?? '-')
             ->addColumn('action', function ($row) {
-                $action = '';
+                $action = '<div class="d-flex flex-column flex-md-row ">';
                 if (Gate::allows('bank.edit')) {
-                    $action .= '<button class="btn btn-info" data-toggle="modal"
+                    $action .= '<button class="btn btn-info mb-1 mr-md-1" data-toggle="modal"
                                                         data-target="#modal-bank"
                                                         data-row=\'' .  json_encode($row)  . '\'>Edit</button>';
                 }
                 if (Gate::allows('bank.view')) {
-                    $action .= '<a href="' . route('bank.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
+                    $action .= '<a href="' . route('bank.show', $row->id) . '" class="btn btn-warning mb-1 mr-md-1">View</a>';
                 }
                 if (Gate::allows('bank.delete')) {
-                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                    $action .= '<button class="btn btn-danger " onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
+                $action .= '</div>';
 
                 return $action ?: '-';
             })

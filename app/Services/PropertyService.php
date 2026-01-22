@@ -105,6 +105,7 @@ class PropertyService
             'property_size_unit' => 'required|exists:property_size_units,id',
             'status' => 'required|in:0,1',
             'makani_number' => ['nullable', 'digits:10'],
+            'location' => 'nullable|url',
         ], [
             'property_name.unique' => 'This property name already exists. Please choose another.',
             'area_id.required' => 'Please select an area.',
@@ -115,6 +116,7 @@ class PropertyService
             'status.required' => 'Please select a status.',
             'makani_number.digits' => 'Makani Number must be exactly 10 digits and cannot contain letters or symbols.',
             // 'property_type_id.required' => 'Please select a propert type.',
+            'location.url' => 'Please enter a valid URL in the Location field (starting with http:// or https://).',
 
 
 
@@ -154,9 +156,9 @@ class PropertyService
             // ->addColumn('property_type', fn($row) => $row->property_type ?? '-')
             ->addColumn('property_size', fn($row) => $row->property_size . ' ' . $row->unit_name ?? '-')
             ->addColumn('action', function ($row) {
-                $action = '';
+                $action = '<div class="d-flex flex-column flex-md-row ">';
                 if (Gate::allows('property.edit')) {
-                    $action .= '<button class="btn btn-info" data-toggle="modal"
+                    $action .= '<button class="btn btn-info mb-1 mr-md-1" data-toggle="modal"
                                                         data-target="#modal-property" data-id="' . $row->id . '"
                                                         data-name="' . $row->property_name . '"
                                                         data-company="' . $row->company_id . '"
@@ -177,11 +179,12 @@ class PropertyService
                                                         >Edit</button>';  //data-property_type="' . $row->property_type_id . '"
                 }
                 if (Gate::allows('property.view')) {
-                    $action .= '<a href="' . route('property.show', $row->id) . '" class="btn btn-warning ml-1">View</a>';
+                    $action .= '<a href="' . route('property.show', $row->id) . '" class="btn btn-warning mb-1 mr-md-1">View</a>';
                 }
                 if (Gate::allows('property.delete')) {
-                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                    $action .= '<button class="btn btn-danger " onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
+                $action .= '</div>';
 
                 return $action ?: '-';
             })

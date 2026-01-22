@@ -45,8 +45,8 @@
                                 </div>
                             @endcan
                             <!-- /.card-header -->
-                            <div class="card-body">
-                                <table id="localityTable" class="table table-bordered table-hover">
+                            <div class="card-body table-responsive">
+                                <table id="localityTable" class="table  table-hover" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>#</th>
