@@ -20,7 +20,7 @@ class VendorExport implements FromCollection, WithHeadings
     public function collection()
     {
         // $query = Vendor::with('company');
-        $query = Vendor::where('status', 1);
+        $query = Vendor::query();
 
         if ($this->search) {
             $search = $this->search;
@@ -65,6 +65,7 @@ class VendorExport implements FromCollection, WithHeadings
                     'Contact Person' => $vendor->contact_person,
                     'Contact Person Phone' => $vendor->contact_person_phone,
                     'Contact Person Email' => $vendor->contact_person_email,
+                    'status' => ($vendor->status ?? 1) == 1 ? 'Active' : 'Inactive',
                     // 'C' => $vendor->contact_person_email,
                     // 'Contact Person Email' => $vendor->contact_person_email,
                     // 'Contact Person Email' => $vendor->contact_person_email,
@@ -90,7 +91,8 @@ class VendorExport implements FromCollection, WithHeadings
             'Accountant Email',
             'Contact Person',
             'Contact Person Phone',
-            'Contact Person Email'
+            'Contact Person Email',
+            'Status'
         ];
     }
 }

@@ -653,6 +653,36 @@
                 setValid(ele);
             }
         }
+
+        function validateLandline(input) {
+            // alert('here');
+            const value = $(input).val().trim();
+            const uaeLandlineRegex = /^0[2-9]\d{7}$/;
+            console.log('Validating landline:', value);
+
+            if (value === '') {
+                $(input).removeClass('is-invalid');
+                return true;
+            }
+
+            if (!uaeLandlineRegex.test(value)) {
+                $(input).addClass('is-invalid');
+                // toastr.error('Enter a valid UAE landline number (e.g. 04XXXXXXX)');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Invalid Phone',
+                    text: 'Enter a valid UAE landline number (e.g. 04XXXXXXX)',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+                return false;
+            } else {
+                $(input).removeClass('is-invalid');
+                return true;
+            }
+        }
     </script>
     {{-- <script>
         $(window).on('load', function() {

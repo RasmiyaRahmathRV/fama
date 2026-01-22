@@ -228,8 +228,9 @@
             });
         });
 
-        $('#modal-vendor').on('show.bs.modal', function(event) {
+        $('#modal-vendor').on('shown.bs.modal', function(event) {
             document.activeElement.blur();
+            $("#vendor_name").trigger('focus');
 
             let rowData = $(event.relatedTarget).data('row');
 
@@ -301,5 +302,19 @@
                 }
             });
         });
+        $('#vendor_phone').on('blur', function() {
+            phoneValidation('#vendor_phone', 'vendor_phone');
+        });
+        $('#contact_person_phone').on('blur', function() {
+            phoneValidation('#contact_person_phone', 'contact_person_phone');
+        });
+        $('#accountant_phone').on('blur', function() {
+            phoneValidation('#accountant_phone', 'accountant_phone');
+        });
+        $('#landline_number').on('blur', function() {
+            validateLandline('#landline_number');
+        });
+
+        // enableEnterNavigation('#VendorForm');
     </script>
 @endsection

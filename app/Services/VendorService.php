@@ -78,14 +78,16 @@ class VendorService
                         // ->where('company_id', $data['company_id'])
                         ->whereNull('deleted_at'))
             ],
-            'vendor_phone' => 'required',
+            'vendor_phone' => ['required', 'regex:/^\+?[1-9]\d{9,14}$/'],
             'vendor_email' => 'required|email',
             'vendor_address' => 'required|string',
             'contact_person' => 'required|string',
-            'contact_person_phone' => 'required',
+            'contact_person_phone' => ['required', 'regex:/^\+?[1-9]\d{9,14}$/'],
             'contact_person_email' => 'required|email',
             'contract_template_id' => 'required|exists:vendor_contract_templates,id',
             'status' => 'required|in:0,1',
+            'accountant_phone' => ['nullable', 'regex:/^\+?[1-9]\d{9,14}$/'],
+            'landline_number' => ['nullable', 'regex:/^0[2-9]\d{7}$/'],
 
             // 'company_id' => 'required|exists:companies,id',
         ]);
@@ -140,7 +142,7 @@ class VendorService
                 if (Gate::allows('vendor.view')) {
                     $action .= '<a href="' . route('vendors.show', $row->id) . '" class="btn btn-warning mb-1 mr-md-1">View</a>';
                 }
-                if (Gate::allows('vendors.delete')) {
+                if (Gate::allows('vendor.delete')) {
                     $action .= '<button class="btn btn-danger" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
                 $action .= '</div>';

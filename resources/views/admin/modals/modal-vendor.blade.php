@@ -24,8 +24,8 @@
                              </div>
                              <div class="col-sm-4">
                                  <label class="asterisk">Vendor Phone</label>
-                                 <input type="number" name="vendor_phone" pattern="[0-9]{9}" id="vendor_phone"
-                                     class="form-control" placeholder="0551234567" required>
+                                 <input type="number" name="vendor_phone" pattern="^\+?[1-9]\d{9,14}$"
+                                     id="vendor_phone" class="form-control" placeholder="0551234567" required>
                              </div>
                              <div class="col-sm-4">
                                  <label class="asterisk">Vendor Email</label>
@@ -52,7 +52,7 @@
                              </div>
                              <div class="col-sm-4">
                                  <label class="asterisk">Contact Phone</label>
-                                 <input type="number" name="contact_person_phone" pattern="[0-9]{9}"
+                                 <input type="number" name="contact_person_phone" pattern="^\+?[1-9]\d{9,14}$"
                                      id="contact_person_phone" class="form-control" placeholder="0551234567" required>
                              </div>
                              <div class="col-sm-4">
@@ -79,8 +79,8 @@
                              </div>
                              <div class="col-sm-3">
                                  <label>Accountant Phone</label>
-                                 <input type="number" name="accountant_phone" pattern="[0-9]{9}" id="accountant_phone"
-                                     class="form-control" placeholder="0551234567">
+                                 <input type="number" name="accountant_phone" pattern="^\+?[1-9]\d{9,14}$"
+                                     id="accountant_phone" class="form-control" placeholder="0551234567">
                              </div>
                              <div class="col-sm-3">
                                  <label>Accountant Email</label>
