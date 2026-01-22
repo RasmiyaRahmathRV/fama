@@ -119,7 +119,12 @@ class VendorController extends Controller
         // Pass a second argument as required by importExcel, e.g., the current user ID or null if not needed
         $count = $this->vendorService->importExcel($file, auth()->user()->id);
 
-        return redirect()->back()->with('success', "$count vendor imported successfully.");
+        // return redirect()->back()->with('success', "$count vendor imported successfully.");
+        if ($count == 0) {
+            return response()->json(['success' => false, 'message' => "No new vendor to import."]);
+        } else {
+            return response()->json(['success' => true, 'message' => "$count vendor imported successfully."]);
+        }
     }
 
     public function exportVendor(Request $request)

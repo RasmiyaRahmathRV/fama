@@ -131,7 +131,12 @@ class PropertyTypeController extends Controller
         // Pass a second argument as required by importExcel, e.g., the current user ID or null if not needed
         $count = $this->propertyTypeService->importExcel($file, auth()->user()->id);
 
-        return redirect()->back()->with('success', "$count property types imported successfully.");
+        // return redirect()->back()->with('success', "$count property types imported successfully.");
+        if ($count == 0) {
+            return response()->json(['success' => false, 'message' => "No new property type to import."]);
+        } else {
+            return response()->json(['success' => true, 'message' => "$count property types imported successfully."]);
+        }
     }
 
     public function exportPropertyType(Request $request)
