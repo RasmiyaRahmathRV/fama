@@ -48,7 +48,7 @@
                             @endcan
                             <!-- /.card-header -->
                             <div class="card-body  table-responsive">
-                                <table id="installmentTable" class="table table-striped table-hover">
+                                <table id="installmentTable" class="table table-striped table-hover w-100">
                                     <thead>
                                         <tr>
                                             <th>#</th>
