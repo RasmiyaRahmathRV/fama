@@ -210,6 +210,7 @@ class PropertyService
 
         $insertData = [];
         $seen = [];
+        $restoreCount = 0;
         foreach ($rows as $rowindx => $row) {
             // print_r($row);
 
@@ -292,10 +293,13 @@ class PropertyService
                 'property_name' => $row['building_name'],
                 'plot_no' => $row['plot_number'],
             ));
-
-
-            if ($propertyExist == null) {
-
+            // dd($propertyExist);
+            if ($propertyExist) {
+                if ($propertyExist->trashed()) {
+                    $propertyExist->restore();
+                    $restoreCount++;
+                }
+            } elseif ($propertyExist == null) {
                 if (!isset($seen[$seenKey])) {
                     $insertData[] = [
                         // 'company_id' => $company_id,
@@ -314,11 +318,34 @@ class PropertyService
                     $seen[$seenKey] = true;
                 }
             }
+
+
+            // if ($propertyExist == null) {
+
+            //     if (!isset($seen[$seenKey])) {
+            //         $insertData[] = [
+            //             // 'company_id' => $company_id,
+            //             'area_id' => $area_id,
+            //             'locality_id' => $locality_id,
+            //             // 'property_type_id' => $property_type_id,
+            //             'property_code' => $this->setPropertyCode($rowindx + 1),
+            //             'property_name' => $row['building_name'],
+            //             'property_size' => $row['property_size'],
+            //             'property_size_unit' => $row['property_size_unit'],
+            //             'plot_no' => $row['plot_number'],
+            //             'created_at' => now()->toDateTimeString(),
+            //             'updated_at' => now()->toDateTimeString(),
+            //             'added_by' => $user_id,
+            //         ];
+            //         $seen[$seenKey] = true;
+            //     }
+            // }
         }
 
         $this->propertyRepository->insertBulk($insertData);
 
-        return count($insertData);
+        // return count($insertData);
+        return ['inserted' => count($insertData), 'restored' => $restoreCount];
     }
 
     public function existCheck($service, $funName, $existfuncName, $data1, $createData, $user_id)
