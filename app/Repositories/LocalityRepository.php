@@ -85,15 +85,20 @@ class LocalityRepository
 
     public function checkIfExist($data)
     {
-        $existing = Locality::withTrashed()
+        // $existing = Locality::withTrashed()
+        //     // ->where('company_id', $data['company_id'])
+        //     ->where('area_id', $data['area_id'])
+        //     ->where('locality_name', $data['locality_name'])
+        //     ->first();
+
+        // if ($existing) {
+        //     // $existing->restore();
+        //     return $existing;
+        // }
+        return Locality::withTrashed()
             // ->where('company_id', $data['company_id'])
             ->where('area_id', $data['area_id'])
             ->where('locality_name', $data['locality_name'])
             ->first();
-
-        if ($existing) {
-            // $existing->restore();
-            return $existing;
-        }
     }
 }
