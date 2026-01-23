@@ -53,10 +53,11 @@ class InstallmentRepository
             ->where('installment_name', $data['installment_name'])
             ->first();
 
-        if ($existing && $existing->trashed()) {
-            // $existing->restore();
-            return $existing;
-        }
+        // if ($existing && $existing->trashed()) {
+        //     // $existing->restore();
+        //     return $existing;
+        // }
+        return $existing;
     }
 
     public function getQuery(array $filters = []): Builder
