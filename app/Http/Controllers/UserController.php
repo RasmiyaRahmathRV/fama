@@ -76,14 +76,7 @@ class UserController extends Controller
                 return response()->json(['success' => true, 'data' => $user, 'message' => 'User created successfully'], 201);
             }
         } catch (\Exception $e) {
-            if ($e->getCode() == 23000) { // integrity constraint violation
-                throw ValidationException::withMessages([
-                    'email' => 'This email already exists for this company.',
-                    'username' => 'This username already exists for this company.',
-                ]);
-            } else {
-                return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
-            }
+            return response()->json(['success' => false, 'message' => $e->getMessage(), 'error'   => $e], 500);
         }
     }
 

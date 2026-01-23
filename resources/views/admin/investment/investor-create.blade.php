@@ -443,17 +443,8 @@
             format: 'DD-MM-YYYY'
         });
 
-        const investorPhoneRegex = /^[1-9][0-9]{9,14}$/;
-
         $('#investor_mobile').on('blur', function() {
-            const value = $(this).val();
-
-            if (!investorPhoneRegex.test(value)) {
-                isValid = false;
-                setInvalid(this, "Enter phone with country code (digits only, no +)");
-            } else {
-                setValid(this);
-            }
+            phoneValidation(this, 'phone');
         });
 
         $('#investorsubmitbutton').click(function(e) {

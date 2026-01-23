@@ -30,7 +30,8 @@
                           <div class="form-group row">
                               <label for="inputEmail3" class="col-sm-3 col-form-label asterisk">Installment</label>
                               <input type="number" name="installment_name" id="installment_name"
-                                  class="col-sm-9 form-control" id="inputEmail3" placeholder="Installment" required>
+                                  class="col-sm-9 form-control" id="inputEmail3" min="1" step="1"
+                                  placeholder="Installment" required>
                           </div>
                           <div class="form-group row">
                               <label for="inputEmail3" class="col-sm-3 col-form-label asterisk">Interval</label>

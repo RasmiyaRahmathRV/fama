@@ -122,7 +122,7 @@ class InstallmentService
                                                         data-row=\'' .  json_encode($row)  . '\'>Edit</button>';
                 }
                 if (Gate::allows('installments.delete')) {
-                    $action .= '<button class="btn btn-danger " onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                    $action .= '<button class="btn btn-danger mb-1 mr-md-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
                 $action .= '</div>';
 
