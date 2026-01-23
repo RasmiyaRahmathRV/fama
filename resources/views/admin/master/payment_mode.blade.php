@@ -48,8 +48,8 @@
                                 </div>
                             @endcan
                             <!-- /.card-header -->
-                            <div class="card-body">
-                                <table id="paymentModeTable" class="table table-striped table-hover">
+                            <div class="card-body table-responsive">
+                                <table id="paymentModeTable" class="table table-striped table-hover w-100">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -214,8 +214,9 @@
             });
         });
 
-        $('#modal-payment-mode').on('show.bs.modal', function(event) {
+        $('#modal-payment-mode').on('shown.bs.modal', function(event) {
             document.activeElement.blur();
+            $("#payment_mode_name").focus();
             let rowData = $(event.relatedTarget).data('row');
 
             if (rowData) {

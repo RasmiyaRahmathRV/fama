@@ -104,16 +104,16 @@ class PaymentModeService
             ->addColumn('payment_mode_name', fn($row) => $row->payment_mode_name ?? '-')
             ->addColumn('payment_mode_short_code', fn($row) => $row->payment_mode_short_code ?? '-')
             ->addColumn('action', function ($row) {
-                $action = '';
+                $action = '<div class="d-flex flex-column flex-md-row ">';
                 if (Gate::allows('payment_mode.edit')) {
-                    $action .= '<button class="btn btn-info" data-toggle="modal"
+                    $action .= '<button class="btn btn-info mb-1 mr-md-1" data-toggle="modal"
                                                         data-target="#modal-payment-mode"
                                                         data-row=\'' .  json_encode($row)  . '\'>Edit</button>';
                 }
                 if (Gate::allows('payment_mode.delete')) {
-                    $action .= '<button class="btn btn-danger ml-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                    $action .= '<button class="btn btn-danger mb-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
-
+                $action .= '</div>';
                 return $action ?: '-';
             })
             ->rawColumns(['action'])
@@ -123,11 +123,15 @@ class PaymentModeService
 
     public function importExcel($file, $user_id)
     {
+        // dd("test");
         // Read Excel as collection
         $rows = Excel::toCollection(new PaymentModeImport, $file)->first();
 
         $insertData = [];
+        $restoreCount = 0;
+        // dd($rows);
         foreach ($rows as $key => $row) {
+            // dd($row);
             // print_r($row);
             // $company_id = $this->companyService->getIdByCompanyname($row['company']);
 
@@ -146,11 +150,36 @@ class PaymentModeService
             //     }
             // }
 
-            $paymentModeexist = $this->paymentModeRepository->checkIfExist(array('payment_mode_name' => $row['payment_mode_name'])); //, 'company_id' => $company_id
+            // $paymentModeexist = $this->paymentModeRepository->checkIfExist(array('payment_mode_name' => $row['payment_mode_name'])); //, 'company_id' => $company_id
+            // // dd($paymentModeexist);
 
-            if (empty($paymentModeexist)) {
+            // if (empty($paymentModeexist)) {
+            //     $insertData[] = [
+            //         // 'company_id' => $company_id,
+            //         'payment_mode_code' => $this->setPaymentModeCode($key + 1),
+            //         'payment_mode_name' => $row['payment_mode_name'],
+            //         'payment_mode_short_code' => $row['payment_mode_short_code'],
+            //         'created_at' => now(),
+            //         'updated_at' => now(),
+            //         'added_by' => $user_id,
+            //     ];
+            //     // dd($insertData);
+            // }
+            $paymentModeexist = $this->paymentModeRepository->checkIfExist([
+                'payment_mode_name' => $row['payment_mode_name']
+            ]);
+
+            if ($paymentModeexist) {
+
+                // If it exists but is soft-deleted → restore it
+                if ($paymentModeexist->trashed()) {
+                    $paymentModeexist->restore();
+                    $restoreCount++;
+                }
+            } else {
+
+                // Only insert if it truly does not exist
                 $insertData[] = [
-                    // 'company_id' => $company_id,
                     'payment_mode_code' => $this->setPaymentModeCode($key + 1),
                     'payment_mode_name' => $row['payment_mode_name'],
                     'payment_mode_short_code' => $row['payment_mode_short_code'],
@@ -160,9 +189,14 @@ class PaymentModeService
                 ];
             }
         }
+        // dd($insertData);
 
         $this->paymentModeRepository->insertBulk($insertData);
 
-        return count($insertData);
+        // return count($insertData);
+        return [
+            'inserted' => count($insertData),
+            'restored' => $restoreCount,
+        ];
     }
 }

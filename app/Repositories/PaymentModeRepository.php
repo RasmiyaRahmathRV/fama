@@ -48,15 +48,19 @@ class PaymentModeRepository
 
     public function checkIfExist($data)
     {
-        $existing = PaymentMode::withTrashed()
-            // ->where('company_id', $data['company_id'])
-            ->where('payment_mode_name', $data['payment_mode_name'])
-            ->first();
+        // $existing = PaymentMode::withTrashed()
+        //     // ->where('company_id', $data['company_id'])
+        //     ->where('payment_mode_name', $data['payment_mode_name'])
+        //     ->first();
 
-        if ($existing && $existing->trashed()) {
-            // $existing->restore();
-            return $existing;
-        }
+        // if ($existing && $existing->trashed()) {
+        //     // $existing->restore();
+        //     return $existing;
+        // }
+
+        return PaymentMode::withTrashed()
+            ->where('payment_mode_name', trim($data['payment_mode_name']))
+            ->first();
     }
 
     public function getQuery(array $filters = []): Builder
@@ -85,6 +89,6 @@ class PaymentModeRepository
 
     public function insertBulk(array $rows)
     {
-        return PaymentMode::insert($rows); // bulk insert
+        return PaymentMode::insert($rows);
     }
 }
