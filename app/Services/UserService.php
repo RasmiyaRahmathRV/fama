@@ -134,7 +134,15 @@ class UserService
             'phone' => [
                 'required',
                 'numeric',
-                'regex:/^[1-9][0-9]{9,14}$/'
+                'regex:/^[1-9][0-9]{9,14}$/',
+                Rule::unique('users', 'phone')
+                    ->ignore($id)
+                    ->where(
+                        fn($q) =>
+                        $q->whereNull('deleted_at')
+                        // ->where('company_id', $data['company_id'])
+
+                    ),
             ],
             'password' => 'required',
             'user_type_id' => 'required',
@@ -142,16 +150,21 @@ class UserService
             'username' => [
                 'required',
                 Rule::unique('users', 'username')->ignore($id)
-                    ->where(fn($q) => $q->where('company_id', $data['company_id'])
-                        ->whereNull('deleted_at'))
+                    ->where(
+                        fn($q) =>
+                        $q->whereNull('deleted_at')
+                        // ->where('company_id', $data['company_id'])
+                    )
             ],
             'email' => [
                 'required',
                 Rule::unique('users', 'email')
                     ->ignore($id)
                     ->where(
-                        fn($q) => $q->where('company_id', $data['company_id'])
-                            ->whereNull('deleted_at')
+                        fn($q) =>
+                        $q->whereNull('deleted_at')
+                        // ->where('company_id', $data['company_id'])
+
                     ),
             ],
             'permission_id' => 'required|array|min:1',
@@ -159,6 +172,8 @@ class UserService
             // 'permission_id.*' => 'integer|exists:permissions,id',
 
         ], [
+            'email.unique' => 'This email already exists for this company.',
+            'username.unique' => 'This username already exists for this company.',
             'company_id.required' => 'Please select Company.',
             'user_type_id.required' => 'Please select a User Type.',
             'permission_id.required' => 'Please provide at least one permission.',

@@ -43,7 +43,7 @@ class InstallmentExport implements FromCollection, WithHeadings
                 return [
                     'ID' => $installment->id,
                     'Installment Code' => $installment->installment_code,
-                    'Company' => $installment->company->company_name ?? '',
+                    // 'Company' => $installment->company->company_name ?? '',
                     'Installment Name' => $installment->installment_name,
                     'Interval'    => $installment->interval,
                 ];
@@ -55,7 +55,7 @@ class InstallmentExport implements FromCollection, WithHeadings
         return [
             'ID',
             'Installment Code',
-            'Company',
+            // 'Company',
             'Installment Name',
             'Interval',
         ];
