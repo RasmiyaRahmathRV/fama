@@ -83,15 +83,20 @@ class AreaRepository
 
     public function checkIfExist($data)
     {
-        $existing = Area::withTrashed()
-            // ->where('company_id', $data['company_id'])
-            ->where('area_name', $data['area_name'])
-            ->first();
+        // $existing = Area::withTrashed()
+        //     // ->where('company_id', $data['company_id'])
+        //     ->where('area_name', $data['area_name'])
+        //     ->first();
+        // // dd($existing);
 
-        if ($existing && $existing->trashed()) {
-            // $existing->restore();
-            return $existing;
-        }
+        // if ($existing && $existing->trashed()) {
+        //     // $existing->restore();
+        //     dd($existing);
+        //     return $existing;
+        // }
+        return Area::withTrashed()
+            ->where('area_name', trim($data['area_name']))
+            ->first();
     }
 
     public function insertBulk(array $rows)
