@@ -128,6 +128,7 @@ class NationalityService
         $rows = Excel::toCollection(new PaymentModeImport, $file)->first();
 
         $insertData = [];
+        $reestoreCount = 0;
         foreach ($rows as $key => $row) {
             // print_r($row);
             // $company_id = $this->companyService->getIdByCompanyname($row['company']);
@@ -147,9 +148,13 @@ class NationalityService
             //     }
             // }
 
-            $paymentModeexist = $this->nationalityRepository->checkIfExist(array('nationality_name' => $row['country_name'])); //, 'company_id' => $company_id
-
-            if (empty($paymentModeexist)) {
+            $nationalityexist = $this->nationalityRepository->checkIfExist(array('nationality_name' => $row['country_name'])); //, 'company_id' => $company_id
+            if ($nationalityexist) {
+                if ($nationalityexist->trashed()) {
+                    $nationalityexist->restore();
+                    $reestoreCount++;
+                }
+            } else {
                 $insertData[] = [
                     // 'company_id' => $company_id,
                     'nationality_code' => $this->setPaymentModeCode($key + 1),
@@ -160,10 +165,23 @@ class NationalityService
                     'added_by' => $user_id,
                 ];
             }
+
+            // if (empty($paymentModeexist)) {
+            //     $insertData[] = [
+            //         // 'company_id' => $company_id,
+            //         'nationality_code' => $this->setPaymentModeCode($key + 1),
+            //         'nationality_name' => $row['country_name'],
+            //         'nationality_short_code' => $row['country_code'],
+            //         'created_at' => now(),
+            //         'updated_at' => now(),
+            //         'added_by' => $user_id,
+            //     ];
+            // }
         }
 
         $this->nationalityRepository->insertBulk($insertData);
 
-        return count($insertData);
+        // return count($insertData);
+        return ['inserted' => count($insertData), 'restored' => $reestoreCount];
     }
 }
