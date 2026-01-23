@@ -54,10 +54,11 @@ class VendorRepository
             ->where('vendor_name', $data['vendor_name'])
             ->first();
 
-        if ($existing && $existing->trashed()) {
-            // $existing->restore();
-            return $existing;
-        }
+        // if ($existing && $existing->trashed()) {
+        //     // $existing->restore();
+        //     return $existing;
+        // }
+        return $existing;
     }
 
     public function getQuery(array $filters = []): Builder

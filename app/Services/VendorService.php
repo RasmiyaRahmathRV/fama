@@ -159,6 +159,7 @@ class VendorService
         $rows = Excel::toCollection(new VendorImport, $file)->first();
 
         $insertData = [];
+        $restoreCount = 0;
         foreach ($rows as $key => $row) {
 
             // dd($row);
@@ -186,9 +187,12 @@ class VendorService
 
             // $vendorexist = $this->vendorRepository->checkIfExist(array('company_id' => $company_id, 'vendor_name' => $row['vendor_name']));
             $vendorexist = $this->vendorRepository->checkIfExist(array('vendor_name' => $row['vendor_name']));
-
-
-            if (empty($vendorexist)) {
+            if ($vendorexist) {
+                if ($vendorexist->trashed()) {
+                    $vendorexist->restore();
+                    $restoreCount++;
+                }
+            } else {
                 $insertData[] = [
                     // 'company_id' => $company_id,
                     'vendor_code' => $this->setVendorCode($key + 1),
@@ -208,10 +212,36 @@ class VendorService
                     'added_by' => $user_id,
                 ];
             }
+
+
+            // if (empty($vendorexist)) {
+            //     $insertData[] = [
+            //         // 'company_id' => $company_id,
+            //         'vendor_code' => $this->setVendorCode($key + 1),
+            //         'vendor_name' => $row['vendor_name'],
+            //         'vendor_phone' => $row['vendor_phone'],
+            //         'vendor_email' => $row['vendor_email'],
+            //         'vendor_address' => $row['vendor_address'],
+            //         'contact_person' => $row['vendor_contact_person'],
+            //         'contact_person_phone' => $row['vendor_contact_number'],
+            //         'contact_person_email' => $row['vendor_contact_email'],
+            //         'accountant_name' => $row['vendor_accountant_name'],
+            //         'accountant_phone' => $row['vendor_accountant_number'],
+            //         'accountant_email' => $row['vendor_accountant_email'],
+            //         'contract_template_id' => $row['contract_template'],
+            //         'created_at' => now(),
+            //         'updated_at' => now(),
+            //         'added_by' => $user_id,
+            //     ];
+            // }
         }
 
         $this->vendorRepository->insertBulk($insertData);
 
-        return count($insertData);
+        // return count($insertData);
+        return [
+            'inserted' => count($insertData),
+            'restored' => $restoreCount,
+        ];
     }
 }
