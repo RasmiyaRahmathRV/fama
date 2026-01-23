@@ -110,6 +110,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('user-list', [UserController::class, 'getUsers'])->name('user.list');
     Route::get('user-createoredit/{id?}', [UserController::class, 'createOrEdit'])->name('user.createoredit');
     Route::get('export-user', [UserController::class, 'exportUsers'])->name('user.export');
+    Route::get('user-profile', [UserController::class, 'userProfile'])->name('user.profile');
 
     Route::get('company-list', [CompanyController::class, 'getCompanies'])->name('company.list');
     Route::get('export-company', [CompanyController::class, 'exportCompany'])->name('company.export');

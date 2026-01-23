@@ -69,12 +69,15 @@ class UserRepository
 
         if (!empty($filters['search'])) {
             $query->orwhere('first_name', 'like', '%' . $filters['search'] . '%')
-                ->orWhere('second_name', 'like', '%' . $filters['search'] . '%')
-                ->orWhere('phone', 'like', '%' . $filters['search'] . '%')
-                ->orWhere('email', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('last_name', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('users.phone', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('users.email', 'like', '%' . $filters['search'] . '%')
                 ->orWhere('username', 'like', '%' . $filters['search'] . '%')
                 ->orWhereHas('company', function ($q) use ($filters) {
                     $q->where('company_name', 'like', '%' . $filters['search'] . '%');
+                })
+                ->orWhereHas('user_type', function ($q) use ($filters) {
+                    $q->where('user_type', 'like', '%' . $filters['search'] . '%');
                 })
                 ->orWhereRaw("CAST(users.id AS CHAR) LIKE ?", ['%' . $filters['search'] . '%']);
         }

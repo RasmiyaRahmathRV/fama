@@ -53,67 +53,47 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <!-- Messages Dropdown Menu -->
-                {{-- <li class="nav-item dropdown">
+                <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-comments"></i>
-                        <span class="badge badge-danger navbar-badge">3</span>
+                        <i class="fa fa-cog"></i>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="{{ auth()->user()->profile_path ? asset('storage/' . auth()->user()->profile_path) : '' }}"
-                                    alt="User Avatar" class="img-size-50 mr-3 img-circle">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        Brad Diesel
-                                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">Call me whenever you can...</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right"
+                        style="max-height: -webkit-fill-available;">
+                        <div class="card card-primary card-outline">
+                            <div class="card-body box-profile">
+                                <div class="text-center">
+                                    <img class="profile-user-img img-fluid img-circle"
+                                        src="{{ auth()->user()->profile_path ? asset('storage/' . auth()->user()->profile_path) : asset('img/profile1.png') }}"
+                                        alt="User profile picture">
+                                </div>
+
+                                <h3 class="profile-username text-center">{{ auth()->user()->first_name }}
+                                    {{ auth()->user()->last_name }}</h3>
+
+                                <p class="text-muted text-center">{{ auth()->user()->user_type->user_type }}</p>
+
+                                <ul class="list-group list-group-unbordered mb-3">
+                                    <li class="list-group-item">
+                                        <b>Contracts</b> <a
+                                            class="float-right">{{ userAddedCount(\App\Models\Contract::class, auth()->user()->id) }}</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>Investments</b> <a
+                                            class="float-right">{{ userAddedCount(\App\Models\Investment::class, auth()->user()->id) }}</a>
+                                    </li>
+                                </ul>
+                                <div class="mx-4 w-100">
+                                    <a href="{{ route('user.profile') }}" class="btn btn-info"><i
+                                            class="fa fa-cog"></i> Profile</a>
+                                    <a class="btn btn-info" href="javascript:void(0)" onclick="signoutConf()"><i
+                                            class="nav-icon fas fa-solid fa-arrow-right"></i>
+                                        Signout</a>
                                 </div>
                             </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="{{ asset('img/avatar.png') }}" alt="User Avatar"
-                                    class="img-size-50 img-circle mr-3">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        John Pierce
-                                        <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">I got your message bro</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="{{ asset('img/avatar2.png') }}" alt="User Avatar"
-                                    class="img-size-50 img-circle mr-3">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        Nora Silvester
-                                        <span class="float-right text-sm text-warning"><i
-                                                class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">The subject goes here</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+                            <!-- /.card-body -->
+                        </div>
                     </div>
-                </li> --}}
+                </li>
                 <!-- Notifications Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
@@ -225,7 +205,8 @@
                         @endphp
                         @if (auth()->user()->hasPermissionInRange(1, 45))
                             <li class="nav-item {{ $master ? 'menu-open' : '' }}">
-                                <a href="#" class="nav-link {{ $master ? 'active bg-gradient-projects' : '' }}">
+                                <a href="#"
+                                    class="nav-link {{ $master ? 'active bg-gradient-projects' : '' }}">
                                     <i class="nav-icon fas fa-copy"></i>
                                     <p>
                                         Masters

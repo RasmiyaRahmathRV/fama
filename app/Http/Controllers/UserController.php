@@ -106,4 +106,14 @@ class UserController extends Controller
         $this->userService->delete($user->id);
         return response()->json(['success' => true, 'message' => 'User soft deleted']);
     }
+
+    public function userProfile()
+    {
+        $title = "User Profile";
+        $companies = $this->companyService->getAll();
+        $user_types = UserType::all();
+        $user = User::with('permissions')->findOrFail(auth()->user()->id);
+
+        return view("admin.user.user-profile", compact("title", "companies", "user_types", "user"));
+    }
 }

@@ -79,6 +79,7 @@
                                 <form action="javascript:void(0)" id="UserForm" enctype="multipart/form-data">
                                     @csrf
                                     <input type="hidden" name="id" id="user_id" value="{{ $user->id ?? '' }}">
+                                    <input type="hidden" name="profile" value="">
                                     <div class="bs-stepper">
                                         <div class="bs-stepper-header" role="tablist">
                                             <!-- your steps here -->

@@ -868,3 +868,19 @@ function formatUnitTypes(string $text): string
         })
         ->implode(',');
 }
+
+
+function userAddedCount($model = null, $userId = null)
+{
+    if (!$model || !class_exists($model)) {
+        return 0;
+    }
+
+    $query = $model::query();
+
+    if ($userId != null) {
+        $query->where('added_by', $userId);
+    }
+
+    return $query->count();
+}

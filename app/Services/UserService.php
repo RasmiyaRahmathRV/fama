@@ -72,7 +72,7 @@ class UserService
         }
 
         $this->validate($data, $user_id);
-        $permissionIds = $data['permission_id'];
+        $permissionIds = $data['permission_id'] ?? null;
         if (!empty($userData['password'])) {
             $userData['password'] =  bcrypt($userData['password']);
         } else {
@@ -167,7 +167,7 @@ class UserService
 
                     ),
             ],
-            'permission_id' => 'required|array|min:1',
+            'permission_id' => $data['profile'] ? '' : 'required|array|min:1',
             'password' => $id ? 'nullable|string|min:6' : 'required|string|min:6',
             // 'permission_id.*' => 'integer|exists:permissions,id',
 
