@@ -226,7 +226,7 @@ class UserService
                     $action .= '<a class="btn btn-info mb-1 mr-md-1" href="' . route('user.createoredit', $row->id) . '">Edit</a>';
                 }
                 if (Gate::allows('user.delete')) {
-                    $action .= '<button class="btn btn-danger " onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                    $action .= '<button class="btn btn-danger mb-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
                 $action .= '</div>';
 

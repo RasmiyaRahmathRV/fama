@@ -32,7 +32,7 @@
                 {{-- Card Header --}}
                 <div class="card-header">
                     <h3 class="card-title">
-                        <i class="fas fa-building mr-1"></i> {{ $company->company_name }}
+                        <i class="fas fa-briefcase mr-1 text-blue"></i> {{ $company->company_name }}
                     </h3>
 
                     <div class="card-tools">

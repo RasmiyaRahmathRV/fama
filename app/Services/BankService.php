@@ -118,7 +118,7 @@ class BankService
                     $action .= '<a href="' . route('bank.show', $row->id) . '" class="btn btn-warning mb-1 mr-md-1">View</a>';
                 }
                 if (Gate::allows('bank.delete')) {
-                    $action .= '<button class="btn btn-danger " onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                    $action .= '<button class="btn btn-danger mb-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
                 $action .= '</div>';
 
@@ -135,6 +135,7 @@ class BankService
         $rows = Excel::toCollection(new BankImport, $file)->first();
 
         $insertData = [];
+        $restoreCount = 0;
         foreach ($rows as $key => $row) {
             // dd($row);
             $company_id = $this->companyService->getIdByCompanyname($row['company']);
@@ -155,8 +156,12 @@ class BankService
             }
 
             $bankexist = $this->bankRepository->checkIfExist(array('bank_name' => $row['bank_name'], 'company_id' => $company_id));
-
-            if (empty($bankexist)) {
+            if ($bankexist) {
+                if ($bankexist->trashed()) {
+                    $bankexist->restore();
+                    $restoreCount++;
+                }
+            } else {
                 $insertData[] = [
                     'company_id' => $company_id,
                     'bank_code' => $this->setBankCode($key + 1),
@@ -167,10 +172,26 @@ class BankService
                     'added_by' => $user_id,
                 ];
             }
+
+            // if (empty($bankexist)) {
+            //     $insertData[] = [
+            //         'company_id' => $company_id,
+            //         'bank_code' => $this->setBankCode($key + 1),
+            //         'bank_name' => $row['bank_name'],
+            //         'bank_short_code' => $row['bank_short_code'],
+            //         'created_at' => now(),
+            //         'updated_at' => now(),
+            //         'added_by' => $user_id,
+            //     ];
+            // }
         }
 
         $this->bankRepository->insertBulk($insertData);
 
-        return count($insertData);
+        // return count($insertData);
+        return [
+            'inserted' => count($insertData),
+            'restored' => $restoreCount,
+        ];
     }
 }

@@ -29,7 +29,7 @@
                 {{-- Card Header --}}
                 <div class="card-header">
                     <h3 class="card-title">
-                        <i class="fas fa-user mr-1"></i> {{ $bank->bank_name }}
+                        <i class="fas fa-university mr-1 text-blue"></i> {{ $bank->bank_name }}
                     </h3>
 
                     <div class="card-tools">
@@ -90,9 +90,14 @@
                                             <td>{{ $bank->bank_name ?? '-' }}</td>
                                         </tr>
                                         <tr>
+                                            <th width="30%">Bank Short Code<Code></Code></th>
+                                            <td>{{ $bank->bank_short_code ?? '-' }}</td>
+                                        </tr>
+                                        <tr>
                                             <th width="30%">Company Name</th>
                                             <td>{{ $bank->company->company_name ?? '-' }}</td>
                                         </tr>
+
 
                                     </table>
                                 </div>

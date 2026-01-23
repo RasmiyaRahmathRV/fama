@@ -139,7 +139,7 @@ class LocalityService
                     $action .= '<a href="' . route('locality.show', $row->id) . '" class="btn btn-warning mb-1 mr-md-1">View</a>';
                 }
                 if (Gate::allows('locality.delete')) {
-                    $action .= '<button class="btn btn-danger " onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                    $action .= '<button class="btn btn-danger mb-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
                 $action .= '</div>';
 
@@ -157,6 +157,7 @@ class LocalityService
         $rows = Excel::toCollection(new LocalityImport, $file)->first();
 
         $insertData = [];
+        $restoredCount = 0;
         foreach ($rows as $key => $row) {
             // dd($row);
             $area = $this->areaService->getByName(['area_name' => $row['area']]);
@@ -183,7 +184,13 @@ class LocalityService
             $localityExist = $this->checkIfExist(array('area_id' => $area->id, 'locality_name' => $row['locality']));
 
 
-            if ($localityExist == null) {
+
+            if ($localityExist) {
+                if ($localityExist->trashed()) {
+                    $localityExist->restore();
+                    $restoredCount++;
+                }
+            } else {
 
                 $insertData[] = [
                     // 'company_id' => $area->company_id,
@@ -199,7 +206,11 @@ class LocalityService
 
         $this->localityRepository->insertBulk($insertData);
 
-        return count($insertData);
+        // return count($insertData);
+        return [
+            'inserted' => count($insertData),
+            'restored' => $restoredCount,
+        ];
     }
 
     public function checkIfExist($data)

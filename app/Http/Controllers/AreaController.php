@@ -89,13 +89,14 @@ class AreaController extends Controller
         $file = $request->file('file');
 
         // Pass a second argument as required by importExcel, e.g., the current user ID or null if not needed
-        $count = $this->areaService->importExcel($file, auth()->user()->id);
+        $result = $this->areaService->importExcel($file, auth()->user()->id);
+        // dd($result);
 
         // return redirect()->back()->with('success', "$count localities imported successfully.");
-        if ($count == 0) {
+        if ($result['inserted'] == 0 && $result['restored'] == 0) {
             return response()->json(['success' => false, 'message' => "No new area to import."]);
         } else {
-            return response()->json(['success' => true, 'message' => "$count areas imported successfully."]);
+            return response()->json(['success' => true, 'message' =>  "{$result['inserted']} created, {$result['restored']} restored successfully."]);
         }
     }
 

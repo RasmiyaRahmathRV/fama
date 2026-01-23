@@ -122,7 +122,7 @@ class InstallmentService
                                                         data-row=\'' .  json_encode($row)  . '\'>Edit</button>';
                 }
                 if (Gate::allows('installments.delete')) {
-                    $action .= '<button class="btn btn-danger mb-1 mr-md-1" onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
+                    $action .= '<button class="btn btn-danger mb-1 " onclick="deleteConf(' . $row->id . ')" type="submit">Delete</button>';
                 }
                 $action .= '</div>';
 
@@ -139,6 +139,7 @@ class InstallmentService
         $rows = Excel::toCollection(new BankImport, $file)->first();
 
         $insertData = [];
+        $restoreCount = 0;
         foreach ($rows as $key => $row) {
             // dd($row);
             // $company_id = $this->companyService->getIdByCompanyname($row['company']);
@@ -160,9 +161,15 @@ class InstallmentService
 
             if ($row['installment'] == null) return;
 
-            $bankexist = $this->installmentRepository->checkIfExist(array('installment_name' => $row['installment'], 'interval' => $row['interval']));  //, 'company_id' => $company_id
+            $installmentexist = $this->installmentRepository->checkIfExist(array('installment_name' => $row['installment'], 'interval' => $row['interval']));  //, 'company_id' => $company_id
+            if ($installmentexist) {
+                if ($installmentexist->trashed()) {
+                    $installmentexist->restore();
+                    $restoreCount++;
+                }
+            }
 
-            if (empty($bankexist)) {
+            if (empty($installmentexist)) {
                 $insertData[] = [
                     // 'company_id' => $company_id,
                     'installment_code' => $this->setInstallmentCode($key + 1),
@@ -177,6 +184,7 @@ class InstallmentService
 
         $this->installmentRepository->insertBulk($insertData);
 
-        return count($insertData);
+        // return count($insertData);
+        return ['inserted' => count($insertData), 'restored' => $restoreCount];
     }
 }

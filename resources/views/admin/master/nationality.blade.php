@@ -48,8 +48,8 @@
                                 </div>
                             @endcan
                             <!-- /.card-header -->
-                            <div class="card-body">
-                                <table id="nationalityTable" class="table table-striped table-hover">
+                            <div class="card-body table-responsive">
+                                <table id="nationalityTable" class="table table-striped table-hover w-100">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -196,8 +196,9 @@
             });
         });
 
-        $('#modal-nationality').on('show.bs.modal', function(event) {
+        $('#modal-nationality').on('shown.bs.modal', function(event) {
             document.activeElement.blur();
+            $('#nationality_name').focus();
             let rowData = $(event.relatedTarget).data('row');
 
             if (rowData) {
@@ -269,5 +270,6 @@
                 }
             });
         }
+        // enableEnterNavigation('#NationalityForm');
     </script>
 @endsection

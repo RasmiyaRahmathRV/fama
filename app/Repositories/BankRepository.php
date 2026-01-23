@@ -54,10 +54,11 @@ class BankRepository
             ->where('bank_name', $data['bank_name'])
             ->first();
 
-        if ($existing && $existing->trashed()) {
-            // $existing->restore();
-            return $existing;
-        }
+        // if ($existing && $existing->trashed()) {
+        //     // $existing->restore();
+        //     return $existing;
+        // }
+        return $existing;
     }
 
     public function getQuery(array $filters = []): Builder

@@ -48,8 +48,8 @@
                                 </div>
                             @endcan
                             <!-- /.card-header -->
-                            <div class="card-body">
-                                <table id="bankTable" class="table table-striped table-hover">
+                            <div class="card-body table-responsive">
+                                <table id="bankTable" class="table table-striped table-hover" style="width: 100%">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -223,8 +223,9 @@
             });
         });
 
-        $('#modal-bank').on('show.bs.modal', function(event) {
+        $('#modal-bank').on('shown.bs.modal', function(event) {
             document.activeElement.blur();
+            $("#company_id").trigger('focus');
             let rowData = $(event.relatedTarget).data('row');
 
             if (rowData) {
@@ -277,5 +278,6 @@
                 }
             });
         }
+        enableEnterNavigation('#BankForm');
     </script>
 @endsection
