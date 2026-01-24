@@ -365,7 +365,7 @@ function contractStatusClass($contract_status)
     elseif ($contract_status == 5) return 'badge badge-secondary text-white';
     elseif ($contract_status == 6) return 'badge bg-gradient-maroon text-white';
     elseif ($contract_status == 7) return 'badge bg-gradient-lightblue text-white';
-    elseif ($contract_status == 8) return 'badge badge-warning text-black';
+    elseif ($contract_status == 8) return 'badge badge-dark text-white';
 }
 
 function statusCount($status)

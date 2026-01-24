@@ -36,8 +36,6 @@
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
-
-
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
@@ -294,7 +292,7 @@
                             <div class="modal-body">
                                 <div class="card-body">
                                     @foreach ($documentTypes as $key => $documentType)
-                                        @if ($documentType->id == 3 && !$contract->is_acknowledgement_released)
+                                        @if (($documentType->id == 3 || $documentType->id == 2) && !$contract->is_acknowledgement_released)
                                             @continue
                                         @endif
 

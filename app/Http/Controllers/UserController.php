@@ -41,12 +41,18 @@ class UserController extends Controller
             'view',
             'edit',
             'delete',
-            'payout',
-            'cheque_clearing',
             'approve',
             'reject',
             'document_upload',
-            'renew'
+            'renew',
+            'send_for_approval',
+            'sign_after_approval',
+            'terminate',
+            'invoice_upload',
+            'manage_installments',
+            'payout',
+            'cheque_clearing',
+            'submit_pending'
         ];
 
         if ($id) {

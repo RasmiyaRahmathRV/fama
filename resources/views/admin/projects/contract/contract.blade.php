@@ -72,25 +72,25 @@
                                             @if ($permission)
                                                 <button class="btn btn-primary filter-btn" add-class="btn-primary"
                                                     data-filter="">All</button>
-                                                <button class="btn btn-outline-warning filter-btn" add-class="btn-warning"
-                                                    data-filter="0">Pending</button>
-                                                <button class="btn btn-outline-info filter-btn" add-class="btn-info"
-                                                    data-filter="1">Processing</button>
+                                                <button class="btn btn-outline-warning filter-btn pending"
+                                                    add-class="btn-warning" data-filter="0">Pending</button>
+                                                <button class="btn btn-outline-info filter-btn processing"
+                                                    add-class="btn-info" data-filter="1">Processing</button>
                                             @endif
                                             <button class="btn btn-outline-df filter-btn approvalPending" add-class="btn-df"
                                                 data-filter="4">Approval Pending</button>
-                                            <button class="btn btn-outline-secondary filter-btn" add-class="btn-secondary"
-                                                data-filter="5">Approval On Hold</button>
-                                            <button class="btn btn-outline-success filter-btn" add-class="btn-success"
-                                                data-filter="2">Approved</button>
-                                            <button class="btn btn-outline-maroon filter-btn" add-class="btn-maroon"
-                                                data-filter="6">Partially Signed</button>
-                                            <button class="btn btn-outline-lightblue filter-btn" add-class="btn-lightblue"
-                                                data-filter="7">Both Signed</button>
-                                            <button class="btn btn-outline-dark filter-btn" add-class="btn-dark"
+                                            <button class="btn btn-outline-secondary filter-btn approval_on_hold"
+                                                add-class="btn-secondary" data-filter="5">Approval On Hold</button>
+                                            <button class="btn btn-outline-success filter-btn approved"
+                                                add-class="btn-success" data-filter="2">Approved</button>
+                                            {{-- <button class="btn btn-outline-maroon filter-btn" add-class="btn-maroon"
+                                                data-filter="6">Partially Signed</button> --}}
+                                            <button class="btn btn-outline-lightblue filter-btn signed"
+                                                add-class="btn-lightblue" data-filter="7">Signed</button>
+                                            <button class="btn btn-outline-dark filter-btn expired" add-class="btn-dark"
                                                 data-filter="8">Expired</button>
-                                            <button class="btn btn-outline-danger filter-btn" add-class="btn-danger"
-                                                data-filter="3">Rejected</button>
+                                            <button class="btn btn-outline-danger filter-btn rejected"
+                                                add-class="btn-danger" data-filter="3">Rejected</button>
                                         </div>
                                     </div>
 
@@ -401,6 +401,23 @@
                     $('.approvalPending').click();
                 });
             @endif
+
+            $(document).ready(function() {
+
+                // Get the filter value from the URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const filterValue = urlParams.get('filter');
+
+                if (filterValue) {
+                    // Trigger the corresponding filter button
+                    const targetButton = $('.' + filterValue);
+                    console.log(targetButton);
+                    if (targetButton.length) {
+                        targetButton.click();
+                    }
+                }
+
+            });
 
             // Filter buttons
             $('.filter-btn').on('click', function() {

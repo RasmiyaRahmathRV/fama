@@ -108,19 +108,26 @@
                         <div class="dropdown-divider"></div>
                         <a href="{{ route('contract.renewal_pending_list') }}" class="dropdown-item">
                             <i class="fas fa-sync-alt mr-2"></i>{{ renewalCount() }} Renewal
-                            {{-- <span class="float-right text-muted text-sm">Exp: 10-11-2025</span> --}}
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a href="{{ route('contract.index') }}" class="dropdown-item">
+                        <a href="{{ route('contract.index', ['filter' => 'processing']) }}" class="dropdown-item">
+                            <i class="fas fa-hourglass-half mr-2"></i>{{ statusCount(1) }} Send for Approval
+
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ route('contract.index', ['filter' => 'approvalPending']) }}" class="dropdown-item">
                             <i class="fas fa-hourglass-half mr-2"></i>{{ statusCount(4) }} Approval Pending
-                            {{-- <span class="float-right text-muted text-sm">Exp: 10-11-2025</span> --}}
+
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ route('contract.index', ['filter' => 'approved']) }}" class="dropdown-item">
+                            <i class="fas fa-hourglass-half mr-2"></i>{{ statusCount(2) }} Signature
 
                         </a>
 
                         <div class="dropdown-divider"></div>
                         <a href="{{ route('agreement.expiring-list') }}" class="dropdown-item">
                             <i class="fas fa-sync-alt mr-2"></i>{{ getAgreementExpiringCounts() }} Agreement Expiry
-                            {{-- <span class="float-right text-muted text-sm">Exp: 10-11-2025</span> --}}
                         </a>
                     </div>
                 </li>
@@ -299,7 +306,8 @@
                             </li>
                         @endif
 
-                        @if (auth()->user()->hasPermissionInRange(56, 73) || Gate::any(['contract.send_for_approval']))
+                        @if (auth()->user()->hasPermissionInRange(56, 73) ||
+                                Gate::any(['contract.send_for_approval', 'contract.sign_after_approval']))
                             <li class="nav-item {{ $project ? 'menu-open' : '' }}">
                                 <a href="#"
                                     class="nav-link {{ $project ? 'active bg-gradient-projects' : '' }}">
@@ -310,7 +318,8 @@
                                     </p>
                                 </a>
                                 <ul class="nav nav-treeview">
-                                    @if (auth()->user()->hasPermissionInRange(56, 64))
+                                    @if (auth()->user()->hasPermissionInRange(56, 64) ||
+                                            Gate::any(['contract.send_for_approval', 'contract.sign_after_approval']))
                                         <li class="nav-item">
                                             <a href="{{ route('contract.index') }}"
                                                 class="nav-link {{ request()->is('contract') ? 'active' : '' }}">
@@ -319,7 +328,8 @@
                                             </a>
                                         </li>
                                     @endif
-                                    @if (auth()->user()->hasPermissionInRange(65, 73))
+                                    @if (auth()->user()->hasPermissionInRange(65, 73) ||
+                                            Gate::any(['agreement.terminate', 'agreement.invoice_upload', 'agreement.manage_installments']))
                                         <li class="nav-item">
                                             <a href="{{ route('agreement.index') }}"
                                                 class="nav-link {{ request()->is('agreement') ? 'active' : '' }}">
