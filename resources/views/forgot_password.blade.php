@@ -2,12 +2,12 @@
 
 @section('content')
     <div class="login-box">
-        <div class="card card-outline card-primary">
+        <div class="card  login-card">
             <div class="card-header text-center">
                 <img src="{{ asset('images/fama-dark.png') }}" height="100px">
             </div>
             <div class="card-body">
-                <p class="login-box-msg">Forgot your password? </p>
+                <p class="login-box-msg text-white">Forgot your password? </p>
                 <form action="{{ route('do.forgot.password') }}" method="post">
                     @csrf
                     @if ($errors->any())
@@ -29,7 +29,7 @@
                         </div>
                     @endif
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control" name="email" placeholder="Email">
+                        <input type="email" class="form-control login-input" name="email" placeholder="Email">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
@@ -38,13 +38,13 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <button type="submit" class="btn btn-info btn-block">Forgot Password </button>
+                            <button type="submit" class="btn  signinbtn btn-block">Forgot Password </button>
                         </div>
                         <!-- /.col -->
                     </div>
                 </form>
                 <p class="mt-3 mb-1">
-                    <a href="{{ route('login') }}">Login</a>
+                    <a href="{{ route('login') }}" class="textfama">Login</a>
                 </p>
             </div>
             <!-- /.login-card-body -->
