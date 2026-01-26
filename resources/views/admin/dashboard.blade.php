@@ -181,6 +181,8 @@
                                                         {{ $topInvestorsMax->count() - 1 }}
                                                     </span>others
                                                 @endif
+                                            @else
+                                                N/A
                                             @endif
                                         </span>
                                     </p>
