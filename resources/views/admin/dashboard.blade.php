@@ -203,7 +203,7 @@
                         <!-- /.card -->
                     </div>
                     <!-- /.col-md-6 -->
-                    {{-- @if (auth()->user()->user_type_id !== 8)
+                    @if (auth()->user()->user_type_id !== 8)
                         <div class="col-lg-12">
                             <div class="card">
                                 <div class="card-header border-0">
@@ -251,7 +251,7 @@
 
                             <!-- /.card -->
                         </div>
-                    @endif --}}
+                    @endif
 
                     <!-- /.col-md-6 -->
                 </div>
@@ -340,120 +340,123 @@
 
 
 
-
     <script>
-        $(function() {
+        const investmentMonthlyRaw = @json($investmentMonthlyRaw);
+        console.log(investmentMonthlyRaw);
+        let investmentChart = null;
 
-            var $investmentChart = $('#investment-chart');
-            if ($investmentChart.length) {
+        function renderInvestmentChart(chartData) {
+            console.log(chartData);
 
-                if (window.investmentChart) window.investmentChart.destroy();
+            const ctx = document.getElementById('investment-chart');
 
-                window.investmentChart = new Chart($investmentChart, {
-                    type: 'bar',
-                    data: {
-                        labels: {!! json_encode($labels) !!},
-                        datasets: [{
-                                type: 'bar',
-                                label: 'Investment Amount (AED)',
-                                data: {!! json_encode($amounts) !!},
-                                backgroundColor: 'rgba(17, 153, 142,0.5)',
-                                borderColor: 'rgba(54, 162, 235, 1)',
-                                borderWidth: 1,
-                                yAxisID: 'y',
-                                // barThickness: 40,
-                                maxBarThickness: 40,
-                                borderRadius: 6
-                            },
-                            {
-                                type: 'line',
-                                label: 'No. of Investments',
-                                data: {!! json_encode($counts) !!},
-                                borderColor: 'rgba(91, 134, 229,1)',
-                                backgroundColor: 'rgba(91, 134, 229,1)',
-                                fill: false,
-                                tension: 0.3,
-                                yAxisID: 'y1', // right axis
-                                pointBackgroundColor: 'rgba(91, 134, 229,1)',
-                                pointBorderColor: 'rgba(91, 134, 229,1)',
-                                // pointRadius: 5
-                            }
-                        ]
+            // Update existing chart
+            if (investmentChart) {
+                investmentChart.data.labels = chartData.labels;
+                investmentChart.data.datasets[0].data = chartData.amounts;
+                investmentChart.data.datasets[1].data = chartData.counts;
+                investmentChart.update();
+                return;
+            }
+
+            // Create chart first time
+            investmentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                            type: 'bar',
+                            label: 'Investment Amount (AED)',
+                            data: chartData.amounts,
+                            backgroundColor: 'rgba(17, 153, 142, 0.5)',
+                            borderColor: 'rgba(17, 153, 142, 1)',
+                            borderWidth: 1,
+                            maxBarThickness: 40,
+                            borderRadius: 6,
+                            yAxisID: 'y'
+                        },
+                        {
+                            type: 'line',
+                            label: 'No. of Investments',
+                            data: chartData.counts,
+                            borderColor: 'rgba(91, 134, 229, 1)',
+                            backgroundColor: 'rgba(91, 134, 229, 1)',
+                            tension: 0.3,
+                            pointRadius: 4,
+                            fill: false,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-
-                        interaction: {
-                            mode: 'index',
-                            intersect: false
+                    plugins: {
+                        legend: {
+                            display: false
                         },
-                        stacked: false,
-                        plugins: {
-                            legend: {
-                                display: false,
-                                position: 'top'
-                            },
-                            tooltip: {
-                                enabled: true
+                        tooltip: {
+                            enabled: true
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Investment Amount (AED)'
                             }
                         },
-                        scales: {
-                            y: {
-                                type: 'linear',
-                                display: true,
-                                beginAtZero: true,
-                                ticks: {
-                                    stepSize: 2000, // desired interval
-                                    callback: function(value) {
-                                        return value;
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Investment Amount (AED)'
-                                },
-                                suggestedMax: Math.ceil(Math.max(...{!! json_encode($amounts) !!}) / 2000) * 2000
+                        y1: {
+                            beginAtZero: true,
+                            position: 'right',
+                            grid: {
+                                drawOnChartArea: false
                             },
-
-                            y1: {
-                                type: 'linear',
+                            title: {
                                 display: true,
-                                position: 'right',
-                                beginAtZero: true,
-                                grid: {
-                                    drawOnChartArea: false
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'No. of Investments'
-                                },
-                                // optional: max value a bit above highest count
-                                suggestedMax: Math.max(...{!! json_encode($counts) !!})
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Month',
-                                    font: {
-                                        size: 14,
-                                        weight: '500'
-                                    }
-                                },
-                                ticks: {
-                                    font: {
-                                        size: 12
-                                    }
-                                },
-                                grid: {
-                                    color: 'rgba(200,200,200,0.1)',
-                                    borderDash: [3, 3]
+                                text: 'No. of Investments'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: 12
                                 }
+                            },
+                            grid: {
+                                color: 'rgba(200,200,200,0.1)',
+                                borderDash: [3, 3]
                             }
                         }
                     }
-                });
-            }
+                }
+            });
+        }
+    </script>
+    <script>
+        $(function() {
+
+            $('#yearFilter').on('change', function() {
+                const value = $(this).val();
+
+                const filtered = value === 'last_12_months' ?
+                    last12Months(investmentMonthlyRaw) :
+                    filterByYear(investmentMonthlyRaw, value);
+
+                renderInvestmentChart(buildChartData(filtered));
+            });
+            renderInvestmentChart(
+                buildChartData(last12Months(investmentMonthlyRaw))
+            );
+
+
+
+
 
             var $inventoryChart = $('#inventory-chart');
             if ($inventoryChart.length) {
@@ -715,6 +718,30 @@
         $(function() {
             $('[data-toggle="tooltip"]').tooltip();
         });
+    </script>
+    <script>
+        function formatMonth(year, month) {
+            return new Date(year, month - 1).toLocaleString('en', {
+                month: 'short',
+                year: 'numeric'
+            });
+        }
+
+        function last12Months(data) {
+            return data.slice(-12);
+        }
+
+        function filterByYear(data, year) {
+            return data.filter(d => d.year == year);
+        }
+
+        function buildChartData(data) {
+            return {
+                labels: data.map(d => formatMonth(d.year, d.month)),
+                amounts: data.map(d => d.total_amount),
+                counts: data.map(d => d.total_count)
+            };
+        }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD46-CF9pTGIQpnKNkvc1eeZwBH2pQ70qQ&callback=initMap" async
         defer></script>
