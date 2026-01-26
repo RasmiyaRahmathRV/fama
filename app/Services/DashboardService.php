@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AgreementTenant;
 use App\Models\Company;
 use App\Models\Contract;
 use App\Models\ContractRental;
@@ -77,7 +78,12 @@ class DashboardService
         $wid_totalInvestors = Investor::count();
         $wid_totalInvestments = Investment::count();
         $wid_revenue = ContractRental::sum('rent_receivable_per_annum');
-        return compact('wid_totalContracts', 'wid_totalInvestors', 'wid_totalInvestments', 'wid_revenue');
+        $wid_tenants = AgreementTenant::count();
+        // $wid_tenants = 23456778;
+        // $wid_totalContracts = 5000;
+        // $wid_totalInvestors = 6000;
+        // $wid_totalInvestments = 3000;
+        return compact('wid_totalContracts', 'wid_totalInvestors', 'wid_totalInvestments', 'wid_revenue', 'wid_tenants');
     }
     // public function inventoryChart()
     // {
@@ -183,5 +189,24 @@ class DashboardService
             'percentChange',
             'arrow'
         );
+    }
+    public function toIinvestorChart()
+    {
+        $topInvestors = Investor::select('investor_name', 'total_no_of_investments')
+            ->orderByDesc('total_no_of_investments')
+            ->where('total_no_of_investments', '>', 0)
+            ->limit(10)
+            ->get();
+
+        $investorNames = $topInvestors->pluck('investor_name');
+        $investorCounts = $topInvestors->pluck('total_no_of_investments');
+        // $topinvestor = $investorNames->first();
+        $maxCount = $investorCounts->first();
+        $topInvestorsMax = $topInvestors->filter(function ($investor) use ($maxCount) {
+            return $investor->total_no_of_investments === $maxCount;
+        });
+        // dd($topinvestorsMax, $maxCount);
+
+        return compact('topInvestors', 'investorNames', 'investorCounts', 'topInvestorsMax', 'maxCount');
     }
 }
