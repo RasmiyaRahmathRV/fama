@@ -26,6 +26,7 @@ class DashboardController extends Controller
         $data = $this->dashboardService->investmentChart();
         $inventoryData = $this->dashboardService->inventoryChart();
         $properties = $this->propertService->getAll();
+        $topInvestors = $this->dashboardService->toIinvestorChart();
         // dd($inventoryData);
         // dd($properties);
 
@@ -34,6 +35,7 @@ class DashboardController extends Controller
             $data,
             $widgets,
             $inventoryData,
+            $topInvestors
         ));
     }
 }

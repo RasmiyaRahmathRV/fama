@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="{{ asset('css/adminlte.css') }}">
 
     <!-- custom style -->
-    <link rel="stylesheet" href="{{ asset('css/main.css') }}?v=1">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}?v=2">
 </head>
 <!--
 `body` tag options:
@@ -475,7 +475,7 @@
 
         <!-- Main Footer -->
         <footer class="main-footer">
-            <strong>Copyright &copy; 2014-2021 <a href="https://famainvestment.ae/"
+            <strong>Copyright &copy; 2026 <a href="https://famainvestment.ae/"
                     target="_blank">famainvestment.ae</a>.</strong>
             All rights reserved.
             <div class="float-right d-none d-sm-inline-block">
@@ -682,6 +682,8 @@
             }, 1000);
         });
     </script> --}}
+
+
 
 </body>
 

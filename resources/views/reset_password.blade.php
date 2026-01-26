@@ -3,12 +3,12 @@
 
 @section('content')
     <div class="login-box">
-        <div class="card card-outline card-primary">
+        <div class="card login-card">
             <div class="card-header text-center">
                 <img src="{{ asset('images/fama-dark.png') }}" height="100px">
             </div>
             <div class="card-body">
-                <p class="login-box-msg">Reset Password </p>
+                <p class="login-box-msg text-white">Reset Password </p>
                 <form action="{{ route('do.reset.password') }}" method="post">
                     @csrf
                     <input type="hidden" name="user_id" value="{{ encrypt($user_id) }}">
@@ -31,7 +31,7 @@
                         </div>
                     @endif
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" name="password" placeholder="Password">
+                        <input type="password" class="form-control login-input" name="password" placeholder="Password">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -39,7 +39,7 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" name="password_confirmation"
+                        <input type="password" class="form-control login-input" name="password_confirmation"
                             placeholder="Confirm Password">
                         <div class="input-group-append">
                             <div class="input-group-text">
@@ -49,7 +49,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <button type="submit" class="btn btn-info btn-block">Change password</button>
+                            <button type="submit" class="btn signinbtn btn-block">Change password</button>
                         </div>
                         <!-- /.col -->
                     </div>

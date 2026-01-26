@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AgreementTenant;
 use App\Models\Company;
 use App\Models\Contract;
 use App\Models\ContractRental;
@@ -30,7 +31,7 @@ class DashboardService
     public function investmentChart()
     {
         // Get last 2 months of investments
-        $monthlyData = Investment::selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, SUM(investment_amount) as total_amount, COUNT(*) as count')
+        $monthlyData = Investment::selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, SUM(investment_amount) as total_amount, COUNT(*) as total_count')
             // ->where('created_at', '>=', now()->subMonths(2))
             ->where('created_at', '<', now())
             ->groupBy('year', 'month')
@@ -38,15 +39,16 @@ class DashboardService
             ->orderBy('month')
             ->get();
 
-        $labels = [];
-        $amounts = [];
-        $counts = [];
 
-        foreach ($monthlyData as $data) {
-            $labels[] = date('M', mktime(0, 0, 0, $data->month, 1));
-            $amounts[] = (float) $data->total_amount;
-            $counts[] = (int) $data->count;
-        }
+        // $labels = [];
+        // $amounts = [];
+        // $counts = [];
+
+        // foreach ($monthlyData as $data) {
+        //     $labels[] = date('M', mktime(0, 0, 0, $data->month, 1));
+        //     $amounts[] = (float) $data->total_amount;
+        //     $counts[] = (int) $data->count;
+        // }
 
         $totalInvestment = Investment::sum('investment_amount');
         $totalCount = Investment::count();
@@ -69,7 +71,15 @@ class DashboardService
             }
         }
 
-        return compact('labels', 'amounts', 'counts', 'totalInvestment', 'totalCount', 'percentageChange', 'arrowUp');
+        return [
+            'investmentMonthlyRaw' => $monthlyData,
+            'totalInvestment' => $totalInvestment,
+            'totalCount' => $totalCount,
+            'percentageChange' => $percentageChange,
+            'arrowUp' => $arrowUp
+        ];
+
+        // return compact('labels', 'amounts', 'counts', 'totalInvestment', 'totalCount', 'percentageChange', 'arrowUp');
     }
     public function widgetsData()
     {
@@ -77,7 +87,12 @@ class DashboardService
         $wid_totalInvestors = Investor::count();
         $wid_totalInvestments = Investment::count();
         $wid_revenue = ContractRental::sum('rent_receivable_per_annum');
-        return compact('wid_totalContracts', 'wid_totalInvestors', 'wid_totalInvestments', 'wid_revenue');
+        $wid_tenants = AgreementTenant::count();
+        // $wid_tenants = 23456778;
+        // $wid_totalContracts = 5000;
+        // $wid_totalInvestors = 6000;
+        // $wid_totalInvestments = 3000;
+        return compact('wid_totalContracts', 'wid_totalInvestors', 'wid_totalInvestments', 'wid_revenue', 'wid_tenants');
     }
     // public function inventoryChart()
     // {
@@ -184,4 +199,63 @@ class DashboardService
             'arrow'
         );
     }
+    public function toIinvestorChart()
+    {
+        $topInvestors = Investor::select('investor_name', 'total_no_of_investments')
+            ->orderByDesc('total_no_of_investments')
+            ->where('total_no_of_investments', '>', 0)
+            ->limit(10)
+            ->get();
+
+        $investorNames = $topInvestors->pluck('investor_name');
+        $investorCounts = $topInvestors->pluck('total_no_of_investments');
+        // $topinvestor = $investorNames->first();
+        $maxCount = $investorCounts->first();
+        $topInvestorsMax = $topInvestors->filter(function ($investor) use ($maxCount) {
+            return $investor->total_no_of_investments === $maxCount;
+        });
+        // dd($topinvestorsMax, $maxCount);
+
+        return compact('topInvestors', 'investorNames', 'investorCounts', 'topInvestorsMax', 'maxCount');
+    }
+
+    // public function investmentChart()
+    // {
+    //     $monthlyData = Investment::selectRaw('
+    //         YEAR(created_at) as year,
+    //         MONTH(created_at) as month,
+    //         SUM(investment_amount) as total_amount,
+    //         COUNT(*) as total_count
+    //     ')
+    //         ->where('created_at', '<', now())
+    //         ->groupBy('year', 'month')
+    //         ->orderBy('year')
+    //         ->orderBy('month')
+    //         ->get();
+
+    //     $totalInvestment = Investment::sum('investment_amount');
+    //     $totalCount = Investment::count();
+
+    //     // Month-on-month comparison (latest two months)
+    //     $percentageChange = 0;
+    //     $arrowUp = true;
+
+    //     if ($monthlyData->count() >= 2) {
+    //         $last = $monthlyData[$monthlyData->count() - 2]->total_amount;
+    //         $current = $monthlyData[$monthlyData->count() - 1]->total_amount;
+
+    //         if ($last > 0) {
+    //             $percentageChange = round((($current - $last) / $last) * 100, 2);
+    //             $arrowUp = $percentageChange >= 0;
+    //         }
+    //     }
+
+    //     return [
+    //         'investmentMonthlyRaw' => $monthlyData,
+    //         'totalInvestment' => $totalInvestment,
+    //         'totalCount' => $totalCount,
+    //         'percentageChange' => $percentageChange,
+    //         'arrowUp' => $arrowUp
+    //     ];
+    // }
 }
