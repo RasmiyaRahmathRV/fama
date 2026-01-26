@@ -170,14 +170,17 @@
                                 <div class="d-flex">
                                     <p class="d-flex flex-column">
                                         <span class="text-bold text-lg">{{ $maxCount }}</span>
-                                        <span>Top Investor: {{ $topInvestorsMax->first()->investor_name }}
-                                            @if ($topInvestorsMax->count() > 1)
-                                                +
-                                                <span data-toggle="tooltip" class="text-primary text-bold"
-                                                    title="{{ $topInvestorsMax->pluck('investor_name')->slice(1)->join(', ') }}"
-                                                    style=" cursor: pointer;">
-                                                    {{ $topInvestorsMax->count() - 1 }}
-                                                </span>others
+                                        <span>Top Investor:
+                                            @if ($topInvestorsMax->isNotEmpty())
+                                                {{ $topInvestorsMax->first()->investor_name }}
+                                                @if ($topInvestorsMax->count() > 1)
+                                                    +
+                                                    <span data-toggle="tooltip" class="text-primary text-bold"
+                                                        title="{{ $topInvestorsMax->pluck('investor_name')->slice(1)->join(', ') }}"
+                                                        style=" cursor: pointer;">
+                                                        {{ $topInvestorsMax->count() - 1 }}
+                                                    </span>others
+                                                @endif
                                             @endif
                                         </span>
                                     </p>
