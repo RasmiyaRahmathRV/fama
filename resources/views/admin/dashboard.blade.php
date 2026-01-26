@@ -32,10 +32,11 @@
                         <div class="small-box bg-gradient-projects">
 
                             <div class="inner">
-                                <h3>{{ number_format($wid_totalContracts) }}</h3>
+                                <h3>{{ format_k($wid_totalContracts) }}</h3>
 
                                 <p>Projects</p>
                             </div>
+
                             <div class="icon">
                                 <i class="ion ion-folder"></i>
                             </div>
@@ -49,10 +50,11 @@
                         <div class="small-box bg-gradient-investors">
 
                             <div class="inner">
-                                <h3>{{ number_format($wid_totalInvestors) }}<sup style="font-size: 20px"></sup></h3>
+                                <h3>{{ format_k($wid_totalInvestors) }}<sup style="font-size: 20px"></sup></h3>
 
                                 <p>Investors</p>
                             </div>
+
                             <div class="icon">
                                 <i class="ion ion-stats-bars"></i>
                             </div>
@@ -66,10 +68,12 @@
                         <div class="small-box bg-gradient-investments">
 
                             <div class="inner">
-                                <h3>{{ number_format($wid_totalInvestments) }}</h3>
+                                <h3>{{ format_k($wid_totalInvestments) }}</h3>
+
 
                                 <p>Investments</p>
                             </div>
+
                             <div class="icon">
                                 <i class="ion ion-briefcase"></i>
                             </div>
@@ -81,12 +85,17 @@
                     <div class="col-lg-3 ">
                         <div class="small-box bg-gradient-revenue">
 
-                            <div class="inner">
+                            {{-- <div class="inner">
                                 <h3>{{ number_format($wid_revenue, 2) }}</h3>
                                 <p>Revenue</p>
+                            </div> --}}
+                            <div class="inner">
+                                <h3>{{ format_k($wid_tenants) }}</h3>
+                                <p>Tenants</p>
                             </div>
+
                             <div class="icon">
-                                <i class="ion ion-arrow-graph-up-right"></i>
+                                <i class="ion ion-person-stalker"></i>
                             </div>
                             {{-- <a href="#" class="small-box-footer">
                                 More info <i class="fas fa-arrow-circle-right"></i>
@@ -97,6 +106,7 @@
                     <!-- ./col -->
                 </div>
                 <!-- /.row -->
+
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="card">
@@ -112,7 +122,7 @@
                                         <span class="text-bold text-lg">{{ $grandTotal ?? 0 }}</span>
                                         <span>Total Units</span>
                                     </p>
-                                    <p class="ml-auto d-flex flex-column text-right">
+                                    {{-- <p class="ml-auto d-flex flex-column text-right">
                                         @if ($arrow === 'up')
                                             <span class="text-success">
                                                 <i class="fas fa-arrow-up"></i> {{ $percentChange }}%
@@ -126,7 +136,7 @@
                                         @endif
                                         <span class="text-muted">Compared to last month</span>
 
-                                    </p>
+                                    </p> --}}
 
                                 </div>
                                 <!-- /.d-flex -->
@@ -148,108 +158,105 @@
                         </div>
                         <!-- /.card -->
                     </div>
-                    <!-- /.col-md-6 -->
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-header border-0">
                                 <div class="d-flex justify-content-between">
-                                    <h3 class="card-title">Investments</h3>
+                                    <h3 class="card-title">Investors</h3>
                                     {{-- <a href="javascript:void(0);">View Report</a> --}}
                                 </div>
                             </div>
                             <div class="card-body">
                                 <div class="d-flex">
                                     <p class="d-flex flex-column">
-                                        <span class="text-bold text-lg">AED {{ number_format($totalInvestment, 2) }}</span>
-                                        <span>Total Investments</span>
-                                    </p>
-                                    <p class="ml-auto d-flex flex-column text-right">
-                                        <span class="text-{{ $arrowUp ? 'success' : 'danger' }}">
-                                            <i class="fas fa-arrow-{{ $arrowUp ? 'up' : 'down' }}"></i>
-                                            {{ $percentageChange }}%
+                                        <span class="text-bold text-lg">{{ $maxCount }}</span>
+                                        <span>Top Investor: {{ $topInvestorsMax->first()->investor_name }}
+                                            @if ($topInvestorsMax->count() > 1)
+                                                +
+                                                <span data-toggle="tooltip" class="text-primary text-bold"
+                                                    title="{{ $topInvestorsMax->pluck('investor_name')->slice(1)->join(', ') }}"
+                                                    style=" cursor: pointer;">
+                                                    {{ $topInvestorsMax->count() - 1 }}
+                                                </span>others
+                                            @endif
                                         </span>
-                                        <span class="text-muted">Since last month</span>
                                     </p>
+
 
                                 </div>
+                                <!-- /.d-flex -->
 
-                                <!-- Chart -->
-                                <div class="position-relative mb-4" style="height: 271px;">
-                                    <canvas id="investment-chart"></canvas>
+                                <div class="position-relative mb-4">
+                                    {{-- <canvas id="inventory-chart" height="272"></canvas> --}}
+                                    <canvas id="investorChart" height="272"></canvas>
                                 </div>
 
                                 <div class="d-flex flex-row justify-content-end">
                                     <span class="mr-2">
-                                        <i class="fas fa-square bg-ffred"></i> Investment Amount
+                                        <i class="fas fa-square bg-yellowIn"></i> Total Investments
                                     </span>
-                                    <span>
-                                        <i class="fas fa-square bg-greendf"></i> Number of Investments
-                                    </span>
+
+
                                 </div>
                             </div>
-
                         </div>
-
-
-
                         <!-- /.card -->
-
-                        {{-- <div class="card">
-                            <div class="card-header border-0">
-                                <h3 class="card-title">Online Store Overview</h3>
-                                <div class="card-tools">
-                                    <a href="#" class="btn btn-sm btn-tool">
-                                        <i class="fas fa-download"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-sm btn-tool">
-                                        <i class="fas fa-bars"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
-                                    <p class="text-success text-xl">
-                                        <i class="ion ion-ios-refresh-empty"></i>
-                                    </p>
-                                    <p class="d-flex flex-column text-right">
-                                        <span class="font-weight-bold">
-                                            <i class="ion ion-android-arrow-up text-success"></i> 12%
-                                        </span>
-                                        <span class="text-muted">CONVERSION RATE</span>
-                                    </p>
-                                </div>
-                                <!-- /.d-flex -->
-                                <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
-                                    <p class="text-warning text-xl">
-                                        <i class="ion ion-ios-cart-outline"></i>
-                                    </p>
-                                    <p class="d-flex flex-column text-right">
-                                        <span class="font-weight-bold">
-                                            <i class="ion ion-android-arrow-up text-warning"></i> 0.8%
-                                        </span>
-                                        <span class="text-muted">SALES RATE</span>
-                                    </p>
-                                </div>
-                                <!-- /.d-flex -->
-                                <div class="d-flex justify-content-between align-items-center mb-0">
-                                    <p class="text-danger text-xl">
-                                        <i class="ion ion-ios-people-outline"></i>
-                                    </p>
-                                    <p class="d-flex flex-column text-right">
-                                        <span class="font-weight-bold">
-                                            <i class="ion ion-android-arrow-down text-danger"></i> 1%
-                                        </span>
-                                        <span class="text-muted">REGISTRATION RATE</span>
-                                    </p>
-                                </div>
-                                <!-- /.d-flex -->
-                            </div>
-                        </div> --}}
                     </div>
+                    <!-- /.col-md-6 -->
+                    {{-- @if (auth()->user()->user_type_id !== 8)
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-header border-0">
+
+                                    <div class="card-header border-0">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h3 class="card-title mb-0">Investments</h3>
+
+                                            <select id="yearFilter" class="form-control form-control-sm"
+                                                style="width: 160px;">
+                                                <option value="last_12_months">Last 12 Months</option>
+                                                @for ($y = date('Y'); $y >= date('Y') - 5; $y--)
+                                                    <option value="{{ $y }}">{{ $y }}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex">
+                                        <p class="d-flex flex-column">
+                                            <span class="text-bold text-lg">AED
+                                                {{ format_k($totalInvestment) }}</span>
+                                            <span>Total Investments</span>
+                                        </p>
+
+                                    </div>
+
+                                    <!-- Chart -->
+                                    <div class="position-relative mb-4" style="height: 271px;">
+                                        <canvas id="investment-chart"></canvas>
+                                    </div>
+
+                                    <div class="d-flex flex-row justify-content-end">
+                                        <span class="mr-2">
+                                            <i class="fas fa-square bg-ffred"></i> Investment Amount
+                                        </span>
+                                        <span>
+                                            <i class="fas fa-square bg-greendf"></i> Number of Investments
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- /.card -->
+                        </div>
+                    @endif --}}
+
                     <!-- /.col-md-6 -->
                 </div>
                 <!-- /.row -->
-                {{-- <div class="row">
+                <div class="row">
                     <div class="col-md-4 col-sm-6 col-12">
                         <div class="info-box">
                             <span class="info-box-icon bg-gradient-projects"><i class="far fa-envelope"></i></span>
@@ -291,14 +298,20 @@
                     <!-- /.col -->
 
                     <!-- /.col -->
-                </div> --}}
+                </div>
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
                             {{-- <div class="card-header bg-gradient-info">
                                 <h3 class="card-title text-white">Property Locations</h3>
                             </div> --}}
-                            <div class="card-body p-0">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="ion ion-ios-location text-muted mr-1"></i>
+                                    Property Locations
+                                </h3>
+                            </div>
+                            <div class="card-body p-4">
                                 <div id="map" style="width: 100%; height: 500px;"></div>
                             </div>
                         </div>
@@ -433,7 +446,8 @@
                                     }
                                 },
                                 grid: {
-                                    color: 'rgba(200,200,200,0.1)'
+                                    color: 'rgba(200,200,200,0.1)',
+                                    borderDash: [3, 3]
                                 }
                             }
                         }
@@ -529,6 +543,89 @@
                     }
                 });
             }
+
+            var $investorChart = $('#investorChart');
+            if ($investorChart.length) {
+
+                if (window.investorChart instanceof Chart) {
+                    window.investorChart.destroy();
+                }
+
+                window.investorChart = new Chart($investorChart, {
+                    type: 'bar',
+                    data: {
+                        labels: {!! json_encode($investorNames) !!},
+
+                        datasets: [{
+                            label: 'Total Investments',
+                            data: {!! json_encode($investorCounts) !!},
+                            backgroundColor: 'rgba(255, 193, 7, 0.75)',
+                            borderRadius: 6,
+                            // barThickness: 20,
+                            maxBarThickness: 40
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + context.raw;
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Top 10 Investors by Total Investments',
+                                font: {
+                                    size: 16,
+                                    weight: '600'
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Total Investments'
+                                },
+                                grid: {
+                                    color: 'rgba(200,200,200,0.2)',
+                                    borderDash: [3, 3]
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Investors',
+                                    font: {
+                                        size: 14,
+                                        weight: '500'
+                                    }
+                                },
+                                ticks: {
+                                    autoSkip: false,
+                                    maxRotation: 45,
+                                    minRotation: 0,
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
         });
     </script>
 
@@ -613,6 +710,11 @@
                 map.fitBounds(bounds);
             }
         }
+    </script>
+    <script>
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD46-CF9pTGIQpnKNkvc1eeZwBH2pQ70qQ&callback=initMap" async
         defer></script>
