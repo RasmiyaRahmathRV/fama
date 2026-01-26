@@ -55,5 +55,13 @@ class CompanySeeder extends Seeder
             'added_by' => 1,
             'industry_id' => 2,
         ]);
+
+        Company::updateOrCreate([
+            'company_code' => 'CMP00005',
+            'company_name' => 'RFB',
+            'company_short_code' => 'RFB',
+            'added_by' => 1,
+            'industry_id' => 1,
+        ]);
     }
 }
