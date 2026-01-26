@@ -414,7 +414,9 @@ color: white;
 }
 .login-bg {
     position: relative;
-    background: url('../images/fama-ba.png') center/cover no-repeat;
+    /* background: url('../images/fama-ba.png') center/cover no-repeat; */
+    background: url('../images/bg.png') center/cover no-repeat;
+
     height: 100vh;
 }
 
@@ -423,7 +425,7 @@ color: white;
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background-color: #080808ab;
+    background-color: #080808ba;
     z-index: 1;
 }
 
@@ -480,7 +482,7 @@ color: white;
 
 }
 .login-card{
-    background: #0000002b !important;
+    background: #00000057 !important;
 }
 
 
