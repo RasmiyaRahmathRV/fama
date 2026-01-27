@@ -229,7 +229,7 @@ class ContractRepository
             ->join('contract_types', 'contract_types.id', '=', 'contracts.contract_type_id')
             ->where('contract_renewal_status', '!=', '1')
             ->where('renew_reject_status', '=', '0')
-            ->where('contract_status', '=', '7')
+            ->where('contract_status', '>=', '7')
             ->whereHas('contract_detail', function ($q) use ($twoMonthsLater) {
                 $q->where('end_date', '<=', $twoMonthsLater);
             });
