@@ -34,7 +34,7 @@
                     <div class="input-group mb-3">
                         <input type="text" name="username" class="form-control login-input" placeholder="Email">
                         <div class="input-group-append">
-                            <div class="input-group-text">
+                            <div class="input-group-text login-input-group">
                                 <span class="fas fa-envelope"></span>
                             </div>
                         </div>
@@ -42,7 +42,7 @@
                     <div class="input-group mb-3">
                         <input type="password" name="password" class="form-control login-input" placeholder="Password">
                         <div class="input-group-append">
-                            <div class="input-group-text">
+                            <div class="input-group-text login-input-group">
                                 <span class="fas fa-lock"></span>
                             </div>
                         </div>
