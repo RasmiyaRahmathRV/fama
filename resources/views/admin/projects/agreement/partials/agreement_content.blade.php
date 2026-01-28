@@ -20,6 +20,10 @@
       {{-- {{ dd($unit) }} --}}
       <table width="100%" border="2" align="center" class="mt-5" cellpadding="0" cellspacing="0"
           style="box-shadow:-4px 4px 20px #666; max-width:1025px;">
+          @if ($page == 1)
+              <tbody style="padding: 20px;display: block;">
+          @endif
+
           <tr height="21">
               <td width="100%" colspan="6" bgcolor="#FFFFFF" style="max-width:1025px;">
                   <table width="100%" height="80" border="0" align="center" cellpadding="5" class="table0"
@@ -736,5 +740,9 @@
                   </table>
               </td>
           </tr>
+          @if ($page == 1)
+              </tbody>
+          @endif
+
       </table>
   @endforeach
