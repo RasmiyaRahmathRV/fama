@@ -292,9 +292,9 @@
                             <div class="modal-body">
                                 <div class="card-body">
                                     @foreach ($documentTypes as $key => $documentType)
-                                        {{-- @if (($documentType->id == 3 || $documentType->id == 2) && !$contract->is_acknowledgement_released)
+                                        @if (($documentType->id == 3 || $documentType->id == 2) && !$contract->is_acknowledgement_released)
                                             @continue
-                                        @endif --}}
+                                        @endif
 
                                         <div class="form-group row">
                                             @if ($documentType->id == 1)
