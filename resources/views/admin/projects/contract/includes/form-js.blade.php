@@ -1896,7 +1896,7 @@
                 <div class="form-group row">
                     <div class="col-md-2">
                         <label for="exampleInputEmail1">Unit No</label>
-                        <input type="number" class="form-control unit_noFF" id="unit_noFF${i}"
+                        <input type="text" class="form-control unit_noFF" id="unit_noFF${i}"
                             readonly value="` + $(this).val() + `">
                         <input type="hidden" id="unit_amount_payable${i}"
                             value="` + unit_payable + `" name="unit_detail[unit_amount_payable][]">
