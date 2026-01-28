@@ -57,7 +57,7 @@
                                             <th>Property Name</th>
                                             <th>Property size</th>
                                             <th>Plot no</th>
-                                            <th>Makani Numbet</th>
+                                            <th>Makani Number</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>

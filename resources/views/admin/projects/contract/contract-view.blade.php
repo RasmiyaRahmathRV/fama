@@ -417,10 +417,10 @@
             showLoader();
             $.ajax({
                 type: "GET",
-                url: "/export-building-summary/" + id, // ← correct
+                url: "{{ url('export-building-summary') }}/" + id, // ← correct
                 dataType: "json",
                 success: function(response) {
-                    hideLoader();
+
                     // console.log(response);
                     // Create a temporary link
                     var link = document.createElement('a');
@@ -430,11 +430,19 @@
                     link.click();
                     document.body.removeChild(link);
 
-                    // 2. REDIRECT AFTER 1 SEC
-                    setTimeout(() => {
-                        // window.location.href = response.redirect_url;
-                        window.location.reload();
-                    }, 800);
+                    hideLoader();
+                    // // 2. REDIRECT AFTER 1 SEC
+                    // setTimeout(() => {
+                    // window.location.href = response.redirect_url;
+                    window.location.reload();
+                    // }, 800);
+
+                    // if (response.download_url) {
+                    //     // STEP 2: IMPORTANT → browser redirect (NOT AJAX)
+                    //     window.location.href = response.download_url;
+                    // } else {
+                    //     alert("Download link not received.");
+                    // }
                 },
                 error: function(xhr) {
                     hideLoader();
