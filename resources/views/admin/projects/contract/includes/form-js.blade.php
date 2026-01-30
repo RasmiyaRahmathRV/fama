@@ -43,6 +43,10 @@
 
         $('input[type="number"]').attr('min', 0);
     });
+
+    $('#contact_no').on('blur', function() {
+        phoneValidation(this, 'contact_no');
+    });
 </script>
 
 <!-- unit addmore  -->

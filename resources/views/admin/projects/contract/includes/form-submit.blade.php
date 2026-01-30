@@ -29,37 +29,50 @@
     // $('.contractFormSubmit').click(function(e) {
     function ContractFormSubmit(e) {
         e.preventDefault();
-        // $('#company_id').prop('disabled', false);
-        // const contractForm = $(this);
-        // $(':input').not(':focusable').prop('disabled', true);
-        var form = document.getElementById('contractForm');
-        var fdata = new FormData(form);
 
-        fdata.append('_token', $('meta[name="csrf-token"]').attr('content'));
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You want to submit!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, submit!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // $('#company_id').prop('disabled', false);
+                // const contractForm = $(this);
+                // $(':input').not(':focusable').prop('disabled', true);
+                var form = document.getElementById('contractForm');
+                var fdata = new FormData(form);
 
-        // If you're updating (PUT/PATCH/DELETE)
+                fdata.append('_token', $('meta[name="csrf-token"]').attr('content'));
 
-        // let isEdit = @json($contract && $contract->exists);
+                // If you're updating (PUT/PATCH/DELETE)
 
-        let url =
-            "{{ $edit ? route('contract.update', $contract->id) : route('contract.store') }}";
-        fdata.append('_method', "{{ $edit ? 'PUT' : 'POST' }}");
+                // let isEdit = @json($contract && $contract->exists);
+
+                let url =
+                    "{{ $edit ? route('contract.update', $contract->id) : route('contract.store') }}";
+                fdata.append('_method', "{{ $edit ? 'PUT' : 'POST' }}");
 
 
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: fdata,
-            dataType: "json",
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                // console.log(response);
-                toastr.success(response.message);
-                window.location.href = "{{ route('contract.index') }}";
-            },
-            error: function(errors) {
-                toastr.error(errors.responseJSON.message);
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: fdata,
+                    dataType: "json",
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        // console.log(response);
+                        toastr.success(response.message);
+                        window.location.href = "{{ route('contract.index') }}";
+                    },
+                    error: function(errors) {
+                        toastr.error(errors.responseJSON.message);
+                    }
+                });
             }
         });
     }

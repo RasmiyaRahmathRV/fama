@@ -114,9 +114,13 @@
                 if (e.target.matches('.prevBtn')) {
                     window.stepper.previous(); // safe even if current step is first
                 }
+
+
                 if (e.target.matches('.nextBtn')) {
                     const stepIndex = window.stepper._currentIndex;
-                    if (validateStep(stepIndex)) {
+                    const validate = validateStep(stepIndex);
+
+                    if (validate.isValid) {
                         window.stepper.next();
 
                         if (window.stepper._currentIndex === 6) { // adjust step index
@@ -124,20 +128,38 @@
                         }
 
                     } else {
-                        alert('Please fill all required fields in this step.');
+                        Swal.fire({
+                            icon: 'warning',
+                            text: validate.message ||
+                                'Please fill all required fields.',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2500,
+                        });
                     }
                 }
 
                 if (e.target.matches('.contractFormSubmit')) {
                     const stepIndex = window.stepper._currentIndex;
-                    if (validateStep(stepIndex)) {
+                    const validate = validateStep(stepIndex);
+
+                    if (validate.isValid) {
                         // If validation passes, submit the form
                         // const form = document.querySelector('form'); // or a specific form id
                         // if (form) {
                         ContractFormSubmit(e);
                         // }
                     } else {
-                        alert('Please fill all required fields before submitting.');
+                        Swal.fire({
+                            icon: 'warning',
+                            text: validate.message ||
+                                'Please fix the errors before submitting.',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2500,
+                        });
                     }
                 }
             });
@@ -166,23 +188,63 @@
 
     function validateStep(stepIndex) {
         let isValid = true;
+        let message = '';
+
         const stepContainer = document.querySelector(`.step-content[data-step="${stepIndex}"]`);
         if (!stepContainer) return false;
 
-        // Validate normal inputs and selects
-        stepContainer.querySelectorAll('[required]:not(.select2):not([type="radio"])').forEach(field => {
-            if (field.offsetParent === null) return;
 
-            if (!field.value.trim()) {
-                field.classList.add('is-invalid');
-                field.classList.remove('is-valid');
-                console.log(field);
+
+        // Validate normal inputs and selects
+        stepContainer.querySelectorAll('[required]:not(.select2):not([type="radio"]):not(#contact_no)').forEach(
+            field => {
+                if (field.offsetParent === null) return;
+
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    field.classList.remove('is-valid');
+                    isValid = false;
+
+                    if (!message) {
+                        message = 'Please fill all required fields.';
+                    }
+                } else {
+                    field.classList.add('is-valid');
+                    field.classList.remove('is-invalid');
+                }
+            });
+
+        // ✅ Contact number validation (manual trigger)
+        var contactInput = stepContainer.querySelector('#contact_no');
+
+        if (contactInput) {
+            const value = contactInput.value.trim();
+
+            if (!value) {
+                contactInput.classList.add('is-invalid');
+                contactInput.classList.remove('is-valid');
                 isValid = false;
+                message = 'Contact number is required.';
+
             } else {
-                field.classList.add('is-valid');
-                field.classList.remove('is-invalid');
+                // 🔑 Use return value ONLY
+                const phoneIsValid = phoneValidation(contactInput, 'contact number', 1);
+
+                if (!phoneIsValid) {
+                    contactInput.classList.add('is-invalid');
+                    contactInput.classList.remove('is-valid');
+                    isValid = false;
+                    message = 'Please enter a valid contact number.';
+                } else {
+                    contactInput.classList.add('is-valid');
+                    contactInput.classList.remove('is-invalid');
+                    isValid = true;
+                    message = '';
+                }
             }
-        });
+        }
+
+
 
         // Validate Select2 fields
         $(stepContainer).find('[required]select.select2').each(function() {
@@ -199,6 +261,9 @@
             if (!value || value.length === 0) {
                 container.addClass('is-invalid').removeClass('is-valid');
                 isValid = false;
+                if (!message) {
+                    message = 'Please fill all required fields.';
+                }
             } else {
                 container.addClass('is-valid').removeClass('is-invalid');
             }
@@ -207,11 +272,16 @@
         // Validate iCheck radios
         // if (!validateRadios(stepContainer)) isValid = false;
 
-        return isValid;
+        return {
+            isValid: isValid,
+            message: message
+        };
+        // return isValid;
     }
 
     function validateRadios(stepContainer) {
         let isValid = true;
+
 
         // Collect unique radio group names inside this step
         const radioNames = new Set();
@@ -289,19 +359,26 @@
     }
 
     function hasDuplicateChequeNumbers(stepContainer) {
-        const chequeNumbers = [];
+        const entries = [];
         let duplicateFound = false;
 
         $(stepContainer).find('.cheque_no').each(function() {
-            const val = $(this).val().trim();
-            if (val !== '') {
-                if (chequeNumbers.includes(val)) {
-                    duplicateFound = true;
-                    return false; // stop loop early
-                } else {
-                    chequeNumbers.push(val);
-                }
+
+            var chequeNo = $(this).val().trim();
+            if (chequeNo === '') return;
+
+            var $container = $(this).closest('.payment_mode_div');
+            var bankId = $container.find('.bank_name').val();
+
+            // create unique key using bank + cheque
+            var key = bankId + '_' + chequeNo;
+
+            if (entries.includes(key)) {
+                duplicateFound = true;
+                return false; // stop loop
             }
+
+            entries.push(key);
         });
 
         return duplicateFound;
