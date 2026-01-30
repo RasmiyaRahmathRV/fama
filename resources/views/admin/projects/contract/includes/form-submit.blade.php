@@ -30,50 +30,63 @@
     function ContractFormSubmit(e) {
         e.preventDefault();
 
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You want to submit!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, submit!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // $('#company_id').prop('disabled', false);
-                // const contractForm = $(this);
-                // $(':input').not(':focusable').prop('disabled', true);
-                var form = document.getElementById('contractForm');
-                var fdata = new FormData(form);
+        if ($('.contractFormSubmit').prop('disabled') == false) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You want to submit!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, submit!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // $('#company_id').prop('disabled', false);
+                    // const contractForm = $(this);
+                    // $(':input').not(':focusable').prop('disabled', true);
+                    var form = document.getElementById('contractForm');
+                    var fdata = new FormData(form);
 
-                fdata.append('_token', $('meta[name="csrf-token"]').attr('content'));
+                    fdata.append('_token', $('meta[name="csrf-token"]').attr('content'));
 
-                // If you're updating (PUT/PATCH/DELETE)
+                    // If you're updating (PUT/PATCH/DELETE)
 
-                // let isEdit = @json($contract && $contract->exists);
+                    // let isEdit = @json($contract && $contract->exists);
 
-                let url =
-                    "{{ $edit ? route('contract.update', $contract->id) : route('contract.store') }}";
-                fdata.append('_method', "{{ $edit ? 'PUT' : 'POST' }}");
+                    let url =
+                        "{{ $edit ? route('contract.update', $contract->id) : route('contract.store') }}";
+                    fdata.append('_method', "{{ $edit ? 'PUT' : 'POST' }}");
 
 
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    data: fdata,
-                    dataType: "json",
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        // console.log(response);
-                        toastr.success(response.message);
-                        window.location.href = "{{ route('contract.index') }}";
-                    },
-                    error: function(errors) {
-                        toastr.error(errors.responseJSON.message);
-                    }
-                });
-            }
-        });
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: fdata,
+                        dataType: "json",
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            // console.log(response);
+                            toastr.success(response.message);
+                            window.location.href = "{{ route('contract.index') }}";
+                        },
+                        error: function(errors) {
+                            toastr.error(errors.responseJSON.message);
+                        }
+                    });
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                text: 'Please fix the errors before submitting.',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2500,
+            });
+        }
+
+
     }
 </script>

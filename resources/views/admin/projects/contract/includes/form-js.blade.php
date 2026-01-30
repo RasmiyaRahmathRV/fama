@@ -983,6 +983,16 @@
             $('#dewa_deposit').val(2130 * subvalues.totFlat);
             // $('#ejari').val(0);
 
+        } else {
+            $('#cost_of_development').attr('readonly', true).val('');
+            $('#cost_of_beds').attr('readonly', true).val('');
+            $('#cost_of_mattress').attr('readonly', true).val('');
+            $('#cost_of_cabinets').attr('readonly', true).val('');
+            $('#cost_of_cabinets').attr('readonly', true).val('');
+            $('#appliances').attr('readonly', true).val('');
+            $('#decoration').attr('readonly', true).val('');
+            $('#cost_of_cabinets').attr('readonly', true).val('');
+            $('#dewa_deposit').attr('readonly', true).val('');
         }
         CalculatePayables();
 
@@ -1524,9 +1534,7 @@
             //         $('#client_phone').val('0568856995');
             //         $('#client_email').val('adil@faateh.ae');
             //         $('#contact_person').val('Adil');
-
         } else {
-            calculateOtc();
             $('#duration_months').val('13');
             $('#btob').prop('checked', false);
             $('#btoc').prop('checked', true);
@@ -1536,6 +1544,7 @@
             //         $('#client_email').val('adil@faateh.ae');
             //         $('#contact_person').val('Adil');
         }
+        calculateOtc();
     });
 </script>
 <!-- payment mode scripts -->
