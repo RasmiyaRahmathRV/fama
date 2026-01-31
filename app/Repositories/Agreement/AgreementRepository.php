@@ -34,6 +34,8 @@ class AgreementRepository
 
         return Agreement::with(
             'contract',
+            'contract.contract_type',
+            'contract.contract_unit',
             'company',
             'tenant.nationality',
             'agreement_payment.agreementPaymentDetails',
@@ -159,6 +161,7 @@ class AgreementRepository
             'company',
             'tenant.nationality',
             'agreement_payment.agreementPaymentDetails.invoice',
+            'agreement_payment.agreementPaymentDetails.receivedPayments',
             'agreement_payment.installment',
             'agreement_documents',
             'agreement_units.contractSubunitDetail',

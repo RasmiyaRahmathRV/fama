@@ -373,8 +373,6 @@
                         }
                     });
 
-                } else {
-                    toastr.error(errors.responseJSON.message);
                 }
             });
         }

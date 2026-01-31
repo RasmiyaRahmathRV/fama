@@ -353,6 +353,7 @@
                                                                 <th>Favouring</th>
                                                                 <th>Paid On</th>
                                                                 <th>Paid Amount</th>
+                                                                <th>Balance Amount</th>
                                                                 <th>Status of Termination</th>
                                                                 <th>Composition</th>
                                                                 <th>Invoice Upload</th>
@@ -360,6 +361,7 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+
                                                             @foreach ($agreement->agreement_payment->agreementPaymentDetails->where('agreement_unit_id', $unit->id) as $detail)
                                                                 @php
                                                                     $bgColor = match ($detail->is_payment_received) {
@@ -370,6 +372,22 @@
                                                                         default => '',
                                                                     };
                                                                 @endphp
+                                                                @php
+                                                                    $totalPaid = 0;
+                                                                    $totalBalance = 0;
+                                                                    $totalBalance = 0;
+                                                                @endphp
+
+                                                                {{-- @dump($detail->receivedPayments) --}}
+
+                                                                @foreach ($detail->receivedPayments ?? [] as $receivable)
+                                                                    @php
+                                                                        $totalPaid +=
+                                                                            (float) ($receivable->paid_amount ?? 0);
+                                                                        $totalBalance =
+                                                                            $receivable->pending_amount ?? 0;
+                                                                    @endphp
+                                                                @endforeach
                                                                 <tr>
                                                                     <td
                                                                         style="background-color: {{ $bgColor }} !important;">
@@ -397,9 +415,18 @@
                                                                         style="background-color: {{ $bgColor }} !important;">
                                                                         {{ $detail->paid_date ?? '-' }}
                                                                     </td>
+                                                                    {{-- @dump($totalPaid) --}}
                                                                     <td
                                                                         style="background-color: {{ $bgColor }} !important;">
-                                                                        {{ number_format($detail->paid_amount, 2) ?? '-' }}
+                                                                        {{-- {{ number_format($detail->paid_amount, 2) ?? '-' }} --}}
+                                                                        {{ number_format($totalPaid, 2) ?? '-' }}
+
+                                                                    </td>
+                                                                    <td
+                                                                        style="background-color: {{ $bgColor }} !important;">
+                                                                        {{-- {{ number_format($detail->paid_amount, 2) ?? '-' }} --}}
+                                                                        {{ number_format($totalBalance, 2) ?? '-' }}
+
                                                                     </td>
                                                                     <td
                                                                         style="background-color: {{ $bgColor }} !important;">
@@ -464,12 +491,17 @@
                                                             )
                                                             as $detail
                                                         ) {
+                                                            foreach ($detail->receivedPayments ?? [] as $receivable) {
+                                                                $total_paid += toNumeric($receivable->paid_amount);
+                                                            }
                                                             $total_to_pay += toNumeric($detail->payment_amount);
-                                                            $total_paid += toNumeric($detail->paid_amount);
+                                                            // $total_paid += toNumeric($detail->paid_amount);
                                                         }
                                                         $remaining_amount = $total_to_pay - $total_paid;
                                                     @endphp
                                                     <div class="float-right">
+                                                        <span><strong>Total Unit Revenue:</strong>
+                                                            {{ number_format($total_to_pay, 2) }}</span><br>
                                                         <span><strong>Total Received:</strong>
                                                             {{ number_format($total_paid, 2) }}</span><br>
                                                         <span><strong>Remaining:</strong>
