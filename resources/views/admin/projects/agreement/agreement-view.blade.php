@@ -376,6 +376,7 @@
                                                                     $totalPaid = 0;
                                                                     $totalBalance = 0;
                                                                     $totalBalance = 0;
+                                                                    $paid_on = null;
                                                                 @endphp
 
                                                                 {{-- @dump($detail->receivedPayments) --}}
@@ -386,7 +387,12 @@
                                                                             (float) ($receivable->paid_amount ?? 0);
                                                                         $totalBalance =
                                                                             $receivable->pending_amount ?? 0;
-                                                                        $paid_on = $receivable->paid_date;
+                                                                        if (
+                                                                            $totalPaid > 0 &&
+                                                                            !empty($receivable->paid_date)
+                                                                        ) {
+                                                                            $paid_on = $receivable->paid_date;
+                                                                        }
                                                                     @endphp
                                                                 @endforeach
                                                                 <tr>
@@ -415,7 +421,7 @@
                                                                     <td
                                                                         style="background-color: {{ $bgColor }} !important;">
                                                                         {{-- {{ $detail->paid_date ?? '-' }} --}}
-                                                                        {{ \Carbon\Carbon::parse($paid_on)->format('d/m/Y') }}
+                                                                        {{ $paid_on ? \Carbon\Carbon::parse($paid_on)->format('d/m/Y') : '-' }}
                                                                     </td>
                                                                     {{-- @dump($totalPaid) --}}
                                                                     <td
