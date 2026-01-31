@@ -1263,7 +1263,7 @@
     </script>
     <script>
         function addClassAsterisk(inputSelector) {
-            alert("test");
+            // alert("test");
             $(inputSelector).prev('label').addClass('asterisk');
         }
     </script>
