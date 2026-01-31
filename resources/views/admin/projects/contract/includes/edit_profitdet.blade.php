@@ -19,7 +19,7 @@
         <div class="form-group row">
             <div class="col-md-2">
                 <label for="exampleInputEmail1">Unit No</label>
-                <input type="number" class="form-control unit_noFF" id="unit_noFF{{ $unitkey }}" readonly
+                <input type="text" class="form-control unit_noFF" id="unit_noFF{{ $unitkey }}" readonly
                     value="{{ $unitDetail->unit_number ?? '' }}">
                 <input type="hidden" id="unit_amount_payable{{ $unitkey }}" value="{{ toNumeric($unit_payable) }}"
                     name="unit_detail[unit_amount_payable][]">

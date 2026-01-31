@@ -78,7 +78,7 @@
         if (!stepContainer) return false;
 
         // Validate inputs, selects, and textareas
-        stepContainer.querySelectorAll('[required]:not([type="radio"])').forEach(field => {
+        stepContainer.querySelectorAll('[required]:not([type="radio"]):not(#phone)').forEach(field => {
             if (field.offsetParent === null) return; // skip hidden
             // Skip password and file inputs
             // if (isEditUser) {
@@ -94,6 +94,36 @@
                 field.classList.remove('is-invalid');
             }
         });
+
+        // ✅ Contact number validation (manual trigger)
+        var contactInput = stepContainer.querySelector('#phone');
+
+        if (contactInput) {
+            const value = contactInput.value.trim();
+
+            if (!value) {
+                contactInput.classList.add('is-invalid');
+                contactInput.classList.remove('is-valid');
+                isValid = false;
+                message = 'Contact number is required.';
+
+            } else {
+                // 🔑 Use return value ONLY
+                const phoneIsValid = phoneValidation(contactInput, 'phone', 1);
+
+                if (!phoneIsValid) {
+                    contactInput.classList.add('is-invalid');
+                    contactInput.classList.remove('is-valid');
+                    isValid = false;
+                    message = 'Please enter a valid phone number.';
+                } else {
+                    contactInput.classList.add('is-valid');
+                    contactInput.classList.remove('is-invalid');
+                    isValid = true;
+                    message = '';
+                }
+            }
+        }
 
         // Validate Select2 fields separately
         $(stepContainer).find('select.select2[required]').each(function() {
