@@ -210,6 +210,19 @@ class AgreementRepository
                         $subunitdetail->save();
                     }
                 }
+                foreach ($contract_unit_details as $unit) {
+                    $countdetails = getOccupiedDetails($unit);
+                    // dd($countdetails);
+                    $occupied = $countdetails['occupied'];
+                    $vacant = $countdetails['vacant'];
+                    $unitdetail = ContractUnitDetail::find($unit);
+                    if ($unitdetail) {
+                        // dd($unitdetail);
+                        $unitdetail->subunit_occupied_count = $occupied;
+                        $unitdetail->subunit_vacant_count = $vacant;
+                        $unitdetail->save();
+                    }
+                }
             }
 
             $contract->is_agreement_added = 0;
